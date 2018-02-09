@@ -1,0 +1,19 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="@string/pref_header_general"></PreferenceCategory>
+    <!-- NOTE: EditTextPreference accepts EditText attributes. -->
+    <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="@string/pref_general_hide_chapter"
+        android:summaryOff="@string/show_all_chapter"
+        android:summaryOn="@string/show_only_readable"
+        android:title="@string/hide_unavailable_chapters" />
+
+    <ru.profapp.ranobereader.CustomElements.NumberPickerPreference
+        android:defaultValue="14"
+        android:key="@string/pref_general_text_size"
+        android:summary="@string/select_text_size"
+        android:title="@string/text_size" />
+
+</PreferenceScreen>

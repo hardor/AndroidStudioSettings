@@ -1,0 +1,9 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ru.profapp.ranobereader.CustomElements.LoginPreference
+        android:persistent="true"
+        android:summary="@string/login_to_rulate_summary"
+        android:title="@string/rulate_authorization" />
+    android:title="@string/rulate_authorization" />
+
+</PreferenceScreen>
