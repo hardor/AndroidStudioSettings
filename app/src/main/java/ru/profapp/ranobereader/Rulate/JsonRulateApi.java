@@ -20,11 +20,13 @@ public class JsonRulateApi {
     }
 
     public static JsonRulateApi getInstance() {
-        if (instance == null)
+        if (instance == null) {
             synchronized (JsonRulateApi.class) {
-                if (instance == null)
+                if (instance == null) {
                     instance = new JsonRulateApi();
+                }
             }
+        }
         return instance;
     }
 
@@ -40,17 +42,20 @@ public class JsonRulateApi {
     public String GetReadyTranslatesHtml(String limit, String page) {
         String request = String.format(ApiString, "getReady");
 
-        if (limit != null)
+        if (limit != null) {
             request += "&limit=" + limit;
-        if (page != null)
+        }
+        if (page != null) {
             request += "&page=" + page;
+        }
 
         return getDocumentText(request);
     }
 
     public String SearchBooks(String search) {
-        if (search.isEmpty())
+        if (search.isEmpty()) {
             return "";
+        }
 
         String request = String.format(ApiString, "searchBooks");
         request += "&search=" + search;
@@ -59,8 +64,9 @@ public class JsonRulateApi {
     }
 
     public String GetFavoriteBooks(String token) {
-        if (token.isEmpty())
+        if (token.isEmpty()) {
             return "";
+        }
 
         String request = String.format(ApiString, "bookmarks");
         request += "&token=" + token;
@@ -68,10 +74,11 @@ public class JsonRulateApi {
         return getDocumentText(request);
     }
 
-    public String GetCharpterText(int book_id, int chapter_id, String token) {
+    public String GetChapterText(int book_id, int chapter_id, String token) {
         String request = String.format(ApiString, "chapter");
-        if (!token.isEmpty())
+        if (!token.isEmpty()) {
             request += "&token=" + token;
+        }
 
         request += "&chapter_id=" + chapter_id;
         request += "&book_id=" + book_id;
@@ -81,10 +88,11 @@ public class JsonRulateApi {
 
     public String AddBookmark(int book_id, String token) {
         String request = String.format(ApiString, "addBookmark");
-        if (!token.isEmpty())
+        if (!token.isEmpty()) {
             request += "&token=" + token;
-        else
+        } else {
             return "";
+        }
         request += "&book_id=" + book_id;
 
         return getDocumentText(request);
@@ -92,10 +100,22 @@ public class JsonRulateApi {
 
     public String RemoveBookmark(int book_id, String token) {
         String request = String.format(ApiString, "removeBookmark");
-        if (!token.isEmpty())
+        if (!token.isEmpty()) {
             request += "&token=" + token;
-        else
+        } else {
             return "";
+        }
+        request += "&book_id=" + book_id;
+
+        return getDocumentText(request);
+    }
+
+    public String GetBookInfo(int book_id, String token) {
+        String request = String.format(ApiString, "book");
+
+        if (!token.isEmpty()) {
+            request += "&token=" + token;
+        }
         request += "&book_id=" + book_id;
 
         return getDocumentText(request);
@@ -106,15 +126,18 @@ public class JsonRulateApi {
         Document html = null;
         try {
             html = new HtmlParser().execute(request).get();
+            return html.text();
         } catch (InterruptedException e) {
             e.printStackTrace();
             return "";
         } catch (ExecutionException e) {
             e.printStackTrace();
             return "";
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            return "";
         }
 
-        return html.text();
     }
 
 

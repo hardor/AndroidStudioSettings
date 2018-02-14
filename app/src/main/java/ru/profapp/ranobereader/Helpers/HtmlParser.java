@@ -22,7 +22,7 @@ public class HtmlParser extends AsyncTask<String, Void, Document> {
             doc = Jsoup.connect(params[0]).get();
             return doc;
         } catch (IOException e) {
-
+            e.printStackTrace();
         }
         return null;
     }

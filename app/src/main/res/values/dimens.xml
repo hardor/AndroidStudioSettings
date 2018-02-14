@@ -6,4 +6,9 @@
     <dimen name="nav_header_height">176dp</dimen>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="image_size">100dp</dimen>
+    <dimen name="fab_margin">20dp</dimen>
+    <dimen name="header_bar_height">72dp</dimen>
+    <dimen name="margin_standard">16dp</dimen>
+    <dimen name="flexible_space_image_height">240dp</dimen>
+    <dimen name="app_bar_height">180dp</dimen>
 </resources>

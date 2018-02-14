@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">RanobeReader</string>
+    <string name="title_activity_settings">Настройки</string>
+    <string name="password">Пароль</string>
+    <string name="login">Логин</string>
+    <string name="favorite">Избранное</string>
+    <string name="action_settings">Настройки</string>
+    <string name="Turn_on_dark_theme">Включить темную тему</string>
+    <string name="Turn_off_dark_theme">Выключить темную тему</string>
+    <string name="ranobe_rf">Ранобэ.рф</string>
+    <string name="text_size">Размер текста</string>
+    <string name="hide_unavailable_chapters">Скрыть недоступные главы</string>
+    <string name="show_all_chapter">Показывать все главы</string>
+    <string name="show_only_readable">Показывать только доступные главы</string>
 </resources>

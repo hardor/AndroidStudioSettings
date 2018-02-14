@@ -3,6 +3,7 @@ package ru.profapp.ranobereader;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -10,15 +11,19 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
+import ru.profapp.ranobereader.Common.Constans;
+import ru.profapp.ranobereader.Models.Chapter;
 import ru.profapp.ranobereader.Models.Ranobe;
 
 public class MainActivity extends AppCompatActivity
         implements
-        FavoriteFragment.OnListFragmentInteractionListener,
+        RanobeRecyclerFragment.OnListFragmentInteractionListener,
         NavigationView.OnNavigationItemSelectedListener
 
 {
@@ -33,8 +38,23 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.mainFrame, new FavoriteFragment());
+        ft.replace(R.id.mainFrame, RanobeRecyclerFragment.newInstance(Constans.FragmentType.Favorite.name()));
         ft.commit();
+        setTitle(getResources().getText(R.string.favorite));
+
+        FloatingActionButton floatingActionButton = findViewById(R.id.fab);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                try {
+                    RecyclerView ranobeListview = findViewById(R.id.ranobeListView);
+                    ranobeListview.scrollToPosition(0);
+                } catch (NullPointerException ex) {
+
+                }
+
+            }
+        });
+
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -73,6 +93,9 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+            setTitle(getResources().getText(R.string.action_settings));
             return true;
         }
 
@@ -87,16 +110,18 @@ public class MainActivity extends AppCompatActivity
 
         Fragment fragment = null;
 
-        if (id == R.id.nav_camera) {
-            fragment = new FavoriteFragment();
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
+        if (id == R.id.nav_favorite) {
+            fragment = RanobeRecyclerFragment.newInstance(Constans.FragmentType.Favorite.name());
+            setTitle(getResources().getText(R.string.favorite));
+        } else if (id == R.id.nav_rulate) {
+            fragment = RanobeRecyclerFragment.newInstance(Constans.FragmentType.Rulate.name());
+            setTitle(getResources().getText(R.string.tl_rulate_name));
+        } else if (id == R.id.nav_ranoberf) {
+            fragment = RanobeRecyclerFragment.newInstance(Constans.FragmentType.Ranoberf.name());
+            setTitle(getResources().getText(R.string.ranobe_rf));
         } else if (id == R.id.nav_manage) {
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
-            return true;
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
@@ -118,4 +143,5 @@ public class MainActivity extends AppCompatActivity
     public void onListFragmentInteraction(Ranobe item) {
 
     }
+
 }

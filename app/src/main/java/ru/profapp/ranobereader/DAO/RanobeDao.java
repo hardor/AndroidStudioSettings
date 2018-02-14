@@ -27,13 +27,13 @@ public interface RanobeDao {
     void delete(Ranobe ranobe);
 
 
-    @Query("SELECT * FROM ranobe WHERE UrlToRanobe=:UrlToRanobe")
+    @Query("SELECT * FROM ranobe WHERE RanobeUrl=:UrlToRanobe")
     Ranobe getRanobeByUrl(String UrlToRanobe);
 
     @Query("SELECT * FROM ranobe")
     List<Ranobe> getAllRanobe();
 
-    @Query("SELECT * FROM ranobe WHERE IsFavorited = 1")
+    @Query("SELECT * FROM ranobe WHERE Favorited = 1")
     List<Ranobe> GetFavoriteRanobes();
 
 

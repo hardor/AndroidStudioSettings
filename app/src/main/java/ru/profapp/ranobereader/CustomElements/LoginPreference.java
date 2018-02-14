@@ -98,7 +98,6 @@ public final class LoginPreference extends DialogPreference implements DialogInt
             Boolean resBool = Boolean.valueOf(result[0]);
             if (resBool) {
                 editor.putString(StringResources.KEY_Token, result[2]);
-                editor.putString(StringResources.KEY_Password, password);
                 editor.commit();
             }
             alert.showAlertDialog(this.getContext(), username, result[1], resBool);

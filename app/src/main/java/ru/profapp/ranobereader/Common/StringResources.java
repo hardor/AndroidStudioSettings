@@ -9,4 +9,5 @@ public class StringResources {
     public static final String KEY_Login = "login";
     public static final String KEY_Password = "password";
     public static final String KEY_Token = "token";
+    public static final String Rulate_Site = "tl.rulate.ru";
 }
