@@ -36,6 +36,10 @@
             android:label="@string/title_activity_scrolling"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+        <activity
+            android:name=".ChapterText"
+            android:label="@string/title_activity_chapter_text">
+        </activity>
     </application>
 
 </manifest>

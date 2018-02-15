@@ -126,7 +126,7 @@ public class JsonRulateApi {
         Document html = null;
         try {
             html = new HtmlParser().execute(request).get();
-            return html.text();
+            return html.body().text();
         } catch (InterruptedException e) {
             e.printStackTrace();
             return "";
@@ -137,7 +137,6 @@ public class JsonRulateApi {
             e.printStackTrace();
             return "";
         }
-
     }
 
 

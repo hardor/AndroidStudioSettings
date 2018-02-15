@@ -19,7 +19,7 @@ public class HtmlParser extends AsyncTask<String, Void, Document> {
     protected Document doInBackground(String... params) {
 
         try {
-            doc = Jsoup.connect(params[0]).get();
+            doc = Jsoup.connect(params[0]).timeout(5000).get();
             return doc;
         } catch (IOException e) {
             e.printStackTrace();

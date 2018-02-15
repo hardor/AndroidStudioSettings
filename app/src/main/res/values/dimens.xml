@@ -11,4 +11,5 @@
     <dimen name="margin_standard">16dp</dimen>
     <dimen name="flexible_space_image_height">240dp</dimen>
     <dimen name="app_bar_height">180dp</dimen>
+    <dimen name="card.title.text.size">18sp</dimen>
 </resources>

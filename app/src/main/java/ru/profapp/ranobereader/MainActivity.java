@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.mainFrame, RanobeRecyclerFragment.newInstance(Constans.FragmentType.Favorite.name()));
+        ft.replace(R.id.mainFrame, RanobeRecyclerFragment.newInstance(Constans.FragmentType.Rulate.name()));
         ft.commit();
         setTitle(getResources().getText(R.string.favorite));
 

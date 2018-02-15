@@ -8,9 +8,12 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Date;
+
+import ru.profapp.ranobereader.Common.Constans;
 
 /**
  * Created by Ruslan on 09.02.2018.
@@ -21,7 +24,7 @@ import java.util.Date;
         parentColumns = "RanobeUrl",
         childColumns = "RanobeUrl"))
 public class Chapter implements Parcelable {
-    @Ignore
+
     public static final Creator<Chapter> CREATOR = new Creator<Chapter>() {
         @Override
         public Chapter createFromParcel(Parcel in) {
@@ -33,23 +36,18 @@ public class Chapter implements Parcelable {
             return new Chapter[size];
         }
     };
-
     @NonNull
     @PrimaryKey
     public String RanobeUrl;
-
-
     public int Id;
     public String Title;
     public String Status;
     public Boolean CanRead;
     public Boolean New;
-
-
-    public String CharterUrl;
-    public int ChapterIndex;
-    public Date ChapterTime;
-    public String ChapterString;
+    public String Url;
+    public int Index;
+    public Date Time;
+    public String Text;
     public int RanobeId;
     public Boolean IsDownloaded;
 
@@ -57,6 +55,7 @@ public class Chapter implements Parcelable {
     public Chapter() {
 
     }
+
 
     @Ignore
     public Chapter(JSONObject object) {
@@ -71,47 +70,64 @@ public class Chapter implements Parcelable {
 
     }
 
-    @Ignore
     protected Chapter(Parcel in) {
+        RanobeUrl = in.readString();
         Id = in.readInt();
         Title = in.readString();
         Status = in.readString();
-
-
-        RanobeUrl = in.readString();
-        CharterUrl = in.readString();
-        ChapterIndex = in.readInt();
-
-        ChapterString = in.readString();
-        RanobeId = in.readInt();
         byte tmpCanRead = in.readByte();
         CanRead = tmpCanRead == 0 ? null : tmpCanRead == 1;
-        byte tmpIsNew = in.readByte();
-        New = tmpIsNew == 0 ? null : tmpIsNew == 1;
+        byte tmpNew = in.readByte();
+        New = tmpNew == 0 ? null : tmpNew == 1;
+        Url = in.readString();
+        Index = in.readInt();
+        Text = in.readString();
+        RanobeId = in.readInt();
         byte tmpIsDownloaded = in.readByte();
         IsDownloaded = tmpIsDownloaded == 0 ? null : tmpIsDownloaded == 1;
-
     }
 
-    @Ignore
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(RanobeUrl);
+        dest.writeInt(Id);
+        dest.writeString(Title);
+        dest.writeString(Status);
+        dest.writeByte((byte) (CanRead == null ? 0 : CanRead ? 1 : 2));
+        dest.writeByte((byte) (New == null ? 0 : New ? 1 : 2));
+        dest.writeString(Url);
+        dest.writeInt(Index);
+        dest.writeString(Text);
+        dest.writeInt(RanobeId);
+        dest.writeByte((byte) (IsDownloaded == null ? 0 : IsDownloaded ? 1 : 2));
+    }
+
     @Override
     public int describeContents() {
         return 0;
     }
 
     @Ignore
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(Title);
-        parcel.writeString(RanobeUrl);
-        parcel.writeString(CharterUrl);
-        parcel.writeInt(ChapterIndex);
-        parcel.writeInt(Id);
-        parcel.writeString(ChapterString);
-        parcel.writeInt(RanobeId);
-        parcel.writeByte((byte) (CanRead == null ? 0 : CanRead ? 1 : 2));
-        parcel.writeByte((byte) (New == null ? 0 : New ? 1 : 2));
-        parcel.writeByte((byte) (IsDownloaded == null ? 0 : IsDownloaded ? 1 : 2));
-        parcel.writeString(Status);
+    public void UpdateChapter(JSONObject object, Constans.JsonObjectFrom enumFrom) {
+
+        switch (enumFrom) {
+            case RulateGetChapterText:
+                fromRulateGetChapterText(object);
+                break;
+            default:
+//                throw new NullPointerException();
+                break;
+        }
+
+    }
+
+    private void fromRulateGetChapterText(JSONObject object) {
+        try {
+            Title = object.getString("title");
+            Text = object.getString("text");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

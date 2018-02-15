@@ -59,7 +59,7 @@ public class Ranobe implements Parcelable {
     @Ignore
     private List<Chapter> chapterList;
     @Ignore
-    private DateFormat format = new SimpleDateFormat("MM-dd HH-mm");
+    private DateFormat format = new SimpleDateFormat("MM-dd HH:mm");
 
 
     public Ranobe() {
@@ -102,7 +102,6 @@ public class Ranobe implements Parcelable {
         }
         RanobeSite = StringResources.Rulate_Site;
         RanobeUrl = StringResources.Rulate_Site + "/book/" + Id;
-        ;
 
     }
 
@@ -145,7 +144,6 @@ public class Ranobe implements Parcelable {
             Image = object.getString("img").replace("-5050", "");
 
             Lang = object.getString("lang");
-            Rating = object.getString("rating");
             ReadyDate = format.parse(object.getString("ready_date"));
             chapterList = new ArrayList<>();
 

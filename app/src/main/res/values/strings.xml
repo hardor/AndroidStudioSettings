@@ -180,4 +180,13 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="title_activity_ranobe_info">RanobeInfo</string>
+    <string name="chapters">Chapters</string>
+    <string name="description">Description</string>
+    <string name="additional_information">Additional Information</string>
+    <string name="title_activity_chapter_text">ChapterText</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
 </resources>
