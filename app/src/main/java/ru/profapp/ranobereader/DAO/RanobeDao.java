@@ -3,6 +3,7 @@ package ru.profapp.ranobereader.DAO;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
@@ -17,17 +18,23 @@ import ru.profapp.ranobereader.Models.Ranobe;
 @Dao
 public interface RanobeDao {
 
-    @Insert
+   @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insert(Ranobe ranobe);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(Ranobe... ranobes);
 
     @Update
-    void update(Ranobe... ranobes);
+    void updateAll(Ranobe... ranobes);
+
+    @Update
+    void update(Ranobe ranobe);
 
     @Delete
     void delete(Ranobe ranobe);
 
 
-    @Query("SELECT * FROM ranobe WHERE RanobeUrl=:UrlToRanobe")
+    @Query("SELECT * FROM ranobe WHERE Url=:UrlToRanobe")
     Ranobe getRanobeByUrl(String UrlToRanobe);
 
     @Query("SELECT * FROM ranobe")

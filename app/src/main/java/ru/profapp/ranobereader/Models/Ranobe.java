@@ -10,6 +10,9 @@ import android.support.annotation.NonNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -24,7 +27,7 @@ import ru.profapp.ranobereader.Common.StringResources;
 /**
  * Created by Ruslan on 09.02.2018.
  */
-@Entity
+@Entity(tableName = "ranobe")
 public class Ranobe implements Parcelable {
 
     public static final Creator<Ranobe> CREATOR = new Creator<Ranobe>() {
@@ -40,7 +43,7 @@ public class Ranobe implements Parcelable {
     };
     @PrimaryKey
     @NonNull
-    private String RanobeUrl;
+    private String Url;
     private int Id;
     private String EngTitle;
     private String Title;
@@ -48,6 +51,7 @@ public class Ranobe implements Parcelable {
     private Date ReadyDate;
     private String Lang;
     private String Description;
+    private String AdditionalInfo;
     private String RanobeSite;
     private int CharpterCount;
     private int LastReadedCharpter;
@@ -57,22 +61,25 @@ public class Ranobe implements Parcelable {
     private String Rating;
     private String Status;
     @Ignore
-    private List<Chapter> chapterList;
+    private List<Chapter> chapterList = new ArrayList<>();
     @Ignore
     private DateFormat format = new SimpleDateFormat("MM-dd HH:mm");
 
+    @Ignore
+    private DateFormat ranobeChapterFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
 
     public Ranobe() {
     }
 
     protected Ranobe(Parcel in) {
-        RanobeUrl = in.readString();
+        Url = in.readString();
         Id = in.readInt();
         EngTitle = in.readString();
         Title = in.readString();
         Image = in.readString();
         Lang = in.readString();
         Description = in.readString();
+        AdditionalInfo = in.readString();
         RanobeSite = in.readString();
         CharpterCount = in.readInt();
         LastReadedCharpter = in.readInt();
@@ -91,41 +98,51 @@ public class Ranobe implements Parcelable {
 
         switch (enumFrom) {
             case RulateGetReady:
-                fromRulateGetReady(object);
+                fromRulateGetReady(object, enumFrom);
                 break;
             case RulateGetBookInfo:
-                fromRulateGetBookInfo(object);
+                fromRulateGetBookInfo(object, enumFrom);
+                break;
+            case RanobeRfGetReady:
+                fromRanobeRfGetReady(object, enumFrom);
                 break;
             default:
-//                throw new NullPointerException();
+                //  throw new NullPointerException();
                 break;
         }
-        RanobeSite = StringResources.Rulate_Site;
-        RanobeUrl = StringResources.Rulate_Site + "/book/" + Id;
-
     }
 
-    private void fromRulateGetBookInfo(JSONObject object) {
-        try {
-            Id = object.optInt("id");
-            EngTitle = object.getString("s_title");
-            Title = object.getString("t_title");
-            CharpterCount = object.optInt("n_chapters");
-            Lang = object.getString("lang");
+    @Ignore
+    public void UpdateRanobe(Document object, Constans.JsonObjectFrom enumFrom) {
 
-            //last_activity
-            chapterList = new ArrayList<>();
-            Status = object.getString("status");
-            Rating = object.getString("rating");
-            Image = object.getString("img");
-            if (object.has("chapters")) {
-                JSONArray jsonArray = object.optJSONArray("chapters");
+        switch (enumFrom) {
+            case RanobeRfGetBookInfo:
+                fromRanobeRfGetBookInfo(object, enumFrom);
+                break;
+            default:
+                //  throw new NullPointerException();
+                break;
+        }
+    }
+
+    private void fromRanobeRfGetReady(JSONObject object, Constans.JsonObjectFrom enumFrom) {
+        try {
+
+            Title = object.getString("name");
+            ReadyDate = new java.util.Date(object.getLong("last_updated_book") * 1000);
+            Url = object.getString("alias");
+            if (object.has("images")) {
+                JSONArray jsonArray = object.optJSONArray("images");
+                Image = StringResources.RanobeRf_Site + jsonArray.getString(0);
+            }
+
+            if (object.has("parts")) {
+                JSONArray jsonArray = object.optJSONArray("parts");
                 for (int i = 0; i < jsonArray.length(); i++) {
 
                     JSONObject value = jsonArray.optJSONObject(i);
-                    Chapter chapter = new Chapter(value);
-                    chapter.RanobeId = Id;
-                    chapter.RanobeUrl = RanobeUrl;
+                    Chapter chapter = new Chapter(value, enumFrom);
+                    chapter.setRanobeUrl(Url);
                     chapterList.add(chapter);
 
                 }
@@ -136,7 +153,71 @@ public class Ranobe implements Parcelable {
         }
     }
 
-    private void fromRulateGetReady(JSONObject object) {
+    private void fromRanobeRfGetBookInfo(Document object, Constans.JsonObjectFrom enumFrom) {
+
+
+        Elements additionalElements = object.select("div.block-cooperation div.book__description p");
+
+        AdditionalInfo = "";
+        for (Element el:additionalElements  ) {
+            if( !el.text().isEmpty())
+                 AdditionalInfo += el.text() + "\n";
+        }
+
+        Description = object.selectFirst("div.block-cooperation + div p").text();
+        Rating = object.selectFirst("div.rating-text").text();
+
+        Elements chapterElements = object.select("div.book__content-table table.table");
+        for (Element el:chapterElements) {
+            Chapter chapter = new Chapter();
+
+            chapter.setRanobeUrl(Url);
+
+            chapter.setTitle(el.selectFirst("a").text());
+            chapter.setUrl(el.selectFirst("a").attr("href"));
+            try {
+                chapter.setTime(ranobeChapterFormat.parse(el.selectFirst("time").attr("datetime")));
+            } catch (ParseException e) {
+                e.printStackTrace();
+                chapter.setTime(new Date());
+            }
+
+            chapterList.add(chapter);
+        }
+
+    }
+
+    private void fromRulateGetBookInfo(JSONObject object, Constans.JsonObjectFrom enumFrom) {
+        try {
+            Id = object.optInt("id");
+            EngTitle = object.getString("s_title");
+            Title = object.getString("t_title");
+            CharpterCount = object.optInt("n_chapters");
+            Lang = object.getString("lang");
+
+            //last_activity
+            Status = object.getString("status");
+            Rating = object.getString("rating");
+            Image = object.getString("img");
+            if (object.has("chapters")) {
+                JSONArray jsonArray = object.optJSONArray("chapters");
+                for (int i = 0; i < jsonArray.length(); i++) {
+
+                    JSONObject value = jsonArray.optJSONObject(i);
+                    Chapter chapter = new Chapter(value, enumFrom);
+                    chapter.setRanobeId(Id);
+                    chapter.setRanobeUrl(Url);
+                    chapterList.add(chapter);
+
+                }
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void fromRulateGetReady(JSONObject object, Constans.JsonObjectFrom enumFrom) {
         try {
             Id = object.getInt("book_id");
             EngTitle = object.getString("s_title");
@@ -145,7 +226,6 @@ public class Ranobe implements Parcelable {
 
             Lang = object.getString("lang");
             ReadyDate = format.parse(object.getString("ready_date"));
-            chapterList = new ArrayList<>();
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -153,17 +233,21 @@ public class Ranobe implements Parcelable {
             e.printStackTrace();
             ReadyDate = new Date();
         }
+
+        RanobeSite = StringResources.Rulate_Site;
+        Url = StringResources.Rulate_Site + "/book/" + Id;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(RanobeUrl);
+        dest.writeString(Url);
         dest.writeInt(Id);
         dest.writeString(EngTitle);
         dest.writeString(Title);
         dest.writeString(Image);
         dest.writeString(Lang);
         dest.writeString(Description);
+        dest.writeString(AdditionalInfo);
         dest.writeString(RanobeSite);
         dest.writeInt(CharpterCount);
         dest.writeInt(LastReadedCharpter);
@@ -179,13 +263,12 @@ public class Ranobe implements Parcelable {
         return 0;
     }
 
-    public String getRanobeUrl() {
-        return RanobeUrl;
+    public String getUrl() {
+        return Url;
     }
 
-
-    public void setRanobeUrl(@NonNull String ranobeUrl) {
-        RanobeUrl = ranobeUrl;
+    public void setUrl(@NonNull String url) {
+        Url = url;
     }
 
     public int getId() {
@@ -277,7 +360,7 @@ public class Ranobe implements Parcelable {
     }
 
     public Boolean getFavorited() {
-        return Favorited;
+        return Favorited != null ? Favorited : false;
     }
 
     public void setFavorited(Boolean favorited) {
@@ -319,5 +402,11 @@ public class Ranobe implements Parcelable {
         this.chapterList = chapterList;
     }
 
+    public String getAdditionalInfo() {
+        return AdditionalInfo;
+    }
 
+    public void setAdditionalInfo(String additionalInfo) {
+        AdditionalInfo = additionalInfo;
+    }
 }
