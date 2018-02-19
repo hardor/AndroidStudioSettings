@@ -18,6 +18,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -41,6 +42,7 @@ public class Ranobe implements Parcelable {
             return new Ranobe[size];
         }
     };
+
     @PrimaryKey
     @NonNull
     private String Url;
@@ -48,7 +50,7 @@ public class Ranobe implements Parcelable {
     private String EngTitle;
     private String Title;
     private String Image;
-    private Date ReadyDate;
+    private Date ReadyDate = new Date();
     private String Lang;
     private String Description;
     private String AdditionalInfo;
@@ -93,7 +95,7 @@ public class Ranobe implements Parcelable {
         chapterList = in.createTypedArrayList(Chapter.CREATOR);
     }
 
-    @Ignore
+
     public void UpdateRanobe(JSONObject object, Constans.JsonObjectFrom enumFrom) {
 
         switch (enumFrom) {
@@ -112,7 +114,6 @@ public class Ranobe implements Parcelable {
         }
     }
 
-    @Ignore
     public void UpdateRanobe(Document object, Constans.JsonObjectFrom enumFrom) {
 
         switch (enumFrom) {
@@ -210,6 +211,7 @@ public class Ranobe implements Parcelable {
                     chapterList.add(chapter);
 
                 }
+                Collections.reverse(chapterList);
             }
 
         } catch (JSONException e) {
@@ -263,6 +265,7 @@ public class Ranobe implements Parcelable {
         return 0;
     }
 
+    @NonNull
     public String getUrl() {
         return Url;
     }

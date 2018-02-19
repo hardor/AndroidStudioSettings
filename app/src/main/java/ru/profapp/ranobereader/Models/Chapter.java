@@ -52,7 +52,7 @@ public class Chapter implements Parcelable {
     private Boolean CanRead;
     private Boolean New;
     private int Index;
-    private Date Time;
+    private Date Time = new Date();
     private int RanobeId;
     private Boolean Downloaded;
     private String Text;

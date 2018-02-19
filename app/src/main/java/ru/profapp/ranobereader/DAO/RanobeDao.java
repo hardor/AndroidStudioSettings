@@ -18,21 +18,20 @@ import ru.profapp.ranobereader.Models.Ranobe;
 @Dao
 public interface RanobeDao {
 
-   @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Ranobe ranobe);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(Ranobe... ranobes);
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     void updateAll(Ranobe... ranobes);
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     void update(Ranobe ranobe);
 
     @Delete
     void delete(Ranobe ranobe);
-
 
     @Query("SELECT * FROM ranobe WHERE Url=:UrlToRanobe")
     Ranobe getRanobeByUrl(String UrlToRanobe);
@@ -43,5 +42,7 @@ public interface RanobeDao {
     @Query("SELECT * FROM ranobe WHERE Favorited = 1")
     List<Ranobe> GetFavoriteRanobes();
 
+    @Query("SELECT * FROM ranobe WHERE Favorited = 1 AND Url=:UrlToRanobe LIMIT 1")
+    Ranobe IsRanobeFavorite(String UrlToRanobe);
 
 }
