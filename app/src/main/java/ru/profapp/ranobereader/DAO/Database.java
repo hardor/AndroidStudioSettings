@@ -5,7 +5,6 @@ package ru.profapp.ranobereader.DAO;
  */
 
 import android.arch.persistence.db.SupportSQLiteDatabase;
-import android.arch.persistence.db.framework.FrameworkSQLiteOpenHelperFactory;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
@@ -15,9 +14,10 @@ import android.support.annotation.NonNull;
 
 import ru.profapp.ranobereader.Models.Chapter;
 import ru.profapp.ranobereader.Models.Ranobe;
+import ru.profapp.ranobereader.Models.TextChapter;
 
 @android.arch.persistence.room.Database(entities = {Ranobe.class,
-        Chapter.class}, version = 1, exportSchema = false)
+        Chapter.class, TextChapter.class}, version = 1, exportSchema = false)
 @TypeConverters(DateConverter.class)
 public abstract class Database extends RoomDatabase {
 
@@ -52,6 +52,7 @@ public abstract class Database extends RoomDatabase {
     public abstract RanobeDao getRanobeDao();
 
     public abstract ChapterDao getChapterDao();
+    public abstract TextDao getTextDao();
 
     @Override
     public void close() {

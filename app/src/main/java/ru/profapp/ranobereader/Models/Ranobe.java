@@ -95,7 +95,6 @@ public class Ranobe implements Parcelable {
         chapterList = in.createTypedArrayList(Chapter.CREATOR);
     }
 
-
     public void UpdateRanobe(JSONObject object, Constans.JsonObjectFrom enumFrom) {
 
         switch (enumFrom) {
@@ -156,31 +155,36 @@ public class Ranobe implements Parcelable {
 
     private void fromRanobeRfGetBookInfo(Document object, Constans.JsonObjectFrom enumFrom) {
 
-
-        Elements additionalElements = object.select("div.block-cooperation div.book__description p");
+        Elements additionalElements = object.select(
+                "div.block-cooperation div.book__description p");
 
         AdditionalInfo = "";
-        for (Element el:additionalElements  ) {
-            if( !el.text().isEmpty())
-                 AdditionalInfo += el.text() + "\n";
+        for (Element el : additionalElements) {
+            if (!el.text().isEmpty()) {
+                AdditionalInfo += el.text() + "\n";
+            }
         }
 
         Description = object.selectFirst("div.block-cooperation + div p").text();
         Rating = object.selectFirst("div.rating-text").text();
 
         Elements chapterElements = object.select("div.book__content-table table.table");
-        for (Element el:chapterElements) {
+
+        for (Element el : chapterElements) {
+
             Chapter chapter = new Chapter();
-
             chapter.setRanobeUrl(Url);
-
-            chapter.setTitle(el.selectFirst("a").text());
-            chapter.setUrl(el.selectFirst("a").attr("href"));
             try {
+
+                chapter.setTitle(el.selectFirst("a").text());
+                chapter.setUrl(el.selectFirst("a").attr("href"));
+
                 chapter.setTime(ranobeChapterFormat.parse(el.selectFirst("time").attr("datetime")));
             } catch (ParseException e) {
                 e.printStackTrace();
                 chapter.setTime(new Date());
+            } catch (NullPointerException e) {
+                e.printStackTrace();
             }
 
             chapterList.add(chapter);
@@ -208,6 +212,7 @@ public class Ranobe implements Parcelable {
                     Chapter chapter = new Chapter(value, enumFrom);
                     chapter.setRanobeId(Id);
                     chapter.setRanobeUrl(Url);
+                    chapter.setUrl(chapter.getRanobeUrl() + "/" + chapter.getId());
                     chapterList.add(chapter);
 
                 }
