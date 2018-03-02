@@ -2,7 +2,7 @@
 <menu xmlns:tools="http://schemas.android.com/tools" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navigation_home"
+        android:id="@+id/navigation_prev"
         android:icon="@android:drawable/ic_media_previous"
         android:title="@string/previous"/>
     <item
@@ -11,7 +11,7 @@
         android:title="@string/action_settings"/>
 
     <item
-        android:id="@+id/navigation_notifications"
+        android:id="@+id/navigation_next"
         android:icon="@android:drawable/ic_media_next"
         android:title="@string/next"/>
 

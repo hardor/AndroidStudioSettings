@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
@@ -8,25 +9,47 @@
             android:rowCount="3">
 
     <TextView
-        android:id="@+id/ranobeTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_columnSpan="2"
-        android:layout_gravity="center"
-        android:layout_row="0"
-        android:ellipsize="marquee"
-        android:singleLine="true"
-        android:textAlignment="center"
-        android:textAppearance="?attr/textAppearanceListItem"/>
+    android:id="@+id/ranobeTitle"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_columnSpan="2"
+    android:layout_gravity="start"
+    android:layout_row="0"
+    android:ellipsize="marquee"
+    android:singleLine="true"
+    android:textAlignment="textStart"
+    android:textSize="@dimen/title.text.size"/>
 
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="@dimen/image_size"
-        android:layout_height="@dimen/image_size"
-        android:layout_column="0"
-        android:layout_gravity="start"
-        android:layout_row="1"
-        android:layout_rowSpan="2"
-        android:contentDescription="@string/logo"/>
+    android:id="@+id/imageView"
+    android:layout_width="@dimen/image_size"
+    android:layout_height="@dimen/image_size"
+    android:layout_column="0"
+    android:layout_gravity="start"
+    android:layout_row="1"
+    android:layout_rowSpan="2"
+    android:contentDescription="@string/logo"/>
+
+    <android.support.v7.widget.RecyclerView
+    android:id="@+id/list_chapter_list"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_column="1"
+    android:layout_row="1"
+    android:isScrollContainer="false"
+    android:clickable="true"/>
+
+    <TextView
+    android:id="@+id/ranobeUpdateTime"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_column="1"
+    android:layout_gravity="bottom|left"
+    android:layout_row="2"
+    android:ellipsize="marquee"
+    android:singleLine="true"
+    android:textSize="@dimen/last.updated.text.size"/>
+
+
 
 </GridLayout>

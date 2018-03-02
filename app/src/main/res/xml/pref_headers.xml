@@ -3,11 +3,11 @@
     <!-- These settings headers are only used on tablets. -->
 
     <header
-        android:fragment="ru.profapp.ranobereader.SettingsActivity$GeneralPreferenceFragment"
+        android:fragment="ru.profapp.RanobeReader.SettingsActivity$GeneralPreferenceFragment"
         android:title="@string/pref_header_general" />
 
     <header
-        android:fragment="ru.profapp.ranobereader.SettingsActivity$RulatePreferenceFragment"
+        android:fragment="ru.profapp.RanobeReader.SettingsActivity$RulatePreferenceFragment"
         android:title="@string/tl.rulate_name" />
 
 </preference-headers>
