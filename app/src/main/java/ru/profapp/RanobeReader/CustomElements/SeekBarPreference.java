@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import ru.profapp.RanobeReader.R;
 
-public final class SeekBarPreference extends DialogPreference implements OnSeekBarChangeListener {
+final class SeekBarPreference extends DialogPreference implements OnSeekBarChangeListener {
 
     // Namespaces to read attributes
     private static final String PREFERENCE_NS = "http://schemas.android.com/apk/res/com.mnm.seekbarpreference";
@@ -36,8 +36,6 @@ public final class SeekBarPreference extends DialogPreference implements OnSeekB
     // Current value
     private int mCurrentValue;
 
-    // View elements
-    private SeekBar mSeekBar;
     private TextView mValueText;
 
     public SeekBarPreference(Context context, AttributeSet attrs) {
@@ -63,10 +61,10 @@ public final class SeekBarPreference extends DialogPreference implements OnSeekB
         ((TextView) view.findViewById(R.id.max_value)).setText(Integer.toString(mMaxValue));
 
         // Setup SeekBar
-        mSeekBar = view.findViewById(R.id.seek_bar);
-        mSeekBar.setMax(mMaxValue - mMinValue);
-        mSeekBar.setProgress(mCurrentValue - mMinValue);
-        mSeekBar.setOnSeekBarChangeListener(this);
+        SeekBar seekBar = view.findViewById(R.id.seek_bar);
+        seekBar.setMax(mMaxValue - mMinValue);
+        seekBar.setProgress(mCurrentValue - mMinValue);
+        seekBar.setOnSeekBarChangeListener(this);
 
         // Setup text label for current value
         mValueText = view.findViewById(R.id.current_value);

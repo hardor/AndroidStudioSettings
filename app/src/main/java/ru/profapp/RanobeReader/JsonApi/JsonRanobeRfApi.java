@@ -1,6 +1,6 @@
-package ru.profapp.RanobeReader.RanobeRf;
+package ru.profapp.RanobeReader.JsonApi;
 
-import com.google.firebase.crash.FirebaseCrash;
+import com.crashlytics.android.Crashlytics;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,9 +24,9 @@ import ru.profapp.RanobeReader.Models.Chapter;
 public class JsonRanobeRfApi {
     private static volatile JsonRanobeRfApi instance;
 
-    Map<String, String> Cookies = new HashMap<String, String>();
+    private Map<String, String> Cookies = new HashMap<>();
 
-    public JsonRanobeRfApi() {
+    private JsonRanobeRfApi() {
     }
 
     public static JsonRanobeRfApi getInstance() {
@@ -66,11 +66,11 @@ public class JsonRanobeRfApi {
             return response;
         } catch (JSONException e) {
             e.printStackTrace();
-            FirebaseCrash.report(e);
+            Crashlytics.logException(e);
             return "";
         } catch (IOException e) {
             e.printStackTrace();
-            FirebaseCrash.report(e);
+            Crashlytics.logException(e);
             return "";
         }
     }
@@ -94,8 +94,7 @@ public class JsonRanobeRfApi {
         chapterName = chapterName.substring(0, chapterName.length() - 1);
         String request = "http://xn--80ac9aeh6f.xn--p1ai/v1/part/load/?bookAlias=" + ranobeName
                 + "&partAlias=" + chapterName;
-        Document doc = getDocument(request, Cookies);
-        return doc;
+        return getDocument(request, Cookies);
 
     }
 
@@ -115,7 +114,7 @@ public class JsonRanobeRfApi {
 
         } catch (NullPointerException e) {
             e.printStackTrace();
-            FirebaseCrash.report(e);
+            Crashlytics.logException(e);
         }
         return result;
     }
@@ -127,10 +126,10 @@ public class JsonRanobeRfApi {
             html = new HtmlParser(Cookies).execute(request).get();
         } catch (InterruptedException e) {
             e.printStackTrace();
-            FirebaseCrash.report(e);
+            Crashlytics.logException(e);
         } catch (ExecutionException e) {
             e.printStackTrace();
-            FirebaseCrash.report(e);
+            Crashlytics.logException(e);
         }
         return html;
     }

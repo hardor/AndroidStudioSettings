@@ -28,7 +28,8 @@
         android:clickable="true"
         android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:menu="@menu/navigation"/>
+        app:menu="@menu/navigation"
+    />
 
 
 </RelativeLayout>

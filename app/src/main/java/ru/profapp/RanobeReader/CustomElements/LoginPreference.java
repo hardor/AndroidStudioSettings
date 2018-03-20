@@ -1,6 +1,8 @@
 package ru.profapp.RanobeReader.CustomElements;
 
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -10,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
-import ru.profapp.RanobeReader.Common.AlertDialogManager;
 import ru.profapp.RanobeReader.Common.SessionManager;
 import ru.profapp.RanobeReader.Common.StringResources;
 import ru.profapp.RanobeReader.R;
@@ -18,9 +19,8 @@ import ru.profapp.RanobeReader.R;
 public final class LoginPreference extends DialogPreference implements DialogInterface.OnClickListener {
 
 
-    SharedPreferences.Editor editor;
-    AlertDialogManager alert = new AlertDialogManager();
-    SessionManager session;
+    private SharedPreferences.Editor editor;
+    private SessionManager session;
     // Current value
     private String mCurrentValue;
     // View elements
@@ -53,6 +53,7 @@ public final class LoginPreference extends DialogPreference implements DialogInt
         mLoginEditor = view.findViewById(R.id.login_login);
         mLoginEditor.setText(value);
         mPasswordEditor = view.findViewById(R.id.login_password);
+
 
         return view;
     }
@@ -92,6 +93,7 @@ public final class LoginPreference extends DialogPreference implements DialogInt
         editor.putString(StringResources.KEY_Login, username);
         editor.commit();
 
+        AlertDialog alert = new AlertDialog.Builder(getContext()).create();
         // Check if username, password is filled
         if (username.trim().length() > 0 && password.trim().length() > 0) {
             String[] result = session.createLoginSession(username, password);
@@ -99,13 +101,27 @@ public final class LoginPreference extends DialogPreference implements DialogInt
             if (resBool) {
                 editor.putString(StringResources.KEY_Token, result[2]);
                 editor.commit();
+            }else{
+                editor.putString(StringResources.KEY_Token, "");
+                editor.commit();
             }
-            alert.showAlertDialog(this.getContext(), username, result[1], resBool);
+
+            alert.setTitle(username);
+            alert.setMessage(result[1]);
+            alert.setButton(Dialog.BUTTON_POSITIVE, "OK", (dialog, which) -> {
+            });
+            alert.show();
 
         } else {
             // user didn't entered username or password
             // Show alert asking him to enter the details
-            alert.showAlertDialog(this.getContext(), "Login failed..", "Please enter username and password", false);
+
+            alert.setTitle(getContext().getString(R.string.login_failed));
+            alert.setMessage(getContext().getString(R.string.enter_user_pass));
+            alert.setButton(Dialog.BUTTON_POSITIVE, "OK", (dialog, which) -> {
+
+            });
+            alert.show();
         }
 
     }

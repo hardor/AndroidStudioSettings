@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">RanobeReader</string>
 
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
 
@@ -14,20 +14,11 @@
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>
 
-    <string name="pref_title_system_sync_settings">System sync settings</string>
-
     <!-- Example settings for Notifications -->
-    <string name="pref_header_notifications">Notifications</string>
 
-    <string name="pref_title_new_message_notifications">New message notifications</string>
-
-    <string name="pref_title_ringtone">Ringtone</string>
-    <string name="pref_ringtone_silent">Silent</string>
-
-    <string name="pref_title_vibrate">Vibrate</string>
     <string name="show_all_chapter">Show all chapters</string>
     <string name="show_only_readable">Show only readable chapters</string>
-    <string name="hide_unavailable_chapters">Hide unavailable chapters</string>
+    <string name="hide_unavailable_chapters">Hide unavailable (paid) chapters</string>
     <string name="tl.rulate_name" translatable="false">Rulate</string>
     <string name="text_size">Text size</string>
     <string name="select_text_size">Select size for chapter\'s text</string>
@@ -35,36 +26,49 @@
     <string name="password">Password</string>
     <string name="login_to_rulate_summary">Log in to get favorite Ranobe from your profile</string>
     <string name="rulate_authorization">Rulate authorization</string>
-    <string name="pref_general_hide_chapter">preference_hide_unavailable_chapters</string>
-    <string name="pref_general_text_size">preference_text_size</string>
+    <string name="pref_general_hide_chapter" translatable="false">
+        preference_hide_unavailable_chapters
+    </string>
+    <string name="pref_general_text_size" translatable="false">preference_text_size</string>
     <string name="favorite">Favorite</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="pref_general_app_theme">pref_general_app_theme</string>
-    <string name="app_theme">App theme</string>
+    <string name="pref_general_app_theme" translatable="false">pref_general_app_theme</string>
+    <string name="app_theme" translatable="false">App theme</string>
     <string name="Turn_on_dark_theme">Turn on dark theme</string>
     <string name="Turn_off_dark_theme">Turn off dark theme</string>
-    <string name="ranobe_rf">Ranobe.rf</string>
-    <string name="ranobe_logo">Ranobe logo</string>
-    <string name="test_info">dgdfg</string>
+    <string name="ranobe_rf" translatable="false">Ранобэ.рф</string>
 
 
-    <string name="title_activity_ranobe_info">RanobeInfo</string>
+    <string name="title_activity_ranobe_info" translatable="false">RanobeInfo</string>
     <string name="chapters">Chapters</string>
     <string name="description">Description</string>
     <string name="additional_information">Additional Information</string>
-    <string name="title_activity_chapter_text">ChapterText</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_activity_chapter_text" translatable="false">ChapterText</string>
     <string name="previous">Previous</string>
     <string name="next">Next</string>
-    <string name="logo">Logo</string>
-    <string name="saved">saved</string>
+    <string name="logo" translatable="false">Logo</string>
     <string name="Delete_downloaded_chapters">Delete the downloaded chapters</string>
     <string name="сlean_cache">Clean cache</string>
     <string name="cache_cleaned">Cache cleaned</string>
-    <string name="CleanCacheButton"/>
-    <string name="app.email">admin@profapp.ru</string>
+    <string name="CleanCacheButton" translatable="false">CleanCacheButton</string>
+    <string name="app.email" translatable="false">admin@profapp.ru</string>
+    <string name="clean_preferences">Clean preferences</string>
+    <string name="clean_preferences_full">Clean setting data and information about readed chapters
+    </string>
+    <string name="CleanPreferencesButton" translatable="false">CleanPreferencesButton</string>
+    <string name="search">Search</string>
+    <string name="logo_transition" translatable="false">logo_transition</string>
+    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-1483315001492731/3353494026</string>
+    <string name="update_time">Updated %1$d days %2$d hours %3$d minutes ago</string>
+    <string name="search_ranobe_name">Search Ranobe \"%1$s\"</string>
+    <string name="search_please_wait">Please wait for the search to complete</string>
+    <string name="load_ranobes">Loading favorite ranobe</string>
+    <string name="load_please_wait">Please wait for the load to complete</string>
+    <string name="load_more">Load more</string>
+    <string name="tools">Tools</string>
+    <string name="general">General</string>
+    <string name="not_found">Not found</string>
+    <string name="login_failed">Login failed..</string>
+    <string name="enter_user_pass">Please enter username and password</string>
 </resources>

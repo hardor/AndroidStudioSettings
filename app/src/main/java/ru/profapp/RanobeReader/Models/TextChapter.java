@@ -35,7 +35,7 @@ public class TextChapter {
     }
 
     public String getText() {
-        return Text;
+        return Text == null? "" :Text;
     }
 
     public void setText(String text) {

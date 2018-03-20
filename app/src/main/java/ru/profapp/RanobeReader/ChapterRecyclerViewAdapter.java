@@ -11,38 +11,41 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.google.firebase.crash.FirebaseCrash;
+import com.crashlytics.android.Crashlytics;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ru.profapp.RanobeReader.DAO.DatabaseDao;
+import ru.profapp.RanobeReader.Helpers.RanobeKeeper;
 import ru.profapp.RanobeReader.Models.Chapter;
-import ru.profapp.RanobeReader.Models.Ranobe;
+import ru.profapp.RanobeReader.Models.TextChapter;
 
 public class ChapterRecyclerViewAdapter extends
         RecyclerView.Adapter<ChapterRecyclerViewAdapter.ViewHolder> {
 
     private final List<Chapter> mValues;
     private final Context mContext;
-    Drawable downloadImage, downloadDoneImage;
-    private Ranobe mRanobe;
+    private Drawable downloadDoneImage;
 
-    public ChapterRecyclerViewAdapter(Ranobe ranobe, Context Context) {
-        mRanobe = ranobe;
-        mValues = ranobe.getChapterList();
+    ChapterRecyclerViewAdapter(List<Chapter> chapterList, Context Context) {
+        // hide payed chapters
+        List<Chapter> newList = new ArrayList<>();
+        if (RanobeKeeper.getInstance().getHideUnavailableChapters()) {
+            for (Chapter item : chapterList) {
+                if (item.getCanRead()) {
+                    newList.add(item);
+                }
+            }
+            mValues = newList;
+        } else {
+            mValues=chapterList;
+        }
+
         mContext = Context;
     }
 
-    public ChapterRecyclerViewAdapter(List<Chapter> chapterList, Context Context) {
-        mValues = chapterList;
-        mContext = Context;
-    }
-
-    public void setDownloadImage(Drawable downloadImage) {
-        this.downloadImage = downloadImage;
-    }
-
-    public void setDownloadDoneImage(Drawable downloadDoneImage) {
+    void setDownloadDoneImage(Drawable downloadDoneImage) {
         this.downloadDoneImage = downloadDoneImage;
     }
 
@@ -58,15 +61,10 @@ public class ChapterRecyclerViewAdapter extends
         holder.mItem = mValues.get(position);
         holder.mIdView.setText(mValues.get(position).getTitle());
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(v.getContext(), ChapterText.class);
-                intent.putExtra("ChapterInfo", holder.mItem);
-                intent.putExtra("RanobeInfo", mRanobe);
-                v.getContext().startActivity(intent);
-            }
+        holder.mView.setOnClickListener(v -> {
+            Intent intent = new Intent(v.getContext(), ChapterText.class);
+            intent.putExtra("ChapterIndex", holder.getAdapterPosition());
+            v.getContext().startActivity(intent);
         });
 
         new Thread() {
@@ -74,36 +72,38 @@ public class ChapterRecyclerViewAdapter extends
             public void run() {
 
                 try {
-                    String chapterText = DatabaseDao.getInstance(
-                            mContext).getTextDao().getTextByChapterUrl(
-                            holder.mItem.getUrl()).getText();
+                    TextChapter chapter = DatabaseDao.getInstance(
+                            mContext).getTextDao().getTextByChapterUrl(holder.mItem.getUrl());
+                    if (chapter != null) {
+                        String chapterText = chapter.getText();
 
-                    if (chapterText != null && !chapterText.equals("")) {
-                        holder.mItem.setText(chapterText);
-                        holder.mImageButton.setImageDrawable(downloadDoneImage);
+                        if (!chapter.getText().equals("")) {
+                            holder.mItem.setText(chapterText);
+                            holder.mImageButton.setImageDrawable(downloadDoneImage);
+                        }
                     }
 
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
-//                    FirebaseCrash.report(e);
+                    Crashlytics.logException(e);
                 }
             }
         }.start();
 
-        holder.mImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        holder.mImageButton.setOnClickListener(v -> {
 
-                String text = getText(holder.mItem, holder.mContext);
+            String text = getText(holder.mItem, holder.mContext);
 
-                holder.mImageButton.setImageDrawable(downloadDoneImage);
-                holder.mItem.setDownloaded(true);
-                holder.mItem.setText(text);
+            holder.mImageButton.setImageDrawable(downloadDoneImage);
+            holder.mItem.setDownloaded(true);
+            holder.mItem.setText(text);
 
-            }
         });
         if (!holder.mItem.getCanRead()) {
-            holder.mIdView.setBackgroundColor(Color.GRAY);
+            holder.mView.setBackgroundColor(Color.GRAY);
+        }
+        if (holder.mItem.getReaded()) {
+            holder.mView.setBackgroundColor(Color.BLUE);
         }
 
     }
@@ -111,8 +111,7 @@ public class ChapterRecyclerViewAdapter extends
     private String getText(Chapter chapter, Context context) {
         ChapterText chapterText = new ChapterText();
         chapterText.GetChapterText(chapter, context);
-        return chapterText.mChapter.getText();
-
+        return chapterText.mCurrentChapter.getText();
     }
 
     @Override
@@ -130,9 +129,9 @@ public class ChapterRecyclerViewAdapter extends
         ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.id);
+            mIdView = view.findViewById(R.id.id);
             mContext = view.getContext();
-            mImageButton = (ImageButton) view.findViewById(R.id.imageButton_download);
+            mImageButton = view.findViewById(R.id.imageButton_download);
         }
 
     }

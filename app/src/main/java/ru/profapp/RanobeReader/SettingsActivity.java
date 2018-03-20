@@ -1,129 +1,73 @@
 package ru.profapp.RanobeReader;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
-import android.preference.RingtonePreference;
 import android.support.v7.app.ActionBar;
-import android.text.TextUtils;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
+import java.io.File;
 import java.util.List;
 
+import io.fabric.sdk.android.Fabric;
+import ru.profapp.RanobeReader.Common.ThemeUtils;
 import ru.profapp.RanobeReader.DAO.DatabaseDao;
+import ru.profapp.RanobeReader.Helpers.RanobeKeeper;
 
-/**
- * A {@link PreferenceActivity} that presents a set of application settings. On
- * handset devices, settings are presented as a single list. On tablets,
- * settings are split by category, with category headers shown to the left of
- * the list of settings.
- * <p>
- * See <a href="http://developer.android.com/design/patterns/settings.html">
- * Android Design: Settings</a> for design guidelines and the <a
- * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
- * API Guide</a> for more information on developing a Settings UI.
- */
 public class SettingsActivity extends AppCompatPreferenceActivity {
 
-    /**
-     * A preference value change listener that updates the preference's summary
-     * to reflect its new value.
-     */
-    private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener =
+    private static Activity mActivity;
+    private static Preference.OnPreferenceChangeListener sChangePreferenceListener =
             new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object value) {
-                    String stringValue = value.toString();
 
-                    if (preference instanceof ListPreference) {
-                        // For list preferences, look up the correct display value in
-                        // the preference's 'entries' list.
-                        ListPreference listPreference = (ListPreference) preference;
-                        int index = listPreference.findIndexOfValue(stringValue);
+                    if (preference.getKey().equals(preference.getContext().getString(
+                            R.string.pref_general_hide_chapter))) {
 
-                        // Set the summary to reflect the new value.
-                        preference.setSummary(
-                                index >= 0
-                                        ? listPreference.getEntries()[index]
-                                        : null);
+                        RanobeKeeper.getInstance().setHideUnavailableChapters(
+                                Boolean.valueOf(value.toString()));
 
-                    } else if (preference instanceof RingtonePreference) {
-                        // For ringtone preferences, look up the correct display value
-                        // using RingtoneManager.
-                        if (TextUtils.isEmpty(stringValue)) {
-                            // Empty values correspond to 'silent' (no ringtone).
-                            preference.setSummary(R.string.pref_ringtone_silent);
+                    } else if (preference.getKey().equals(preference.getContext().getString(
+                            R.string.pref_general_app_theme))) {
 
-                        } else {
-                            Ringtone ringtone = RingtoneManager.getRingtone(
-                                    preference.getContext(), Uri.parse(stringValue));
+                        ThemeUtils.setTheme(Boolean.valueOf(value.toString()));
+                        Intent intent = new Intent(mActivity, mActivity.getClass());
+                        intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT,
+                                GeneralPreferenceFragment.class.getName());
+                        intent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
+                        ThemeUtils.change(mActivity, intent);
 
-                            if (ringtone == null) {
-                                // Clear the summary if there was a lookup error.
-                                preference.setSummary(null);
-                            } else {
-                                // Set the summary to reflect the new ringtone display
-                                // name.
-                                String name = ringtone.getTitle(preference.getContext());
-                                preference.setSummary(name);
-                            }
-                        }
-
-                    } else {
-                        // For all other preferences, set the summary to the value's
-                        // simple string representation.
-                        preference.setSummary(stringValue);
                     }
                     return true;
                 }
             };
 
-    /**
-     * Helper method to determine if the device has an extra-large screen. For
-     * example, 10" tablets are extra-large.
-     */
     private static boolean isXLargeTablet(Context context) {
         return (context.getResources().getConfiguration().screenLayout
                 & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_XLARGE;
     }
 
-    /**
-     * Binds a preference's summary to its value. More specifically, when the
-     * preference's value is changed, its summary (line of text below the
-     * preference title) is updated to reflect the value. The summary is also
-     * immediately updated upon calling this method. The exact display format is
-     * dependent on the type of preference.
-     *
-     * @see #sBindPreferenceSummaryToValueListener
-     */
-    private static void bindPreferenceSummaryToValue(Preference preference) {
-        // Set the listener to watch for value changes.
-        preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
-
-        // Trigger the listener immediately with the preference's
-        // current value.
-        sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
-                PreferenceManager
-                        .getDefaultSharedPreferences(preference.getContext())
-                        .getString(preference.getKey(), ""));
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
+        mActivity = this;
+        ThemeUtils.onActivityCreateSetTheme(this,false);
         setupActionBar();
+        setTitle(getResources().getText(R.string.action_settings));
+
     }
 
     /**
@@ -136,6 +80,17 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
+//    private void setupActionBar() {
+//        Toolbar toolbar;
+//
+//        ViewGroup root = (ViewGroup) findViewById(
+//                android.R.id.list).getParent().getParent().getParent();
+//        toolbar = (Toolbar) LayoutInflater.from(this).inflate(R.layout.view_toolbar, root, false);
+//        root.addView(toolbar, 0);
+//
+//        setSupportActionBar(toolbar);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//    }
 
     /**
      * {@inheritDoc}
@@ -169,16 +124,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         super.onBackPressed();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == android.R.id.home) {
-            super.onBackPressed();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     /**
      * This fragment shows general preferences only. It is used when the
      * activity is showing a two-pane settings UI.
@@ -192,23 +137,38 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             addPreferencesFromResource(R.xml.pref_general);
             setHasOptionsMenu(true);
 
-            Preference button = findPreference(getString(R.string.CleanCacheButton));
-            button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    final Context context = preference.getContext();
-                    AsyncTask.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            DatabaseDao.getInstance(context).getTextDao().cleanTable();
-                        }
-
-                    });
-                    Toast.makeText(context, context.getText(R.string.cache_cleaned),
-                            Toast.LENGTH_SHORT).show();
-                    return true;
-                }
+            Preference cacheButton = findPreference(getString(R.string.CleanCacheButton));
+            cacheButton.setOnPreferenceClickListener((Preference preference) -> {
+                final Context context = preference.getContext();
+                AsyncTask.execute(() -> DatabaseDao.getInstance(context).getTextDao().cleanTable());
+                Toast.makeText(context, context.getText(R.string.cache_cleaned),
+                        Toast.LENGTH_SHORT).show();
+                return true;
             });
+
+            Preference prefButton = findPreference(getString(R.string.CleanPreferencesButton));
+            prefButton.setOnPreferenceClickListener(preference -> {
+                final Context context = preference.getContext();
+                AsyncTask.execute(() -> {
+//                        File sharedPreferenceFile = new File(                                "/data/data/" + context.getPackageName() + "/shared_prefs/");
+                    File sharedPreferenceFile = new File("/data/data/" + context.getPackageName() + "/shared_prefs/");
+                    File[] listFiles = sharedPreferenceFile.listFiles();
+                    for (File file : listFiles) {
+                        file.delete();
+                    }
+
+                });
+                Toast.makeText(context, context.getText(R.string.cache_cleaned),
+                        Toast.LENGTH_SHORT).show();
+                return true;
+            });
+
+            findPreference(
+                    getString(R.string.pref_general_hide_chapter)).setOnPreferenceChangeListener(
+                    sChangePreferenceListener);
+            findPreference(
+                    getString(R.string.pref_general_app_theme)).setOnPreferenceChangeListener(
+                    sChangePreferenceListener);
 
         }
 
@@ -225,7 +185,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     }
 
     /**
-     * This fragment shows notification preferences only. It is used when the
+     * This fragment shows Rulate preferences only. It is used when the
      * activity is showing a two-pane settings UI.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)

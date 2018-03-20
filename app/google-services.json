@@ -1,43 +1,27 @@
 {
   "project_info": {
-    "project_number": "330964026261",
-    "firebase_url": "https://ranobereader-4a3d9.firebaseio.com",
-    "project_id": "ranobereader-4a3d9",
-    "storage_bucket": "ranobereader-4a3d9.appspot.com"
+    "project_number": "789465050624",
+    "firebase_url": "https://ranobereader-42ce6.firebaseio.com",
+    "project_id": "ranobereader-42ce6",
+    "storage_bucket": "ranobereader-42ce6.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:330964026261:android:8963db1a3ed5ecd4",
+        "mobilesdk_app_id": "1:789465050624:android:8963db1a3ed5ecd4",
         "android_client_info": {
           "package_name": "ru.profapp.RanobeReader"
         }
       },
       "oauth_client": [
         {
-          "client_id": "330964026261-j8sb46dcg3u586ldp44irttv67iv5fl5.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "ru.profapp.RanobeReader",
-            "certificate_hash": "0773e75c7f6db3e45865376998b8071ad9badc8e"
-          }
-        },
-        {
-          "client_id": "330964026261-1tmtmgr70k0quror75dsrjlv6k8sp2k1.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "ru.profapp.RanobeReader",
-            "certificate_hash": "85ffaaeca8854006d7893769c2bae22c12542507"
-          }
-        },
-        {
-          "client_id": "330964026261-7ac56abe0ptvbfm8u2o8jhkv5rhlbhn5.apps.googleusercontent.com",
+          "client_id": "789465050624-l9ph5ktc4agcsh6ii25gce7389qk200f.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBnGPQyxXhFhLXpCXHOLpwy8pdb9ldvLHg"
+          "current_key": "AIzaSyDsvE5Ox88Bg1krK5tZpKSnFpAw2TmhLDI"
         }
       ],
       "services": {
@@ -45,13 +29,8 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "330964026261-7ac56abe0ptvbfm8u2o8jhkv5rhlbhn5.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "status": 1,
+          "other_platform_oauth_client": []
         },
         "ads_service": {
           "status": 2

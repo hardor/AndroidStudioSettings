@@ -8,18 +8,16 @@ import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 import android.content.Context;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
-import com.google.firebase.crash.FirebaseCrash;
+import com.crashlytics.android.Crashlytics;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Date;
 
-import ru.profapp.RanobeReader.Common.Constans;
+import ru.profapp.RanobeReader.Common.RanobeConstans;
 import ru.profapp.RanobeReader.DAO.DatabaseDao;
 
 /**
@@ -33,19 +31,8 @@ import ru.profapp.RanobeReader.DAO.DatabaseDao;
                 childColumns = "RanobeUrl",
                 onDelete = CASCADE),
         indices = @Index(value = "RanobeUrl"))
-public class Chapter implements Parcelable {
+public class Chapter {
 
-    public static final Creator<Chapter> CREATOR = new Creator<Chapter>() {
-        @Override
-        public Chapter createFromParcel(Parcel in) {
-            return new Chapter(in);
-        }
-
-        @Override
-        public Chapter[] newArray(int size) {
-            return new Chapter[size];
-        }
-    };
     @NonNull
     @PrimaryKey
     private String Url;
@@ -59,14 +46,16 @@ public class Chapter implements Parcelable {
     private Date Time = new Date();
     private int RanobeId;
     private Boolean Downloaded;
+    private Boolean Readed;
     private String Text;
 
     public Chapter() {
 
     }
 
+
     @Ignore
-    public Chapter(JSONObject object, Constans.JsonObjectFrom enumFrom) {
+    public Chapter(JSONObject object, RanobeConstans.JsonObjectFrom enumFrom) {
         switch (enumFrom) {
             case RulateGetBookInfo:
                 Id = object.optInt("id");
@@ -79,49 +68,16 @@ public class Chapter implements Parcelable {
                 Title = object.optString("number") + ": " + object.optString("title");
                 Url = object.optString("alias");
                 break;
+            case RanobeRfSearch:
+                Title = object.optString("title");
+                Url = object.optString("link");
+                break;
         }
 
     }
 
-    protected Chapter(Parcel in) {
-        Url = in.readString();
-        RanobeUrl = in.readString();
-        Id = in.readInt();
-        Title = in.readString();
-        Status = in.readString();
-        byte tmpCanRead = in.readByte();
-        CanRead = tmpCanRead == 0 ? null : tmpCanRead == 1;
-        byte tmpNew = in.readByte();
-        New = tmpNew == 0 ? null : tmpNew == 1;
-        Index = in.readInt();
-        RanobeId = in.readInt();
-        byte tmpIsDownloaded = in.readByte();
-        Downloaded = tmpIsDownloaded == 0 ? null : tmpIsDownloaded == 1;
-        Text = in.readString();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(Url);
-        dest.writeString(RanobeUrl);
-        dest.writeInt(Id);
-        dest.writeString(Title);
-        dest.writeString(Status);
-        dest.writeByte((byte) (CanRead == null ? 0 : CanRead ? 1 : 2));
-        dest.writeByte((byte) (New == null ? 0 : New ? 1 : 2));
-        dest.writeInt(Index);
-        dest.writeInt(RanobeId);
-        dest.writeByte((byte) (Downloaded == null ? 0 : Downloaded ? 1 : 2));
-        dest.writeString(Text);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
     @Ignore
-    public void UpdateChapter(JSONObject object, Constans.JsonObjectFrom enumFrom,
+    public void UpdateChapter(JSONObject object, RanobeConstans.JsonObjectFrom enumFrom,
             Context mContext) {
 
         switch (enumFrom) {
@@ -153,7 +109,7 @@ public class Chapter implements Parcelable {
             }.start();
         } catch (JSONException e) {
             e.printStackTrace();
-            FirebaseCrash.report(e);
+            Crashlytics.logException(e);
         }
     }
 
@@ -173,7 +129,7 @@ public class Chapter implements Parcelable {
 
         } catch (JSONException e) {
             e.printStackTrace();
-            FirebaseCrash.report(e);
+            Crashlytics.logException(e);
         }
     }
 
@@ -274,4 +230,11 @@ public class Chapter implements Parcelable {
         Text = text;
     }
 
+    public Boolean getReaded() {
+        return Readed == null ? false : Readed;
+    }
+
+    public void setReaded(Boolean readed) {
+        Readed = readed;
+    }
 }

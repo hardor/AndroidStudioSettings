@@ -10,16 +10,18 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.NumberPicker;
 
+import ru.profapp.RanobeReader.Helpers.RanobeKeeper;
+
 /**
  * A {@link android.preference.Preference} that displays a number picker as a dialog.
  */
 public class NumberPickerPreference extends DialogPreference {
 
     // allowed range
-    public static final int MAX_VALUE = 30;
-    public static final int MIN_VALUE = 6;
+    private static final int MAX_VALUE = 30;
+    private static final int MIN_VALUE = 6;
     // enable or disable the 'circular behavior'
-    public static final boolean WRAP_SELECTOR_WHEEL = true;
+    private static final boolean WRAP_SELECTOR_WHEEL = true;
 
     private NumberPicker picker;
     private int value;
@@ -63,6 +65,7 @@ public class NumberPickerPreference extends DialogPreference {
             int newValue = picker.getValue();
             if (callChangeListener(newValue)) {
                 setValue(newValue);
+                RanobeKeeper.getInstance().setChapterTextSize(newValue);
             }
         }
     }
@@ -77,11 +80,11 @@ public class NumberPickerPreference extends DialogPreference {
         setValue(restorePersistedValue ? getPersistedInt(MIN_VALUE) : (Integer) defaultValue);
     }
 
-    public int getValue() {
+    private int getValue() {
         return this.value;
     }
 
-    public void setValue(int value) {
+    private void setValue(int value) {
         this.value = value;
         persistInt(this.value);
     }

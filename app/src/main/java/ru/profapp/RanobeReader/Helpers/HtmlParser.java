@@ -2,12 +2,16 @@ package ru.profapp.RanobeReader.Helpers;
 
 import android.os.AsyncTask;
 
-import com.google.firebase.crash.FirebaseCrash;
+import com.crashlytics.android.Crashlytics;
 
+import org.htmlcleaner.CleanerProperties;
+import org.htmlcleaner.HtmlCleaner;
+import org.htmlcleaner.TagNode;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,8 +21,8 @@ import java.util.Map;
 
 public class HtmlParser extends AsyncTask<String, Void, Document> {
 
-    Document doc = null;
-    Map<String, String> Cookies = new HashMap<String, String>();
+    private Document doc = null;
+    private Map<String, String> Cookies = new HashMap<>();
 
     public HtmlParser() {
     }
@@ -35,16 +39,16 @@ public class HtmlParser extends AsyncTask<String, Void, Document> {
             doc = Jsoup.connect(params[0])
                     .cookies(Cookies)
                     .userAgent(
-                            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,"
-                                    + " like Gecko) Chrome/63.0.3239.132 Safari/537.36")
-                    .header("Accept",
-                            "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,"
-                                    + "image/apng,*/*;q=0.8")
+                            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.162 Safari/537.36")
+                    .header("Content-Type","text/html; charset=UTF-8")
                     .ignoreContentType(true)
                     .get();
+
+
+
         } catch (IOException e) {
             e.printStackTrace();
-            FirebaseCrash.report(e);
+            Crashlytics.logException(e);
         }
 
         return doc;

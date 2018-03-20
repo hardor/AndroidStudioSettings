@@ -15,6 +15,7 @@
         android:layout_marginRight="16dp"
         app:layoutManager="LinearLayoutManager"
         tools:context="ru.profapp.RanobeReader.RanobeRecyclerFragment"
-        tools:listitem="@layout/ranobe_item" >
+        tools:listitem="@layout/ranobe_item"
+    >
     </android.support.v7.widget.RecyclerView>
 </android.support.v4.widget.SwipeRefreshLayout>

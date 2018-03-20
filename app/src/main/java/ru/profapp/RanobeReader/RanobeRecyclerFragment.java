@@ -1,8 +1,10 @@
 package ru.profapp.RanobeReader;
 
-import static ru.profapp.RanobeReader.Common.Constans.fragmentBundle;
+import static ru.profapp.RanobeReader.Common.RanobeConstans.fragmentBundle;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,8 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.firebase.crash.FirebaseCrash;
-import com.google.firebase.perf.metrics.AddTrace;
+import com.crashlytics.android.Crashlytics;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,13 +25,13 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.profapp.RanobeReader.Common.Constans;
-import ru.profapp.RanobeReader.Common.OnLoadMoreListener;
+import ru.profapp.RanobeReader.Common.RanobeConstans;
+import ru.profapp.RanobeReader.Common.StringResources;
 import ru.profapp.RanobeReader.DAO.DatabaseDao;
 import ru.profapp.RanobeReader.Models.Chapter;
 import ru.profapp.RanobeReader.Models.Ranobe;
-import ru.profapp.RanobeReader.RanobeRf.JsonRanobeRfApi;
-import ru.profapp.RanobeReader.Rulate.JsonRulateApi;
+import ru.profapp.RanobeReader.JsonApi.JsonRanobeRfApi;
+import ru.profapp.RanobeReader.JsonApi.JsonRulateApi;
 
 /**
  * A fragment representing a list of Items.
@@ -41,14 +42,13 @@ import ru.profapp.RanobeReader.Rulate.JsonRulateApi;
 public class RanobeRecyclerFragment extends Fragment {
 
     private static final String ARG_COLUMN_COUNT = "column-count";
-    public List<Ranobe> ranobeList = new ArrayList<Ranobe>();
-    SwipeRefreshLayout mSwipeRefreshLayout;
-    RecyclerView recyclerView;
-    OnListFragmentInteractionListener mListener;
+    private List<Ranobe> ranobeList = new ArrayList<>();
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private OnListFragmentInteractionListener mListener;
 
-    RanobeRecyclerViewAdapter mRanobeRecyclerViewAdapter;
-    Context mContext;
-    private Constans.FragmentType fragmentType;
+    private RanobeRecyclerViewAdapter mRanobeRecyclerViewAdapter;
+    private Context mContext;
+    private RanobeConstans.FragmentType fragmentType;
     private int page;
     private boolean loadFromDatabase;
 
@@ -75,7 +75,8 @@ public class RanobeRecyclerFragment extends Fragment {
 
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         if (getArguments() != null && getArguments().containsKey(fragmentBundle)) {
-            fragmentType = Constans.FragmentType.valueOf(getArguments().getString(fragmentBundle));
+            fragmentType = RanobeConstans.FragmentType.valueOf(
+                    getArguments().getString(fragmentBundle));
         }
 
     }
@@ -87,8 +88,9 @@ public class RanobeRecyclerFragment extends Fragment {
 
         // Set the adapter
         if (view instanceof SwipeRefreshLayout) {
+
             mContext = view.getContext();
-            recyclerView = (RecyclerView) view.findViewById(R.id.ranobeListView);
+            RecyclerView recyclerView = view.findViewById(R.id.ranobeListView);
 
             recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 
@@ -97,49 +99,41 @@ public class RanobeRecyclerFragment extends Fragment {
             recyclerView.setAdapter(mRanobeRecyclerViewAdapter);
 
             //set load more listener for the RecyclerView adapter
-            if (fragmentType != Constans.FragmentType.Favorite
-                    && fragmentType != Constans.FragmentType.Search) {
+            if (fragmentType != RanobeConstans.FragmentType.Favorite
+                    && fragmentType != RanobeConstans.FragmentType.Search) {
 
-                mRanobeRecyclerViewAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {
-                    @Override
-                    public void onLoadMore() {
+                mRanobeRecyclerViewAdapter.setOnLoadMoreListener(() -> {
 
-                        ranobeList.add(null);
-                        mRanobeRecyclerViewAdapter.notifyItemInserted(ranobeList.size() - 1);
+                    ranobeList.add(null);
+                    mRanobeRecyclerViewAdapter.notifyItemInserted(ranobeList.size() - 1);
 
-                        AsyncTask.execute(new Runnable() {
-                            public void run() {
-                                ranobeList.remove(ranobeList.size() - 1);
-                                mRanobeRecyclerViewAdapter.notifyItemRemoved(ranobeList.size());
-                                refreshItems(false);
+                    AsyncTask.execute(() -> {
+                        ranobeList.remove(ranobeList.size() - 1);
+                        mRanobeRecyclerViewAdapter.notifyItemRemoved(ranobeList.size());
+                        refreshItems(false);
 
-                            }
-                        });
+                    });
 
-                    }
                 });
             }
             mSwipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
-            mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
-
-                    page = 0;
-                    refreshItems(true);
-                }
+            mSwipeRefreshLayout.setOnRefreshListener(() -> {
+                mSwipeRefreshLayout.setRefreshing(false);
+                page = 0;
+                refreshItems(true);
             });
             mSwipeRefreshLayout.setRefreshing(true);
-            refreshItems(true);
 
+            refreshItems(true);
         }
 
         return view;
     }
 
-    @AddTrace(name = "refreshItems", enabled = true)
-    void refreshItems(boolean remove) {
+    private void refreshItems(boolean remove) {
 
         if (remove) {
+            page = 0;
             int size = ranobeList.size();
             ranobeList.clear();
             mRanobeRecyclerViewAdapter.notifyItemRangeRemoved(0, size);
@@ -161,7 +155,7 @@ public class RanobeRecyclerFragment extends Fragment {
         }
     }
 
-    void onItemsLoadComplete(boolean remove) {
+    private void onItemsLoadComplete(boolean remove) {
 
         mRanobeRecyclerViewAdapter.notifyDataSetChanged();
 
@@ -171,8 +165,11 @@ public class RanobeRecyclerFragment extends Fragment {
     }
 
     private void favoriteLoadRanobe(final boolean remove) {
-
+        ProgressDialog progressDialog = ProgressDialog.show(mContext,
+                getResources().getString(R.string.load_ranobes),
+                getResources().getString(R.string.load_please_wait), true, false);
         new Thread() {
+
             @Override
             public void run() {
 
@@ -185,6 +182,7 @@ public class RanobeRecyclerFragment extends Fragment {
                     ranobeList.add(ranobe);
                 }
 
+                ranobeList.addAll(getRulateWebFavorite());
                 if (!loadFromDatabase) {
 
                     for (Ranobe ranobe : ranobeList) {
@@ -194,20 +192,51 @@ public class RanobeRecyclerFragment extends Fragment {
 
                 loadFromDatabase = false;
 
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        onItemsLoadComplete(remove);
-                    }
-                });
+                if (getActivity() == null) {
+                    return;
+                }
 
+                getActivity().runOnUiThread(() -> onItemsLoadComplete(remove));
+                progressDialog.dismiss();
             }
 
         }.start();
 
     }
 
-    void rulateLoadRanobe(final boolean remove) {
+    private List<Ranobe> getRulateWebFavorite() {
+
+        List<Ranobe> resultList = new ArrayList<>();
+        SharedPreferences mPreferences = mContext.getSharedPreferences(
+                StringResources.Rulate_Login_Pref, 0);
+
+        String token = mPreferences.getString(StringResources.KEY_Token, "");
+        if (!token.equals("")) {
+            String response = JsonRulateApi.getInstance().GetFavoriteBooks(token);
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                if (jsonObject.get("status").equals("success")) {
+                    JSONArray jsonArray = jsonObject.getJSONArray("response");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+
+                        JSONObject value = jsonArray.getJSONObject(i);
+                        Ranobe ranobe = new Ranobe();
+                        ranobe.UpdateRanobe(value, RanobeConstans.JsonObjectFrom.RulateFavorite);
+                        resultList.add(ranobe);
+
+                    }
+
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Crashlytics.logException(e);
+            }
+
+        }
+        return resultList;
+    }
+
+    private void rulateLoadRanobe(final boolean remove) {
 
         new Thread() {
             @Override
@@ -223,30 +252,26 @@ public class RanobeRecyclerFragment extends Fragment {
 
                             JSONObject value = jsonArray.getJSONObject(i);
                             Ranobe ranobe = new Ranobe();
-                            ranobe.UpdateRanobe(value, Constans.JsonObjectFrom.RulateGetReady);
+                            ranobe.UpdateRanobe(value,
+                                    RanobeConstans.JsonObjectFrom.RulateGetReady);
                             ranobeList.add(ranobe);
 
                         }
                     }
 
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            onItemsLoadComplete(remove);
-                        }
-                    });
+                    getActivity().runOnUiThread(() -> onItemsLoadComplete(remove));
 
                     page++;
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    FirebaseCrash.report(e);
+                    Crashlytics.logException(e);
                 }
             }
         }.start();
 
     }
 
-    void ranoberfLoadRanobe(final boolean remove) {
+    private void ranoberfLoadRanobe(final boolean remove) {
 
         new Thread() {
             @Override
@@ -261,25 +286,21 @@ public class RanobeRecyclerFragment extends Fragment {
 
                             JSONObject value = jsonArray.getJSONObject(i);
                             Ranobe ranobe = new Ranobe();
-                            ranobe.UpdateRanobe(value, Constans.JsonObjectFrom.RanobeRfGetReady);
+                            ranobe.UpdateRanobe(value,
+                                    RanobeConstans.JsonObjectFrom.RanobeRfGetReady);
                             ranobeList.add(ranobe);
 
                         }
 
                     }
 
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            onItemsLoadComplete(remove);
-                        }
-                    });
+                    getActivity().runOnUiThread(() -> onItemsLoadComplete(remove));
 
                     page++;
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    FirebaseCrash.report(e);
+                    Crashlytics.logException(e);
                 }
             }
 
@@ -318,4 +339,5 @@ public class RanobeRecyclerFragment extends Fragment {
         // TODO: Update argument type and name
         void onListFragmentInteraction(Ranobe item);
     }
+
 }

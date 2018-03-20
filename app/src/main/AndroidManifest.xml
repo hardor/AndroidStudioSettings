@@ -12,29 +12,31 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme.Light" android:fullBackupContent="@xml/backup_descriptor">
         <activity
-            android:name="ru.profapp.RanobeReader.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity
-            android:name="ru.profapp.RanobeReader.SettingsActivity"
+            android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"/>
         <activity
-            android:name="ru.profapp.RanobeReader.RanobeInfoActivity"
+            android:name=".RanobeInfoActivity"
             android:label="@string/title_activity_ranobe_info"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.Light.NoActionBar">
         </activity>
         <activity
-            android:name="ru.profapp.RanobeReader.ChapterText"
+            android:name=".ChapterText"
             android:label="@string/title_activity_chapter_text">
         </activity>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="cac79ff615d7eefe4a0287318c94853a3858ee47" />
     </application>
 
 </manifest>

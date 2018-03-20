@@ -1,6 +1,8 @@
 package ru.profapp.RanobeReader;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
@@ -17,14 +19,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.google.firebase.crash.FirebaseCrash;
+import com.crashlytics.android.Crashlytics;
 
-import ru.profapp.RanobeReader.Common.Constans;
+import io.fabric.sdk.android.Fabric;
+import ru.profapp.RanobeReader.Common.RanobeConstans;
+import ru.profapp.RanobeReader.Common.ThemeUtils;
+import ru.profapp.RanobeReader.Helpers.RanobeKeeper;
 import ru.profapp.RanobeReader.Models.Ranobe;
 
 public class MainActivity extends AppCompatActivity
         implements
         RanobeRecyclerFragment.OnListFragmentInteractionListener,
+        SearchFragment.OnFragmentInteractionListener,
         NavigationView.OnNavigationItemSelectedListener
 
 {
@@ -32,6 +38,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
+        initSettingPreference();
+        ThemeUtils.onActivityCreateSetTheme(this,true);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -39,34 +48,48 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.mainFrame, RanobeRecyclerFragment.newInstance(Constans.FragmentType.Favorite.name()));
+        ft.replace(R.id.mainFrame,
+                RanobeRecyclerFragment.newInstance(RanobeConstans.FragmentType.Favorite.name()));
         ft.commit();
         setTitle(getResources().getText(R.string.favorite));
 
         FloatingActionButton floatingActionButton = findViewById(R.id.fab);
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                try {
-                    RecyclerView ranobeListview = findViewById(R.id.ranobeListView);
-                    ranobeListview.scrollToPosition(0);
-                } catch (NullPointerException e) {
-                    e.printStackTrace();
-                    FirebaseCrash.report(e);
-                }
-
+        floatingActionButton.setOnClickListener(view -> {
+            try {
+                RecyclerView ranobeListview = findViewById(R.id.ranobeListView);
+                ranobeListview.scrollToPosition(0);
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+                Crashlytics.logException(e);
             }
+
         });
 
-
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, toolbar, R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+    }
+
+    private void initSettingPreference() {
         PreferenceManager.setDefaultValues(this, R.xml.pref_general, false);
+        SharedPreferences settingPref = PreferenceManager.getDefaultSharedPreferences(
+                getApplicationContext());
+        RanobeKeeper.getInstance().setChapterTextSize(
+                settingPref.getInt(
+                        getApplicationContext().getString(R.string.pref_general_text_size), 13));
+
+        RanobeKeeper.getInstance().setHideUnavailableChapters(
+                settingPref.getBoolean( getApplicationContext().getString(R.string.pref_general_hide_chapter), false));
+
+
+        ThemeUtils.setTheme( settingPref.getBoolean(
+                getApplicationContext().getString(R.string.pref_general_app_theme), false));
     }
 
     @Override
@@ -113,21 +136,23 @@ public class MainActivity extends AppCompatActivity
         Fragment fragment = null;
 
         if (id == R.id.nav_favorite) {
-            fragment = RanobeRecyclerFragment.newInstance(Constans.FragmentType.Favorite.name());
+            fragment = RanobeRecyclerFragment.newInstance(
+                    RanobeConstans.FragmentType.Favorite.name());
             setTitle(getResources().getText(R.string.favorite));
         } else if (id == R.id.nav_rulate) {
-            fragment = RanobeRecyclerFragment.newInstance(Constans.FragmentType.Rulate.name());
+            fragment = RanobeRecyclerFragment.newInstance(
+                    RanobeConstans.FragmentType.Rulate.name());
             setTitle(getResources().getText(R.string.tl_rulate_name));
         } else if (id == R.id.nav_ranoberf) {
-            fragment = RanobeRecyclerFragment.newInstance(Constans.FragmentType.Ranoberf.name());
+            fragment = RanobeRecyclerFragment.newInstance(
+                    RanobeConstans.FragmentType.Ranoberf.name());
             setTitle(getResources().getText(R.string.ranobe_rf));
         } else if (id == R.id.nav_manage) {
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        } else if (id == R.id.nav_search) {
+            fragment = SearchFragment.newInstance();
+            setTitle(getResources().getText(R.string.search));
         }
 
         if (fragment != null) {
@@ -146,4 +171,8 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
 }

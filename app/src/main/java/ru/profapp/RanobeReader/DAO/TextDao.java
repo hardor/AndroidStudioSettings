@@ -34,5 +34,5 @@ public interface TextDao {
     TextChapter getTextByChapterUrl(String ChapterUrl);
 
     @Query("DELETE FROM textChapter")
-    public void cleanTable();
+    void cleanTable();
 }

@@ -8,26 +8,22 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.HashMap;
 
-import ru.profapp.RanobeReader.Rulate.JsonRulateApi;
+import ru.profapp.RanobeReader.JsonApi.JsonRulateApi;
 
 public class SessionManager {
     // Shared Preferences
-    SharedPreferences pref;
+    private SharedPreferences pref;
 
     // Editor for Shared preferences
-    Editor editor;
-
-    // Context
-    Context _context;
-
-    // Shared pref mode
-    int PRIVATE_MODE = 0;
+    private Editor editor;
 
     // Constructor
     public SessionManager() {
@@ -35,7 +31,8 @@ public class SessionManager {
     }
 
     public SessionManager(Context context) {
-        this._context = context;
+        Context _context = context;
+        int PRIVATE_MODE = 0;
         pref = _context.getSharedPreferences(StringResources.Rulate_Login_Pref, PRIVATE_MODE);
         editor = pref.edit();
     }
@@ -50,12 +47,13 @@ public class SessionManager {
             try {
                 JSONObject jsonObject = new JSONObject(response);
                 if (jsonObject.get("status").equals("success")) {
-                    return new String[]{"true", jsonObject.get("msg").toString(), jsonObject.get("token").toString()};
+                    return new String[]{"true", jsonObject.get("msg").toString(), jsonObject.getJSONObject("response").get("token").toString()};
                 }
 
                 return new String[]{"false", jsonObject.get("msg").toString()};
 
             } catch (JSONException e) {
+                Crashlytics.logException(e);
                 return new String[]{"false", "Response error"};
             }
 
@@ -68,7 +66,7 @@ public class SessionManager {
      * Get stored session data
      */
     public HashMap<String, String> getUserDetails() {
-        HashMap<String, String> user = new HashMap<String, String>();
+        HashMap<String, String> user = new HashMap<>();
         // user name
         user.put(StringResources.KEY_Login, pref.getString(StringResources.KEY_Login, null));
 

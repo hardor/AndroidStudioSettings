@@ -1,18 +1,18 @@
 package ru.profapp.RanobeReader;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.google.firebase.crash.FirebaseCrash;
+import com.crashlytics.android.Crashlytics;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,86 +22,88 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import ru.profapp.RanobeReader.Common.Constans;
+import io.fabric.sdk.android.Fabric;
+import ru.profapp.RanobeReader.Common.RanobeConstans;
 import ru.profapp.RanobeReader.Common.StringResources;
+import ru.profapp.RanobeReader.Common.ThemeUtils;
+import ru.profapp.RanobeReader.Helpers.RanobeKeeper;
 import ru.profapp.RanobeReader.Models.Chapter;
 import ru.profapp.RanobeReader.Models.Ranobe;
-import ru.profapp.RanobeReader.RanobeRf.JsonRanobeRfApi;
-import ru.profapp.RanobeReader.Rulate.JsonRulateApi;
+import ru.profapp.RanobeReader.JsonApi.JsonRanobeRfApi;
+import ru.profapp.RanobeReader.JsonApi.JsonRulateApi;
+
 
 public class ChapterText extends AppCompatActivity {
 
-    WebView mWebView;
-    Context mContext;
-    SharedPreferences mPreferences;
-    Chapter mChapter;
-    Ranobe mCurrentRanobe;
-    Integer mIndex;
-    Integer mChapterCount;
-    List<Chapter> mChapterList;
+    private WebView mWebView;
+    private Context mContext;
+    private Integer mIndex;
+    private Integer mChapterCount;
+    private List<Chapter> mChapterList;
+    private SharedPreferences sPref;
+    Chapter mCurrentChapter;
+    SharedPreferences settingPref;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+            = item -> {
+                switch (item.getItemId()) {
 
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigation_prev:
-                    OnClicked(+1);
-                    return true;
-                case R.id.navigation_next:
-                    OnClicked(-1);
-                    return true;
-                case R.id.navigation_dashboard:
+                    case R.id.navigation_prev:
+                        OnClicked(+1);
+                        return true;
+                    case R.id.navigation_next:
+                        OnClicked(-1);
+                        return true;
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-
-                    builder.setMessage("dsfdsfsdf")
-                            .setTitle("fdsfsdfs");
-                    builder.create();
-
-                    return true;
-            }
-            return false;
-        }
-    };
+                }
+                return false;
+            };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
+        ThemeUtils.onActivityCreateSetTheme(this, false);
         setupActionBar();
         setContentView(R.layout.activity_chapter_text);
         mContext = getApplicationContext();
-        mWebView = (WebView) findViewById(R.id.textWebview);
+
+        mIndex = getIntent().getIntExtra("ChapterIndex", 0);
+        Ranobe currentRanobe = RanobeKeeper.getInstance().getRanobe();
+        mChapterList = currentRanobe.getChapterList();
+        mChapterCount = mChapterList.size();
+        mCurrentChapter = mChapterList.get(mIndex);
+
+        mWebView = findViewById(R.id.textWebview);
         mWebView.setWebViewClient(new WebViewClient() {
             public void onPageFinished(WebView view, String url) {
                 view.scrollTo(0, 0);
-                setTitle(mChapter.getTitle());
+                setTitle(mCurrentChapter.getTitle());
             }
         });
 
-        mChapter = (Chapter) getIntent().getParcelableExtra("ChapterInfo");
-        mCurrentRanobe = getIntent().getParcelableExtra("RanobeInfo");
+        sPref = getSharedPreferences(currentRanobe.getUrl().replaceAll("[^a-zA-Z0-9]", ""),
+                MODE_PRIVATE);
 
-        mChapterList = mCurrentRanobe.getChapterList();
+        GetChapterText(mCurrentChapter);
 
-        mChapterCount = mChapterList.size();
-
-        int currentPosition = 0;
-
-        for (Chapter chapter : mChapterList) {
-
-            if (chapter.getUrl().equals(mChapter.getUrl())) {
-                mIndex = currentPosition;
-                break;
-            }
-            currentPosition++;
-        }
-
-        GetChapterText(mChapter);
-
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        initWebView();
+
+    }
+
+    private void initWebView() {
+        putToReaded(mCurrentChapter.getUrl());
+
+        String style = "style = \"text-align: justify; text-indent: 20px;font-size: "
+                + RanobeKeeper.getInstance().getChapterTextSize().toString()
+                + "px;\"";
+
+        String summary =
+                "<html><body " + style + ">" + mCurrentChapter.getText() + "</body></html>";
+        mWebView.loadDataWithBaseURL(null, summary, "text/html", "UTF-8", null);
     }
 
     @Override
@@ -111,6 +113,14 @@ public class ChapterText extends AppCompatActivity {
             onBackPressed();
             return true;
         }
+
+        if (id == R.id.action_settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -129,9 +139,9 @@ public class ChapterText extends AppCompatActivity {
 
     private void GetChapterText(Chapter chapter) {
 
-        if (mChapter.getText() == null || mChapter.getText().isEmpty()) {
-            mChapter = chapter;
-            String url = mChapter.getRanobeUrl();
+        mCurrentChapter = chapter;
+        if (mCurrentChapter.getText() == null || mCurrentChapter.getText().isEmpty()) {
+            String url = mCurrentChapter.getRanobeUrl();
 
             if (url.contains(StringResources.RanobeRf_Site)) {
                 GetRanobeRfChapterText();
@@ -139,12 +149,11 @@ public class ChapterText extends AppCompatActivity {
                 GetRulateChapterText();
             }
         }
-        String summary = "<html><body>" + mChapter.getText() + "points.</body></html>";
-        mWebView.loadDataWithBaseURL(null, summary, "text/html", "UTF-8", null);
+
     }
 
     private void GetRanobeRfChapterText() {
-        Document doc = JsonRanobeRfApi.getInstance().GetChapterText(mChapter);
+        Document doc = JsonRanobeRfApi.getInstance().GetChapterText(mCurrentChapter);
         final Pattern pattern = Pattern.compile("<body>([\\S*\\.*\\W*]+)<\\/body>");
 
         String res = "";
@@ -154,64 +163,101 @@ public class ChapterText extends AppCompatActivity {
             res = matcher.group(1);
         } catch (NullPointerException e) {
             e.printStackTrace();
-            FirebaseCrash.report(e);
+            Crashlytics.logException(e);
         }
 
         // Todo: маг 144 150
         res = res.replace("\"\\&quot;", "\\\"");
         res = res.replace("\\&quot;\"", "\\\"");
+
         res = res.replace("width:\"", "width:\\\"");
 
         try {
             JSONObject jsonObject = new JSONObject(res);
             if (jsonObject.getInt("status") == 200) {
 
-                mChapter.UpdateChapter(jsonObject.getJSONObject("result"),
-                        Constans.JsonObjectFrom.RanobeRfGetChapterText, mContext);
+                mCurrentChapter.UpdateChapter(jsonObject.getJSONObject("result"),
+                        RanobeConstans.JsonObjectFrom.RanobeRfGetChapterText, mContext);
+                mCurrentChapter.setReaded(true);
             }
         } catch (JSONException e) {
             try {
                 JSONObject jsonObject = new JSONObject(doc.text());
                 if (jsonObject.getInt("status") == 200) {
 
-                    mChapter.UpdateChapter(jsonObject.getJSONObject("result"),
-                            Constans.JsonObjectFrom.RanobeRfGetChapterText, mContext);
+                    mCurrentChapter.UpdateChapter(jsonObject.getJSONObject("result"),
+                            RanobeConstans.JsonObjectFrom.RanobeRfGetChapterText, mContext);
+                    mCurrentChapter.setReaded(true);
                 }
             } catch (JSONException e2) {
                 e2.printStackTrace();
-                FirebaseCrash.report(e);
+                Crashlytics.logException(e);
             }
 
         }
     }
 
     private void GetRulateChapterText() {
-        mPreferences = mContext.getSharedPreferences(StringResources.Rulate_Login_Pref, 0);
-        String token = mPreferences.getString(StringResources.KEY_Token, "");
-        String response = JsonRulateApi.getInstance().GetChapterText(mChapter.getRanobeId(),
-                mChapter.getId(),
+        SharedPreferences preferences = mContext.getSharedPreferences(
+                StringResources.Rulate_Login_Pref, 0);
+        String token = preferences.getString(StringResources.KEY_Token, "");
+        String response = JsonRulateApi.getInstance().GetChapterText(mCurrentChapter.getRanobeId(),
+                mCurrentChapter.getId(),
                 token);
+
+        response = response.replace("\"\\&quot;", "\\\"");
+        response = response.replace("\\&quot;\"", "\\\"");
+//        response = response.replace("&lt;", "<");
+//        response = response.replace("&gt;", ">");
+
         try {
             JSONObject jsonObject = new JSONObject(response);
             if (jsonObject.get("status").equals("success")) {
 
-                mChapter.UpdateChapter(jsonObject.getJSONObject("response"),
-                        Constans.JsonObjectFrom.RulateGetChapterText, mContext);
+                mCurrentChapter.UpdateChapter(jsonObject.getJSONObject("response"),
+                        RanobeConstans.JsonObjectFrom.RulateGetChapterText, mContext);
+                mCurrentChapter.setReaded(true);
             }
         } catch (JSONException e) {
-
+            e.printStackTrace();
+            Crashlytics.logException(e);
         }
     }
 
     private void OnClicked(int i) {
+
         mIndex += i;
-        try {
-            GetChapterText(mChapterList.get(mIndex));
-        } catch (ArrayIndexOutOfBoundsException e) {
+        if (mIndex >= 0 && mIndex <= mChapterCount - 1) {
+            try {
+                GetChapterText(mChapterList.get(mIndex));
+                initWebView();
+            } catch (ArrayIndexOutOfBoundsException e) {
+                mIndex -= i;
+                e.printStackTrace();
+                Crashlytics.logException(e);
+            }
+        }else{
             mIndex -= i;
-            e.printStackTrace();
-            FirebaseCrash.report(e);
         }
 
     }
+
+    private void putToReaded(String ChapterUrl) {
+        if (sPref == null) {
+            sPref = mContext.getSharedPreferences(
+                    mCurrentChapter.getRanobeUrl().replaceAll("[^a-zA-Z0-9]", ""), MODE_PRIVATE);
+        }
+
+        SharedPreferences.Editor ed = sPref.edit();
+        ed.putBoolean(ChapterUrl, true);
+        ed.apply();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
 }
