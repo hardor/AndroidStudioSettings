@@ -3,7 +3,6 @@ package ru.profapp.RanobeReader.JsonApi;
 import com.crashlytics.android.Crashlytics;
 
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
@@ -39,7 +38,7 @@ public class JsonRulateApi {
         request += "&login=" + login;
         request += "&pass=" + pass;
 
-        return getDocumentText(request).text();
+        return getDocumentText(request);
     }
 
     public String GetReadyTranslatesHtml(String limit, String page) {
@@ -52,7 +51,7 @@ public class JsonRulateApi {
             request += "&page=" + page;
         }
 
-        return getDocumentText(request).text();
+        return getDocumentText(request);
     }
 
     public String SearchBooks(String search) {
@@ -63,7 +62,7 @@ public class JsonRulateApi {
         String request = String.format(ApiString, "searchBooks");
         request += "&search=" + search;
 
-        return getDocumentText(request).text();
+        return getDocumentText(request);
     }
 
     public String GetFavoriteBooks(String token) {
@@ -74,7 +73,7 @@ public class JsonRulateApi {
         String request = String.format(ApiString, "bookmarks");
         request += "&token=" + token;
 
-        return getDocumentText(request).text();
+        return getDocumentText(request);
     }
 
     public String GetChapterText(int book_id, int chapter_id, String token) {
@@ -86,7 +85,7 @@ public class JsonRulateApi {
         request += "&chapter_id=" + chapter_id;
         request += "&book_id=" + book_id;
 
-        return getDocumentText(request).html();
+        return getDocumentText(request);
     }
 
     public String AddBookmark(int book_id, String token) {
@@ -98,7 +97,7 @@ public class JsonRulateApi {
         }
         request += "&book_id=" + book_id;
 
-        return getDocumentText(request).text();
+        return getDocumentText(request);
     }
 
     public String RemoveBookmark(int book_id, String token) {
@@ -110,7 +109,7 @@ public class JsonRulateApi {
         }
         request += "&book_id=" + book_id;
 
-        return getDocumentText(request).text();
+        return getDocumentText(request);
     }
 
     public String GetBookInfo(int book_id, String token) {
@@ -121,15 +120,15 @@ public class JsonRulateApi {
         }
         request += "&book_id=" + book_id;
 
-        return getDocumentText(request).text();
+        return getDocumentText(request);
     }
 
-    private Element getDocumentText(String request) {
+    private String getDocumentText(String request) {
 
         Document html = null;
         try {
             html = new HtmlParser().execute(request).get();
-            return html.body();
+            return html.body().html();
         } catch (InterruptedException e) {
             e.printStackTrace();
             Crashlytics.logException(e);
@@ -142,7 +141,7 @@ public class JsonRulateApi {
             Crashlytics.logException(e);
 
         }
-        return new Element("");
+        return "";
     }
 
 }

@@ -101,9 +101,11 @@ public final class LoginPreference extends DialogPreference implements DialogInt
             if (resBool) {
                 editor.putString(StringResources.KEY_Token, result[2]);
                 editor.commit();
+                setSummary(username);
             }else{
                 editor.putString(StringResources.KEY_Token, "");
                 editor.commit();
+                setSummary(getContext().getString(R.string.login_to_rulate_summary));
             }
 
             alert.setTitle(username);
@@ -116,9 +118,15 @@ public final class LoginPreference extends DialogPreference implements DialogInt
             // user didn't entered username or password
             // Show alert asking him to enter the details
 
+
             alert.setTitle(getContext().getString(R.string.login_failed));
             alert.setMessage(getContext().getString(R.string.enter_user_pass));
             alert.setButton(Dialog.BUTTON_POSITIVE, "OK", (dialog, which) -> {
+                editor.putString(StringResources.KEY_Token, "");
+                editor.commit();
+                setSummary(getContext().getString(R.string.login_to_rulate_summary));
+            });
+            alert.setButton(Dialog.BUTTON_NEUTRAL, "Cancel", (dialog, which) -> {
 
             });
             alert.show();

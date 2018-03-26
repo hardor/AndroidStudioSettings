@@ -20,6 +20,7 @@
     <string name="show_only_readable">Show only readable chapters</string>
     <string name="hide_unavailable_chapters">Hide unavailable (paid) chapters</string>
     <string name="tl.rulate_name" translatable="false">Rulate</string>
+    <string name="tl.rulate_web" translatable="false">Rulate Web</string>
     <string name="text_size">Text size</string>
     <string name="select_text_size">Select size for chapter\'s text</string>
     <string name="login">Login</string>
@@ -71,4 +72,10 @@
     <string name="not_found">Not found</string>
     <string name="login_failed">Login failed..</string>
     <string name="enter_user_pass">Please enter username and password</string>
+    <string name="banner_ad_unit_main" translatable="false">ca-app-pub-1483315001492731/3861883619</string>
+    <string name="app_admob_id" translatable="false">ca-app-pub-1483315001492731~8531946315</string>
+
+    <string name="added_to_local"> was added to local bookmarks.</string>
+    <string name="added_to_web"> was added to web bookmarks.</string>
+    <string name="rulate_authorization_pref">rulate_authorization_pref</string>
 </resources>

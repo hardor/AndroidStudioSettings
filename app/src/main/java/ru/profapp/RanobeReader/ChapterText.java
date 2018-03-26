@@ -4,11 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.internal.BottomNavigationItemView;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -27,37 +29,42 @@ import ru.profapp.RanobeReader.Common.RanobeConstans;
 import ru.profapp.RanobeReader.Common.StringResources;
 import ru.profapp.RanobeReader.Common.ThemeUtils;
 import ru.profapp.RanobeReader.Helpers.RanobeKeeper;
-import ru.profapp.RanobeReader.Models.Chapter;
-import ru.profapp.RanobeReader.Models.Ranobe;
 import ru.profapp.RanobeReader.JsonApi.JsonRanobeRfApi;
 import ru.profapp.RanobeReader.JsonApi.JsonRulateApi;
-
+import ru.profapp.RanobeReader.Models.Chapter;
+import ru.profapp.RanobeReader.Models.Ranobe;
 
 public class ChapterText extends AppCompatActivity {
 
+    Chapter mCurrentChapter;
+    SharedPreferences settingPref;
     private WebView mWebView;
     private Context mContext;
     private Integer mIndex;
     private Integer mChapterCount;
     private List<Chapter> mChapterList;
     private SharedPreferences sPref;
-    Chapter mCurrentChapter;
-    SharedPreferences settingPref;
 
+    BottomNavigationItemView nextMenu, prevMenu;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = item -> {
-                switch (item.getItemId()) {
 
-                    case R.id.navigation_prev:
-                        OnClicked(+1);
-                        return true;
-                    case R.id.navigation_next:
-                        OnClicked(-1);
-                        return true;
+        switch (item.getItemId()) {
 
-                }
-                return false;
-            };
+            case R.id.navigation_prev:
+                OnClicked(+1);
+
+
+                return true;
+            case R.id.navigation_next:
+                OnClicked(-1);
+
+                return true;
+
+        }
+
+        return false;
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +96,11 @@ public class ChapterText extends AppCompatActivity {
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        prevMenu = findViewById( R.id.navigation_prev);
+        nextMenu = findViewById( R.id.navigation_next);
 
+        prevMenu.setVisibility ( mIndex < mChapterCount - 1? View.VISIBLE : View.INVISIBLE );
+        nextMenu.setVisibility( mIndex > 0? View.VISIBLE : View.INVISIBLE);
         initWebView();
 
     }
@@ -236,9 +247,12 @@ public class ChapterText extends AppCompatActivity {
                 e.printStackTrace();
                 Crashlytics.logException(e);
             }
-        }else{
+        } else {
             mIndex -= i;
         }
+
+        prevMenu.setVisibility ( mIndex < mChapterCount - 1? View.VISIBLE : View.INVISIBLE );
+        nextMenu.setVisibility( mIndex > 0? View.VISIBLE : View.INVISIBLE);
 
     }
 

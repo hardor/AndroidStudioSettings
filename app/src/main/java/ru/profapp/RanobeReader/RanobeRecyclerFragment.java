@@ -28,10 +28,10 @@ import java.util.List;
 import ru.profapp.RanobeReader.Common.RanobeConstans;
 import ru.profapp.RanobeReader.Common.StringResources;
 import ru.profapp.RanobeReader.DAO.DatabaseDao;
-import ru.profapp.RanobeReader.Models.Chapter;
-import ru.profapp.RanobeReader.Models.Ranobe;
 import ru.profapp.RanobeReader.JsonApi.JsonRanobeRfApi;
 import ru.profapp.RanobeReader.JsonApi.JsonRulateApi;
+import ru.profapp.RanobeReader.Models.Chapter;
+import ru.profapp.RanobeReader.Models.Ranobe;
 
 /**
  * A fragment representing a list of Items.
@@ -165,9 +165,18 @@ public class RanobeRecyclerFragment extends Fragment {
     }
 
     private void favoriteLoadRanobe(final boolean remove) {
-        ProgressDialog progressDialog = ProgressDialog.show(mContext,
-                getResources().getString(R.string.load_ranobes),
-                getResources().getString(R.string.load_please_wait), true, false);
+//        ProgressDialog progressDialog = ProgressDialog.show(mContext,
+//                getResources().getString(R.string.load_ranobes),
+//                getResources().getString(R.string.load_please_wait), true, true);
+
+        ProgressDialog progressDialog1 = new ProgressDialog(getActivity());
+        progressDialog1.setMessage(getResources().getString(R.string.load_please_wait));
+        progressDialog1.setTitle(getResources().getString(R.string.load_ranobes));
+        progressDialog1.setCancelable(true);
+        progressDialog1.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        mSwipeRefreshLayout.setRefreshing(false);
+        progressDialog1.show();
+
         new Thread() {
 
             @Override
@@ -175,19 +184,45 @@ public class RanobeRecyclerFragment extends Fragment {
 
                 List<Ranobe> newRanobeList = DatabaseDao.getInstance(
                         mContext).getRanobeDao().GetFavoriteRanobes();
-                for (Ranobe ranobe : newRanobeList) {
-                    List<Chapter> chapterList = DatabaseDao.getInstance(
-                            mContext).getChapterDao().getChaptersForRanobe(ranobe.getUrl());
-                    ranobe.setChapterList(chapterList);
-                    ranobeList.add(ranobe);
+
+                List<Ranobe> rulateWebList = getRulateWebFavorite();
+                if(rulateWebList.size()>0) {
+                    Ranobe TitleRanobe =  new Ranobe();
+                    TitleRanobe.setTitle(getString(R.string.tl_rulate_web));
+                    TitleRanobe.setRanobeSite(StringResources.Title_Site);
+                    newRanobeList.add(TitleRanobe);
                 }
+                newRanobeList.addAll(rulateWebList);
 
-                ranobeList.addAll(getRulateWebFavorite());
-                if (!loadFromDatabase) {
 
-                    for (Ranobe ranobe : ranobeList) {
+                progressDialog1.setMax(newRanobeList.size());
+
+
+                for (Ranobe ranobe : newRanobeList) {
+                    progressDialog1.setMessage(ranobe.getTitle());
+                    if (!loadFromDatabase) {
                         ranobe.updateRanobe(mContext);
+                        AsyncTask.execute(() -> {
+
+                            if (!ranobe.getFavoritedInWeb() && !ranobe.getRanobeSite().equals(StringResources.Title_Site)) {
+                                DatabaseDao.getInstance(mContext).getRanobeDao().update(ranobe);
+                                DatabaseDao.getInstance(mContext).getChapterDao().insertAll(
+                                        ranobe.getChapterList().toArray(
+                                                new Chapter[ranobe.getChapterList().size()]));
+
+                            }
+
+                        });
+                    } else {
+                        List<Chapter> chapterList = DatabaseDao.getInstance(
+                                mContext).getChapterDao().getChaptersForRanobe(
+                                ranobe.getUrl());
+                        ranobe.setChapterList(chapterList);
+
                     }
+                    ranobeList.add(ranobe);
+                    progressDialog1.incrementProgressBy(1);
+
                 }
 
                 loadFromDatabase = false;
@@ -197,7 +232,9 @@ public class RanobeRecyclerFragment extends Fragment {
                 }
 
                 getActivity().runOnUiThread(() -> onItemsLoadComplete(remove));
-                progressDialog.dismiss();
+
+                progressDialog1.dismiss();
+
             }
 
         }.start();
@@ -222,6 +259,11 @@ public class RanobeRecyclerFragment extends Fragment {
                         JSONObject value = jsonArray.getJSONObject(i);
                         Ranobe ranobe = new Ranobe();
                         ranobe.UpdateRanobe(value, RanobeConstans.JsonObjectFrom.RulateFavorite);
+
+                        if (!loadFromDatabase) {
+                            ranobe.updateRanobe(mContext);
+                        }
+                        ranobe.setFavoritedInWeb(true);
                         resultList.add(ranobe);
 
                     }

@@ -28,6 +28,7 @@ import java.util.List;
 
 import ru.profapp.RanobeReader.Common.RanobeConstans;
 import ru.profapp.RanobeReader.Common.StringResources;
+import ru.profapp.RanobeReader.DAO.DatabaseDao;
 import ru.profapp.RanobeReader.Helpers.RanobeKeeper;
 import ru.profapp.RanobeReader.JsonApi.JsonRanobeRfApi;
 import ru.profapp.RanobeReader.JsonApi.JsonRulateApi;
@@ -517,9 +518,9 @@ public class Ranobe {
     public void updateRanobe(Context mContext) {
 
         try {
-            if (getRanobeSite().equals(StringResources.Rulate_Site)) {
+            if (getRanobeSite().equals(StringResources.Rulate_Site) || getUrl().contains(StringResources.Rulate_Site)) {
                 updateRulateRanobe(mContext);
-            } else if (getRanobeSite().equals(StringResources.RanobeRf_Site)) {
+            } else if (getRanobeSite().equals(StringResources.RanobeRf_Site)|| getUrl().contains(StringResources.RanobeRf_Site)) {
                 updateRanobeRfRanobe();
             }
             WasUpdated = true;

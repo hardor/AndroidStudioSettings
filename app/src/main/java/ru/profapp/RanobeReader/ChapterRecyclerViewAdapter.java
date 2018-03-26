@@ -15,10 +15,12 @@ import com.crashlytics.android.Crashlytics;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import ru.profapp.RanobeReader.DAO.DatabaseDao;
 import ru.profapp.RanobeReader.Helpers.RanobeKeeper;
 import ru.profapp.RanobeReader.Models.Chapter;
+import ru.profapp.RanobeReader.Models.Ranobe;
 import ru.profapp.RanobeReader.Models.TextChapter;
 
 public class ChapterRecyclerViewAdapter extends
@@ -62,6 +64,16 @@ public class ChapterRecyclerViewAdapter extends
         holder.mIdView.setText(mValues.get(position).getTitle());
 
         holder.mView.setOnClickListener(v -> {
+
+            if( RanobeKeeper.getInstance().getRanobe()==null || !Objects.equals(holder.mItem.getRanobeUrl(),
+                    RanobeKeeper.getInstance().getRanobe().getUrl())){
+
+                Ranobe ranobe = new Ranobe();
+                ranobe.setUrl(holder.mItem.getRanobeUrl());
+                ranobe.updateRanobe(mContext);
+                RanobeKeeper.getInstance().setRanobe(ranobe);
+
+            }
             Intent intent = new Intent(v.getContext(), ChapterText.class);
             intent.putExtra("ChapterIndex", holder.getAdapterPosition());
             v.getContext().startActivity(intent);

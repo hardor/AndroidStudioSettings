@@ -82,8 +82,7 @@ public class JsonRanobeRfApi {
     }
 
     public Document GetChapterText(Chapter charpter) {
-        //http://xn--80ac9aeh6f.xn--p1ai/v1/part/load/?bookAlias=povelitel-lyubi-menya-nezhno
-        // &partAlias=glava-23-ne-zainteresovana-v-veshchakh-kotorie-kto-to-uzhe-ispolzoval-ranshe
+
         String ranobeName = charpter.getRanobeUrl().replace("http://xn--80ac9aeh6f.xn--p1ai/", "");
 
         String chapterName = charpter.getUrl().replace("http://xn--80ac9aeh6f.xn--p1ai/",

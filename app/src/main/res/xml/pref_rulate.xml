@@ -1,9 +1,11 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ru.profapp.RanobeReader.CustomElements.LoginPreference
+        android:key="@string/rulate_authorization_pref"
         android:persistent="true"
         android:summary="@string/login_to_rulate_summary"
         android:title="@string/rulate_authorization"
+        android:icon="@mipmap/rulate"
     />
 
 

@@ -8,15 +8,13 @@
     android:layout_height="match_parent"
     tools:context="ru.profapp.RanobeReader.ChapterText">
 
-    <FrameLayout
+
+    <WebView
+        android:id="@+id/textWebview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <WebView
-            android:id="@+id/textWebview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-        />
-    </FrameLayout>
+        android:layout_height="match_parent"
+        android:layout_above="@+id/navigation"
+    />
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"
@@ -29,6 +27,7 @@
         android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/navigation"
+
     />
 
 

@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -11,8 +12,12 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
+import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
@@ -21,7 +26,9 @@ import java.io.File;
 import java.util.List;
 
 import io.fabric.sdk.android.Fabric;
+import ru.profapp.RanobeReader.Common.StringResources;
 import ru.profapp.RanobeReader.Common.ThemeUtils;
+import ru.profapp.RanobeReader.CustomElements.LoginPreference;
 import ru.profapp.RanobeReader.DAO.DatabaseDao;
 import ru.profapp.RanobeReader.Helpers.RanobeKeeper;
 
@@ -194,6 +201,17 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_rulate);
+            Preference prefLogin = findPreference(getString(R.string.rulate_authorization_pref));
+            SharedPreferences mPreferences = getActivity().getSharedPreferences(
+                    StringResources.Rulate_Login_Pref, 0);
+
+            String token = mPreferences.getString(StringResources.KEY_Token, "");
+
+            if(!token.equals("")){
+                prefLogin.setSummary(mPreferences.getString(StringResources.KEY_Login, ""));
+            }else{
+                prefLogin.setSummary(getActivity().getString(R.string.login_to_rulate_summary));
+            }
             setHasOptionsMenu(true);
         }
 

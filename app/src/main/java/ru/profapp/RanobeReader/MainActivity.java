@@ -20,9 +20,13 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 
 import io.fabric.sdk.android.Fabric;
 import ru.profapp.RanobeReader.Common.RanobeConstans;
+import ru.profapp.RanobeReader.Common.StringResources;
 import ru.profapp.RanobeReader.Common.ThemeUtils;
 import ru.profapp.RanobeReader.Helpers.RanobeKeeper;
 import ru.profapp.RanobeReader.Models.Ranobe;
@@ -41,7 +45,15 @@ public class MainActivity extends AppCompatActivity
         Fabric.with(this, new Crashlytics());
         initSettingPreference();
         ThemeUtils.onActivityCreateSetTheme(this,true);
+
         setContentView(R.layout.activity_main);
+
+        MobileAds.initialize(this, getString(R.string.app_admob_id));
+        AdView adView = findViewById(R.id.adView);
+        //  AdRequest adRequest = new AdRequest.Builder().build();
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice("sdfsdf").build();
+        adView.loadAd(adRequest);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -106,6 +118,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+
         return true;
     }
 

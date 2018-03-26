@@ -29,7 +29,7 @@ public class RanobeKeeper {
     }
 
     public Ranobe getRanobe() {
-        return ranobe;
+        return ranobe ;
     }
 
     public void setRanobe(Ranobe ranobe) {
