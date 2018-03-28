@@ -34,6 +34,10 @@
                 android:id="@+id/nav_manage"
                 android:icon="@drawable/ic_menu_manage"
                 android:title="@string/tools" />
+            <item
+                android:id="@+id/nav_notify"
+                android:icon="@android:drawable/stat_notify_chat"
+                android:title="@string/notifications" />
         </menu>
     </item>
 

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -113,9 +114,10 @@ public class ChapterRecyclerViewAdapter extends
         });
         if (!holder.mItem.getCanRead()) {
             holder.mView.setBackgroundColor(Color.GRAY);
+            holder.mImageButton.setVisibility(View.INVISIBLE);
         }
         if (holder.mItem.getReaded()) {
-            holder.mView.setBackgroundColor(Color.BLUE);
+            holder.mView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.colorPrimaryDark));
         }
 
     }

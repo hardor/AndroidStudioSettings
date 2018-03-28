@@ -45,18 +45,18 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
                         RanobeKeeper.getInstance().setHideUnavailableChapters(
                                 Boolean.valueOf(value.toString()));
-
-                    } else if (preference.getKey().equals(preference.getContext().getString(
-                            R.string.pref_general_app_theme))) {
-
-                        ThemeUtils.setTheme(Boolean.valueOf(value.toString()));
-                        Intent intent = new Intent(mActivity, mActivity.getClass());
-                        intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT,
-                                GeneralPreferenceFragment.class.getName());
-                        intent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
-                        ThemeUtils.change(mActivity, intent);
-
                     }
+//                    } else if (preference.getKey().equals(preference.getContext().getString(
+//                            R.string.pref_general_app_theme))) {
+//
+//                        ThemeUtils.setTheme(Boolean.valueOf(value.toString()));
+//                        Intent intent = new Intent(mActivity, mActivity.getClass());
+//                        intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT,
+//                                GeneralPreferenceFragment.class.getName());
+//                        intent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
+//                        ThemeUtils.change(mActivity, intent);
+//
+//                    }
                     return true;
                 }
             };
@@ -157,9 +157,13 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             prefButton.setOnPreferenceClickListener(preference -> {
                 final Context context = preference.getContext();
                 AsyncTask.execute(() -> {
-//                        File sharedPreferenceFile = new File(                                "/data/data/" + context.getPackageName() + "/shared_prefs/");
+
+//                  File sharedPreferenceFile = new File("/data/data/" + context.getPackageName() + "/shared_prefs/");
+
                     File sharedPreferenceFile = new File("/data/data/" + context.getPackageName() + "/shared_prefs/");
+
                     File[] listFiles = sharedPreferenceFile.listFiles();
+
                     for (File file : listFiles) {
                         file.delete();
                     }
@@ -173,9 +177,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             findPreference(
                     getString(R.string.pref_general_hide_chapter)).setOnPreferenceChangeListener(
                     sChangePreferenceListener);
-            findPreference(
-                    getString(R.string.pref_general_app_theme)).setOnPreferenceChangeListener(
-                    sChangePreferenceListener);
+//            findPreference(
+//                    getString(R.string.pref_general_app_theme)).setOnPreferenceChangeListener(
+//                    sChangePreferenceListener);
 
         }
 

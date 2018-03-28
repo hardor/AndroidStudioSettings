@@ -13,4 +13,8 @@ public class StringResources {
     public static final String RanobeRf_Site = "http://xn--80ac9aeh6f.xn--p1ai";
     public static final String Title_Site = "Title";
 
+
+    public static final String FIREBASE_TOKEN = "firebase token";
+    public static final String EXTRA_ITEM_ID = "EXTRA_ITEM_ID"  ;
+
 }

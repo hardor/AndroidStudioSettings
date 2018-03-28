@@ -1,5 +1,6 @@
 package ru.profapp.RanobeReader;
 
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -15,9 +16,10 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
+import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.ads.AdRequest;
@@ -28,7 +30,9 @@ import io.fabric.sdk.android.Fabric;
 import ru.profapp.RanobeReader.Common.RanobeConstans;
 import ru.profapp.RanobeReader.Common.StringResources;
 import ru.profapp.RanobeReader.Common.ThemeUtils;
+import ru.profapp.RanobeReader.DAO.DatabaseDao;
 import ru.profapp.RanobeReader.Helpers.RanobeKeeper;
+import ru.profapp.RanobeReader.Models.Notify;
 import ru.profapp.RanobeReader.Models.Ranobe;
 
 public class MainActivity extends AppCompatActivity
@@ -44,7 +48,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
         initSettingPreference();
-        ThemeUtils.onActivityCreateSetTheme(this,true);
+        ThemeUtils.onActivityCreateSetTheme(this, true);
 
         setContentView(R.layout.activity_main);
 
@@ -97,10 +101,11 @@ public class MainActivity extends AppCompatActivity
                         getApplicationContext().getString(R.string.pref_general_text_size), 13));
 
         RanobeKeeper.getInstance().setHideUnavailableChapters(
-                settingPref.getBoolean( getApplicationContext().getString(R.string.pref_general_hide_chapter), false));
+                settingPref.getBoolean(
+                        getApplicationContext().getString(R.string.pref_general_hide_chapter),
+                        false));
 
-
-        ThemeUtils.setTheme( settingPref.getBoolean(
+        ThemeUtils.setTheme(settingPref.getBoolean(
                 getApplicationContext().getString(R.string.pref_general_app_theme), false));
     }
 
@@ -166,6 +171,10 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_search) {
             fragment = SearchFragment.newInstance();
             setTitle(getResources().getText(R.string.search));
+        } else if (id == R.id.nav_notify) {
+            Intent intent = new Intent(this, NotificationActivity.class);
+            startActivity(intent);
+
         }
 
         if (fragment != null) {
@@ -188,4 +197,5 @@ public class MainActivity extends AppCompatActivity
     public void onFragmentInteraction(Uri uri) {
 
     }
+
 }

@@ -10,12 +10,13 @@
         android:summaryOn="@string/show_only_readable"
         android:title="@string/hide_unavailable_chapters" />
 
-    <SwitchPreference
-        android:defaultValue="false"
-        android:key="@string/pref_general_app_theme"
-        android:summaryOff="@string/Turn_on_dark_theme"
-        android:summaryOn="@string/Turn_off_dark_theme"
-        android:title="@string/app_theme" />
+    <!--Todo:-->
+    <!--<SwitchPreference-->
+        <!--android:defaultValue="false"-->
+        <!--android:key="@string/pref_general_app_theme"-->
+        <!--android:summaryOff="@string/Turn_on_dark_theme"-->
+        <!--android:summaryOn="@string/Turn_off_dark_theme"-->
+        <!--android:title="@string/app_theme" />-->
 
     <ru.profapp.RanobeReader.CustomElements.NumberPickerPreference
         android:defaultValue="14"

@@ -77,5 +77,13 @@
 
     <string name="added_to_local"> was added to local bookmarks.</string>
     <string name="added_to_web"> was added to web bookmarks.</string>
-    <string name="rulate_authorization_pref">rulate_authorization_pref</string>
+    <string name="rulate_authorization_pref" translatable="false">rulate_authorization_pref</string>
+
+    <string name="default_notification_channel_id" translatable="false">default</string>
+    <string name="notification_add_to_cart_button" translatable="false">Like</string>
+    <string name="group_name" translatable="false">Group 1</string>
+    <string name="notifications_admin_channel_name" translatable="false">Global channel</string>
+    <string name="notifications_admin_channel_description" translatable="false">Notifications sent from the app admin</string>
+    <string name="notifications">Notifications</string>
+
 </resources>

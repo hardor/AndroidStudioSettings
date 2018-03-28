@@ -13,11 +13,12 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import ru.profapp.RanobeReader.Models.Chapter;
+import ru.profapp.RanobeReader.Models.Notify;
 import ru.profapp.RanobeReader.Models.Ranobe;
 import ru.profapp.RanobeReader.Models.TextChapter;
 
 @android.arch.persistence.room.Database(entities = {Ranobe.class,
-        Chapter.class, TextChapter.class}, version = 1, exportSchema = false)
+        Chapter.class, TextChapter.class, Notify.class}, version = 2, exportSchema = false)
 @TypeConverters(DateConverter.class)
 public abstract class DatabaseDao extends RoomDatabase {
 
@@ -25,10 +26,9 @@ public abstract class DatabaseDao extends RoomDatabase {
     private static final Migration FROM_1_TO_2 = new Migration(1, 2) {
         @Override
         public void migrate(@NonNull final SupportSQLiteDatabase database) {
-           // database.execSQL("DROP TABLE IF EXISTS ranobe");
-          //  database.execSQL("CREATE TABLE IF NOT EXISTS");
+            // database.execSQL("DROP TABLE IF EXISTS ranobe");
+             // database.execSQL("CREATE TABLE notify");
         }
-
 
     };
     private static volatile DatabaseDao instance;
@@ -45,14 +45,17 @@ public abstract class DatabaseDao extends RoomDatabase {
                 context,
                 DatabaseDao.class,
                 DB_NAME)
-                .addMigrations(FROM_1_TO_2)
+              //  .addMigrations(FROM_1_TO_2)
                 .build();
     }
 
     public abstract RanobeDao getRanobeDao();
 
     public abstract ChapterDao getChapterDao();
+
     public abstract TextDao getTextDao();
+
+    public abstract NotifyDao getNotifyDao();
 
     @Override
     public void close() {
@@ -60,12 +63,3 @@ public abstract class DatabaseDao extends RoomDatabase {
     }
 }
 
-//    To add things to the database we need to invoke:
-//
-
-//        Getting things is also pretty simple:
-//
-//        List<Repo> allRepos = RepoDatabase
-//        .getInstance(MainActivity.this)
-//        .getRepoDao()
-//        .getAllRepos();

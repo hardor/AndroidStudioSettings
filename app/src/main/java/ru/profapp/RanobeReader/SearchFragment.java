@@ -1,10 +1,9 @@
 package ru.profapp.RanobeReader;
 
-import static com.google.android.gms.internal.zzahn.runOnUiThread;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -86,22 +85,14 @@ public class SearchFragment extends Fragment {
                 ProgressDialog progressDialog = ProgressDialog.show(mContext, getResources().getString(R.string.search_ranobe_name,query),
                         getResources().getString(R.string.search_please_wait), true, false);
 
-                Thread mThread = new Thread() {
-                    @Override
-                    public void run() {
-                        findRanobe(query);
-
-                        runOnUiThread(() -> {
-                            if (mRanobeList.size() == 0) {
-                                resultLabel.setVisibility(View.VISIBLE);
-                            }
-                            mRanobeRecyclerViewAdapter.notifyDataSetChanged();
-                        });
-
-                        progressDialog.dismiss();
+                AsyncTask.execute(()-> {
+                    findRanobe(query);
+                    if (mRanobeList.size() == 0) {
+                        resultLabel.setVisibility(View.VISIBLE);
                     }
-                };
-                mThread.start();
+                    mRanobeRecyclerViewAdapter.notifyDataSetChanged();
+                    progressDialog.dismiss();
+                });
 
                 return false;
             }
