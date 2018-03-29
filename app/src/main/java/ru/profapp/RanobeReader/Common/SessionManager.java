@@ -16,7 +16,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.HashMap;
 
-import ru.profapp.RanobeReader.JsonApi.JsonRulateApi;
+import ru.profapp.RanobeReader.JsonApi.Rulate.JsonRulateApi;
 
 public class SessionManager {
     // Shared Preferences

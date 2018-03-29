@@ -29,7 +29,7 @@ import ru.profapp.RanobeReader.Common.RanobeConstans;
 import ru.profapp.RanobeReader.Common.StringResources;
 import ru.profapp.RanobeReader.Models.Ranobe;
 import ru.profapp.RanobeReader.JsonApi.JsonRanobeRfApi;
-import ru.profapp.RanobeReader.JsonApi.JsonRulateApi;
+import ru.profapp.RanobeReader.JsonApi.Rulate.JsonRulateApi;
 
 /**
  * A simple {@link Fragment} subclass.

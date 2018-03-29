@@ -1,4 +1,4 @@
-package ru.profapp.RanobeReader.JsonApi;
+package ru.profapp.RanobeReader.JsonApi.Rulate;
 
 import com.crashlytics.android.Crashlytics;
 
@@ -128,6 +128,7 @@ public class JsonRulateApi {
         Document html = null;
         try {
             html = new HtmlParser().execute(request).get();
+//            String test = StringEscapeUtils.unescapeJava(html.body().html());
             return html.body().html();
         } catch (InterruptedException e) {
             e.printStackTrace();

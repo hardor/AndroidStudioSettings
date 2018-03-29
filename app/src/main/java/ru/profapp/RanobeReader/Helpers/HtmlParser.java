@@ -10,6 +10,7 @@ import org.jsoup.nodes.Document;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,7 +40,12 @@ public class HtmlParser extends AsyncTask<String, Void, Document> {
                             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,"
                                     + " like Gecko) Chrome/65.0.3325.162 Safari/537.36")
                     .header("Accept","text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
-                    .ignoreContentType(true)
+                    .header("Content-Type","text/html; charset=UTF-8")
+                    .header("Accept-Language","ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3")
+                    .header("Accept-Encoding","gzip, deflate")
+
+
+                    //.ignoreContentType(true)
                    // .timeout(5000)
                     .get();
 

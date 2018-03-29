@@ -17,6 +17,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,7 +31,9 @@ import ru.profapp.RanobeReader.Common.RanobeConstans;
 import ru.profapp.RanobeReader.Common.StringResources;
 import ru.profapp.RanobeReader.DAO.DatabaseDao;
 import ru.profapp.RanobeReader.JsonApi.JsonRanobeRfApi;
-import ru.profapp.RanobeReader.JsonApi.JsonRulateApi;
+import ru.profapp.RanobeReader.JsonApi.Rulate.JsonRulateApi;
+import ru.profapp.RanobeReader.JsonApi.Rulate.RulateBook;
+import ru.profapp.RanobeReader.JsonApi.Rulate.RulateReadyGson;
 import ru.profapp.RanobeReader.Models.Chapter;
 import ru.profapp.RanobeReader.Models.Ranobe;
 
@@ -300,6 +304,18 @@ public class RanobeRecyclerFragment extends Fragment {
             public void run() {
                 String response = JsonRulateApi.getInstance().GetReadyTranslatesHtml("",
                         String.valueOf(page + 1));
+
+                GsonBuilder builder = new GsonBuilder();
+                Gson gson = builder.create();
+                RulateReadyGson readyGson = gson.fromJson(response, RulateReadyGson.class);
+
+                if(readyGson.getStatus().equals("success")){
+
+                    for (RulateBook book:readyGson.getBooks()){
+                        Ranobe ranobe = new Ranobe(book);
+                        ranobeList.add(ranobe);
+                    }
+                }
                 try {
                     JSONObject jsonObject = new JSONObject(response);
                     if (jsonObject.get("status").equals("success")) {

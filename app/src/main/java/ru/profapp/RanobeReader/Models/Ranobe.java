@@ -28,10 +28,10 @@ import java.util.List;
 
 import ru.profapp.RanobeReader.Common.RanobeConstans;
 import ru.profapp.RanobeReader.Common.StringResources;
-import ru.profapp.RanobeReader.DAO.DatabaseDao;
 import ru.profapp.RanobeReader.Helpers.RanobeKeeper;
 import ru.profapp.RanobeReader.JsonApi.JsonRanobeRfApi;
-import ru.profapp.RanobeReader.JsonApi.JsonRulateApi;
+import ru.profapp.RanobeReader.JsonApi.Rulate.JsonRulateApi;
+import ru.profapp.RanobeReader.JsonApi.Rulate.RulateBook;
 
 /**
  * Created by Ruslan on 09.02.2018.
@@ -69,6 +69,30 @@ public class Ranobe {
     private Calendar mCalendar = Calendar.getInstance();
 
     public Ranobe() {
+    }
+
+    @Ignore
+    public Ranobe(RulateBook book) {
+
+        setRanobeSite(StringResources.Rulate_Site);
+        Id = book.getBookId();
+        EngTitle = book.getSTitle();
+        Title = book.getTTitle();
+        Image = book.getImg().replace("-5050", "");
+
+        Lang = book.getLang();
+        try {
+            ReadyDate = format.parse(book.getReadyDate());
+        } catch (ParseException e) {
+            ReadyDate = new Date();
+            e.printStackTrace();
+        }
+        mCalendar.setTime(ReadyDate);
+        mCalendar.set(Calendar.YEAR, Calendar.getInstance().get(Calendar.YEAR));
+
+        ReadyDate = mCalendar.getTime();
+
+        Url = StringResources.Rulate_Site + "/book/" + Id;
     }
 
     public void UpdateRanobe(JSONObject object, RanobeConstans.JsonObjectFrom enumFrom) {
@@ -518,9 +542,11 @@ public class Ranobe {
     public void updateRanobe(Context mContext) {
 
         try {
-            if (getRanobeSite().equals(StringResources.Rulate_Site) || getUrl().contains(StringResources.Rulate_Site)) {
+            if (getRanobeSite().equals(StringResources.Rulate_Site) || getUrl().contains(
+                    StringResources.Rulate_Site)) {
                 updateRulateRanobe(mContext);
-            } else if (getRanobeSite().equals(StringResources.RanobeRf_Site)|| getUrl().contains(StringResources.RanobeRf_Site)) {
+            } else if (getRanobeSite().equals(StringResources.RanobeRf_Site) || getUrl().contains(
+                    StringResources.RanobeRf_Site)) {
                 updateRanobeRfRanobe();
             }
             WasUpdated = true;
