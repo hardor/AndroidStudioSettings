@@ -15,6 +15,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -25,6 +26,7 @@ import java.util.Random;
 
 import ru.profapp.RanobeReader.Common.StringResources;
 import ru.profapp.RanobeReader.DAO.DatabaseDao;
+import ru.profapp.RanobeReader.Helpers.MyLog;
 import ru.profapp.RanobeReader.MainActivity;
 import ru.profapp.RanobeReader.Models.Notify;
 import ru.profapp.RanobeReader.NotificationActivity;
@@ -99,7 +101,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             return BitmapFactory.decodeStream(input);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            MyLog.SendError(StringResources.LogType.WARN,MyFirebaseMessagingService.class.toString(),"",e);
             return null;
         }
     }

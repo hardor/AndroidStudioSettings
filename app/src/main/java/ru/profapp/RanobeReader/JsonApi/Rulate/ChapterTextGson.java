@@ -3,10 +3,7 @@ package ru.profapp.RanobeReader.JsonApi.Rulate;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
-public class RulateReadyGson {
-
+public class ChapterTextGson {
     @SerializedName("status")
     @Expose
     private String status;
@@ -15,10 +12,7 @@ public class RulateReadyGson {
     private String msg;
     @SerializedName("response")
     @Expose
-    private List<RulateBook> mBooks = null;
-
-    public RulateReadyGson() {
-    }
+    private RulateText response;
 
     public String getStatus() {
         return status;
@@ -36,12 +30,12 @@ public class RulateReadyGson {
         this.msg = msg;
     }
 
-    public List<RulateBook> getBooks() {
-        return mBooks;
+    public RulateText getResponse() {
+        return response;
     }
 
-    public void setBooks(List<RulateBook> books) {
-        this.mBooks = books;
+    public void setResponse(RulateText response) {
+        this.response = response;
     }
+
 }
-

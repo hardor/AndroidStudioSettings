@@ -1,7 +1,5 @@
 package ru.profapp.RanobeReader.JsonApi;
 
-import com.crashlytics.android.Crashlytics;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Connection;
@@ -15,6 +13,8 @@ import java.util.concurrent.ExecutionException;
 
 import ru.profapp.RanobeReader.Common.StringResources;
 import ru.profapp.RanobeReader.Helpers.HtmlParser;
+import ru.profapp.RanobeReader.Helpers.MyLog;
+import ru.profapp.RanobeReader.Helpers.StringHelper;
 import ru.profapp.RanobeReader.Models.Chapter;
 
 /**
@@ -44,35 +44,37 @@ public class JsonRanobeRfApi {
         String request = StringResources.RanobeRf_Site + "/v1/book/parts-main/?page=" + page;
 
         String response = getDocumentText(request, Cookies);
-        try {
-            while (true) {
 
-                JSONObject jsonObject = new JSONObject(response);
-                if (jsonObject.getInt("status") == 422) {
+        for (int i = 0; i < 3; i++) {
+            JSONObject jsonObject = null;
+            try {
+                jsonObject = new JSONObject(response);
+            } catch (JSONException ignore) {
+                jsonObject = null;
+                ignore.printStackTrace();
+            }
+            if (jsonObject == null || jsonObject.optInt("status") == 422) {
 
-                    Connection.Response res = Jsoup
+                Connection.Response res = null;
+                try {
+                    res = Jsoup
                             .connect(StringResources.RanobeRf_Site)
                             .cookies(Cookies)
-                            .method(Connection.Method.POST)
+                            .method(Connection.Method.GET)
                             .execute();
+                } catch (IOException ignore) {
 
-                    Cookies = res.cookies();
-                    response = getDocumentText(request, Cookies);
-                    continue;
                 }
+
+                Cookies = res.cookies();
+
+                response = getDocumentText(request, Cookies);
+            } else {
                 break;
             }
 
-            return response;
-        } catch (JSONException e) {
-            e.printStackTrace();
-            Crashlytics.logException(e);
-            return "";
-        } catch (IOException e) {
-            e.printStackTrace();
-            Crashlytics.logException(e);
-            return "";
         }
+        return response;
     }
 
     public String SearchBooks(String search) {
@@ -81,56 +83,40 @@ public class JsonRanobeRfApi {
         return getDocumentText(request, Cookies);
     }
 
-    public Document GetChapterText(Chapter charpter) {
+    public String GetChapterText(Chapter charpter) {
 
         String ranobeName = charpter.getRanobeUrl().replace("http://xn--80ac9aeh6f.xn--p1ai/", "");
 
         String chapterName = charpter.getUrl().replace("http://xn--80ac9aeh6f.xn--p1ai/",
-                "").replace(
+                "/").replace(
                 ranobeName, "");
 
         ranobeName = ranobeName.substring(0, ranobeName.length() - 1);
-        chapterName = chapterName.substring(0, chapterName.length() - 1);
+        chapterName = chapterName.substring(1, chapterName.length() - 1);
         String request = "http://xn--80ac9aeh6f.xn--p1ai/v1/part/load/?bookAlias=" + ranobeName
                 + "&partAlias=" + chapterName;
-        return getDocument(request, Cookies);
+        return getDocumentText(request, Cookies);
 
     }
 
-    public Document GetBookInfo(String request) {
+    public String GetBookInfo(String ranobeName) {
 
-        return getDocument(request, Cookies);
+        String request = "http://xn--80ac9aeh6f.xn--p1ai/v1/book/load/?book_alias=" + ranobeName;
+
+        return getDocumentText(request, Cookies);
     }
 
     private String getDocumentText(String request, Map<String, String> Cookies) {
 
-        Document doc = getDocument(request, Cookies);
-
-        String result = "";
-
-        try {
-            result = doc.body().text();
-
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-            Crashlytics.logException(e);
-        }
-        return result;
-    }
-
-    private Document getDocument(String request, Map<String, String> Cookies) {
-
         Document html = null;
         try {
             html = new HtmlParser(Cookies).execute(request).get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            Crashlytics.logException(e);
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-            Crashlytics.logException(e);
+            String result = html.body().html();
+            return StringHelper.getInstance().cleanJson(result);
+        } catch (InterruptedException | NullPointerException | ExecutionException e) {
+            MyLog.SendError(StringResources.LogType.WARN, JsonRulateApi.class.toString(), "", e);
         }
-        return html;
+        return "";
     }
 
 }

@@ -13,6 +13,7 @@ public class RanobeKeeper {
 
     private Integer ChapterTextSize;
     private Boolean HideUnavailableChapters;
+    private Boolean AutoSaveText;
 
     private RanobeKeeper() {
     }
@@ -53,4 +54,11 @@ public class RanobeKeeper {
         HideUnavailableChapters = hideUnavailableChapters;
     }
 
+    public Boolean getAutoSaveText() {
+        return AutoSaveText;
+    }
+
+    public void setAutoSaveText(Boolean autoSaveText) {
+        AutoSaveText = autoSaveText;
+    }
 }

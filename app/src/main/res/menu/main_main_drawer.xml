@@ -21,10 +21,10 @@
             android:id="@+id/nav_search"
             android:icon="@android:drawable/ic_menu_search"
             android:title="@string/search" />
-        <!--<item-->
-            <!--android:id="@+id/nav_history"-->
-            <!--android:icon="@android:drawable/ic_menu_recent_history"-->
-            <!--android:title="@string/history" />-->
+        <item
+            android:id="@+id/nav_chapters"
+            android:icon="@android:drawable/ic_menu_recent_history"
+            android:title="@string/saved_chapters" />
 
     </group>
 
@@ -34,10 +34,14 @@
                 android:id="@+id/nav_manage"
                 android:icon="@drawable/ic_menu_manage"
                 android:title="@string/tools" />
+            <!--<item-->
+                <!--android:id="@+id/nav_notify"-->
+                <!--android:icon="@android:drawable/stat_notify_chat"-->
+                <!--android:title="@string/notifications" />-->
             <item
-                android:id="@+id/nav_notify"
-                android:icon="@android:drawable/stat_notify_chat"
-                android:title="@string/notifications" />
+                android:id="@+id/nav_send"
+                android:icon="@drawable/ic_send_black_24dp"
+                android:title="@string/feedback" />
         </menu>
     </item>
 

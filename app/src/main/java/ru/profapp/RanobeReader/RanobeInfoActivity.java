@@ -16,12 +16,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.core.CrashlyticsCore;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
@@ -37,8 +39,9 @@ import ru.profapp.RanobeReader.Common.RanobeConstans;
 import ru.profapp.RanobeReader.Common.StringResources;
 import ru.profapp.RanobeReader.Common.ThemeUtils;
 import ru.profapp.RanobeReader.DAO.DatabaseDao;
+import ru.profapp.RanobeReader.Helpers.MyLog;
 import ru.profapp.RanobeReader.Helpers.RanobeKeeper;
-import ru.profapp.RanobeReader.JsonApi.Rulate.JsonRulateApi;
+import ru.profapp.RanobeReader.JsonApi.JsonRulateApi;
 import ru.profapp.RanobeReader.Models.Chapter;
 import ru.profapp.RanobeReader.Models.Ranobe;
 
@@ -61,18 +64,27 @@ public class RanobeInfoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(this, new Crashlytics());
+        // Set up Crashlytics, disabled for debug builds
+        Crashlytics crashlyticsKit = new Crashlytics.Builder()
+                .core(new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build())
+                .build();
+
+        Fabric.with(this, crashlyticsKit);
         ThemeUtils.onActivityCreateSetTheme(this, true);
         setContentView(R.layout.activity_ranobe_info);
 
         loadedChapterCount = RanobeConstans.chapterCount;
 
         MobileAds.initialize(this, getString(R.string.app_admob_id));
-        AdView adView = findViewById(R.id.adView);
-        //  AdRequest adRequest = new AdRequest.Builder().build();
-        AdRequest adRequest = new AdRequest.Builder().addTestDevice("sdfsdf").build();
-        adView.loadAd(adRequest);
 
+        AdView adView = findViewById(R.id.adView);
+        AdRequest.Builder adRequest = new AdRequest.Builder();
+
+        if (BuildConfig.DEBUG) {
+            adRequest.addTestDevice("sdfsdf");
+        }
+
+        adView.loadAd(adRequest.build());
         Button loadButton = findViewById(R.id.loadButton);
         borderImage = getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp);
         fillImage = getResources().getDrawable(R.drawable.ic_favorite_black_24dp);
@@ -94,8 +106,6 @@ public class RanobeInfoActivity extends AppCompatActivity {
 
         mContext = getApplicationContext();
         mCurrentRanobe = RanobeKeeper.getInstance().getRanobe();
-        RanobeConstans.FragmentType fragmentType = RanobeConstans.FragmentType.valueOf(
-                getIntent().getStringExtra("FragmentType"));
         getSupportActionBar().setTitle(mCurrentRanobe.getTitle());
         initFavoriteButton();
         preferences = mContext.getSharedPreferences(
@@ -122,13 +132,13 @@ public class RanobeInfoActivity extends AppCompatActivity {
                                     wasadded = true;
                                     mCurrentRanobe.setFavoritedInWeb(true);
                                     runOnUiThread(() -> Toast.makeText(mContext,
-                                            mCurrentRanobe.getTitle() + mContext.getString(
+                                            mCurrentRanobe.getTitle() +" "+ mContext.getString(
                                                     R.string.added_to_web),
                                             Toast.LENGTH_SHORT).show());
                                 }
                             } catch (JSONException e) {
-                                e.printStackTrace();
-                                Crashlytics.logException(e);
+                                MyLog.SendError(StringResources.LogType.WARN,RanobeInfoActivity.class.toString(),"",e);
+
                             }
 
                         }
@@ -136,16 +146,14 @@ public class RanobeInfoActivity extends AppCompatActivity {
                     }
 
                     if (!wasadded) {
-
+                        mCurrentRanobe.setFavorited(true);
                         DatabaseDao.getInstance(mContext).getRanobeDao().insert(mCurrentRanobe);
                         DatabaseDao.getInstance(mContext).getChapterDao().insertAll(
                                 mCurrentRanobe.getChapterList().toArray(
                                         new Chapter[mCurrentRanobe.getChapterList().size()]));
 
-                        mCurrentRanobe.setFavorited(true);
-
                         runOnUiThread(() -> Toast.makeText(mContext,
-                                mCurrentRanobe.getTitle() + mContext.getString(
+                                mCurrentRanobe.getTitle() + " " +mContext.getString(
                                         R.string.added_to_local), Toast.LENGTH_SHORT).show());
 
                     }
@@ -166,8 +174,8 @@ public class RanobeInfoActivity extends AppCompatActivity {
                                 mCurrentRanobe.setFavoritedInWeb(false);
                             }
                         } catch (JSONException e) {
-                            e.printStackTrace();
-                            Crashlytics.logException(e);
+                            MyLog.SendError(StringResources.LogType.WARN,RanobeInfoActivity.class.toString(),"",e);
+
                         }
                     }
 
@@ -183,7 +191,12 @@ public class RanobeInfoActivity extends AppCompatActivity {
         });
 
         if (!mCurrentRanobe.getWasUpdated()) {
-            mCurrentRanobe.updateRanobe(mContext);
+            try {
+                mCurrentRanobe.updateRanobe(mContext);
+            }catch (Exception ignored){
+
+            }
+
         }
 
         if (mCurrentRanobe.getDescription() != null) {
@@ -211,10 +224,17 @@ public class RanobeInfoActivity extends AppCompatActivity {
 
         int size = mCurrentRanobe.getChapterList().size();
 
+        RecyclerView commentRecycleView = findViewById(R.id.comment_list);
+        commentRecycleView.setLayoutManager(new LinearLayoutManager(mContext));
+
+        CommentsRecyclerViewAdapter commentsAdapter = new CommentsRecyclerViewAdapter(
+                mCurrentRanobe.getRulateComments(), mContext);
+        commentRecycleView.setAdapter(commentsAdapter);
+
         recyclerView = findViewById(R.id.chapter_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        adapter = new ChapterRecyclerViewAdapter(recycleChapterList, mContext);
+        adapter = new ChapterRecyclerViewAdapter(recycleChapterList, this,mCurrentRanobe);
         adapter.setDownloadDoneImage(downloadDoneImage);
         recyclerView.setAdapter(adapter);
 
@@ -224,10 +244,26 @@ public class RanobeInfoActivity extends AppCompatActivity {
             loadButton.setOnClickListener(v -> {
                 loadButton.setEnabled(false);
                 loadChapters(false);
-                loadButton.setEnabled(false);
+                loadButton.setEnabled(true);
             });
         }
 
+        TabHost tabHost = findViewById(R.id.tabHost);
+
+        tabHost.setup();
+
+        TabHost.TabSpec tabSpec = tabHost.newTabSpec("tag1");
+
+        tabSpec.setContent(R.id.linearLayout);
+        tabSpec.setIndicator(getResources().getString(R.string.chapters));
+        tabHost.addTab(tabSpec);
+
+        tabSpec = tabHost.newTabSpec("tag2");
+        tabSpec.setContent(R.id.linearLayout2);
+        tabSpec.setIndicator(getResources().getString(R.string.comments));
+        tabHost.addTab(tabSpec);
+
+        tabHost.setCurrentTab(0);
     }
 
     private void loadChapters(boolean clean) {
@@ -256,7 +292,7 @@ public class RanobeInfoActivity extends AppCompatActivity {
         }
         recycleChapterList.addAll(newList);
 
-        adapter = new ChapterRecyclerViewAdapter(recycleChapterList, mContext);
+        adapter = new ChapterRecyclerViewAdapter(recycleChapterList, this,mCurrentRanobe);
         adapter.setDownloadDoneImage(downloadDoneImage);
         recyclerView.setAdapter(adapter);
 
@@ -274,7 +310,8 @@ public class RanobeInfoActivity extends AppCompatActivity {
 
     private void initFavoriteButton() {
         AsyncTask.execute(() -> {
-            if (mCurrentRanobe.getFavoritedInWeb() || DatabaseDao.getInstance(mContext).getRanobeDao().IsRanobeFavorite(
+            if (mCurrentRanobe.getFavoritedInWeb() || DatabaseDao.getInstance(
+                    mContext).getRanobeDao().IsRanobeFavorite(
                     mCurrentRanobe.getUrl())
                     != null) {
                 favoriteButton.setImageDrawable(fillImage);
@@ -290,4 +327,8 @@ public class RanobeInfoActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
 }

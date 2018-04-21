@@ -10,6 +10,12 @@
         android:summaryOn="@string/show_only_readable"
         android:title="@string/hide_unavailable_chapters" />
 
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="@string/pref_general_auto_save"
+        android:summaryOff="@string/auto_save_text_off"
+        android:summaryOn="@string/auto_save_text_on"
+        android:title="@string/auto_save_text" />
     <!--Todo:-->
     <!--<SwitchPreference-->
         <!--android:defaultValue="false"-->
@@ -27,6 +33,11 @@
     <Preference android:title="@string/сlean_cache"
                 android:key="@string/CleanCacheButton"
                 android:summary="@string/Delete_downloaded_chapters"/>
+
+    <Preference android:title="@string/сlean_favorite"
+                android:key="@string/CleanFavoriteButton"
+                android:summary="@string/Delete_favorited_ranobes"/>
+
 
     <Preference android:title="@string/clean_preferences"
                 android:key="@string/CleanPreferencesButton"

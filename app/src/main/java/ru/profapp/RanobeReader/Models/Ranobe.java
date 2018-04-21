@@ -6,16 +6,14 @@ import android.arch.persistence.room.PrimaryKey;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
-import android.text.Html;
 
-import com.crashlytics.android.Crashlytics;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -28,10 +26,18 @@ import java.util.List;
 
 import ru.profapp.RanobeReader.Common.RanobeConstans;
 import ru.profapp.RanobeReader.Common.StringResources;
+import ru.profapp.RanobeReader.Helpers.MyLog;
 import ru.profapp.RanobeReader.Helpers.RanobeKeeper;
+import ru.profapp.RanobeReader.Helpers.StringHelper;
 import ru.profapp.RanobeReader.JsonApi.JsonRanobeRfApi;
-import ru.profapp.RanobeReader.JsonApi.Rulate.JsonRulateApi;
+import ru.profapp.RanobeReader.JsonApi.JsonRulateApi;
+import ru.profapp.RanobeReader.JsonApi.Ranoberf.Genre;
+import ru.profapp.RanobeReader.JsonApi.Ranoberf.ResultBookInfo;
+import ru.profapp.RanobeReader.JsonApi.Ranoberf.RfBook;
+import ru.profapp.RanobeReader.JsonApi.Ranoberf.RfBookInfoGson;
+import ru.profapp.RanobeReader.JsonApi.Rulate.BookInfoGson;
 import ru.profapp.RanobeReader.JsonApi.Rulate.RulateBook;
+import ru.profapp.RanobeReader.JsonApi.Rulate.RulateComment;
 
 /**
  * Created by Ruslan on 09.02.2018.
@@ -39,6 +45,14 @@ import ru.profapp.RanobeReader.JsonApi.Rulate.RulateBook;
 @Entity(tableName = "ranobe")
 public class Ranobe {
 
+    @Ignore
+    private final Gson gson = new GsonBuilder().setLenient().disableHtmlEscaping().create();
+    @Ignore
+    private final DateFormat format = new SimpleDateFormat("MM-dd HH:mm");
+    @Ignore
+    private final DateFormat ranobeChapterFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
+    @Ignore
+    private final Calendar mCalendar = Calendar.getInstance();
     @PrimaryKey
     @NonNull
     private String Url;
@@ -61,49 +75,165 @@ public class Ranobe {
     @Ignore
     private List<Chapter> chapterList = new ArrayList<>();
     @Ignore
-    private DateFormat format = new SimpleDateFormat("MM-dd HH:mm");
-
-    @Ignore
-    private DateFormat ranobeChapterFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
-    @Ignore
-    private Calendar mCalendar = Calendar.getInstance();
+    private List<RulateComment> mRulateComments = new ArrayList<>();
 
     public Ranobe() {
     }
 
-    @Ignore
-    public Ranobe(RulateBook book) {
+    public static boolean empty(final String s) {
+        // Null-safe, short-circuit evaluation.
+        return s == null || s.trim().isEmpty();
+    }
+
+    public void UpdateRulateRanobe(RulateBook book) {
 
         setRanobeSite(StringResources.Rulate_Site);
-        Id = book.getBookId();
-        EngTitle = book.getSTitle();
-        Title = book.getTTitle();
-        Image = book.getImg().replace("-5050", "");
 
-        Lang = book.getLang();
-        try {
-            ReadyDate = format.parse(book.getReadyDate());
-        } catch (ParseException e) {
-            ReadyDate = new Date();
-            e.printStackTrace();
+        if (book.getBookId() != null) {
+            Id = book.getBookId();
+        } else if (book.getId() != null) {
+            Id = book.getId();
         }
-        mCalendar.setTime(ReadyDate);
-        mCalendar.set(Calendar.YEAR, Calendar.getInstance().get(Calendar.YEAR));
 
-        ReadyDate = mCalendar.getTime();
+        EngTitle = book.getSTitle() != null ? book.getSTitle() : EngTitle;
+        Title = book.getTTitle() != null ? book.getTTitle() : Title;
+        Image = book.getImg() != null ? book.getImg().replace("-5050", "") : Image;
+
+        Lang = book.getLang() != null ? book.getLang() : Lang;
+        try {
+
+            if(ReadyDate == null) {
+                if(book.getReadyDate() != null){
+                    mCalendar.setTime(format.parse(book.getReadyDate()));
+                    mCalendar.set(Calendar.YEAR, Calendar.getInstance().get(Calendar.YEAR));
+                    ReadyDate = mCalendar.getTime();
+                }
+                ReadyDate = book.getLastActivity() != null ? new java.util.Date(
+                        book.getLastActivity() * 1000) : ReadyDate;
+            }
+
+
+        } catch (ParseException e) {
+            MyLog.SendError(StringResources.LogType.WARN, Ranobe.class.toString(), "", e);
+        }
 
         Url = StringResources.Rulate_Site + "/book/" + Id;
+
+        CharpterCount = book.getChaptersTotal() != null ? book.getChaptersTotal() : CharpterCount;
+
+        Status = book.getStatus() != null ? book.getStatus() : Status;
+        Rating = book.getRating() != null ? book.getRating() : Rating;
+
+        if (book.getChapters() != null) {
+
+            for (int i = 0; i < book.getChapters().size(); i++) {
+                Chapter chapter = new Chapter(book.getChapters().get(i));
+                chapter.setRanobeId(Id);
+                chapter.setRanobeUrl(Url);
+                chapter.setUrl(Url + "/" + chapter.getId());
+                chapter.setRanobeName(Title);
+                chapter.setIndex(i);
+                chapterList.add(chapter);
+            }
+            Collections.reverse(chapterList);
+        }
+        if (book.getComments() != null) {
+            mRulateComments = book.getComments();
+            Collections.reverse(mRulateComments);
+        }
+        Description = "Рейтинг: " + Rating +
+                "\nСтатус: " + Status +
+                "\nПеревод: " + Lang +
+                "\nКоличество глав: " + CharpterCount;
+
+    }
+
+    public void UpdateRanobeRfRanobe(RfBook book) {
+
+        setRanobeSite(StringResources.RanobeRf_Site);
+
+        Id = book.getId() != null ? book.getId() : Id;
+
+        Title = empty(Title) ? (book.getName() != null ? book.getName() : Title) : Title;
+        Title = empty(Title) ? (book.getTitle() != null ? book.getTitle() : Title) : Title;
+
+        Url = empty(Url) ? (book.getAlias() != null ? book.getAlias() : Url) : Url;
+        Url = empty(Url) ? (book.getUrl() != null ? StringResources.RanobeRf_Site + book.getUrl()
+                : Url) : Url;
+
+        Description = empty(Description) ? (book.getDescription() != null
+                ? StringHelper.getInstance().removeTags(book.getDescription())
+                : Description) : Description;
+        AdditionalInfo = empty(AdditionalInfo) ? (book.getInfo() != null
+                ? StringHelper.getInstance().removeTags(book.getInfo())
+                : AdditionalInfo) : AdditionalInfo;
+
+        ReadyDate = ReadyDate == null ? (book.getLastUpdatedBook() != null ? new Date(
+                book.getLastUpdatedBook() * 1000) : ReadyDate) : ReadyDate;
+
+        ReadyDate = ReadyDate == null ? (book.getPublishedAt() != null ? new Date(
+                book.getPublishedAt() * 1000)
+                : ReadyDate) : ReadyDate;
+
+        Image = empty(Image) ? (book.getImages() != null ? StringResources.RanobeRf_Site
+                + book.getImages().get(0)
+                : Image) : Image;
+        Image = empty(Image) ? (book.getImage() != null ? book.getImage().getDesktop().getImage()
+                : Image) : Image;
+
+        Rating = empty(Rating) ? (book.getLikes() != null ? "Likes: " + book.getLikes() + (
+                book.getDislikes() != null ? Rating + "\nDislikes: " + book.getDislikes() : "")
+                : Rating) : Rating;
+
+        if (book.getParts() != null) {
+
+            for (int i = 0; i < book.getParts().size(); i++) {
+
+                Chapter chapter = new Chapter(book.getParts().get(i));
+                chapter.setRanobeUrl(Url);
+                chapter.setRanobeName(Title);
+                chapter.setIndex(i);
+                chapterList.add(chapter);
+            }
+        }
+
+    }
+
+    private void UpdateRanobeRfRanobe(ResultBookInfo result) {
+        UpdateRanobeRfRanobe(result.getBook());
+
+        String description = getDescription() + "\n";
+        //Todo:
+        for (Genre genre : result.getGenres()) {
+            description = description.concat(genre.getTitle() + ", ");
+        }
+        setDescription(description);
+
+        chapterList.clear();
+
+        for (int i = 0; i < result.getParts().size(); i++) {
+            Chapter chapter = new Chapter(result.getParts().get(i));
+            chapter.setRanobeUrl(Url);
+            chapter.setRanobeName(Title);
+            chapter.setIndex(i);
+            chapterList.add(chapter);
+        }
+        Collections.reverse(chapterList);
+    }
+
+    public List<RulateComment> getRulateComments() {
+        return mRulateComments;
+    }
+
+    public void setRulateComments(
+            List<RulateComment> rulateComments) {
+        mRulateComments = rulateComments;
     }
 
     public void UpdateRanobe(JSONObject object, RanobeConstans.JsonObjectFrom enumFrom) {
 
         switch (enumFrom) {
-            case RulateGetReady:
-                fromRulateGetReady(object, enumFrom);
-                break;
-            case RulateGetBookInfo:
-                fromRulateGetBookInfo(object, enumFrom);
-                break;
+
             case RanobeRfGetReady:
                 fromRanobeRfGetReady(object, enumFrom);
                 break;
@@ -134,8 +264,8 @@ public class Ranobe {
             Id = object.getInt("book_id");
             Url = StringResources.Rulate_Site + "/book/" + Id;
         } catch (JSONException e) {
-            e.printStackTrace();
-            Crashlytics.logException(e);
+            MyLog.SendError(StringResources.LogType.WARN, Ranobe.class.toString(), "", e);
+
         }
 
     }
@@ -150,19 +280,23 @@ public class Ranobe {
             CharpterCount = object.optInt("n_chapters");
             Lang = object.getString("lang");
 
-            ReadyDate = new java.util.Date(object.optLong("last_activity") * 1000);
-            mCalendar.setTime(ReadyDate);
-            mCalendar.set(Calendar.YEAR, Calendar.getInstance().get(Calendar.YEAR));
-            ReadyDate = mCalendar.getTime();
+            if (object.optLong("last_activity") == 0) {
+                ReadyDate = null;
+            } else {
 
+                ReadyDate = new java.util.Date(object.optLong("last_activity") * 1000);
+                mCalendar.setTime(ReadyDate);
+
+                ReadyDate = mCalendar.getTime();
+            }
             Status = object.getString("status");
             Rating = object.getString("rating");
             // Todo:
             //Image = object.getString("img");
 
         } catch (JSONException e) {
-            e.printStackTrace();
-            Crashlytics.logException(e);
+            MyLog.SendError(StringResources.LogType.WARN, Ranobe.class.toString(), "", e);
+
         }
 
         Url = StringResources.Rulate_Site + "/book/" + Id;
@@ -183,26 +317,16 @@ public class Ranobe {
                 JSONObject chapterJson = object.getJSONObject("part");
                 Chapter chapter = new Chapter(chapterJson, enumFrom);
                 chapter.setRanobeUrl(Url);
+                chapter.setRanobeName(Title);
+                chapter.setIndex(0);
                 chapterList.add(chapter);
             }
 
         } catch (JSONException e) {
-            e.printStackTrace();
-            Crashlytics.logException(e);
+            MyLog.SendError(StringResources.LogType.WARN, Ranobe.class.toString(), "", e);
+
         }
 
-    }
-
-    private void UpdateRanobe(Document object, RanobeConstans.JsonObjectFrom enumFrom) {
-
-        switch (enumFrom) {
-            case RanobeRfGetBookInfo:
-                fromRanobeRfGetBookInfo(object, enumFrom);
-                break;
-            default:
-                //  throw new NullPointerException();
-                break;
-        }
     }
 
     private void fromRanobeRfGetReady(JSONObject object, RanobeConstans.JsonObjectFrom enumFrom) {
@@ -225,132 +349,22 @@ public class Ranobe {
                     JSONObject value = jsonArray.optJSONObject(i);
                     Chapter chapter = new Chapter(value, enumFrom);
                     chapter.setRanobeUrl(Url);
+                    chapter.setRanobeName(Title);
+                    chapter.setIndex(i);
                     chapterList.add(chapter);
 
                 }
             }
 
         } catch (JSONException e) {
-            e.printStackTrace();
-            Crashlytics.logException(e);
+            MyLog.SendError(StringResources.LogType.WARN, Ranobe.class.toString(), "", e);
+
         }
-    }
-
-    private void fromRanobeRfGetBookInfo(Document object, RanobeConstans.JsonObjectFrom enumFrom) {
-        setRanobeSite(StringResources.RanobeRf_Site);
-        Elements additionalElements = object.select(
-                "div.block-cooperation div.book__description p");
-
-        AdditionalInfo = "";
-        for (Element el : additionalElements) {
-            if (!el.text().isEmpty()) {
-                AdditionalInfo += el.text() + "\n";
-            }
-        }
-
-        Description = object.selectFirst("div.block-cooperation + div p").text();
-        Rating = object.selectFirst("div.rating-text").text();
-
-        Elements chapterElements = object.select("div.book__content-table table.table");
-
-        for (Element el : chapterElements) {
-
-            Chapter chapter = new Chapter();
-            chapter.setRanobeUrl(Url);
-            try {
-
-                chapter.setTitle(el.selectFirst("a").text());
-                chapter.setUrl(el.selectFirst("a").attr("href"));
-
-                chapter.setTime(ranobeChapterFormat.parse(el.selectFirst("time").attr("datetime")));
-            } catch (ParseException e) {
-                e.printStackTrace();
-                Crashlytics.logException(e);
-                chapter.setTime(new Date());
-            } catch (NullPointerException e) {
-                e.printStackTrace();
-                Crashlytics.logException(e);
-            }
-
-            chapterList.add(chapter);
-        }
-
-    }
-
-    private void fromRulateGetBookInfo(JSONObject object, RanobeConstans.JsonObjectFrom enumFrom) {
-        setRanobeSite(StringResources.Rulate_Site);
-        try {
-            Id = object.optInt("id");
-            Url = StringResources.Rulate_Site + "/book/" + Id;
-            EngTitle = object.getString("s_title");
-            Title = object.getString("t_title");
-            CharpterCount = object.optInt("n_chapters");
-            Lang = object.getString("lang");
-
-            ReadyDate = new java.util.Date(object.optLong("last_activity") * 1000);
-            mCalendar.setTime(ReadyDate);
-            mCalendar.set(Calendar.YEAR, Calendar.getInstance().get(Calendar.YEAR));
-            ReadyDate = mCalendar.getTime();
-
-            Status = object.getString("status");
-            Rating = object.getString("rating");
-            Image = object.getString("img");
-            if (object.has("chapters")) {
-                JSONArray jsonArray = object.optJSONArray("chapters");
-                for (int i = 0; i < jsonArray.length(); i++) {
-
-                    JSONObject value = jsonArray.optJSONObject(i);
-                    Chapter chapter = new Chapter(value, enumFrom);
-                    chapter.setRanobeId(Id);
-                    chapter.setRanobeUrl(Url);
-                    chapter.setUrl(Url + "/" + chapter.getId());
-                    chapterList.add(chapter);
-
-                }
-                Collections.reverse(chapterList);
-            }
-            Description = "Рейтинг: " + Rating +
-                    "\nСтатус: " + Status +
-                    "\nПеревод: " + Lang +
-                    "\nКоличество глав: " + CharpterCount;
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            Crashlytics.logException(e);
-        }
-
-    }
-
-    private void fromRulateGetReady(JSONObject object, RanobeConstans.JsonObjectFrom enumFrom) {
-        setRanobeSite(StringResources.Rulate_Site);
-        try {
-            Id = object.getInt("book_id");
-            EngTitle = object.getString("s_title");
-            Title = object.getString("t_title");
-            Image = object.getString("img").replace("-5050", "");
-
-            Lang = object.getString("lang");
-            ReadyDate = format.parse(object.getString("ready_date"));
-
-            mCalendar.setTime(ReadyDate);
-            mCalendar.set(Calendar.YEAR, Calendar.getInstance().get(Calendar.YEAR));
-
-            ReadyDate = mCalendar.getTime();
-        } catch (JSONException e) {
-            e.printStackTrace();
-            Crashlytics.logException(e);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            Crashlytics.logException(e);
-            ReadyDate = new Date();
-        }
-
-        Url = StringResources.Rulate_Site + "/book/" + Id;
     }
 
     @NonNull
     public String getUrl() {
-        return Url;
+        return Url == null ? "" : Url;
     }
 
     public void setUrl(@NonNull String url) {
@@ -358,7 +372,13 @@ public class Ranobe {
     }
 
     public int getId() {
-        return Id;
+
+        if (Id != 0 || !getRanobeSite().equals(StringResources.Rulate_Site)) {
+            return Id;
+        } else if (getUrl() != null && getRanobeSite().equals(StringResources.Rulate_Site)) {
+            return Integer.parseInt(getUrl().replace(StringResources.Rulate_Site + "/book/", ""));
+        }
+        throw new NullPointerException();
     }
 
     public void setId(int id) {
@@ -414,7 +434,16 @@ public class Ranobe {
     }
 
     public String getRanobeSite() {
-        return RanobeSite;
+        if (RanobeSite != null) {
+            return RanobeSite;
+        }
+        if (getUrl().contains(StringResources.Rulate_Site)) {
+            return StringResources.Rulate_Site;
+        }
+        if (getUrl().contains(StringResources.RanobeRf_Site)) {
+            return StringResources.RanobeRf_Site;
+        }
+        return "";
     }
 
     public void setRanobeSite(String ranobeSite) {
@@ -513,45 +542,60 @@ public class Ranobe {
         String token = mPreferences.getString(StringResources.KEY_Token, "");
         String response = JsonRulateApi.getInstance().GetBookInfo(getId(), token);
 
-        response = Html.fromHtml(response).toString();
-
-//        response = response.replace("\"\\&quot;", "\\\"");
-//        response = response.replace("\\&quot;\"", "\\\"");
         try {
-            JSONObject jsonObject = new JSONObject(response);
-            if (jsonObject.get("status").equals("success")) {
+            BookInfoGson bookGson = gson.fromJson(response, BookInfoGson.class);
 
-                UpdateRanobe(jsonObject.getJSONObject("response"),
-                        RanobeConstans.JsonObjectFrom.RulateGetBookInfo);
+            if (bookGson.getStatus().equals("success")) {
+                UpdateRulateRanobe(bookGson.getResponse());
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
-            Crashlytics.logException(e);
+        } catch (JsonParseException e) {
+            MyLog.SendError(StringResources.LogType.WARN, Ranobe.class.toString(), "", e);
+
         }
 
     }
 
     private void updateRanobeRfRanobe() {
 
-        Document response = JsonRanobeRfApi.getInstance().GetBookInfo(getUrl());
+        String ranobeName = getUrl().replace(StringResources.RanobeRf_Site, "");
+        ranobeName = ranobeName.substring(1, ranobeName.length() - 1);
+        String response = JsonRanobeRfApi.getInstance().GetBookInfo(ranobeName);
 
-        UpdateRanobe(response, RanobeConstans.JsonObjectFrom.RanobeRfGetBookInfo);
+        try {
+            RfBookInfoGson bookGson = gson.fromJson(response, RfBookInfoGson.class);
+
+            if (bookGson.getStatus() == 200) {
+                UpdateRanobeRfRanobe(bookGson.getResult());
+            }
+        } catch (JsonParseException e) {
+            MyLog.SendError(StringResources.LogType.WARN, RfBookInfoGson.class.toString(), "", e);
+
+        }
+
+        //    UpdateRanobe(response, RanobeConstans.JsonObjectFrom.RanobeRfGetBookInfo);
 
     }
 
-    public void updateRanobe(Context mContext) {
+    public void updateRanobe(Context mContext) throws NullPointerException {
 
         try {
-            if (getRanobeSite().equals(StringResources.Rulate_Site) || getUrl().contains(
-                    StringResources.Rulate_Site)) {
+            if (getRanobeSite().equals(StringResources.Rulate_Site) || (getUrl() != null
+                    && getUrl().contains(StringResources.Rulate_Site))) {
                 updateRulateRanobe(mContext);
-            } else if (getRanobeSite().equals(StringResources.RanobeRf_Site) || getUrl().contains(
-                    StringResources.RanobeRf_Site)) {
+                WasUpdated = true;
+            } else if (getRanobeSite().equals(StringResources.RanobeRf_Site) || (getUrl() != null
+                    && getUrl().contains(
+                    StringResources.RanobeRf_Site))) {
                 updateRanobeRfRanobe();
+                WasUpdated = true;
+            } else if (!getRanobeSite().equals(StringResources.Title_Site)) {
+                throw new NullPointerException();
             }
-            WasUpdated = true;
-        } catch (Exception e) {
-            e.printStackTrace();
+
+        } catch (NullPointerException e) {
+            WasUpdated = false;
+            MyLog.SendError(StringResources.LogType.WARN, Ranobe.class.toString(), "", e);
+            throw new NullPointerException();
         }
 
     }

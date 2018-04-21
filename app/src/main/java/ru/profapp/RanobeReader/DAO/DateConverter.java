@@ -12,11 +12,17 @@ public class DateConverter {
 
     @TypeConverter
     public static Date toDate(long dateLong) {
+        if (dateLong == 0) {
+            return null;
+        }
         return new Date(dateLong);
     }
 
     @TypeConverter
     public static long fromDate(Date date) {
+        if (date == null) {
+            return 0;
+        }
         return date.getTime();
     }
 }

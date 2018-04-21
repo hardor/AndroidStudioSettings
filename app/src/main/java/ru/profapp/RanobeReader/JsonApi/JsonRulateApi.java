@@ -1,13 +1,14 @@
-package ru.profapp.RanobeReader.JsonApi.Rulate;
-
-import com.crashlytics.android.Crashlytics;
+package ru.profapp.RanobeReader.JsonApi;
 
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
+import ru.profapp.RanobeReader.Common.StringResources;
 import ru.profapp.RanobeReader.Helpers.HtmlParser;
+import ru.profapp.RanobeReader.Helpers.MyLog;
+import ru.profapp.RanobeReader.Helpers.StringHelper;
 
 /**
  * Created by Ruslan on 09.02.2018.
@@ -32,7 +33,7 @@ public class JsonRulateApi {
         return instance;
     }
 
-    public String Login(String login, String pass) throws IOException {
+    public String Login(String login, String pass) {
         String request = String.format(ApiString, "auth");
 
         request += "&login=" + login;
@@ -41,7 +42,7 @@ public class JsonRulateApi {
         return getDocumentText(request);
     }
 
-    public String GetReadyTranslatesHtml(String limit, String page) {
+    public String GetReadyTranslates(String limit, String page) {
         String request = String.format(ApiString, "getReady");
 
         if (limit != null) {
@@ -77,6 +78,7 @@ public class JsonRulateApi {
     }
 
     public String GetChapterText(int book_id, int chapter_id, String token) {
+        // http://tl.rulate.ru/api/chapter?key=fpoiKLUues81werht039&chapter_id=&book_id=
         String request = String.format(ApiString, "chapter");
         if (!token.isEmpty()) {
             request += "&token=" + token;
@@ -120,26 +122,18 @@ public class JsonRulateApi {
         }
         request += "&book_id=" + book_id;
 
-        return getDocumentText(request);
+        return getDocumentText(request).replace("comments\":\"\",", "\":null,");
     }
 
-    private String getDocumentText(String request) {
+    private String getDocumentText(String request){
 
         Document html = null;
         try {
             html = new HtmlParser().execute(request).get();
-//            String test = StringEscapeUtils.unescapeJava(html.body().html());
-            return html.body().html();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            Crashlytics.logException(e);
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-            Crashlytics.logException(e);
-
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-            Crashlytics.logException(e);
+            String result = html.body().html();
+            return StringHelper.getInstance().cleanJson(result);
+        } catch (InterruptedException | NullPointerException | ExecutionException  e) {
+            MyLog.SendError(StringResources.LogType.WARN, JsonRulateApi.class.toString(), "", e);
 
         }
         return "";

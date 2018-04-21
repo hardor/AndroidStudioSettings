@@ -1,6 +1,5 @@
 package ru.profapp.RanobeReader;
 
-import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -16,12 +15,11 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.core.CrashlyticsCore;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
@@ -30,9 +28,8 @@ import io.fabric.sdk.android.Fabric;
 import ru.profapp.RanobeReader.Common.RanobeConstans;
 import ru.profapp.RanobeReader.Common.StringResources;
 import ru.profapp.RanobeReader.Common.ThemeUtils;
-import ru.profapp.RanobeReader.DAO.DatabaseDao;
+import ru.profapp.RanobeReader.Helpers.MyLog;
 import ru.profapp.RanobeReader.Helpers.RanobeKeeper;
-import ru.profapp.RanobeReader.Models.Notify;
 import ru.profapp.RanobeReader.Models.Ranobe;
 
 public class MainActivity extends AppCompatActivity
@@ -43,20 +40,40 @@ public class MainActivity extends AppCompatActivity
 
 {
 
+    private Thread.UncaughtExceptionHandler ExceptionHandler =
+            new Thread.UncaughtExceptionHandler() {
+                public void uncaughtException(Thread th, Throwable ex) {
+                    MyLog.SendError(StringResources.LogType.WARN, "MainActivity",
+                            "Uncaught exception", ex);
+
+                }
+            };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(this, new Crashlytics());
+        // Set up Crashlytics, disabled for debug builds
+        Crashlytics crashlyticsKit = new Crashlytics.Builder()
+                .core(new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build())
+                .build();
+
+        Fabric.with(this, crashlyticsKit);
         initSettingPreference();
         ThemeUtils.onActivityCreateSetTheme(this, true);
 
+        Thread.setDefaultUncaughtExceptionHandler(ExceptionHandler);
         setContentView(R.layout.activity_main);
 
         MobileAds.initialize(this, getString(R.string.app_admob_id));
         AdView adView = findViewById(R.id.adView);
-        //  AdRequest adRequest = new AdRequest.Builder().build();
-        AdRequest adRequest = new AdRequest.Builder().addTestDevice("sdfsdf").build();
-        adView.loadAd(adRequest);
+
+        AdRequest.Builder adRequest = new AdRequest.Builder();
+
+        if (BuildConfig.DEBUG) {
+            adRequest.addTestDevice("sdfsdf");
+        }
+
+        adView.loadAd(adRequest.build());
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -75,8 +92,8 @@ public class MainActivity extends AppCompatActivity
                 RecyclerView ranobeListview = findViewById(R.id.ranobeListView);
                 ranobeListview.scrollToPosition(0);
             } catch (NullPointerException e) {
-                e.printStackTrace();
-                Crashlytics.logException(e);
+                MyLog.SendError(StringResources.LogType.WARN, MainActivity.class.toString(), "", e);
+
             }
 
         });
@@ -104,6 +121,10 @@ public class MainActivity extends AppCompatActivity
                 settingPref.getBoolean(
                         getApplicationContext().getString(R.string.pref_general_hide_chapter),
                         false));
+        RanobeKeeper.getInstance().setAutoSaveText(
+                settingPref.getBoolean(
+                        getApplicationContext().getString(R.string.pref_general_auto_save),
+                        true));
 
         ThemeUtils.setTheme(settingPref.getBoolean(
                 getApplicationContext().getString(R.string.pref_general_app_theme), false));
@@ -171,9 +192,17 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_search) {
             fragment = SearchFragment.newInstance();
             setTitle(getResources().getText(R.string.search));
-        } else if (id == R.id.nav_notify) {
-            Intent intent = new Intent(this, NotificationActivity.class);
-            startActivity(intent);
+        } else if (id == R.id.nav_chapters) {
+          //  fragment = SavedChaptersFragment.newInstance();
+            fragment = RanobeRecyclerFragment.newInstance(
+                    RanobeConstans.FragmentType.History.name());
+            setTitle(getResources().getText(R.string.saved_chapters));
+
+        }
+         else if (id == R.id.nav_send) {
+            Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                    "mailto", "admin@profapp.ru", null));
+            startActivity(Intent.createChooser(intent, "Choose an Email client :"));
 
         }
 

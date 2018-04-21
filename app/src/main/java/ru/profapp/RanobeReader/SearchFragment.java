@@ -3,7 +3,6 @@ package ru.profapp.RanobeReader;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,8 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
 import android.widget.TextView;
-
-import com.crashlytics.android.Crashlytics;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,9 +24,10 @@ import java.util.List;
 
 import ru.profapp.RanobeReader.Common.RanobeConstans;
 import ru.profapp.RanobeReader.Common.StringResources;
-import ru.profapp.RanobeReader.Models.Ranobe;
+import ru.profapp.RanobeReader.Helpers.MyLog;
 import ru.profapp.RanobeReader.JsonApi.JsonRanobeRfApi;
-import ru.profapp.RanobeReader.JsonApi.Rulate.JsonRulateApi;
+import ru.profapp.RanobeReader.JsonApi.JsonRulateApi;
+import ru.profapp.RanobeReader.Models.Ranobe;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -40,6 +38,7 @@ import ru.profapp.RanobeReader.JsonApi.Rulate.JsonRulateApi;
  * create an instance of this fragment.
  */
 public class SearchFragment extends Fragment {
+    RecyclerView recyclerView;
     private RanobeRecyclerViewAdapter mRanobeRecyclerViewAdapter;
     private OnFragmentInteractionListener mListener;
     private List<Ranobe> mRanobeList;
@@ -50,7 +49,7 @@ public class SearchFragment extends Fragment {
 
     }
 
-    // TODO: Rename and change types and number of parameters
+
     public static SearchFragment newInstance() {
         SearchFragment fragment = new SearchFragment();
         Bundle args = new Bundle();
@@ -82,17 +81,17 @@ public class SearchFragment extends Fragment {
             public boolean onQueryTextSubmit(String query) {
                 resultLabel.setVisibility(View.GONE);
 
-                ProgressDialog progressDialog = ProgressDialog.show(mContext, getResources().getString(R.string.search_ranobe_name,query),
-                        getResources().getString(R.string.search_please_wait), true, false);
+                ProgressDialog progressDialog = ProgressDialog.show(mContext,
+                        getResources().getString(R.string.search_ranobe_name, query),
+                        getResources().getString(R.string.search_please_wait), true, true);
 
-                AsyncTask.execute(()-> {
-                    findRanobe(query);
-                    if (mRanobeList.size() == 0) {
-                        resultLabel.setVisibility(View.VISIBLE);
-                    }
-                    mRanobeRecyclerViewAdapter.notifyDataSetChanged();
-                    progressDialog.dismiss();
-                });
+                findRanobe(query);
+                if (mRanobeList.size() == 0) {
+                    resultLabel.setVisibility(View.VISIBLE);
+                }
+                mRanobeRecyclerViewAdapter.notifyDataSetChanged();
+                recyclerView.scrollTo(0, 0);
+                progressDialog.dismiss();
 
                 return false;
             }
@@ -103,18 +102,18 @@ public class SearchFragment extends Fragment {
             }
         });
 
-        RecyclerView recyclerView = view.findViewById(R.id.search_list);
+        recyclerView = view.findViewById(R.id.ranobeListView);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 
-        mRanobeRecyclerViewAdapter = new RanobeRecyclerViewAdapter(recyclerView, mRanobeList,
-                RanobeConstans.FragmentType.Search);
-
+        mRanobeRecyclerViewAdapter = new RanobeRecyclerViewAdapter(recyclerView, mRanobeList);
+        mRanobeRecyclerViewAdapter.setDownloadDoneImage(getResources().getDrawable(
+                R.drawable.ic_cloud_done_black_24dp));
         recyclerView.setAdapter(mRanobeRecyclerViewAdapter);
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
+
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -144,7 +143,7 @@ public class SearchFragment extends Fragment {
             searchString = URLEncoder.encode(searchString, "UTF-8");
         } catch (UnsupportedEncodingException e) {
 
-            Crashlytics.logException(e);
+            MyLog.SendError(StringResources.LogType.WARN, SearchFragment.class.toString(), "", e);
         }
 
         findRanoberfRanobe(searchString);
@@ -172,8 +171,8 @@ public class SearchFragment extends Fragment {
 
             }
         } catch (JSONException e) {
-            e.printStackTrace();
-            Crashlytics.logException(e);
+            MyLog.SendError(StringResources.LogType.WARN, SearchFragment.class.toString(), "", e);
+
         }
 
         if (ranobes.size() > 0) {
@@ -186,7 +185,6 @@ public class SearchFragment extends Fragment {
         }
 
     }
-
 
     private void findRanoberfRanobe(String searchString) {
         List<Ranobe> ranobes = new ArrayList<>();
@@ -209,8 +207,8 @@ public class SearchFragment extends Fragment {
 
             }
         } catch (JSONException e) {
-            e.printStackTrace();
-            Crashlytics.logException(e);
+            MyLog.SendError(StringResources.LogType.WARN, SearchFragment.class.toString(), "", e);
+
         }
 
         if (ranobes.size() > 0) {
@@ -235,7 +233,7 @@ public class SearchFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
+
         void onFragmentInteraction(Uri uri);
     }
 

@@ -16,7 +16,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.HashMap;
 
-import ru.profapp.RanobeReader.JsonApi.Rulate.JsonRulateApi;
+import ru.profapp.RanobeReader.JsonApi.JsonRulateApi;
 
 public class SessionManager {
     // Shared Preferences
@@ -38,8 +38,8 @@ public class SessionManager {
     }
 
     /**
-     * Create login session
-     */
+     * Create login session *
+     **/
     public String[] createLoginSession(String name, String password) {
         try {
             String response = JsonRulateApi.getInstance().Login(name, password);
@@ -53,7 +53,7 @@ public class SessionManager {
                 return new String[]{"false", jsonObject.get("msg").toString()};
 
             } catch (JSONException e) {
-                Crashlytics.logException(e);
+
                 return new String[]{"false", "Response error"};
             }
 

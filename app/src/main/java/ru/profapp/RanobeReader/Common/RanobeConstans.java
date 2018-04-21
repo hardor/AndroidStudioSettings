@@ -13,7 +13,8 @@ public class RanobeConstans {
         Favorite,
         Rulate,
         Ranoberf,
-        Search
+        Search,
+        History
     }
 
     public enum JsonObjectFrom {

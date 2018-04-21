@@ -9,7 +9,7 @@
     tools:context="ru.profapp.RanobeReader.ChapterText">
 
 
-    <WebView
+    <ru.profapp.RanobeReader.CustomElements.ObservableWebView
         android:id="@+id/textWebview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -29,6 +29,11 @@
         app:menu="@menu/navigation"
 
     />
+    <ProgressBar
+        android:id="@+id/progressBar2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" android:layout_marginTop="180dp"/>
 
 
 </RelativeLayout>

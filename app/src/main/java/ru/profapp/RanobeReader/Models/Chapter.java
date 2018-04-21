@@ -4,21 +4,23 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
-import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.crashlytics.android.Crashlytics;
-
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Date;
 
 import ru.profapp.RanobeReader.Common.RanobeConstans;
+import ru.profapp.RanobeReader.Common.StringResources;
 import ru.profapp.RanobeReader.DAO.DatabaseDao;
+import ru.profapp.RanobeReader.Helpers.RanobeKeeper;
+import ru.profapp.RanobeReader.JsonApi.Ranoberf.RfChapter;
+import ru.profapp.RanobeReader.JsonApi.Ranoberf.RfText;
+import ru.profapp.RanobeReader.JsonApi.Rulate.RulateChapter;
+import ru.profapp.RanobeReader.JsonApi.Rulate.RulateText;
 
 /**
  * Created by Ruslan on 09.02.2018.
@@ -43,27 +45,19 @@ public class Chapter {
     private Boolean CanRead;
     private Boolean New;
     private int Index;
-    private Date Time = new Date();
+    private Date Time = null;
     private int RanobeId;
     private Boolean Downloaded;
     private Boolean Readed;
     private String Text;
+    private String RanobeName;
 
     public Chapter() {
 
     }
 
-
-    @Ignore
     public Chapter(JSONObject object, RanobeConstans.JsonObjectFrom enumFrom) {
         switch (enumFrom) {
-            case RulateGetBookInfo:
-                Id = object.optInt("id");
-                Title = object.optString("title");
-                Status = object.optString("status");
-                CanRead = object.optBoolean("can_read");
-                New = object.optBoolean("new");
-                break;
             case RanobeRfGetReady:
                 Title = object.optString("number") + ": " + object.optString("title");
                 Url = object.optString("alias");
@@ -76,61 +70,27 @@ public class Chapter {
 
     }
 
-    @Ignore
-    public void UpdateChapter(JSONObject object, RanobeConstans.JsonObjectFrom enumFrom,
-            Context mContext) {
-
-        switch (enumFrom) {
-            case RulateGetChapterText:
-                fromRulateGetChapterText(object, mContext);
-                break;
-            case RanobeRfGetChapterText:
-                fromRanobeRfGetChapterText(object, mContext);
-                break;
-            default:
-//                throw new NullPointerException();
-                break;
-        }
-
+    public Chapter(RulateChapter rChapter) {
+        Id = rChapter.getId();
+        Title = rChapter.getTitle();
+        Status = rChapter.getStatus();
+        CanRead = rChapter.getCanRead();
+        New = rChapter.getNew();
     }
 
-    private void fromRanobeRfGetChapterText(JSONObject object, Context mContext) {
-        try {
-            JSONObject part = object.getJSONObject("part");
-            Title = part.getString("title");
-            Text = part.getString("content");
-            new Thread() {
-                @Override
-                public void run() {
-                    DatabaseDao.getInstance(mContext).getTextDao().insert(
-                            new TextChapter(getUrl(), Text));
-                }
+    public Chapter(RfChapter rChapter) {
 
-            }.start();
-        } catch (JSONException e) {
-            e.printStackTrace();
-            Crashlytics.logException(e);
-        }
+        Id = Id == 0 ? (rChapter.getId() != null ? rChapter.getId() : Id) : Id;
+        Title = empty(Title) ? (String.format("%s %s",
+                rChapter.getNumber() != null ? rChapter.getNumber() : "",
+                rChapter.getTitle())) : Title;
+        Url = empty(Url) ? (rChapter.getAlias() != null ? rChapter.getAlias() : Url) : Url;
+        Url = empty(Url) ? (rChapter.getUrl() != null ? rChapter.getUrl() : Url) : Url;
     }
 
-    private void fromRulateGetChapterText(JSONObject object, Context mContext) {
-        try {
-            Title = object.getString("title");
-            Text = object.getString("text");
-
-            new Thread() {
-                @Override
-                public void run() {
-                    DatabaseDao.getInstance(mContext).getTextDao().insert(
-                            new TextChapter(getUrl(), Text));
-                }
-
-            }.start();
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            Crashlytics.logException(e);
-        }
+    public static boolean empty(final String s) {
+        // Null-safe, short-circuit evaluation.
+        return s == null || s.trim().isEmpty();
     }
 
     @NonNull
@@ -143,6 +103,13 @@ public class Chapter {
     }
 
     public String getRanobeUrl() {
+        if (RanobeUrl == null && getUrl() != null) {
+            if (getUrl().contains(StringResources.RanobeRf_Site)) {
+                RanobeUrl = getUrl().substring(0, getUrl().lastIndexOf("/glava-"));
+            } else if (getUrl().contains(StringResources.Rulate_Site)) {
+                RanobeUrl = getUrl().substring(0, getUrl().lastIndexOf("/"));
+            }
+        }
         return RanobeUrl;
     }
 
@@ -151,6 +118,10 @@ public class Chapter {
     }
 
     public int getId() {
+        if (Id == 0 && getUrl() != null) {
+            Id = Integer.parseInt(
+                    getUrl().substring(getUrl().lastIndexOf("/") + 1));
+        }
         return Id;
     }
 
@@ -207,6 +178,14 @@ public class Chapter {
     }
 
     public int getRanobeId() {
+        if (RanobeId == 0 && getRanobeUrl() != null) {
+            try {
+                RanobeId = Integer.parseInt(
+                        getRanobeUrl().substring(getRanobeUrl().lastIndexOf("/") + 1));
+            } catch (NumberFormatException ignore) {
+            }
+
+        }
         return RanobeId;
     }
 
@@ -236,5 +215,54 @@ public class Chapter {
 
     public void setReaded(Boolean readed) {
         Readed = readed;
+    }
+
+    public void UpdateChapter(RulateText response, Context context, boolean isButton) {
+
+        Title = response.getTitle();
+        //Todo:
+        //Text = StringHelper.getInstance().removeTags(response.getText());
+        Text = response.getText();
+        if (RanobeKeeper.getInstance().getAutoSaveText() || isButton) {
+            new Thread() {
+                @Override
+                public void run() {
+                    DatabaseDao.getInstance(context).getTextDao().insert(
+                            new TextChapter(getUrl(), Text, getTitle(), getRanobeName(),
+                                    getIndex()));
+                }
+
+            }.start();
+        }
+    }
+
+    public void UpdateChapter(RfText response, Context context, boolean isButton) {
+
+        if (response.getStatus() == 200) {
+            Title = response.getPart().getTitle();
+            //Todo:
+            // Text =  StringHelper.getInstance().removeTags(response.getPart().getContent());
+            Text = response.getPart().getContent();
+            Url = response.getPart().getUrl();
+            if (RanobeKeeper.getInstance().getAutoSaveText() || isButton) {
+                new Thread() {
+                    @Override
+                    public void run() {
+                        DatabaseDao.getInstance(context).getTextDao().insert(
+                                new TextChapter(getUrl(), Text, getTitle(), getRanobeName(),
+                                        getIndex()));
+                    }
+
+                }.start();
+            }
+        }
+    }
+
+    public String getRanobeName() {
+        return RanobeName;
+    }
+
+    public void setRanobeName(String ranobeName) {
+        RanobeName = ranobeName;
     }
 }

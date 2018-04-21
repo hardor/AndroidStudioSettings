@@ -17,12 +17,18 @@ public class TextChapter {
     @PrimaryKey
     @NonNull
     private String ChapterUrl;
+    private String ChapterName;
+    private String RanobeName;
     private String Text;
+    private int Index;
 
     @Ignore
-    public TextChapter(@NonNull String charpterUrl, String text) {
+    public TextChapter(@NonNull String charpterUrl, String text, String chapterName, String ranobeName,int index) {
         this.ChapterUrl = charpterUrl;
         this.Text = text;
+        ChapterName= chapterName;
+        RanobeName = ranobeName;
+        Index =index;
     }
 
     @NonNull
@@ -40,5 +46,29 @@ public class TextChapter {
 
     public void setText(String text) {
         Text = text;
+    }
+
+    public String getChapterName() {
+        return ChapterName;
+    }
+
+    public void setChapterName(String chapterName) {
+        ChapterName = chapterName;
+    }
+
+    public String getRanobeName() {
+        return RanobeName;
+    }
+
+    public void setRanobeName(String ranobeName) {
+        RanobeName = ranobeName;
+    }
+
+    public int getIndex() {
+        return Index;
+    }
+
+    public void setIndex(int index) {
+        Index = index;
     }
 }

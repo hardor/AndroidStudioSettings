@@ -42,7 +42,12 @@ public interface RanobeDao {
     @Query("SELECT * FROM ranobe WHERE Favorited = 1")
     List<Ranobe> GetFavoriteRanobes();
 
+    @Query("SELECT * FROM ranobe WHERE Favorited = 1 AND RanobeSite = :ranobeSite")
+    List<Ranobe> GetFavoriteBySite(String ranobeSite);
+
     @Query("SELECT * FROM ranobe WHERE Favorited = 1 AND Url=:UrlToRanobe LIMIT 1")
     Ranobe IsRanobeFavorite(String UrlToRanobe);
 
+    @Query("DELETE FROM ranobe")
+    void cleanTable();
 }

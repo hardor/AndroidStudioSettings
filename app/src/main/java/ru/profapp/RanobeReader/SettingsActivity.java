@@ -3,24 +3,19 @@ package ru.profapp.RanobeReader;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
-import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.core.CrashlyticsCore;
 
 import java.io.File;
 import java.util.List;
@@ -28,7 +23,6 @@ import java.util.List;
 import io.fabric.sdk.android.Fabric;
 import ru.profapp.RanobeReader.Common.StringResources;
 import ru.profapp.RanobeReader.Common.ThemeUtils;
-import ru.profapp.RanobeReader.CustomElements.LoginPreference;
 import ru.profapp.RanobeReader.DAO.DatabaseDao;
 import ru.profapp.RanobeReader.Helpers.RanobeKeeper;
 
@@ -46,6 +40,13 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                         RanobeKeeper.getInstance().setHideUnavailableChapters(
                                 Boolean.valueOf(value.toString()));
                     }
+                    if (preference.getKey().equals(preference.getContext().getString(
+                            R.string.pref_general_auto_save))) {
+
+                        RanobeKeeper.getInstance().setAutoSaveText(
+                                Boolean.valueOf(value.toString()));
+                    }
+
 //                    } else if (preference.getKey().equals(preference.getContext().getString(
 //                            R.string.pref_general_app_theme))) {
 //
@@ -69,9 +70,16 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(this, new Crashlytics());
+
+        // Set up Crashlytics, disabled for debug builds
+        Crashlytics crashlyticsKit = new Crashlytics.Builder()
+                .core(new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build())
+                .build();
+
+        Fabric.with(this, crashlyticsKit);
+
         mActivity = this;
-        ThemeUtils.onActivityCreateSetTheme(this,false);
+        ThemeUtils.onActivityCreateSetTheme(this, false);
         setupActionBar();
         setTitle(getResources().getText(R.string.action_settings));
 
@@ -153,20 +161,23 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 return true;
             });
 
+            Preference favButton = findPreference(getString(R.string.CleanFavoriteButton));
+            favButton.setOnPreferenceClickListener((Preference preference) -> {
+                final Context context = preference.getContext();
+                AsyncTask.execute(() -> DatabaseDao.getInstance(
+                        context).getRanobeDao().cleanTable());
+                Toast.makeText(context, context.getText(R.string.bookmarks_cleaned),
+                        Toast.LENGTH_SHORT).show();
+                return true;
+            });
+
             Preference prefButton = findPreference(getString(R.string.CleanPreferencesButton));
             prefButton.setOnPreferenceClickListener(preference -> {
                 final Context context = preference.getContext();
                 AsyncTask.execute(() -> {
 
-//                  File sharedPreferenceFile = new File("/data/data/" + context.getPackageName() + "/shared_prefs/");
-
-                    File sharedPreferenceFile = new File("/data/data/" + context.getPackageName() + "/shared_prefs/");
-
-                    File[] listFiles = sharedPreferenceFile.listFiles();
-
-                    for (File file : listFiles) {
-                        file.delete();
-                    }
+                    getActivity().getSharedPreferences(StringResources.Last_readed_Pref, 0).edit().clear().apply();
+                    getActivity().getSharedPreferences(StringResources.is_readed_Pref, 0).edit().clear().apply();
 
                 });
                 Toast.makeText(context, context.getText(R.string.cache_cleaned),
@@ -211,9 +222,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
             String token = mPreferences.getString(StringResources.KEY_Token, "");
 
-            if(!token.equals("")){
+            if (!token.equals("")) {
                 prefLogin.setSummary(mPreferences.getString(StringResources.KEY_Login, ""));
-            }else{
+            } else {
                 prefLogin.setSummary(getActivity().getString(R.string.login_to_rulate_summary));
             }
             setHasOptionsMenu(true);
