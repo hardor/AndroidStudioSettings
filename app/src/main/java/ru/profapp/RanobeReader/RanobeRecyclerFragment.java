@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatDelegate;
@@ -56,14 +57,14 @@ import ru.profapp.RanobeReader.Models.TextChapter;
 public class RanobeRecyclerFragment extends Fragment {
 
     private final Gson gson = new GsonBuilder().setLenient().create();
-    ProgressDialog progressDialog;
-    private List<Ranobe> ranobeList = new ArrayList<>();
+    private ProgressDialog progressDialog;
+    private final List<Ranobe> ranobeList = new ArrayList<>();
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private OnListFragmentInteractionListener mListener;
     private RanobeRecyclerViewAdapter mRanobeRecyclerViewAdapter;
     private Context mContext;
 
-    private Thread.UncaughtExceptionHandler ExceptionHandler =
+    private final Thread.UncaughtExceptionHandler ExceptionHandler =
             new Thread.UncaughtExceptionHandler() {
                 public void uncaughtException(Thread th, Throwable ex) {
                     MyLog.SendError(StringResources.LogType.WARN, "RanobeRecyclerFragment",
@@ -119,8 +120,7 @@ public class RanobeRecyclerFragment extends Fragment {
             recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 
             mRanobeRecyclerViewAdapter = new RanobeRecyclerViewAdapter(recyclerView, ranobeList );
-            Drawable downloadDoneImage = mContext.getResources().getDrawable(
-                    R.drawable.ic_cloud_done_black_24dp);
+            Drawable downloadDoneImage = VectorDrawableCompat.create(mContext.getResources(),R.drawable.ic_cloud_done_black_24dp,null);
             mRanobeRecyclerViewAdapter.setDownloadDoneImage(downloadDoneImage);
             recyclerView.setAdapter(mRanobeRecyclerViewAdapter);
 
@@ -132,15 +132,11 @@ public class RanobeRecyclerFragment extends Fragment {
 
                     ranobeList.add(null);
 
-                    recyclerView.post(() -> {
-                        mRanobeRecyclerViewAdapter.notifyItemInserted(ranobeList.size() - 1);
-                    });
+                    recyclerView.post(() -> mRanobeRecyclerViewAdapter.notifyItemInserted(ranobeList.size() - 1));
 
                     AsyncTask.execute(() -> {
                         ranobeList.remove(ranobeList.size() - 1);
-                        recyclerView.post(() -> {
-                            mRanobeRecyclerViewAdapter.notifyItemRemoved(ranobeList.size());
-                        });
+                        recyclerView.post(() -> mRanobeRecyclerViewAdapter.notifyItemRemoved(ranobeList.size()));
 
                         refreshItems(false);
 
@@ -481,7 +477,7 @@ public class RanobeRecyclerFragment extends Fragment {
                 }
             } catch (JSONException | NullPointerException e) {
                 MyLog.SendError(StringResources.LogType.WARN, "RanobeRecyclerFragment", "", e);
-                getActivity().runOnUiThread(() -> onItemsLoadFailed());
+                getActivity().runOnUiThread(this::onItemsLoadFailed);
             }
 
         }
@@ -588,7 +584,7 @@ public class RanobeRecyclerFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
 
-        void onListFragmentInteraction(Ranobe item);
+
     }
 
 }

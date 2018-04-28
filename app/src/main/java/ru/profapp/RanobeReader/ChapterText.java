@@ -17,6 +17,7 @@ import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
@@ -42,37 +43,46 @@ import ru.profapp.RanobeReader.Models.Ranobe;
 
 public class ChapterText extends AppCompatActivity {
 
-    final Gson gson = new GsonBuilder().setLenient().create();
+    private final Gson gson = new GsonBuilder().setLenient().create();
     Chapter mCurrentChapter;
-    ObservableWebView mWebView;
-    Context mContext;
-    Integer mIndex;
-    Integer mScrollY;
-    Integer mChapterCount;
-    List<Chapter> mChapterList;
-    SharedPreferences sPref;
-    SharedPreferences sChapterPref;
-    BottomNavigationItemView nextMenu, prevMenu;
-    ProgressBar progressUrl;
-
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+    private ObservableWebView mWebView;
+    private Context mContext;
+    private Integer mIndex;
+    private Integer mScrollY;
+    private Integer mChapterCount;
+    private List<Chapter> mChapterList;
+    private SharedPreferences sPref;
+    private SharedPreferences sChapterPref;
+    private BottomNavigationItemView nextMenu;
+    private BottomNavigationItemView prevMenu;
+    private final BottomNavigationView.OnNavigationItemSelectedListener
+            mOnNavigationItemSelectedListener
             = item -> {
 
         switch (item.getItemId()) {
 
             case R.id.navigation_prev:
                 OnClicked(+1);
-
                 return true;
             case R.id.navigation_next:
                 OnClicked(-1);
-
+                return true;
+            case R.id.navigation_bookmark:
+                set_bookmark();
                 return true;
 
         }
 
         return false;
     };
+
+    private ProgressBar progressUrl;
+
+    private void set_bookmark() {
+
+        sChapterPref.edit().putInt(mCurrentChapter.getUrl(), mWebView.getScrollY()).commit();
+        Toast.makeText(mContext, getString(R.string.bookmark_added), Toast.LENGTH_SHORT).show();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,13 +92,12 @@ public class ChapterText extends AppCompatActivity {
         setupActionBar();
         setContentView(R.layout.activity_chapter_text);
         mContext = getApplicationContext();
-
         mIndex = getIntent().getIntExtra("ChapterIndex", 0);
 
-        Ranobe currentRanobe = RanobeKeeper.getInstance().getRanobe();
-        mChapterList = currentRanobe.getChapterList();
-        mChapterCount = mChapterList.size();
-        mCurrentChapter = mChapterList.get(mIndex);
+            Ranobe currentRanobe = RanobeKeeper.getInstance().getRanobe();
+            mChapterList = currentRanobe.getChapterList();
+            mChapterCount = mChapterList.size();
+            mCurrentChapter = mChapterList.get(mIndex);
 
         progressUrl = findViewById(R.id.progressBar2);
 
@@ -96,27 +105,31 @@ public class ChapterText extends AppCompatActivity {
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
-
                 progressUrl.setVisibility(View.VISIBLE);
-                super.onPageStarted(view, url, favicon);
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
-                view.scrollTo(0, mScrollY);
                 setTitle(mCurrentChapter.getTitle());
+                final WebView newView = view;
+
+                newView.postDelayed(new Runnable() {
+                    public void run() {
+                        if (newView.getProgress() == 100) {
+                            newView.postDelayed(() -> newView.scrollTo(0, mScrollY), 100);
+                        } else {
+                            newView.post(this);
+                        }
+                    }
+                }, 100);
+
                 progressUrl.setVisibility(View.GONE);
             }
+
         });
 
         sChapterPref = mContext.getSharedPreferences(StringResources.Last_readed_Pref,
                 MODE_PRIVATE);
-
-        mWebView.setOnScrollChangedCallback(new ObservableWebView.OnScrollChangedCallback() {
-            public void onScroll(int l, int t, int oldl, int oldt) {
-                sChapterPref.edit().putInt(mCurrentChapter.getUrl(), t).commit();
-            }
-        });
 
         mWebView.getSettings().setBuiltInZoomControls(true);
         mWebView.getSettings().setDisplayZoomControls(false);
@@ -124,7 +137,7 @@ public class ChapterText extends AppCompatActivity {
         sPref = getSharedPreferences(is_readed_Pref,
                 MODE_PRIVATE);
 
-        GetChapterText(mCurrentChapter,false);
+        Boolean loadResult = GetChapterText(mCurrentChapter, false);
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -134,12 +147,12 @@ public class ChapterText extends AppCompatActivity {
         prevMenu.setVisibility(mIndex < mChapterCount - 1 ? View.VISIBLE : View.INVISIBLE);
         nextMenu.setVisibility(mIndex > 0 ? View.VISIBLE : View.INVISIBLE);
 
-        initWebView();
+        initWebView(loadResult);
 
     }
 
-    private void initWebView() {
-        if (!mCurrentChapter.getReaded()) {
+    private void initWebView(Boolean loadResult) {
+        if (!mCurrentChapter.getReaded() && loadResult) {
             putToReaded(mCurrentChapter.getUrl());
         }
 
@@ -159,6 +172,7 @@ public class ChapterText extends AppCompatActivity {
         }
 
         mWebView.loadDataWithBaseURL(null, summary, "text/html", "UTF-8", null);
+
     }
 
     @Override
@@ -189,7 +203,7 @@ public class ChapterText extends AppCompatActivity {
 
     public boolean GetChapterText(Chapter chapter, Context context) {
         mContext = context;
-      return  GetChapterText(chapter,true);
+        return GetChapterText(chapter, true);
     }
 
     private boolean GetChapterText(Chapter chapter, boolean isButton) {
@@ -208,16 +222,16 @@ public class ChapterText extends AppCompatActivity {
             }
 
         }
-        return false;
+        return true;
     }
 
-    private boolean GetRanobeRfChapterText( boolean isButton) {
+    private boolean GetRanobeRfChapterText(boolean isButton) {
         String response = JsonRanobeRfApi.getInstance().GetChapterText(mCurrentChapter);
         try {
             RfChapterTextGson readyGson = gson.fromJson(response, RfChapterTextGson.class);
             if (readyGson.getStatus() == 200) {
 
-                mCurrentChapter.UpdateChapter(readyGson.getResult(), mContext,  isButton);
+                mCurrentChapter.UpdateChapter(readyGson.getResult(), mContext, isButton);
                 return true;
             } else {
                 mCurrentChapter.setText(readyGson.getMessage());
@@ -231,7 +245,7 @@ public class ChapterText extends AppCompatActivity {
         return false;
     }
 
-    private boolean GetRulateChapterText(boolean  isButton) {
+    private boolean GetRulateChapterText(boolean isButton) {
         SharedPreferences preferences = mContext.getSharedPreferences(
                 StringResources.Rulate_Login_Pref, 0);
         String token = preferences.getString(StringResources.KEY_Token, "");
@@ -259,7 +273,7 @@ public class ChapterText extends AppCompatActivity {
 
                 if (readyGson.getStatus().equals("success")) {
 
-                    mCurrentChapter.UpdateChapter(readyGson.getResponse(), mContext,isButton);
+                    mCurrentChapter.UpdateChapter(readyGson.getResponse(), mContext, isButton);
                     return true;
                 } else {
                     mCurrentChapter.setText(readyGson.getMsg());
@@ -282,8 +296,8 @@ public class ChapterText extends AppCompatActivity {
         if (mIndex >= 0 && mIndex <= mChapterCount - 1) {
             try {
 
-                GetChapterText(mChapterList.get(mIndex),false);
-                initWebView();
+                Boolean loadResult = GetChapterText(mChapterList.get(mIndex), false);
+                initWebView(loadResult);
             } catch (ArrayIndexOutOfBoundsException e) {
                 mIndex -= i;
                 MyLog.SendError(StringResources.LogType.WARN, ChapterText.class.toString(), "", e);

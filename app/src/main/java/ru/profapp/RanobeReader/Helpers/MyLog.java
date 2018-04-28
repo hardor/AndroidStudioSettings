@@ -10,7 +10,7 @@ import ru.profapp.RanobeReader.Common.StringResources;
 public class MyLog {
 
     private static volatile MyLog instance;
-    private static boolean showLog = BuildConfig.USE_LOG;
+    private static final boolean showLog = BuildConfig.USE_LOG;
 
     private MyLog() {
     }

@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Objects;
 
 import ru.profapp.RanobeReader.Common.OnLoadMoreListener;
-import ru.profapp.RanobeReader.Common.RanobeConstans;
 import ru.profapp.RanobeReader.Common.StringResources;
 import ru.profapp.RanobeReader.Helpers.RanobeKeeper;
 import ru.profapp.RanobeReader.Models.Chapter;
@@ -46,7 +45,7 @@ class RanobeRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private OnLoadMoreListener onLoadMoreListener;
     private Drawable downloadDoneImage;
     private boolean isLoading;
-    private int visibleThreshold = 7;
+    private final int visibleThreshold = 7;
     private int lastVisibleItem, totalItemCount;
 
     public RanobeRecyclerViewAdapter(RecyclerView recyclerView, List<Ranobe> items          ) {
@@ -91,18 +90,22 @@ class RanobeRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         mContext = parent.getContext();
-        if (viewType == VIEW_TYPE_ITEM) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.ranobe_item,
-                    parent, false);
-            return new RanobeViewHolder(view);
-        } else if (viewType == VIEW_TYPE_LOADING) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_loading,
-                    parent, false);
-            return new LoadingViewHolder(view);
-        } else if (viewType == VIEW_TYPE_GROUP_TITLE) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_title,
-                    parent, false);
-            return new TitleViewHolder(view);
+        switch (viewType) {
+            case VIEW_TYPE_ITEM: {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.ranobe_item,
+                        parent, false);
+                return new RanobeViewHolder(view);
+            }
+            case VIEW_TYPE_LOADING: {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_loading,
+                        parent, false);
+                return new LoadingViewHolder(view);
+            }
+            case VIEW_TYPE_GROUP_TITLE: {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_title,
+                        parent, false);
+                return new TitleViewHolder(view);
+            }
         }
 
         return null;
@@ -156,13 +159,16 @@ class RanobeRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     }
                 }
 
+
                 Intent intent = new Intent(mContext, RanobeInfoActivity.class);
                 RanobeKeeper.getInstance().setRanobe(((RanobeViewHolder) holder).mItem);
 
-                if (bundle == null) {
-                    mContext.startActivity(intent);
-                } else {
-                    mContext.startActivity(intent, bundle);
+                if( RanobeKeeper.getInstance().getRanobe() !=null){
+                    if (bundle == null) {
+                        mContext.startActivity(intent);
+                    } else {
+                        mContext.startActivity(intent, bundle);
+                    }
                 }
 
             });
@@ -209,7 +215,7 @@ class RanobeRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     class LoadingViewHolder extends RecyclerView.ViewHolder {
-        ProgressBar progressBar;
+        final ProgressBar progressBar;
 
         LoadingViewHolder(View view) {
             super(view);
@@ -218,7 +224,7 @@ class RanobeRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     class TitleViewHolder extends RecyclerView.ViewHolder {
-        TextView mTextView;
+        final TextView mTextView;
 
         TitleViewHolder(View view) {
             super(view);
@@ -227,11 +233,12 @@ class RanobeRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     class RanobeViewHolder extends RecyclerView.ViewHolder {
-        View mView;
-        ImageView mImageView;
+        final View mView;
+        final ImageView mImageView;
         Ranobe mItem;
-        RecyclerView mChaptersListView;
-        private TextView mTitleView, mUpdateTime;
+        final RecyclerView mChaptersListView;
+        private final TextView mTitleView;
+        private final TextView mUpdateTime;
 
         RanobeViewHolder(View view) {
             super(view);

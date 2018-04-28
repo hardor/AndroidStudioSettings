@@ -31,7 +31,7 @@ public final class LoginPreference extends DialogPreference implements DialogInt
         super(context, attrs);
         setPositiveButtonText("Login");
         setNegativeButtonText("Cancel");
-        setDialogIcon(R.mipmap.rulate);
+        setDialogIcon(R.mipmap.ic_rulate);
     }
 
     @Override
@@ -39,7 +39,7 @@ public final class LoginPreference extends DialogPreference implements DialogInt
 
         // Inflate layout
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.activity_login, null);
+        View view = inflater.inflate( R.layout.activity_login, null);
 
         Context context = this.getContext();
         SharedPreferences sharedPref = context.getSharedPreferences(StringResources.Rulate_Login_Pref, Context.MODE_PRIVATE);
@@ -80,8 +80,6 @@ public final class LoginPreference extends DialogPreference implements DialogInt
     public void onClick(DialogInterface dialog, int which) {
         if (which == DialogInterface.BUTTON_POSITIVE) {
             auth();
-        } else if (which == DialogInterface.BUTTON_NEGATIVE) {
-            // do your stuff to handle negative button
         }
     }
 

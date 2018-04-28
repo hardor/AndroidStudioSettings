@@ -20,6 +20,6 @@
         android:layout_height="match_parent"
         android:background="@null"
         app:srcCompat="@drawable/ic_cloud_download_black_24dp"
-        android:contentDescription="TODO"/>
+        android:contentDescription="D"/>
 
 </LinearLayout>

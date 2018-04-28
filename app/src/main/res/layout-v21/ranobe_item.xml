@@ -24,6 +24,7 @@
             android:layout_width="@dimen/image_size"
             android:layout_height="@dimen/image_size"
             android:contentDescription="@string/logo"
+            android:transitionName="@string/logo_transition"
         />
         <android.support.v7.widget.RecyclerView
             android:id="@+id/list_chapter_list"

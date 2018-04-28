@@ -49,8 +49,7 @@ public class Ranobe {
     private final Gson gson = new GsonBuilder().setLenient().disableHtmlEscaping().create();
     @Ignore
     private final DateFormat format = new SimpleDateFormat("MM-dd HH:mm");
-    @Ignore
-    private final DateFormat ranobeChapterFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
+
     @Ignore
     private final Calendar mCalendar = Calendar.getInstance();
     @PrimaryKey
@@ -72,6 +71,8 @@ public class Ranobe {
     private Boolean FavoritedInWeb;
     private String Rating;
     private String Status;
+    @Ignore
+    private String Genres="";
     @Ignore
     private List<Chapter> chapterList = new ArrayList<>();
     @Ignore
@@ -158,8 +159,7 @@ public class Ranobe {
         Title = empty(Title) ? (book.getTitle() != null ? book.getTitle() : Title) : Title;
 
         Url = empty(Url) ? (book.getAlias() != null ? book.getAlias() : Url) : Url;
-        Url = empty(Url) ? (book.getUrl() != null ? StringResources.RanobeRf_Site + book.getUrl()
-                : Url) : Url;
+        Url = empty(Url) ? (book.getUrl() != null ?  book.getUrl(): Url) : Url;
 
         Description = empty(Description) ? (book.getDescription() != null
                 ? StringHelper.getInstance().removeTags(book.getDescription())
@@ -202,12 +202,11 @@ public class Ranobe {
     private void UpdateRanobeRfRanobe(ResultBookInfo result) {
         UpdateRanobeRfRanobe(result.getBook());
 
-        String description = getDescription() + "\n";
-        //Todo:
+
+
         for (Genre genre : result.getGenres()) {
-            description = description.concat(genre.getTitle() + ", ");
+            Genres = Genres.concat(genre.getTitle() + ", ");
         }
-        setDescription(description);
 
         chapterList.clear();
 
@@ -600,4 +599,11 @@ public class Ranobe {
 
     }
 
+    public String getGenres() {
+        return Genres;
+    }
+
+    public void setGenres(String genres) {
+        Genres = genres;
+    }
 }

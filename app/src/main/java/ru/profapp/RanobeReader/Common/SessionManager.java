@@ -1,19 +1,12 @@
 package ru.profapp.RanobeReader.Common;
 
-/**
- * Created by Ruslan on 08.02.2018.
- */
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
-import com.crashlytics.android.Crashlytics;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 import ru.profapp.RanobeReader.JsonApi.JsonRulateApi;
@@ -31,9 +24,8 @@ public class SessionManager {
     }
 
     public SessionManager(Context context) {
-        Context _context = context;
         int PRIVATE_MODE = 0;
-        pref = _context.getSharedPreferences(StringResources.Rulate_Login_Pref, PRIVATE_MODE);
+        pref = context.getSharedPreferences(StringResources.Rulate_Login_Pref, PRIVATE_MODE);
         editor = pref.edit();
     }
 
@@ -41,25 +33,21 @@ public class SessionManager {
      * Create login session *
      **/
     public String[] createLoginSession(String name, String password) {
+        String response = JsonRulateApi.getInstance().Login(name, password);
+
         try {
-            String response = JsonRulateApi.getInstance().Login(name, password);
-
-            try {
-                JSONObject jsonObject = new JSONObject(response);
-                if (jsonObject.get("status").equals("success")) {
-                    return new String[]{"true", jsonObject.get("msg").toString(), jsonObject.getJSONObject("response").get("token").toString()};
-                }
-
-                return new String[]{"false", jsonObject.get("msg").toString()};
-
-            } catch (JSONException e) {
-
-                return new String[]{"false", "Response error"};
+            JSONObject jsonObject = new JSONObject(response);
+            if (jsonObject.get("status").equals("success")) {
+                return new String[]{"true", jsonObject.get("msg").toString(), jsonObject.getJSONObject("response").get("token").toString()};
             }
 
-        } catch (IOException e) {
-            return new String[]{"false", "Connection error"};
+            return new String[]{"false", jsonObject.get("msg").toString()};
+
+        } catch (JSONException e) {
+
+            return new String[]{"false", "Response error"};
         }
+
     }
 
     /**

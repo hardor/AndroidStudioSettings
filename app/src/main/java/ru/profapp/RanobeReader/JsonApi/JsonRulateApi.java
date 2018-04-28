@@ -2,7 +2,6 @@ package ru.profapp.RanobeReader.JsonApi;
 
 import org.jsoup.nodes.Document;
 
-import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 import ru.profapp.RanobeReader.Common.StringResources;
@@ -17,7 +16,7 @@ import ru.profapp.RanobeReader.Helpers.StringHelper;
 public class JsonRulateApi {
 
     private static volatile JsonRulateApi instance;
-    private String ApiString = "http://tl.rulate.ru/api/%s?key=fpoiKLUues81werht039";
+    private final String ApiString = "http://tl.rulate.ru/api/%s?key=fpoiKLUues81werht039";
 
     private JsonRulateApi() {
     }
@@ -127,7 +126,7 @@ public class JsonRulateApi {
 
     private String getDocumentText(String request){
 
-        Document html = null;
+        Document html;
         try {
             html = new HtmlParser().execute(request).get();
             String result = html.body().html();

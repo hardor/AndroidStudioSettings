@@ -1,9 +1,8 @@
 package ru.profapp.RanobeReader;
 
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -38,7 +37,7 @@ import ru.profapp.RanobeReader.Models.Ranobe;
  * create an instance of this fragment.
  */
 public class SearchFragment extends Fragment {
-    RecyclerView recyclerView;
+    private RecyclerView recyclerView;
     private RanobeRecyclerViewAdapter mRanobeRecyclerViewAdapter;
     private OnFragmentInteractionListener mListener;
     private List<Ranobe> mRanobeList;
@@ -70,7 +69,7 @@ public class SearchFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
-        mContext = view.getContext();
+        mContext = getContext();
 
         SearchView simpleSearchView = view.findViewById(R.id.search);
 
@@ -81,18 +80,13 @@ public class SearchFragment extends Fragment {
             public boolean onQueryTextSubmit(String query) {
                 resultLabel.setVisibility(View.GONE);
 
-                ProgressDialog progressDialog = ProgressDialog.show(mContext,
-                        getResources().getString(R.string.search_ranobe_name, query),
-                        getResources().getString(R.string.search_please_wait), true, true);
-
                 findRanobe(query);
                 if (mRanobeList.size() == 0) {
                     resultLabel.setVisibility(View.VISIBLE);
                 }
                 mRanobeRecyclerViewAdapter.notifyDataSetChanged();
-                recyclerView.scrollTo(0, 0);
-                progressDialog.dismiss();
-
+                recyclerView.scrollToPosition(0);
+              
                 return false;
             }
 
@@ -107,18 +101,12 @@ public class SearchFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 
         mRanobeRecyclerViewAdapter = new RanobeRecyclerViewAdapter(recyclerView, mRanobeList);
-        mRanobeRecyclerViewAdapter.setDownloadDoneImage(getResources().getDrawable(
-                R.drawable.ic_cloud_done_black_24dp));
+        mRanobeRecyclerViewAdapter.setDownloadDoneImage(
+                VectorDrawableCompat.create(mContext.getResources(),R.drawable.ic_cloud_done_black_24dp,null));
         recyclerView.setAdapter(mRanobeRecyclerViewAdapter);
         return view;
     }
 
-
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
 
     @Override
     public void onAttach(Context context) {
@@ -234,7 +222,7 @@ public class SearchFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
 
-        void onFragmentInteraction(Uri uri);
+
     }
 
 }

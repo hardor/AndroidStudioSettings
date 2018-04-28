@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-      xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
         android:id="@+id/navigation_prev"
         android:icon="@android:drawable/ic_media_previous"
         android:title="@string/previous"
         />
-    <!--<item-->
-        <!--android:id="@+id/navigation_dashboard"-->
-        <!--android:icon="@drawable/ic_dashboard_black_24dp"-->
-        <!--android:title="@string/action_settings"/>-->
+    <item
+        android:id="@+id/navigation_bookmark"
+        android:icon="@drawable/ic_bookmark_border_black_24dp"
+        android:title="@string/action_bookmark"/>
 
     <item
         android:id="@+id/navigation_next"

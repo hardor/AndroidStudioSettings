@@ -9,7 +9,6 @@ import android.arch.persistence.room.Update;
 
 import java.util.List;
 
-import ru.profapp.RanobeReader.Models.Ranobe;
 import ru.profapp.RanobeReader.Models.TextChapter;
 
 /**

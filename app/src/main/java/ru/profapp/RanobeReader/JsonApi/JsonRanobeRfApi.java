@@ -46,7 +46,7 @@ public class JsonRanobeRfApi {
         String response = getDocumentText(request, Cookies);
 
         for (int i = 0; i < 3; i++) {
-            JSONObject jsonObject = null;
+            JSONObject jsonObject;
             try {
                 jsonObject = new JSONObject(response);
             } catch (JSONException ignore) {
@@ -66,9 +66,10 @@ public class JsonRanobeRfApi {
 
                 }
 
-                Cookies = res.cookies();
+                Cookies = res != null ? res.cookies() : Cookies;
 
-                response = getDocumentText(request, Cookies);
+               response = getDocumentText(request, Cookies);
+
             } else {
                 break;
             }
@@ -78,22 +79,20 @@ public class JsonRanobeRfApi {
     }
 
     public String SearchBooks(String search) {
-        String request = "http://xn--80ac9aeh6f.xn--p1ai/v1/book/search/?q=" + search;
+        String request = StringResources.RanobeRf_Site +"/v1/book/search/?q=" + search;
 
         return getDocumentText(request, Cookies);
     }
 
     public String GetChapterText(Chapter charpter) {
 
-        String ranobeName = charpter.getRanobeUrl().replace("http://xn--80ac9aeh6f.xn--p1ai/", "");
+        String ranobeName = charpter.getRanobeUrl().replace(StringResources.RanobeRf_Site, "");
 
-        String chapterName = charpter.getUrl().replace("http://xn--80ac9aeh6f.xn--p1ai/",
-                "/").replace(
-                ranobeName, "");
+        String chapterName = charpter.getUrl().replace(StringResources.RanobeRf_Site,"").replace( ranobeName, "");
 
-        ranobeName = ranobeName.substring(0, ranobeName.length() - 1);
-        chapterName = chapterName.substring(1, chapterName.length() - 1);
-        String request = "http://xn--80ac9aeh6f.xn--p1ai/v1/part/load/?bookAlias=" + ranobeName
+        ranobeName = ranobeName.replace("/","");
+        chapterName = chapterName.replace("/","");
+        String request = StringResources.RanobeRf_Site +"/v1/part/load/?bookAlias=" + ranobeName
                 + "&partAlias=" + chapterName;
         return getDocumentText(request, Cookies);
 
@@ -101,14 +100,14 @@ public class JsonRanobeRfApi {
 
     public String GetBookInfo(String ranobeName) {
 
-        String request = "http://xn--80ac9aeh6f.xn--p1ai/v1/book/load/?book_alias=" + ranobeName;
+        String request = StringResources.RanobeRf_Site+"/v1/book/load/?book_alias=" + ranobeName;
 
         return getDocumentText(request, Cookies);
     }
 
     private String getDocumentText(String request, Map<String, String> Cookies) {
 
-        Document html = null;
+        Document html;
         try {
             html = new HtmlParser(Cookies).execute(request).get();
             String result = html.body().html();

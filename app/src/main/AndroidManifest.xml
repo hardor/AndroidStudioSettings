@@ -35,35 +35,9 @@
             android:name=".ChapterText"
             android:label="@string/title_activity_chapter_text">
         </activity>
-        <activity android:name=".NotificationActivity"
-
-                  android:parentActivityName=".MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity"/>
-
-        </activity>
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="cac79ff615d7eefe4a0287318c94853a3858ee47"/>
-
-        <service
-            android:name=".notifications.MyFirebaseMessagingService"
-            android:permission="com.google.android.c2dm.permission.SEND">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
-            </intent-filter>
-        </service>
-        <service android:name=".notifications.MyFirebaseInstanceIDService">
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
-            </intent-filter>
-        </service>
-
-        <meta-data
-            android:name="com.google.firebase.messaging.default_notification_channel_id"
-            android:value="@string/default_notification_channel_id"/>
 
     </application>
 

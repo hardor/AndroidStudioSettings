@@ -10,7 +10,7 @@
             android:title="@string/favorite" />
         <item
             android:id="@+id/nav_rulate"
-            android:icon="@mipmap/rulate"
+            android:icon="@drawable/ic_book_black_24dp"
             android:title="@string/tl.rulate_name"
         />
         <item

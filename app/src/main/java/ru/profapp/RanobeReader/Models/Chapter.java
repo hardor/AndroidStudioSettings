@@ -86,9 +86,12 @@ public class Chapter {
                 rChapter.getTitle())) : Title;
         Url = empty(Url) ? (rChapter.getAlias() != null ? rChapter.getAlias() : Url) : Url;
         Url = empty(Url) ? (rChapter.getUrl() != null ? rChapter.getUrl() : Url) : Url;
+        if (!Url.contains(StringResources.RanobeRf_Site)) {
+            Url = StringResources.RanobeRf_Site + Url;
+        }
     }
 
-    public static boolean empty(final String s) {
+    private static boolean empty(final String s) {
         // Null-safe, short-circuit evaluation.
         return s == null || s.trim().isEmpty();
     }
@@ -104,11 +107,20 @@ public class Chapter {
 
     public String getRanobeUrl() {
         if (RanobeUrl == null && getUrl() != null) {
-            if (getUrl().contains(StringResources.RanobeRf_Site)) {
-                RanobeUrl = getUrl().substring(0, getUrl().lastIndexOf("/glava-"));
-            } else if (getUrl().contains(StringResources.Rulate_Site)) {
-                RanobeUrl = getUrl().substring(0, getUrl().lastIndexOf("/"));
+            try {
+                if (getUrl().contains(StringResources.RanobeRf_Site)) {
+                    Integer a = getUrl().lastIndexOf("/glava-");
+                    Integer b = getUrl().lastIndexOf("/noindex-");
+                    if (Math.max(a, b) != -1) {
+                        RanobeUrl = getUrl().substring(0, Math.max(a, b));
+                    }
+                } else if (getUrl().contains(StringResources.Rulate_Site)) {
+                    RanobeUrl = getUrl().substring(0, getUrl().lastIndexOf("/"));
+                }
+            } catch (Exception ignore) {
+                ignore.printStackTrace();
             }
+
         }
         return RanobeUrl;
     }

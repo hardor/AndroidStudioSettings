@@ -20,33 +20,36 @@
     <string name="сlean_cache">Очистить кэш</string>
     <string name="select_text_size">Выберите размер текста</string>
     <string name="cache_cleaned">Данные очищены</string>
-    <string name="clean_preferences">Очистить настройки</string>
-    <string name="clean_preferences_full">Очистить настройки и информацию о прочитанных главах</string>
+    <string name="clean_history">Очистить историю</string>
+    <string name="clean_history_full">Очистить информацию о прочитанных главах</string>
     <string name="login_to_rulate_summary">Авторизируйтесь для синхронизации закладок</string>
     <string name="rulate_authorization">Авторизация Rulate</string>
     <string name="search">Поиск</string>
     <string name="update_time">Обновлено %1$d д. %2$d ч. %3$d м. назад</string>
     <string name="not_found">Не найдено</string>
-    <string name="search_ranobe_name">Поиск Ранобэ \"%1$s\"</string>
+
     <string name="general">Общие</string>
     <string name="tools">Настройки</string>
     <string name="load_more">Загрузить больше</string>
     <string name="comments">Комментарии</string>
-    <string name="notifications">Уведомления</string>
+
     <string name="login_failed">Ошибка входа…</string>
     <string name="load_ranobes">Загрузка избранных ранобэ</string>
-    <string name="search_please_wait">Пожалуйста подождите завершения поиска</string>
+
     <string name="load_please_wait">Пожалуйста подождите завершения загрузки</string>
     <string name="enter_user_pass">Пожалуйста введите логин и пароль</string>
-    <string name="added_to_local"> было добавлено в локальные закладки.</string>
-    <string name="added_to_web"> было добавлено в web закладки.</string>
+    <string name="added_to_local">было добавлено в локальные закладки.</string>
+    <string name="added_to_web">было добавлено в web закладки.</string>
     <string name="saved_chapters">Сохраненные главы</string>
     <string name="bookmarks_cleaned">Локальные закладки очищены</string>
     <string name="Delete_favorited_ranobes">Очистить все локальные избранные закладки</string>
-    <string name="сlean_favorite">Удалить локальные закладки</string>
+    <string name="сlean_favorite">Очистить локальные закладки</string>
     <string name="auto_save_text">Автоматически сохранять главы</string>
     <string name="auto_save_text_on">Автоматически сохранять текст при открытии главы</string>
     <string name="auto_save_text_off">Сохранять текст только вручную</string>
     <string name="search_here">Строка поиска</string>
     <string name="feedback">Отзыв</string>
+
+    <string name="action_bookmark">Закладка</string>
+    <string name="bookmark_added">Закладка добавлена</string>
 </resources>

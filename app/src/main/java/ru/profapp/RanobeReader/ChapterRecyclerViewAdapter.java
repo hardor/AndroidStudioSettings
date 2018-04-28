@@ -89,11 +89,15 @@ public class ChapterRecyclerViewAdapter extends
                     }
 
                     RanobeKeeper.getInstance().setRanobe(ranobe);
-
                 }
-                Intent intent = new Intent(v.getContext(), ChapterText.class);
-                intent.putExtra("ChapterIndex", holder.getAdapterPosition());
-                v.getContext().startActivity(intent);
+                if(RanobeKeeper.getInstance().getRanobe() !=null){
+                    Intent intent = new Intent(v.getContext(), ChapterText.class);
+                    intent.putExtra("ChapterIndex", holder.getAdapterPosition());
+
+                    v.getContext().startActivity(intent);
+                }
+
+
             });
 
             holder.mImageButton.setOnClickListener(v -> {
@@ -141,9 +145,7 @@ public class ChapterRecyclerViewAdapter extends
 
             try {
                 if (holder.mChapterItem.getDownloaded()) {
-                    ((Activity) mContext).runOnUiThread(() -> {
-                        holder.mImageButton.setImageDrawable(downloadDoneImage);
-                    });
+                    ((Activity) mContext).runOnUiThread(() -> holder.mImageButton.setImageDrawable(downloadDoneImage));
                 } else {
                     TextChapter chapter = DatabaseDao.getInstance(
                             mContext).getTextDao().getTextByChapterUrl(
@@ -155,9 +157,7 @@ public class ChapterRecyclerViewAdapter extends
 
                             holder.mChapterItem.setText(chapterText);
                             holder.mChapterItem.setDownloaded(true);
-                            ((Activity) mContext).runOnUiThread(() -> {
-                                holder.mImageButton.setImageDrawable(downloadDoneImage);
-                            });
+                            ((Activity) mContext).runOnUiThread(() -> holder.mImageButton.setImageDrawable(downloadDoneImage));
 
                         }
                     }
@@ -173,7 +173,7 @@ public class ChapterRecyclerViewAdapter extends
     private Pair<String, Boolean> getText(Chapter chapter, Context context) {
         ChapterText chapterText = new ChapterText();
         Boolean res = chapterText.GetChapterText(chapter, context);
-        return new Pair<String, Boolean>(chapterText.mCurrentChapter.getText(), res);
+        return new Pair<>(chapterText.mCurrentChapter.getText(), res);
     }
 
     @Override

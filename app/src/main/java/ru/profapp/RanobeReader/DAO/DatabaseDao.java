@@ -1,9 +1,5 @@
 package ru.profapp.RanobeReader.DAO;
 
-/**
- * Created by Ruslan on 09.02.2018.
- */
-
 import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
@@ -13,12 +9,11 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import ru.profapp.RanobeReader.Models.Chapter;
-import ru.profapp.RanobeReader.Models.Notify;
 import ru.profapp.RanobeReader.Models.Ranobe;
 import ru.profapp.RanobeReader.Models.TextChapter;
 
 @android.arch.persistence.room.Database(entities = {Ranobe.class,
-        Chapter.class, TextChapter.class, Notify.class}, version = 2, exportSchema = false)
+        Chapter.class, TextChapter.class}, version = 2, exportSchema = false)
 @TypeConverters(DateConverter.class)
 public abstract class DatabaseDao extends RoomDatabase {
 
@@ -55,11 +50,5 @@ public abstract class DatabaseDao extends RoomDatabase {
 
     public abstract TextDao getTextDao();
 
-    public abstract NotifyDao getNotifyDao();
-
-    @Override
-    public void close() {
-        super.close();
-    }
 }
 

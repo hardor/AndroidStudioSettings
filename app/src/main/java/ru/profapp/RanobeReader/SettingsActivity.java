@@ -1,7 +1,6 @@
 package ru.profapp.RanobeReader;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -17,7 +16,6 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
 
-import java.io.File;
 import java.util.List;
 
 import io.fabric.sdk.android.Fabric;
@@ -28,24 +26,21 @@ import ru.profapp.RanobeReader.Helpers.RanobeKeeper;
 
 public class SettingsActivity extends AppCompatPreferenceActivity {
 
-    private static Activity mActivity;
-    private static Preference.OnPreferenceChangeListener sChangePreferenceListener =
-            new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object value) {
+     private static final Preference.OnPreferenceChangeListener sChangePreferenceListener =
+            (preference, value) -> {
 
-                    if (preference.getKey().equals(preference.getContext().getString(
-                            R.string.pref_general_hide_chapter))) {
+                if (preference.getKey().equals(preference.getContext().getString(
+                        R.string.pref_general_hide_chapter))) {
 
-                        RanobeKeeper.getInstance().setHideUnavailableChapters(
-                                Boolean.valueOf(value.toString()));
-                    }
-                    if (preference.getKey().equals(preference.getContext().getString(
-                            R.string.pref_general_auto_save))) {
+                    RanobeKeeper.getInstance().setHideUnavailableChapters(
+                            Boolean.valueOf(value.toString()));
+                }
+                if (preference.getKey().equals(preference.getContext().getString(
+                        R.string.pref_general_auto_save))) {
 
-                        RanobeKeeper.getInstance().setAutoSaveText(
-                                Boolean.valueOf(value.toString()));
-                    }
+                    RanobeKeeper.getInstance().setAutoSaveText(
+                            Boolean.valueOf(value.toString()));
+                }
 
 //                    } else if (preference.getKey().equals(preference.getContext().getString(
 //                            R.string.pref_general_app_theme))) {
@@ -58,8 +53,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 //                        ThemeUtils.change(mActivity, intent);
 //
 //                    }
-                    return true;
-                }
+                return true;
             };
 
     private static boolean isXLargeTablet(Context context) {
@@ -78,7 +72,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
         Fabric.with(this, crashlyticsKit);
 
-        mActivity = this;
         ThemeUtils.onActivityCreateSetTheme(this, false);
         setupActionBar();
         setTitle(getResources().getText(R.string.action_settings));
@@ -93,19 +86,10 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         if (actionBar != null) {
             // Show the Up button in the action bar.
             actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowHomeEnabled(true);
         }
     }
-//    private void setupActionBar() {
-//        Toolbar toolbar;
-//
-//        ViewGroup root = (ViewGroup) findViewById(
-//                android.R.id.list).getParent().getParent().getParent();
-//        toolbar = (Toolbar) LayoutInflater.from(this).inflate(R.layout.view_toolbar, root, false);
-//        root.addView(toolbar, 0);
-//
-//        setSupportActionBar(toolbar);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//    }
+
 
     /**
      * {@inheritDoc}
@@ -134,10 +118,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 || RulatePreferenceFragment.class.getName().equals(fragmentName);
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
+
 
     /**
      * This fragment shows general preferences only. It is used when the
@@ -171,7 +152,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 return true;
             });
 
-            Preference prefButton = findPreference(getString(R.string.CleanPreferencesButton));
+            Preference prefButton = findPreference(getString(R.string.CleanHistoryButton));
             prefButton.setOnPreferenceClickListener(preference -> {
                 final Context context = preference.getContext();
                 AsyncTask.execute(() -> {
@@ -188,6 +169,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             findPreference(
                     getString(R.string.pref_general_hide_chapter)).setOnPreferenceChangeListener(
                     sChangePreferenceListener);
+            findPreference(
+                    getString(R.string.pref_general_auto_save)).setOnPreferenceChangeListener(
+                    sChangePreferenceListener);
 //            findPreference(
 //                    getString(R.string.pref_general_app_theme)).setOnPreferenceChangeListener(
 //                    sChangePreferenceListener);
@@ -203,6 +187,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             }
             return super.onOptionsItemSelected(item);
         }
+
 
     }
 
@@ -239,5 +224,17 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             }
             return super.onOptionsItemSelected(item);
         }
+
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

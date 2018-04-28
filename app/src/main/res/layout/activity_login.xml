@@ -20,7 +20,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView3"
         android:inputType="text"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:hint="@string/login"/>
 
     <!-- Password Label -->
     <TextView
@@ -28,7 +29,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/login_login"
-        android:text="@string/password" />
+        android:text="@string/password"
+    />
 
     <!-- Password input text -->
     <EditText
@@ -37,7 +39,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView2"
         android:inputType="textPassword"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:hint="@string/password"/>
 
 
 </RelativeLayout>

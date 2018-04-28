@@ -17,7 +17,6 @@ import ru.profapp.RanobeReader.Common.StringResources;
 
 public class HtmlParser extends AsyncTask<String, Void, Document> {
 
-    private Document doc = null;
     private Map<String, String> Cookies = new HashMap<>();
 
     public HtmlParser() {
@@ -31,7 +30,7 @@ public class HtmlParser extends AsyncTask<String, Void, Document> {
     protected Document doInBackground(String... params) {
 
         try {
-            doc = Jsoup.connect(params[0])
+            return Jsoup.connect(params[0])
                     .cookies(Cookies)
                     .userAgent(
                             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,"
@@ -46,7 +45,6 @@ public class HtmlParser extends AsyncTask<String, Void, Document> {
                     .ignoreContentType(true)
                     .maxBodySize(0)
                     .get();
-            return doc;
         } catch (IOException e) {
             MyLog.SendError(StringResources.LogType.WARN, HtmlParser.class.toString(), "", e);
             return null;

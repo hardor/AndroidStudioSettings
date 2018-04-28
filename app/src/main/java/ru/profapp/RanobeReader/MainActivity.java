@@ -30,7 +30,6 @@ import ru.profapp.RanobeReader.Common.StringResources;
 import ru.profapp.RanobeReader.Common.ThemeUtils;
 import ru.profapp.RanobeReader.Helpers.MyLog;
 import ru.profapp.RanobeReader.Helpers.RanobeKeeper;
-import ru.profapp.RanobeReader.Models.Ranobe;
 
 public class MainActivity extends AppCompatActivity
         implements
@@ -40,14 +39,10 @@ public class MainActivity extends AppCompatActivity
 
 {
 
-    private Thread.UncaughtExceptionHandler ExceptionHandler =
-            new Thread.UncaughtExceptionHandler() {
-                public void uncaughtException(Thread th, Throwable ex) {
-                    MyLog.SendError(StringResources.LogType.WARN, "MainActivity",
-                            "Uncaught exception", ex);
-
-                }
-            };
+    private final Thread.UncaughtExceptionHandler ExceptionHandler =
+            (th, ex) -> MyLog.SendError(StringResources.LogType.WARN, "MainActivity",
+                    "Uncaught exception", ex);
+    private AdView adView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +52,7 @@ public class MainActivity extends AppCompatActivity
                 .core(new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build())
                 .build();
 
-        Fabric.with(this, crashlyticsKit);
+        Fabric.with(this, crashlyticsKit, new Crashlytics());
         initSettingPreference();
         ThemeUtils.onActivityCreateSetTheme(this, true);
 
@@ -65,7 +60,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         MobileAds.initialize(this, getString(R.string.app_admob_id));
-        AdView adView = findViewById(R.id.adView);
+        adView = findViewById(R.id.adView);
 
         AdRequest.Builder adRequest = new AdRequest.Builder();
 
@@ -124,10 +119,12 @@ public class MainActivity extends AppCompatActivity
         RanobeKeeper.getInstance().setAutoSaveText(
                 settingPref.getBoolean(
                         getApplicationContext().getString(R.string.pref_general_auto_save),
-                        true));
+                        false));
 
         ThemeUtils.setTheme(settingPref.getBoolean(
                 getApplicationContext().getString(R.string.pref_general_app_theme), false));
+
+
     }
 
     @Override
@@ -174,39 +171,50 @@ public class MainActivity extends AppCompatActivity
 
         Fragment fragment = null;
 
-        if (id == R.id.nav_favorite) {
-            fragment = RanobeRecyclerFragment.newInstance(
-                    RanobeConstans.FragmentType.Favorite.name());
-            setTitle(getResources().getText(R.string.favorite));
-        } else if (id == R.id.nav_rulate) {
-            fragment = RanobeRecyclerFragment.newInstance(
-                    RanobeConstans.FragmentType.Rulate.name());
-            setTitle(getResources().getText(R.string.tl_rulate_name));
-        } else if (id == R.id.nav_ranoberf) {
-            fragment = RanobeRecyclerFragment.newInstance(
-                    RanobeConstans.FragmentType.Ranoberf.name());
-            setTitle(getResources().getText(R.string.ranobe_rf));
-        } else if (id == R.id.nav_manage) {
-            Intent intent = new Intent(this, SettingsActivity.class);
-            startActivity(intent);
-        } else if (id == R.id.nav_search) {
-            fragment = SearchFragment.newInstance();
-            setTitle(getResources().getText(R.string.search));
-        } else if (id == R.id.nav_chapters) {
-          //  fragment = SavedChaptersFragment.newInstance();
-            fragment = RanobeRecyclerFragment.newInstance(
-                    RanobeConstans.FragmentType.History.name());
-            setTitle(getResources().getText(R.string.saved_chapters));
+        switch (id) {
+            case R.id.nav_favorite:
+                fragment = RanobeRecyclerFragment.newInstance(
+                        RanobeConstans.FragmentType.Favorite.name());
+                setTitle(getResources().getText(R.string.favorite));
+                break;
+            case R.id.nav_rulate:
+                fragment = RanobeRecyclerFragment.newInstance(
+                        RanobeConstans.FragmentType.Rulate.name());
+                setTitle(getResources().getText(R.string.tl_rulate_name));
+                break;
+            case R.id.nav_ranoberf:
+                fragment = RanobeRecyclerFragment.newInstance(
+                        RanobeConstans.FragmentType.Ranoberf.name());
+                setTitle(getResources().getText(R.string.ranobe_rf));
+                break;
+            case R.id.nav_manage: {
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                break;
+            }
+            case R.id.nav_search:
+                fragment = SearchFragment.newInstance();
+                setTitle(getResources().getText(R.string.search));
+                break;
+            case R.id.nav_chapters:
+                //  fragment = SavedChaptersFragment.newInstance();
+                fragment = RanobeRecyclerFragment.newInstance(
+                        RanobeConstans.FragmentType.History.name());
+                setTitle(getResources().getText(R.string.saved_chapters));
 
-        }
-         else if (id == R.id.nav_send) {
-            Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                    "mailto", "admin@profapp.ru", null));
-            startActivity(Intent.createChooser(intent, "Choose an Email client :"));
+                break;
+            case R.id.nav_send: {
+                Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                        "mailto", "admin@profapp.ru", null));
+                startActivity(Intent.createChooser(intent, "Choose an Email client :"));
 
+                break;
+            }
         }
 
         if (fragment != null) {
+            adView.loadAd(new AdRequest.Builder().build());
+
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.mainFrame, fragment);
             ft.commit();
@@ -215,16 +223,6 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    @Override
-    public void onListFragmentInteraction(Ranobe item) {
-
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
     }
 
 }

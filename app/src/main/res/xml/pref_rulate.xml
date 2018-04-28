@@ -5,7 +5,7 @@
         android:persistent="true"
         android:summary="@string/login_to_rulate_summary"
         android:title="@string/rulate_authorization"
-        android:icon="@mipmap/rulate"
+        android:icon="@mipmap/ic_rulate"
     />
 
 
