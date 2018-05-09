@@ -8,7 +8,6 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -90,12 +89,10 @@ public class RanobeInfoActivity extends AppCompatActivity {
         mContext = getApplicationContext();
         Button loadButton = findViewById(R.id.loadButton);
 
-        borderImage = VectorDrawableCompat.create(mContext.getResources(),
-                R.drawable.ic_favorite_border_black_24dp, null);
-        fillImage = VectorDrawableCompat.create(mContext.getResources(),
-                R.drawable.ic_favorite_black_24dp, null);
-        downloadDoneImage = VectorDrawableCompat.create(mContext.getResources(),
-                R.drawable.ic_cloud_done_black_24dp, null);
+        borderImage = mContext.getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp);
+        fillImage = mContext.getResources().getDrawable(
+                R.drawable.ic_favorite_black_24dp);
+        downloadDoneImage = mContext.getResources().getDrawable(R.drawable.ic_cloud_done_black_24dp);
 
         NestedScrollView nestedScrollView = findViewById(R.id.ranobe_info_NestedScrollView);
 
@@ -118,9 +115,8 @@ public class RanobeInfoActivity extends AppCompatActivity {
                 StringResources.Rulate_Login_Pref, 0);
 
         favoriteButton.setOnClickListener(v -> {
-            Drawable.ConstantState state =
-                    favoriteButton.getDrawable().getConstantState();
-            if (state.equals(borderImage.getConstantState())) {
+
+            if (!mCurrentRanobe.getFavorited()) {
                 favoriteButton.setImageDrawable(fillImage);
 
                 new Thread() {
@@ -199,8 +195,7 @@ public class RanobeInfoActivity extends AppCompatActivity {
 
                 } else {
                     AsyncTask.execute(
-                            () -> DatabaseDao.getInstance(mContext).getRanobeDao().delete(
-                                    mCurrentRanobe));
+                            () -> DatabaseDao.getInstance(mContext).getRanobeDao().delete(mCurrentRanobe.getUrl()));
                     mCurrentRanobe.setFavorited(false);
                 }
 

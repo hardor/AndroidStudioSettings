@@ -2,7 +2,6 @@ package ru.profapp.RanobeReader;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -48,7 +47,6 @@ public class SearchFragment extends Fragment {
 
     }
 
-
     public static SearchFragment newInstance() {
         SearchFragment fragment = new SearchFragment();
         Bundle args = new Bundle();
@@ -86,7 +84,7 @@ public class SearchFragment extends Fragment {
                 }
                 mRanobeRecyclerViewAdapter.notifyDataSetChanged();
                 recyclerView.scrollToPosition(0);
-              
+
                 return false;
             }
 
@@ -102,11 +100,10 @@ public class SearchFragment extends Fragment {
 
         mRanobeRecyclerViewAdapter = new RanobeRecyclerViewAdapter(recyclerView, mRanobeList);
         mRanobeRecyclerViewAdapter.setDownloadDoneImage(
-                VectorDrawableCompat.create(mContext.getResources(),R.drawable.ic_cloud_done_black_24dp,null));
+                mContext.getResources().getDrawable(R.drawable.ic_cloud_done_black_24dp));
         recyclerView.setAdapter(mRanobeRecyclerViewAdapter);
         return view;
     }
-
 
     @Override
     public void onAttach(Context context) {
@@ -221,7 +218,6 @@ public class SearchFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-
 
     }
 

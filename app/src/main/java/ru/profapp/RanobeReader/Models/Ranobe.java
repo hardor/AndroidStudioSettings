@@ -202,8 +202,6 @@ public class Ranobe {
     private void UpdateRanobeRfRanobe(ResultBookInfo result) {
         UpdateRanobeRfRanobe(result.getBook());
 
-
-
         for (Genre genre : result.getGenres()) {
             Genres = Genres.concat(genre.getTitle() + ", ");
         }

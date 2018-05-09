@@ -1,5 +1,6 @@
 package ru.profapp.RanobeReader.Helpers;
 
+import ru.profapp.RanobeReader.Common.RanobeConstans;
 import ru.profapp.RanobeReader.Models.Ranobe;
 
 /**
@@ -14,6 +15,7 @@ public class RanobeKeeper {
     private Integer ChapterTextSize;
     private Boolean HideUnavailableChapters;
     private Boolean AutoSaveText;
+    private int toIndex;
 
     private RanobeKeeper() {
     }
@@ -61,4 +63,5 @@ public class RanobeKeeper {
     public void setAutoSaveText(Boolean autoSaveText) {
         AutoSaveText = autoSaveText;
     }
+
 }

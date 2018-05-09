@@ -91,5 +91,8 @@
     <string name="feedback">Feedback</string>
     <string name="action_bookmark">Bookmark</string>
     <string name="bookmark_added">Bookmark added</string>
+    <string name="app_theme">Dark theme</string>
+    <string name="Turn_off_dark_theme">Turn off dark theme</string>
+    <string name="Turn_on_dark_theme">Turn on dark theme</string>
 
 </resources>

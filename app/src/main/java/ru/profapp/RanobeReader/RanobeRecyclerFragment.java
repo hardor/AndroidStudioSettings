@@ -12,7 +12,6 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatDelegate;
@@ -120,7 +119,7 @@ public class RanobeRecyclerFragment extends Fragment {
             recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 
             mRanobeRecyclerViewAdapter = new RanobeRecyclerViewAdapter(recyclerView, ranobeList );
-            Drawable downloadDoneImage = VectorDrawableCompat.create(mContext.getResources(),R.drawable.ic_cloud_done_black_24dp,null);
+            Drawable downloadDoneImage = mContext.getResources().getDrawable(R.drawable.ic_cloud_done_black_24dp);
             mRanobeRecyclerViewAdapter.setDownloadDoneImage(downloadDoneImage);
             recyclerView.setAdapter(mRanobeRecyclerViewAdapter);
 

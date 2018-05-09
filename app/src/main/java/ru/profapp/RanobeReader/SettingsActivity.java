@@ -1,13 +1,16 @@
 package ru.profapp.RanobeReader;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
+import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
@@ -26,6 +29,7 @@ import ru.profapp.RanobeReader.Helpers.RanobeKeeper;
 
 public class SettingsActivity extends AppCompatPreferenceActivity {
 
+    public static Context mContext;
      private static final Preference.OnPreferenceChangeListener sChangePreferenceListener =
             (preference, value) -> {
 
@@ -34,25 +38,24 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
                     RanobeKeeper.getInstance().setHideUnavailableChapters(
                             Boolean.valueOf(value.toString()));
-                }
+                } else
                 if (preference.getKey().equals(preference.getContext().getString(
                         R.string.pref_general_auto_save))) {
 
                     RanobeKeeper.getInstance().setAutoSaveText(
                             Boolean.valueOf(value.toString()));
-                }
+                }else if (preference.getKey().equals(preference.getContext().getString(
+                            R.string.pref_general_app_theme))) {
 
-//                    } else if (preference.getKey().equals(preference.getContext().getString(
-//                            R.string.pref_general_app_theme))) {
-//
-//                        ThemeUtils.setTheme(Boolean.valueOf(value.toString()));
-//                        Intent intent = new Intent(mActivity, mActivity.getClass());
-//                        intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT,
-//                                GeneralPreferenceFragment.class.getName());
-//                        intent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
-//                        ThemeUtils.change(mActivity, intent);
-//
-//                    }
+                        ThemeUtils.setTheme(Boolean.valueOf(value.toString()));
+
+                        Intent intent = new Intent(mContext , SettingsActivity.class);
+                        intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT,
+                                GeneralPreferenceFragment.class.getName());
+                        intent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
+                        ThemeUtils.change((Activity) mContext, intent);
+
+                    }
                 return true;
             };
 
@@ -75,7 +78,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         ThemeUtils.onActivityCreateSetTheme(this, false);
         setupActionBar();
         setTitle(getResources().getText(R.string.action_settings));
-
+        mContext = getApplicationContext();
     }
 
     /**
@@ -172,6 +175,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             findPreference(
                     getString(R.string.pref_general_auto_save)).setOnPreferenceChangeListener(
                     sChangePreferenceListener);
+            // TOdo: theme
 //            findPreference(
 //                    getString(R.string.pref_general_app_theme)).setOnPreferenceChangeListener(
 //                    sChangePreferenceListener);

@@ -30,8 +30,8 @@ public interface RanobeDao {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void update(Ranobe ranobe);
 
-    @Delete
-    void delete(Ranobe ranobe);
+    @Query("DELETE FROM ranobe  WHERE Url=:UrlToRanobe")
+    void delete(String UrlToRanobe);
 
     @Query("SELECT * FROM ranobe WHERE Url=:UrlToRanobe")
     Ranobe getRanobeByUrl(String UrlToRanobe);
