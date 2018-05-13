@@ -4,9 +4,7 @@ import org.jsoup.nodes.Document;
 
 import java.util.concurrent.ExecutionException;
 
-import ru.profapp.RanobeReader.Common.StringResources;
 import ru.profapp.RanobeReader.Helpers.HtmlParser;
-import ru.profapp.RanobeReader.Helpers.MyLog;
 import ru.profapp.RanobeReader.Helpers.StringHelper;
 
 /**
@@ -132,7 +130,7 @@ public class JsonRulateApi {
             String result = html.body().html();
             return StringHelper.getInstance().cleanJson(result);
         } catch (InterruptedException | NullPointerException | ExecutionException  e) {
-            MyLog.SendError(StringResources.LogType.WARN, JsonRulateApi.class.toString(), "", e);
+          //  MyLog.SendError(StringResources.LogType.WARN, JsonRulateApi.class.toString(), "", e);
 
         }
         return "";

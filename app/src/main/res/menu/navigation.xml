@@ -7,10 +7,10 @@
         android:icon="@android:drawable/ic_media_previous"
         android:title="@string/previous"
         />
-    <item
-        android:id="@+id/navigation_bookmark"
-        android:icon="@drawable/ic_bookmark_border_black_24dp"
-        android:title="@string/action_bookmark"/>
+    <!--<item-->
+        <!--android:id="@+id/navigation_bookmark"-->
+        <!--android:icon="@drawable/ic_bookmark_border_black_24dp"-->
+        <!--android:title="@string/action_bookmark"/>-->
 
     <item
         android:id="@+id/navigation_next"

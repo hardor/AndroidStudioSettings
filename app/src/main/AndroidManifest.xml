@@ -13,11 +13,11 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"
-        android:supportsRtl="true" android:theme="@style/AppTheme.Light">
+        android:supportsRtl="true" android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.Dark">
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -29,10 +29,10 @@
         <activity
             android:name=".RanobeInfoActivity"
             android:label="@string/title_activity_ranobe_info"
-            android:theme="@style/AppTheme.Dark">
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".ChapterText"
+            android:name=".ChapterTextActivity"
             android:label="@string/title_activity_chapter_text">
         </activity>
         <meta-data

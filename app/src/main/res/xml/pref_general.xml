@@ -16,13 +16,13 @@
         android:summaryOff="@string/auto_save_text_off"
         android:summaryOn="@string/auto_save_text_on"
         android:title="@string/auto_save_text" />
-    <!--Todo:-->
-    <!--<SwitchPreference-->
-        <!--android:defaultValue="false"-->
-        <!--android:key="@string/pref_general_app_theme"-->
-        <!--android:summaryOff="@string/Turn_on_dark_theme"-->
-        <!--android:summaryOn="@string/Turn_off_dark_theme"-->
-        <!--android:title="@string/app_theme" />-->
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="@string/pref_general_app_theme"
+        android:summaryOff="@string/Turn_on_dark_theme"
+        android:summaryOn="@string/Turn_off_dark_theme"
+        android:title="@string/app_theme" />
 
     <ru.profapp.RanobeReader.CustomElements.NumberPickerPreference
         android:defaultValue="16"
@@ -30,6 +30,16 @@
         android:summary="@string/select_text_size"
         android:title="@string/text_size" />
 
+    <EditTextPreference
+        android:defaultValue="100"
+        android:key="@string/pref_general_list_size"
+        android:selectAllOnFocus="true"
+        android:inputType="numberDecimal"
+        android:digits="0123456789"
+        android:singleLine="true"
+        android:title="@string/NumberDisplayed"
+        android:summary="@string/NumberDisplayed100"
+    />
     <Preference android:title="@string/сlean_cache"
                 android:key="@string/CleanCacheButton"
                 android:summary="@string/Delete_downloaded_chapters"/>

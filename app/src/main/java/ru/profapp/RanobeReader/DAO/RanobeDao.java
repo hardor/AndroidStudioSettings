@@ -33,6 +33,9 @@ public interface RanobeDao {
     @Query("DELETE FROM ranobe  WHERE Url=:UrlToRanobe")
     void delete(String UrlToRanobe);
 
+    @Delete
+    void delete(Ranobe ranobe);
+
     @Query("SELECT * FROM ranobe WHERE Url=:UrlToRanobe")
     Ranobe getRanobeByUrl(String UrlToRanobe);
 

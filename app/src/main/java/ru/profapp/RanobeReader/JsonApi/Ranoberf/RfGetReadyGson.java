@@ -3,10 +3,6 @@ package ru.profapp.RanobeReader.JsonApi.Ranoberf;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
-import ru.profapp.RanobeReader.JsonApi.Ranoberf.RfBook;
-
 public class RfGetReadyGson {
 
     @SerializedName("status")
@@ -14,7 +10,7 @@ public class RfGetReadyGson {
     private Integer status;
     @SerializedName("result")
     @Expose
-    private List<RfBook> result = null;
+    private RfResult result;
     @SerializedName("message")
     @Expose
     private String message;
@@ -27,14 +23,6 @@ public class RfGetReadyGson {
         this.status = status;
     }
 
-    public List<RfBook> getResult() {
-        return result;
-    }
-
-    public void setResult(List<RfBook> result) {
-        this.result = result;
-    }
-
     public String getMessage() {
         return message;
     }
@@ -43,4 +31,14 @@ public class RfGetReadyGson {
         this.message = message;
     }
 
+    public RfResult getResult() {
+        return result;
+    }
+
+    public void setResult(RfResult result) {
+        this.result = result;
+    }
 }
+
+
+

@@ -106,7 +106,7 @@ public class Chapter {
     }
 
     public String getRanobeUrl() {
-        if (RanobeUrl == null && getUrl() != null) {
+        if (RanobeUrl == null) {
             try {
                 if (getUrl().contains(StringResources.RanobeRf_Site)) {
                     Integer a = getUrl().lastIndexOf("/glava-");

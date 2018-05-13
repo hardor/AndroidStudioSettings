@@ -64,8 +64,8 @@ public class Ranobe {
     private String Description;
     private String AdditionalInfo;
     private String RanobeSite;
-    private int CharpterCount;
-    private int LastReadedCharpter;
+    private int ChapterCount;
+    private int LastReadedChapter;
     private Boolean WasUpdated;
     private Boolean Favorited;
     private Boolean FavoritedInWeb;
@@ -120,7 +120,7 @@ public class Ranobe {
 
         Url = StringResources.Rulate_Site + "/book/" + Id;
 
-        CharpterCount = book.getChaptersTotal() != null ? book.getChaptersTotal() : CharpterCount;
+        ChapterCount = book.getChaptersTotal() != null ? book.getChaptersTotal() : ChapterCount;
 
         Status = book.getStatus() != null ? book.getStatus() : Status;
         Rating = book.getRating() != null ? book.getRating() : Rating;
@@ -145,7 +145,7 @@ public class Ranobe {
         Description = "Рейтинг: " + Rating +
                 "\nСтатус: " + Status +
                 "\nПеревод: " + Lang +
-                "\nКоличество глав: " + CharpterCount;
+                "\nКоличество глав: " + ChapterCount;
 
     }
 
@@ -160,6 +160,8 @@ public class Ranobe {
 
         Url = empty(Url) ? (book.getAlias() != null ? book.getAlias() : Url) : Url;
         Url = empty(Url) ? (book.getUrl() != null ?  book.getUrl(): Url) : Url;
+        if(!Url.contains(StringResources.RanobeRf_Site))
+            Url=Url+StringResources.RanobeRf_Site;
 
         Description = empty(Description) ? (book.getDescription() != null
                 ? StringHelper.getInstance().removeTags(book.getDescription())
@@ -257,7 +259,7 @@ public class Ranobe {
             EngTitle = object.getString("s_title");
             Title = object.getString("t_title");
             Lang = object.optString("lang");
-            CharpterCount = object.optInt("n_chapters");
+            ChapterCount = object.optInt("n_chapters");
             Id = object.getInt("book_id");
             Url = StringResources.Rulate_Site + "/book/" + Id;
         } catch (JSONException e) {
@@ -274,7 +276,7 @@ public class Ranobe {
             Id = object.getInt("id");
             EngTitle = object.getString("s_title");
             Title = object.getString("t_title");
-            CharpterCount = object.optInt("n_chapters");
+            ChapterCount = object.optInt("n_chapters");
             Lang = object.getString("lang");
 
             if (object.optLong("last_activity") == 0) {
@@ -361,7 +363,7 @@ public class Ranobe {
 
     @NonNull
     public String getUrl() {
-        return Url == null ? "" : Url;
+        return Url;
     }
 
     public void setUrl(@NonNull String url) {
@@ -447,20 +449,20 @@ public class Ranobe {
         RanobeSite = ranobeSite;
     }
 
-    public int getCharpterCount() {
-        return CharpterCount;
+    public int getChapterCount() {
+        return ChapterCount;
     }
 
-    public void setCharpterCount(int charpterCount) {
-        CharpterCount = charpterCount;
+    public void setChapterCount(int chapterCount) {
+        ChapterCount = chapterCount;
     }
 
-    public int getLastReadedCharpter() {
-        return LastReadedCharpter;
+    public int getLastReadedChapter() {
+        return LastReadedChapter;
     }
 
-    public void setLastReadedCharpter(int lastReadedCharpter) {
-        LastReadedCharpter = lastReadedCharpter;
+    public void setLastReadedChapter(int lastReadedChapter) {
+        LastReadedChapter = lastReadedChapter;
     }
 
     public Boolean getWasUpdated() {

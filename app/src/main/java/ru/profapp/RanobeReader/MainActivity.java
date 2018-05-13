@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        initSettingPreference();
         super.onCreate(savedInstanceState);
         // Set up Crashlytics, disabled for debug builds
         Crashlytics crashlyticsKit = new Crashlytics.Builder()
@@ -53,8 +54,6 @@ public class MainActivity extends AppCompatActivity
                 .build();
 
         Fabric.with(this, crashlyticsKit, new Crashlytics());
-        initSettingPreference();
-        ThemeUtils.onActivityCreateSetTheme(this, true);
 
         Thread.setDefaultUncaughtExceptionHandler(ExceptionHandler);
         setContentView(R.layout.activity_main);
@@ -71,7 +70,7 @@ public class MainActivity extends AppCompatActivity
         adView.loadAd(adRequest.build());
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        //   setSupportActionBar(toolbar);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
 
@@ -120,11 +119,13 @@ public class MainActivity extends AppCompatActivity
                 settingPref.getBoolean(
                         getApplicationContext().getString(R.string.pref_general_auto_save),
                         false));
-
+        RanobeKeeper.getInstance().setChapterCount(Integer.valueOf(
+                settingPref.getString(
+                        getApplicationContext().getString(R.string.pref_general_list_size),
+                        "100")));
         ThemeUtils.setTheme(settingPref.getBoolean(
                 getApplicationContext().getString(R.string.pref_general_app_theme), false));
-
-
+        ThemeUtils.onActivityCreateSetTheme();
     }
 
     @Override

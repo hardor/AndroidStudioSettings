@@ -2,6 +2,7 @@ package ru.profapp.RanobeReader.Helpers;
 
 import android.os.AsyncTask;
 
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -18,6 +19,7 @@ import ru.profapp.RanobeReader.Common.StringResources;
 public class HtmlParser extends AsyncTask<String, Void, Document> {
 
     private Map<String, String> Cookies = new HashMap<>();
+    private Map<String, String> Data = new HashMap<>();
 
     public HtmlParser() {
     }
@@ -26,11 +28,21 @@ public class HtmlParser extends AsyncTask<String, Void, Document> {
         Cookies = cookies;
     }
 
+    public HtmlParser(Map<String, String> cookies, Map<String, String> data) {
+        Cookies = cookies;
+        Data = data;
+    }
+
     @Override
     protected Document doInBackground(String... params) {
 
         try {
-            return Jsoup.connect(params[0])
+            Connection.Method method = Connection.Method.GET;
+
+            if (params.length>1 && params[1] != null) {
+                method = Connection.Method.valueOf(params[1]);
+            }
+            Connection connection =  Jsoup.connect(params[0])
                     .cookies(Cookies)
                     .userAgent(
                             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,"
@@ -41,10 +53,20 @@ public class HtmlParser extends AsyncTask<String, Void, Document> {
                     .header("Content-Type", "text/html; charset=UTF-8")
                     .header("Accept-Language", "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3")
                     .header("Accept-Encoding", "gzip, deflate")
+                    .data(Data)
                     .referrer(StringResources.RanobeRf_Site)
                     .ignoreContentType(true)
                     .maxBodySize(0)
-                    .get();
+                    .timeout(10*1000)
+                    .method(method);
+
+            if(method.compareTo(Connection.Method.POST)==0){
+                connection.header("Content-Type", "application/x-www-form-urlencoded");
+                return connection.post();
+            }else{
+                return connection.get();
+            }
+
         } catch (IOException e) {
             MyLog.SendError(StringResources.LogType.WARN, HtmlParser.class.toString(), "", e);
             return null;

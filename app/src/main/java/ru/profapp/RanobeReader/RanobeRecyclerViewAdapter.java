@@ -1,12 +1,9 @@
 package ru.profapp.RanobeReader;
 
-import android.app.Activity;
-import android.app.ActivityOptions;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -96,6 +93,7 @@ class RanobeRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         parent, false);
                 return new RanobeViewHolder(view);
             }
+            default:
             case VIEW_TYPE_LOADING: {
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_loading,
                         parent, false);
@@ -106,9 +104,10 @@ class RanobeRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         parent, false);
                 return new TitleViewHolder(view);
             }
+
         }
 
-        return null;
+
     }
 
     @Override
@@ -147,28 +146,11 @@ class RanobeRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             }
             ((RanobeViewHolder) holder).mView.setOnClickListener(v -> {
 
-                Bundle bundle = null;
-
-                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-                    View imageView = ((RanobeViewHolder) holder).mImageView;
-                    if (imageView != null) {
-                        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
-                                (Activity) mContext, imageView,
-                                mContext.getString(R.string.logo_transition));
-                        bundle = options.toBundle();
-                    }
-                }
-
-
                 Intent intent = new Intent(mContext, RanobeInfoActivity.class);
                 RanobeKeeper.getInstance().setRanobe(((RanobeViewHolder) holder).mItem);
 
                 if( RanobeKeeper.getInstance().getRanobe() !=null){
-                    if (bundle == null) {
                         mContext.startActivity(intent);
-                    } else {
-                        mContext.startActivity(intent, bundle);
-                    }
                 }
 
             });

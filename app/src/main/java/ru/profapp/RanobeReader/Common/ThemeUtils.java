@@ -1,58 +1,29 @@
 package ru.profapp.RanobeReader.Common;
 
 import android.app.Activity;
-import android.content.Intent;
-
-import ru.profapp.RanobeReader.R;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 
 /**
  * Created by Ruslan on 15.03.2018.
  */
 
 public class ThemeUtils {
-    private final static int THEME_LIGHT = 0;
-    private final static int THEME_DARK = 1;
-    private static int sTheme;
+    private static int sTheme=AppCompatDelegate.MODE_NIGHT_NO;
 
-    public static void change(Activity activity, Intent intent) {
-
-        activity.finish();
-
-        activity.startActivity(intent);
-
-        activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-
+    public static void change(AppCompatActivity activity) {
+        activity.recreate();
     }
 
-    public static void onActivityCreateSetTheme(Activity activity, Boolean AppBar) {
+    public static void change(Activity activity) {
+        activity.recreate();
+    }
 
-        switch (sTheme) {
-
-            default:
-
-            case THEME_LIGHT:
-
-                if (AppBar) {
-                    activity.setTheme(R.style.AppTheme_Light_NoActionBar);
-                } else {
-                    activity.setTheme(R.style.AppTheme_Light);
-                }
-                break;
-
-            case THEME_DARK:
-
-                if (AppBar) {
-                    activity.setTheme(R.style.AppTheme_Dark_NoActionBar);
-                } else {
-                    activity.setTheme(R.style.AppTheme_Dark);
-                }
-                break;
-
-        }
-
+    public static void onActivityCreateSetTheme() {
+        AppCompatDelegate.setDefaultNightMode(sTheme);
     }
 
     public static void setTheme(boolean theme) {
-        sTheme = (theme) ? 1 : 0;
+        sTheme = (theme) ?  AppCompatDelegate.MODE_NIGHT_YES :  AppCompatDelegate.MODE_NIGHT_NO;
     }
 }

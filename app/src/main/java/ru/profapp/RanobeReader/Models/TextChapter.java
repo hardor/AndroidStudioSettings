@@ -23,8 +23,8 @@ public class TextChapter {
     private int Index;
 
     @Ignore
-    public TextChapter(@NonNull String charpterUrl, String text, String chapterName, String ranobeName,int index) {
-        this.ChapterUrl = charpterUrl;
+    public TextChapter(@NonNull String chapterUrl, String text, String chapterName, String ranobeName,int index) {
+        this.ChapterUrl = chapterUrl;
         this.Text = text;
         ChapterName= chapterName;
         RanobeName = ranobeName;

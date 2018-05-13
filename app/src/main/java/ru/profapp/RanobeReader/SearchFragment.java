@@ -1,14 +1,15 @@
 package ru.profapp.RanobeReader;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SearchView;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -78,12 +79,20 @@ public class SearchFragment extends Fragment {
             public boolean onQueryTextSubmit(String query) {
                 resultLabel.setVisibility(View.GONE);
 
+                ProgressDialog progressDialog = new ProgressDialog(mContext);
+
+                progressDialog.setTitle(getResources().getString(R.string.load_please_wait));
+                progressDialog.setCancelable(true);
+                progressDialog.show();
+
                 findRanobe(query);
+
                 if (mRanobeList.size() == 0) {
                     resultLabel.setVisibility(View.VISIBLE);
                 }
                 mRanobeRecyclerViewAdapter.notifyDataSetChanged();
                 recyclerView.scrollToPosition(0);
+                progressDialog.dismiss();
 
                 return false;
             }

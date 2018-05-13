@@ -1,12 +1,13 @@
 package ru.profapp.RanobeReader;
 
-import android.app.Activity;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -91,7 +92,7 @@ public class ChapterRecyclerViewAdapter extends
                     RanobeKeeper.getInstance().setRanobe(ranobe);
                 }
                 if(RanobeKeeper.getInstance().getRanobe() !=null){
-                    Intent intent = new Intent(v.getContext(), ChapterText.class);
+                    Intent intent = new Intent(v.getContext(), ChapterTextActivity.class);
                     intent.putExtra("ChapterIndex", holder.getAdapterPosition());
 
                     v.getContext().startActivity(intent);
@@ -137,15 +138,14 @@ public class ChapterRecyclerViewAdapter extends
         }
 
         if (holder.mChapterItem.getReaded()) {
-            holder.mView.setBackgroundColor(
-                    ContextCompat.getColor(mContext, R.color.colorPrimaryDark));
+            holder.mView.setBackgroundColor( ContextCompat.getColor(mContext, R.color.colorPrimaryDark));
         }
 
         AsyncTask.execute(() -> {
 
             try {
                 if (holder.mChapterItem.getDownloaded()) {
-                    ((Activity) mContext).runOnUiThread(() -> holder.mImageButton.setImageDrawable(downloadDoneImage));
+                    ((AppCompatActivity) mContext).runOnUiThread(() -> holder.mImageButton.setImageDrawable(downloadDoneImage));
                 } else {
                     TextChapter chapter = DatabaseDao.getInstance(
                             mContext).getTextDao().getTextByChapterUrl(
@@ -157,7 +157,7 @@ public class ChapterRecyclerViewAdapter extends
 
                             holder.mChapterItem.setText(chapterText);
                             holder.mChapterItem.setDownloaded(true);
-                            ((Activity) mContext).runOnUiThread(() -> holder.mImageButton.setImageDrawable(downloadDoneImage));
+                            ((AppCompatActivity) mContext).runOnUiThread(() -> holder.mImageButton.setImageDrawable(downloadDoneImage));
 
                         }
                     }
@@ -171,7 +171,7 @@ public class ChapterRecyclerViewAdapter extends
     }
 
     private Pair<String, Boolean> getText(Chapter chapter, Context context) {
-        ChapterText chapterText = new ChapterText();
+        ChapterTextActivity chapterText = new ChapterTextActivity();
         Boolean res = chapterText.GetChapterText(chapter, context);
         return new Pair<>(chapterText.mCurrentChapter.getText(), res);
     }

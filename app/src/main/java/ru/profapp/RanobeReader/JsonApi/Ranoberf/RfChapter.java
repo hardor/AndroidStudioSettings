@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class RfChapter {
 
-    @SerializedName("number")
+    @SerializedName("partNumber")
     @Expose
     private String number;
     @SerializedName("title")
@@ -25,6 +25,13 @@ public class RfChapter {
     @SerializedName("publishedAt")
     @Expose
     private Long publishedAt;
+
+    @SerializedName("sponsor")
+    @Expose
+    private Boolean sponsor;
+    @SerializedName("view")
+    @Expose
+    private Integer view;
 
     public String getNumber() {
         return number;
@@ -72,6 +79,22 @@ public class RfChapter {
 
     public void setPublishedAt(Long publishedAt) {
         this.publishedAt = publishedAt;
+    }
+
+    public Boolean getSponsor() {
+        return sponsor;
+    }
+
+    public void setSponsor(Boolean sponsor) {
+        this.sponsor = sponsor;
+    }
+
+    public Integer getView() {
+        return view;
+    }
+
+    public void setView(Integer view) {
+        this.view = view;
     }
 }
 

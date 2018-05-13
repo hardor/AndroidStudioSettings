@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -37,9 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.fabric.sdk.android.Fabric;
-import ru.profapp.RanobeReader.Common.RanobeConstans;
 import ru.profapp.RanobeReader.Common.StringResources;
-import ru.profapp.RanobeReader.Common.ThemeUtils;
 import ru.profapp.RanobeReader.DAO.DatabaseDao;
 import ru.profapp.RanobeReader.Helpers.MyLog;
 import ru.profapp.RanobeReader.Helpers.RanobeKeeper;
@@ -65,16 +64,16 @@ public class RanobeInfoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         // Set up Crashlytics, disabled for debug builds
         Crashlytics crashlyticsKit = new Crashlytics.Builder()
                 .core(new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build())
                 .build();
 
         Fabric.with(this, crashlyticsKit);
-        ThemeUtils.onActivityCreateSetTheme(this, true);
         setContentView(R.layout.activity_ranobe_info);
 
-        loadedChapterCount = RanobeConstans.chapterCount;
+        loadedChapterCount = RanobeKeeper.getInstance().getChapterCount();
 
         MobileAds.initialize(this, getString(R.string.app_admob_id));
 
@@ -86,13 +85,13 @@ public class RanobeInfoActivity extends AppCompatActivity {
         }
 
         adView.loadAd(adRequest.build());
-        mContext = getApplicationContext();
+        mContext = RanobeInfoActivity.this;
         Button loadButton = findViewById(R.id.loadButton);
-
         borderImage = mContext.getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp);
         fillImage = mContext.getResources().getDrawable(
                 R.drawable.ic_favorite_black_24dp);
-        downloadDoneImage = mContext.getResources().getDrawable(R.drawable.ic_cloud_done_black_24dp);
+        downloadDoneImage = mContext.getResources().getDrawable(
+                R.drawable.ic_cloud_done_black_24dp);
 
         NestedScrollView nestedScrollView = findViewById(R.id.ranobe_info_NestedScrollView);
 
@@ -116,7 +115,7 @@ public class RanobeInfoActivity extends AppCompatActivity {
 
         favoriteButton.setOnClickListener(v -> {
 
-            if (!mCurrentRanobe.getFavorited()) {
+            if (!mCurrentRanobe.getFavorited() && !mCurrentRanobe.getFavoritedInWeb()) {
                 favoriteButton.setImageDrawable(fillImage);
 
                 new Thread() {
@@ -173,7 +172,7 @@ public class RanobeInfoActivity extends AppCompatActivity {
                 }.run();
 
             } else {
-                favoriteButton.setImageDrawable(borderImage);
+
                 if (mCurrentRanobe.getFavoritedInWeb()) {
 
                     String token = preferences.getString(StringResources.KEY_Token, "");
@@ -185,6 +184,7 @@ public class RanobeInfoActivity extends AppCompatActivity {
                             JSONObject jsonObject = new JSONObject(response);
                             if (jsonObject.getString("status").equals("success")) {
                                 mCurrentRanobe.setFavoritedInWeb(false);
+                                favoriteButton.setImageDrawable(borderImage);
                             }
                         } catch (JSONException e) {
                             MyLog.SendError(StringResources.LogType.WARN,
@@ -195,8 +195,10 @@ public class RanobeInfoActivity extends AppCompatActivity {
 
                 } else {
                     AsyncTask.execute(
-                            () -> DatabaseDao.getInstance(mContext).getRanobeDao().delete(mCurrentRanobe.getUrl()));
+                            () -> DatabaseDao.getInstance(mContext).getRanobeDao().delete(
+                                    mCurrentRanobe.getUrl()));
                     mCurrentRanobe.setFavorited(false);
+                    favoriteButton.setImageDrawable(borderImage);
                 }
 
             }
@@ -239,13 +241,6 @@ public class RanobeInfoActivity extends AppCompatActivity {
 
         int size = mCurrentRanobe.getChapterList().size();
 
-        RecyclerView commentRecycleView = findViewById(R.id.comment_list);
-        commentRecycleView.setLayoutManager(new LinearLayoutManager(mContext));
-
-        CommentsRecyclerViewAdapter commentsAdapter = new CommentsRecyclerViewAdapter(
-                mCurrentRanobe.getRulateComments(), mContext);
-        commentRecycleView.setAdapter(commentsAdapter);
-
         recyclerView = findViewById(R.id.chapter_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -273,23 +268,31 @@ public class RanobeInfoActivity extends AppCompatActivity {
         tabSpec.setIndicator(getResources().getString(R.string.chapters));
         tabHost.addTab(tabSpec);
 
-        tabSpec = tabHost.newTabSpec("tag2");
-        tabSpec.setContent(R.id.linearLayout2);
-        tabSpec.setIndicator(getResources().getString(R.string.comments));
-        tabHost.addTab(tabSpec);
+        if (mCurrentRanobe.getRulateComments().size() > 0) {
+            RecyclerView commentRecycleView = findViewById(R.id.comment_list);
+            commentRecycleView.setLayoutManager(new LinearLayoutManager(mContext));
 
+            CommentsRecyclerViewAdapter commentsAdapter = new CommentsRecyclerViewAdapter(
+                    mCurrentRanobe.getRulateComments(), mContext);
+            commentRecycleView.setAdapter(commentsAdapter);
+
+            tabSpec = tabHost.newTabSpec("tag2");
+            tabSpec.setContent(R.id.linearLayout2);
+            tabSpec.setIndicator(getResources().getString(R.string.comments));
+            tabHost.addTab(tabSpec);
+        }
         tabHost.setCurrentTab(0);
     }
 
     private void loadChapters(boolean clean) {
 
         if (clean) {
-            loadedChapterCount = RanobeConstans.chapterCount;
+            loadedChapterCount = RanobeKeeper.getInstance().getChapterCount();
             recycleChapterList.clear();
         }
 
         int size_prev = recycleChapterList.size();
-        loadedChapterCount = Math.min(size_prev + RanobeConstans.chapterCount,
+        loadedChapterCount = Math.min(size_prev + RanobeKeeper.getInstance().getChapterCount(),
                 mCurrentRanobe.getChapterList().size());
         List<Chapter> newList = mCurrentRanobe.getChapterList().subList(size_prev,
                 loadedChapterCount);

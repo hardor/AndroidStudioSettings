@@ -7,13 +7,19 @@ import java.util.List;
 
 public class RfBook {
 
+
+
+    @SerializedName("view")
+    @Expose
+    private Integer view;
+
     @SerializedName("name")
     @Expose
     private String name;
     @SerializedName("alias")
     @Expose
     private String alias;
-    @SerializedName("last_updated_book")
+    @SerializedName("lastUpdatedBook")
     @Expose
     private Long lastUpdatedBook;
     @SerializedName("images")
@@ -207,6 +213,14 @@ public class RfBook {
 
     public void setCountry(Country country) {
         this.country = country;
+    }
+
+    public Integer getView() {
+        return view;
+    }
+
+    public void setView(Integer view) {
+        this.view = view;
     }
 }
 

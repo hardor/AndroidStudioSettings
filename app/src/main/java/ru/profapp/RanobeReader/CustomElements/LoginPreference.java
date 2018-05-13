@@ -1,12 +1,11 @@
 package ru.profapp.RanobeReader.CustomElements;
 
-
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.preference.DialogPreference;
+import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,11 +15,11 @@ import ru.profapp.RanobeReader.Common.SessionManager;
 import ru.profapp.RanobeReader.Common.StringResources;
 import ru.profapp.RanobeReader.R;
 
-public final class LoginPreference extends DialogPreference implements DialogInterface.OnClickListener {
+public final class LoginPreference extends DialogPreference implements
+        DialogInterface.OnClickListener {
 
-
-    private SharedPreferences.Editor editor;
     private SessionManager session;
+    private SharedPreferences sharedPref;
     // Current value
     private String mCurrentValue;
     // View elements
@@ -38,14 +37,15 @@ public final class LoginPreference extends DialogPreference implements DialogInt
     protected View onCreateDialogView() {
 
         // Inflate layout
-        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate( R.layout.activity_login, null);
+        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(
+                Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.activity_login, null);
 
         Context context = this.getContext();
-        SharedPreferences sharedPref = context.getSharedPreferences(StringResources.Rulate_Login_Pref, Context.MODE_PRIVATE);
+        sharedPref = context.getSharedPreferences(StringResources.Rulate_Login_Pref,
+                Context.MODE_PRIVATE);
 
         session = new SessionManager(context);
-        editor = sharedPref.edit();
 
         String value = sharedPref.getString(StringResources.KEY_Login, "");
 
@@ -53,7 +53,6 @@ public final class LoginPreference extends DialogPreference implements DialogInt
         mLoginEditor = view.findViewById(R.id.login_login);
         mLoginEditor.setText(value);
         mPasswordEditor = view.findViewById(R.id.login_password);
-
 
         return view;
     }
@@ -88,8 +87,8 @@ public final class LoginPreference extends DialogPreference implements DialogInt
         String username = mLoginEditor.getText().toString();
         String password = mPasswordEditor.getText().toString();
 
-        editor.putString(StringResources.KEY_Login, username);
-        editor.commit();
+        sharedPref.edit().putString(StringResources.KEY_Login, username).commit();
+
 
         AlertDialog alert = new AlertDialog.Builder(getContext()).create();
         // Check if username, password is filled
@@ -97,12 +96,11 @@ public final class LoginPreference extends DialogPreference implements DialogInt
             String[] result = session.createLoginSession(username, password);
             Boolean resBool = Boolean.valueOf(result[0]);
             if (resBool) {
-                editor.putString(StringResources.KEY_Token, result[2]);
-                editor.commit();
+                sharedPref.edit().putString(StringResources.KEY_Token, result[2]).commit();
                 setSummary(username);
-            }else{
-                editor.putString(StringResources.KEY_Token, "");
-                editor.commit();
+            } else {
+                sharedPref.edit().putString(StringResources.KEY_Token, "").commit();
+
                 setSummary(getContext().getString(R.string.login_to_rulate_summary));
             }
 
@@ -116,12 +114,11 @@ public final class LoginPreference extends DialogPreference implements DialogInt
             // user didn't entered username or password
             // Show alert asking him to enter the details
 
-
             alert.setTitle(getContext().getString(R.string.login_failed));
             alert.setMessage(getContext().getString(R.string.enter_user_pass));
             alert.setButton(Dialog.BUTTON_POSITIVE, "OK", (dialog, which) -> {
-                editor.putString(StringResources.KEY_Token, "");
-                editor.commit();
+                sharedPref.edit().putString(StringResources.KEY_Token, "").commit();
+
                 setSummary(getContext().getString(R.string.login_to_rulate_summary));
             });
             alert.setButton(Dialog.BUTTON_NEUTRAL, "Cancel", (dialog, which) -> {
