@@ -21,12 +21,15 @@
     <string name="hide_unavailable_chapters">Hide unavailable (paid) chapters</string>
     <string name="tl.rulate_name" translatable="false">Rulate</string>
     <string name="tl.rulate_web" translatable="false">Rulate Web</string>
+    <string name="ranoberf_web" translatable="false">Ранобэ.рф Web</string>
     <string name="text_size">Text size</string>
     <string name="select_text_size">Select size for chapter\'s text</string>
     <string name="login">Login</string>
+    <string name="login_email">Login/E-mail</string>
     <string name="password">Password</string>
-    <string name="login_to_rulate_summary">Log in to get favorite Ranobe from your profile</string>
+    <string name="login_to_summary">Log in to get favorite Ranobe from your profile</string>
     <string name="rulate_authorization">Rulate authorization</string>
+    <string name="ranoberf_authorization">Ранобэ.рф authorization</string>
     <string name="pref_general_hide_chapter" translatable="false">
         preference_hide_unavailable_chapters
     </string>
@@ -42,6 +45,7 @@
     <string name="chapters">Chapters</string>
     <string name="description">Description</string>
     <string name="additional_information">Additional Information</string>
+    <string name="information">Information</string>
     <string name="title_activity_chapter_text" translatable="false">ChapterText</string>
     <string name="previous">Previous</string>
     <string name="next">Next</string>
@@ -75,6 +79,7 @@
     <string name="added_to_local">was added to local bookmarks.</string>
     <string name="added_to_web">was added to web bookmarks.</string>
     <string name="rulate_authorization_pref" translatable="false">rulate_authorization_pref</string>
+    <string name="ranoberf_authorization_pref" translatable="false">ranoberf_authorization_pref</string>
 
     <string name="comments">Comments</string>
     <string name="сlean_favorite">Clean local bookmarks</string>
@@ -97,5 +102,9 @@
     <string name="pref_general_list_size" translatable="false">pref_general_list_size</string>
     <string name="NumberDisplayed">Number of Chapters displayed</string>
     <string name="NumberDisplayed100">Not less than 100</string>
+    <string name="email" translatable="false">e-mail</string>
+    <string name="auth_error">Error authorization</string>
+    <string name="auth_succes">Authorization success</string>
+    <string name="update_to_remove">Please update favorites to remove this bookmark</string>
 
 </resources>

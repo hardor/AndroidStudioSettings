@@ -1,5 +1,8 @@
 package ru.profapp.RanobeReader;
 
+import static ru.profapp.RanobeReader.Common.StringResources.KEY_Login;
+
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -12,6 +15,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -70,7 +74,7 @@ public class MainActivity extends AppCompatActivity
         adView.loadAd(adRequest.build());
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-        //   setSupportActionBar(toolbar);
+        setSupportActionBar(toolbar);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
 
@@ -123,6 +127,13 @@ public class MainActivity extends AppCompatActivity
                 settingPref.getString(
                         getApplicationContext().getString(R.string.pref_general_list_size),
                         "100")));
+
+        SharedPreferences rfPref = getApplicationContext().getSharedPreferences(
+                StringResources.Ranoberf_Login_Pref, MODE_PRIVATE);
+        if (rfPref != null) {
+            RanobeKeeper.getInstance().setRanobeRfToken(rfPref.getString(KEY_Login, ""));
+        }
+
         ThemeUtils.setTheme(settingPref.getBoolean(
                 getApplicationContext().getString(R.string.pref_general_app_theme), false));
         ThemeUtils.onActivityCreateSetTheme();
@@ -173,42 +184,70 @@ public class MainActivity extends AppCompatActivity
         Fragment fragment = null;
 
         switch (id) {
-            case R.id.nav_favorite:
+            case R.id.nav_favorite: {
                 fragment = RanobeRecyclerFragment.newInstance(
                         RanobeConstans.FragmentType.Favorite.name());
                 setTitle(getResources().getText(R.string.favorite));
                 break;
-            case R.id.nav_rulate:
+            }
+            case R.id.nav_rulate: {
                 fragment = RanobeRecyclerFragment.newInstance(
                         RanobeConstans.FragmentType.Rulate.name());
                 setTitle(getResources().getText(R.string.tl_rulate_name));
                 break;
-            case R.id.nav_ranoberf:
+            }
+            case R.id.nav_ranoberf: {
                 fragment = RanobeRecyclerFragment.newInstance(
                         RanobeConstans.FragmentType.Ranoberf.name());
                 setTitle(getResources().getText(R.string.ranobe_rf));
                 break;
+            }
             case R.id.nav_manage: {
                 Intent intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
                 break;
             }
-            case R.id.nav_search:
+            case R.id.nav_search: {
                 fragment = SearchFragment.newInstance();
                 setTitle(getResources().getText(R.string.search));
                 break;
-            case R.id.nav_chapters:
+            }
+            case R.id.nav_chapters: {
                 //  fragment = SavedChaptersFragment.newInstance();
                 fragment = RanobeRecyclerFragment.newInstance(
                         RanobeConstans.FragmentType.History.name());
                 setTitle(getResources().getText(R.string.saved_chapters));
-
                 break;
+            }
             case R.id.nav_send: {
-                Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                        "mailto", "admin@profapp.ru", null));
-                startActivity(Intent.createChooser(intent, "Choose an Email client :"));
+                final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
+                try {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                } catch (android.content.ActivityNotFoundException anfe) {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+                }
 
+//                Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+//                        "mailto", "admin@profapp.ru", null));
+//                startActivity(Intent.createChooser(intent, "Choose an Email client :"));
+                break;
+            }
+            case R.id.nav_info: {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Информация")
+                        .setMessage("Приложение пока не стабильно. Рекомендую перенести свои локальные закладки в web.\n"
+                                + "2.14\n"
+                                + "Добавлена возможность синхронизации с Ранобэ.рф\n"
+                                + "Исправлены ошибки с сохраненными главами\n"
+                                + "Исправлено отображение времени обновления для ранобэ")
+                        .setIcon(R.drawable.ic_info_black_24dp)
+                        .setCancelable(true)
+                        .setPositiveButton("OK",
+                                (dialog, id1) -> dialog.cancel());
+
+
+                AlertDialog alert = builder.create();
+                alert.show();
                 break;
             }
         }

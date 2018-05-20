@@ -90,7 +90,7 @@ public class SearchFragment extends Fragment {
                 if (mRanobeList.size() == 0) {
                     resultLabel.setVisibility(View.VISIBLE);
                 }
-                mRanobeRecyclerViewAdapter.notifyDataSetChanged();
+                mRanobeRecyclerViewAdapter.notifyItemRangeInserted(0,mRanobeList.size());
                 recyclerView.scrollToPosition(0);
                 progressDialog.dismiss();
 
@@ -132,7 +132,9 @@ public class SearchFragment extends Fragment {
     }
 
     private void findRanobe(String searchString) {
+        int size = mRanobeList.size();
         mRanobeList.clear();
+        mRanobeRecyclerViewAdapter.notifyItemRangeRemoved(0,size);
         try {
             searchString = URLEncoder.encode(searchString, "UTF-8");
         } catch (UnsupportedEncodingException e) {

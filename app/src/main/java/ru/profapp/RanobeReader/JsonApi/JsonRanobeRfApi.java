@@ -9,8 +9,13 @@ import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,7 +70,12 @@ public class JsonRanobeRfApi {
         data.put("page", String.valueOf(page + 1));
         data.put("sequence", sequence);
 
-        String response = getDocumentText(Cookies, data, request, Connection.Method.POST.name());
+        Map<String, String> header = new HashMap<>();
+        header.put("Content-Type", "application/x-www-form-urlencoded");
+        header.put("Accept", "*/*");
+
+        String response = getDocumentText(Cookies, data, header, request,
+                Connection.Method.POST.name());
 
         for (int i = 0; i < 3; i++) {
             JSONObject jsonObject;
@@ -90,7 +100,8 @@ public class JsonRanobeRfApi {
 
                 Cookies = res != null ? res.cookies() : Cookies;
 
-                response = getDocumentText(Cookies, data, request, Connection.Method.POST.name());
+                response = getDocumentText(Cookies, data, header, request,
+                        Connection.Method.POST.name());
 
             } else {
                 break;
@@ -167,6 +178,76 @@ public class JsonRanobeRfApi {
         return getDocumentText(Cookies, request);
     }
 
+    public String RemoveBookmark(int bookmark_id, String token) {
+
+        if (!token.isEmpty()) {
+
+            try {
+
+                String request = StringResources.RanobeRf_Site + "/v1/bookmark/delete/";
+
+                String rawData = "id=" + Integer.toString(bookmark_id);
+
+                URL obj = new URL(request);
+                HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+
+                //add reuqest header
+                con.setRequestMethod("DELETE"); //e.g POST
+                con.setRequestProperty("Content-Type",
+                        "application/x-www-form-urlencoded"); //e.g key = Accept, value =
+                // application/json
+                con.setRequestProperty("Authorization", "Bearer " + token);
+                ; //e.g key = Accept, value = application/json
+                con.setRequestProperty("Accept",
+                        "*/*"); //e.g key = Accept, value = application/json
+
+                con.setDoOutput(true);
+
+                OutputStreamWriter w = new OutputStreamWriter(con.getOutputStream(), "UTF-8");
+
+                w.write(rawData);
+                w.close();
+
+                int responseCode = con.getResponseCode();
+
+                BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+
+                String inputLine;
+                StringBuffer response = new StringBuffer();
+
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+
+                in.close();
+
+                return response.toString();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+        return "";
+
+    }
+
+    public String AddBookmark(int book_id, int part_id, String token) {
+        if (!token.isEmpty()) {
+            String request = StringResources.RanobeRf_Site + "/v1/bookmark/add/";
+
+            Map<String, String> header = new HashMap<>();
+            header.put("Content-Type", "application/x-www-form-urlencoded");
+            header.put("Authorization", "Bearer " + token);
+            header.put("Accept", "*/*");
+            Map<String, String> data = new HashMap<>();
+            data.put("book_id", Integer.toString(book_id));
+            data.put("part_id", Integer.toString(part_id));
+            return getDocumentText(Cookies, data, header, request, Connection.Method.POST.name());
+        } else {
+            return "";
+        }
+    }
+
     private String getDocumentText(Map<String, String> Cookies, String... params) {
 
         Document html;
@@ -194,4 +275,43 @@ public class JsonRanobeRfApi {
         return "";
     }
 
+    private String getDocumentText(Map<String, String> Cookies, Map<String, String> Data,
+            Map<String, String> Header,
+            String... params) {
+
+        Document html;
+        try {
+            html = new HtmlParser(Cookies, Data, Header).execute(params).get();
+            String result = html.body().html();
+            return StringHelper.getInstance().cleanJson(result);
+        } catch (InterruptedException | NullPointerException | ExecutionException e) {
+            MyLog.SendError(StringResources.LogType.WARN, JsonRulateApi.class.toString(), "", e);
+        }
+        return "";
+    }
+
+    public String Login(String name, String password) {
+        String request = StringResources.RanobeRf_Site + "/v1/auth/login/";
+
+        Map<String, String> data = new HashMap<>();
+        data.put("email", name);
+        data.put("password", password);
+
+        Map<String, String> header = new HashMap<>();
+        header.put("Content-Type", "application/x-www-form-urlencoded");
+        header.put("Accept", "*/*");
+
+        return getDocumentText(Cookies, data, header, request, Connection.Method.POST.name());
+    }
+
+    public String GetFavoriteBooks(String token) {
+        String request = StringResources.RanobeRf_Site + "/v1/bookmark/index/";
+
+        Map<String, String> data = new HashMap<>();
+        Map<String, String> header = new HashMap<>();
+        header.put("Authorization", "Bearer " + token);
+        header.put("Accept", "*/*");
+
+        return getDocumentText(Cookies, data, header, request);
+    }
 }

@@ -22,7 +22,7 @@
     <string name="cache_cleaned">Данные очищены</string>
     <string name="clean_history">Очистить историю</string>
     <string name="clean_history_full">Очистить информацию о прочитанных главах</string>
-    <string name="login_to_rulate_summary">Авторизируйтесь для синхронизации закладок</string>
+    <string name="login_to_summary">Авторизируйтесь для синхронизации закладок</string>
     <string name="rulate_authorization">Авторизация Rulate</string>
     <string name="search">Поиск</string>
     <string name="update_time">Обновлено %1$d д. %2$d ч. %3$d м. назад</string>
@@ -57,4 +57,12 @@
     <string name="Turn_on_dark_theme">Включить темную тему</string>
     <string name="NumberDisplayed">Количество показываемых глав</string>
     <string name="NumberDisplayed100">Не меньше 100</string>
+    <string name="login_email">Логин/E-mail</string>
+    <string name="ranoberf_authorization">Авторизация ранобэ.рф</string>
+    <string name="auth_error">Ошибка авторизации</string>
+    <string name="auth_succes">Авторизация успешна</string>
+    <string name="update_to_remove">Пожалуйста обновите список избранных для удаления этой
+        закладки
+    </string>
+    <string name="information">Информация</string>
 </resources>

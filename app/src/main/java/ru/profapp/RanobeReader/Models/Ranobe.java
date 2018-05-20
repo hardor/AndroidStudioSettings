@@ -1,5 +1,6 @@
 package ru.profapp.RanobeReader.Models;
 
+import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
@@ -23,6 +24,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import ru.profapp.RanobeReader.Common.RanobeConstans;
 import ru.profapp.RanobeReader.Common.StringResources;
@@ -64,7 +66,9 @@ public class Ranobe {
     private String Description;
     private String AdditionalInfo;
     private String RanobeSite;
+    @ColumnInfo(name = "CharpterCount")
     private int ChapterCount;
+    @ColumnInfo(name = "LastReadedCharpter")
     private int LastReadedChapter;
     private Boolean WasUpdated;
     private Boolean Favorited;
@@ -72,11 +76,14 @@ public class Ranobe {
     private String Rating;
     private String Status;
     @Ignore
-    private String Genres="";
+    private String Genres = "";
     @Ignore
     private List<Chapter> chapterList = new ArrayList<>();
     @Ignore
     private List<RulateComment> mRulateComments = new ArrayList<>();
+
+    @Ignore
+    private Integer BookmarkIdRf;
 
     public Ranobe() {
     }
@@ -103,16 +110,16 @@ public class Ranobe {
         Lang = book.getLang() != null ? book.getLang() : Lang;
         try {
 
-            if(ReadyDate == null) {
-                if(book.getReadyDate() != null){
+            if (ReadyDate == null) {
+                if (book.getReadyDate() != null) {
                     mCalendar.setTime(format.parse(book.getReadyDate()));
                     mCalendar.set(Calendar.YEAR, Calendar.getInstance().get(Calendar.YEAR));
+                    mCalendar.setTimeZone(TimeZone.getTimeZone("Europe/Moscow"));
                     ReadyDate = mCalendar.getTime();
                 }
                 ReadyDate = book.getLastActivity() != null ? new java.util.Date(
                         book.getLastActivity() * 1000) : ReadyDate;
             }
-
 
         } catch (ParseException e) {
             MyLog.SendError(StringResources.LogType.WARN, Ranobe.class.toString(), "", e);
@@ -159,9 +166,10 @@ public class Ranobe {
         Title = empty(Title) ? (book.getTitle() != null ? book.getTitle() : Title) : Title;
 
         Url = empty(Url) ? (book.getAlias() != null ? book.getAlias() : Url) : Url;
-        Url = empty(Url) ? (book.getUrl() != null ?  book.getUrl(): Url) : Url;
-        if(!Url.contains(StringResources.RanobeRf_Site))
-            Url=Url+StringResources.RanobeRf_Site;
+        Url = empty(Url) ? (book.getUrl() != null ? book.getUrl() : Url) : Url;
+        if (!Url.contains(StringResources.RanobeRf_Site)) {
+            Url = StringResources.RanobeRf_Site + Url;
+        }
 
         Description = empty(Description) ? (book.getDescription() != null
                 ? StringHelper.getInstance().removeTags(book.getDescription())
@@ -172,10 +180,6 @@ public class Ranobe {
 
         ReadyDate = ReadyDate == null ? (book.getLastUpdatedBook() != null ? new Date(
                 book.getLastUpdatedBook() * 1000) : ReadyDate) : ReadyDate;
-
-        ReadyDate = ReadyDate == null ? (book.getPublishedAt() != null ? new Date(
-                book.getPublishedAt() * 1000)
-                : ReadyDate) : ReadyDate;
 
         Image = empty(Image) ? (book.getImages() != null ? StringResources.RanobeRf_Site
                 + book.getImages().get(0)
@@ -197,6 +201,7 @@ public class Ranobe {
                 chapter.setIndex(i);
                 chapterList.add(chapter);
             }
+
         }
 
     }
@@ -217,6 +222,12 @@ public class Ranobe {
             chapter.setIndex(i);
             chapterList.add(chapter);
         }
+        if (chapterList.size() > 0) {
+            ReadyDate = result.getParts().get(chapterList.size() - 1) != null ? new Date(
+                    result.getParts().get(chapterList.size() - 1).getPublishedAt() * 1000)
+                    : ReadyDate;
+        }
+
         Collections.reverse(chapterList);
     }
 
@@ -605,5 +616,13 @@ public class Ranobe {
 
     public void setGenres(String genres) {
         Genres = genres;
+    }
+
+    public Integer getBookmarkIdRf() {
+        return BookmarkIdRf == null ? 0 : BookmarkIdRf;
+    }
+
+    public void setBookmarkIdRf(Integer bookmarkIdRf) {
+        BookmarkIdRf = bookmarkIdRf;
     }
 }

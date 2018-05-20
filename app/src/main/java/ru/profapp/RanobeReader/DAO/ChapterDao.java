@@ -18,10 +18,10 @@ import ru.profapp.RanobeReader.Models.Chapter;
 @Dao
 public interface ChapterDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(Chapter chapter);
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertAll(Chapter... chapters);
 
     @Update

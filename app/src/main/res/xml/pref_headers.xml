@@ -9,5 +9,9 @@
     <header
         android:fragment="ru.profapp.RanobeReader.SettingsActivity$RulatePreferenceFragment"
         android:title="@string/tl.rulate_name" />
+    <header
+        android:fragment="ru.profapp.RanobeReader.SettingsActivity$RanobeRfPreferenceFragment"
+        android:title="@string/ranobe_rf" />
+
 
 </preference-headers>

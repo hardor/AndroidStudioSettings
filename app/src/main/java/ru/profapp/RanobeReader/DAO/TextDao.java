@@ -17,10 +17,10 @@ import ru.profapp.RanobeReader.Models.TextChapter;
 @Dao
 public interface TextDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(TextChapter text);
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertAll(TextChapter... texts);
 
     @Update
@@ -42,6 +42,6 @@ public interface TextDao {
     @Query("DELETE FROM textChapter")
     void cleanTable();
 
-    @Query("SELECT * FROM textChapter order by RanobeName, `Index`")
+    @Query("SELECT * FROM textChapter order by RanobeName Asc, `Index` DESC")
     List<TextChapter> getAllText();
 }

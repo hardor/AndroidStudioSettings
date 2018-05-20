@@ -1,5 +1,6 @@
 package ru.profapp.RanobeReader.Helpers;
 
+import ru.profapp.RanobeReader.Common.RanobeConstans;
 import ru.profapp.RanobeReader.Models.Ranobe;
 
 /**
@@ -10,11 +11,13 @@ public class RanobeKeeper {
     private static volatile RanobeKeeper instance;
     private Integer chapterCount;
     private Ranobe ranobe;
+    private String RanobeRfToken;
 
     private Integer ChapterTextSize;
     private Boolean HideUnavailableChapters;
     private Boolean AutoSaveText;
 
+    private RanobeConstans.FragmentType mFragmentType;
 
     private RanobeKeeper() {
     }
@@ -30,8 +33,16 @@ public class RanobeKeeper {
         return instance;
     }
 
+    public RanobeConstans.FragmentType getFragmentType() {
+        return mFragmentType;
+    }
+
+    public void setFragmentType(RanobeConstans.FragmentType fragmentType) {
+        mFragmentType = fragmentType;
+    }
+
     public Ranobe getRanobe() {
-        return ranobe ;
+        return ranobe;
     }
 
     public void setRanobe(Ranobe ranobe) {
@@ -48,7 +59,7 @@ public class RanobeKeeper {
     }
 
     public Boolean getHideUnavailableChapters() {
-        return HideUnavailableChapters ==null ? false : HideUnavailableChapters;
+        return HideUnavailableChapters == null ? false : HideUnavailableChapters;
     }
 
     public void setHideUnavailableChapters(Boolean hideUnavailableChapters) {
@@ -64,10 +75,21 @@ public class RanobeKeeper {
     }
 
     public Integer getChapterCount() {
+        if (chapterCount == null || chapterCount == 0) {
+            return 100;
+        }
         return chapterCount;
     }
 
     public void setChapterCount(Integer chapterCount) {
         this.chapterCount = chapterCount;
+    }
+
+    public String getRanobeRfToken() {
+        return RanobeRfToken;
+    }
+
+    public void setRanobeRfToken(String ranobeRfToken) {
+        RanobeRfToken = ranobeRfToken;
     }
 }

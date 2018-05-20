@@ -1,0 +1,16 @@
+*.iml
+.gradle
+/local.properties
+/.idea
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+/app/release
+/app/proguard-rules.pro
+/app/src/androidTest/java/ru/profapp/RanobeReader/SimpleEntityReadWriteTest.java
+/app/src/test/java/ru/profapp/RanobeReader/ExampleUnitTest.java
+/gradle/wrapper/gradle-wrapper.jar
+/gradle/wrapper/gradle-wrapper.properties
+/gradlew
+/gradlew.bat

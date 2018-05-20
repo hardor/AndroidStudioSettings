@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
+import ru.profapp.RanobeReader.JsonApi.JsonRanobeRfApi;
 import ru.profapp.RanobeReader.JsonApi.JsonRulateApi;
 
 public class SessionManager {
@@ -18,10 +19,7 @@ public class SessionManager {
     // Editor for Shared preferences
     private Editor editor;
 
-    // Constructor
-    public SessionManager() {
 
-    }
 
     public SessionManager(Context context) {
         int PRIVATE_MODE = 0;
@@ -32,7 +30,7 @@ public class SessionManager {
     /**
      * Create login session *
      **/
-    public String[] createLoginSession(String name, String password) {
+    public String[] createRulateLoginSession(String name, String password) {
         String response = JsonRulateApi.getInstance().Login(name, password);
 
         try {
@@ -50,36 +48,22 @@ public class SessionManager {
 
     }
 
-    /**
-     * Get stored session data
-     */
-    public HashMap<String, String> getUserDetails() {
-        HashMap<String, String> user = new HashMap<>();
-        // user name
-        user.put(StringResources.KEY_Login, pref.getString(StringResources.KEY_Login, null));
+    public String[] createRanobeRfLoginSession(String name, String password) {
+        String response = JsonRanobeRfApi.getInstance().Login(name, password);
 
-        // user email id
-        user.put(StringResources.KEY_Password, pref.getString(StringResources.KEY_Password, null));
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            if (jsonObject.getInt("status") == 200) {
+                return new String[]{"true", jsonObject.get("message").toString(), jsonObject.getJSONObject("result").get("token").toString()};
+            }
 
-        // return user
-        return user;
+            return new String[]{"false", jsonObject.get("message").toString()};
+
+        } catch (JSONException e) {
+
+            return new String[]{"false", "Response error"};
+        }
+
     }
 
-    /**
-     * /**
-     * Clear session details
-     */
-    public void logoutUser() {
-        // Clearing all data from Shared Preferences
-        editor.clear();
-        editor.commit();
-    }
-
-    /**
-     * Quick check for login
-     **/
-    // Get Login State
-    public boolean isLoggedIn() {
-        return pref.contains(StringResources.KEY_Token);
-    }
 }

@@ -48,12 +48,12 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 } else if (preference.getKey().equals(preference.getContext().getString(
                         R.string.pref_general_list_size))) {
 
-                      if(Integer.valueOf(value.toString())>100) {
-                          RanobeKeeper.getInstance().setChapterTextSize(
-                                  Integer.valueOf(value.toString()));
-                      }else{
-                          return false;
-                      }
+                    if (Integer.valueOf(value.toString()) > 100) {
+                        RanobeKeeper.getInstance().setChapterTextSize(
+                                Integer.valueOf(value.toString()));
+                    } else {
+                        return false;
+                    }
 
                 }
                 return true;
@@ -118,7 +118,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     protected boolean isValidFragment(String fragmentName) {
         return PreferenceFragment.class.getName().equals(fragmentName)
                 || GeneralPreferenceFragment.class.getName().equals(fragmentName)
-                || RulatePreferenceFragment.class.getName().equals(fragmentName);
+                || RulatePreferenceFragment.class.getName().equals(fragmentName)
+                || RanobeRfPreferenceFragment.class.getName().equals(fragmentName);
     }
 
     @Override
@@ -194,7 +195,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                     getString(R.string.pref_general_list_size));
             listSizepref.setOnPreferenceChangeListener(sChangePreferenceListener);
 
-
         }
 
         @Override
@@ -228,7 +228,40 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             if (!token.equals("")) {
                 prefLogin.setSummary(mPreferences.getString(StringResources.KEY_Login, ""));
             } else {
-                prefLogin.setSummary(getActivity().getString(R.string.login_to_rulate_summary));
+                prefLogin.setSummary(getActivity().getString(R.string.login_to_summary));
+            }
+            setHasOptionsMenu(true);
+        }
+
+        @Override
+        public boolean onOptionsItemSelected(MenuItem item) {
+            int id = item.getItemId();
+            if (id == android.R.id.home) {
+                getActivity().onBackPressed();
+                return true;
+            }
+            return super.onOptionsItemSelected(item);
+        }
+
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    public static class RanobeRfPreferenceFragment extends PreferenceFragment {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            addPreferencesFromResource(R.xml.pref_ranoberf);
+            Preference prefLogin = findPreference(getString(R.string.ranoberf_authorization_pref));
+
+            SharedPreferences mPreferences = getActivity().getSharedPreferences(
+                    StringResources.Ranoberf_Login_Pref, 0);
+
+            String token = mPreferences.getString(StringResources.KEY_Token, "");
+
+            if (!token.equals("")) {
+                prefLogin.setSummary(mPreferences.getString(StringResources.KEY_Login, ""));
+            } else {
+                prefLogin.setSummary(getActivity().getString(R.string.login_to_summary));
             }
             setHasOptionsMenu(true);
         }

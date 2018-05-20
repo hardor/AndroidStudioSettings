@@ -6,6 +6,7 @@ package ru.profapp.RanobeReader.Common;
 
 public class StringResources {
     public static final String Rulate_Login_Pref = "preference_rulate_login";
+    public static final String Ranoberf_Login_Pref = "preference_ranoberf_login";
     public static final String Last_readed_Pref = "preference_readed_history";
     public static final String is_readed_Pref = "preference_is_readed";
     public static final String KEY_Login = "login";

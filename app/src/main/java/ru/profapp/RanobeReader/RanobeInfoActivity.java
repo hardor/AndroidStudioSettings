@@ -42,17 +42,19 @@ import ru.profapp.RanobeReader.Common.StringResources;
 import ru.profapp.RanobeReader.DAO.DatabaseDao;
 import ru.profapp.RanobeReader.Helpers.MyLog;
 import ru.profapp.RanobeReader.Helpers.RanobeKeeper;
+import ru.profapp.RanobeReader.JsonApi.JsonRanobeRfApi;
 import ru.profapp.RanobeReader.JsonApi.JsonRulateApi;
 import ru.profapp.RanobeReader.Models.Chapter;
 import ru.profapp.RanobeReader.Models.Ranobe;
 
 public class RanobeInfoActivity extends AppCompatActivity {
 
-    private final List<Chapter> recycleChapterList = new ArrayList<>();
+    private List<Chapter> recycleChapterList = new ArrayList<>();
     private int loadedChapterCount;
     private RecyclerView recyclerView;
     private Drawable downloadDoneImage;
     private SharedPreferences preferences;
+    private SharedPreferences rfpreferences;
     private Ranobe mCurrentRanobe;
     private Context mContext;
     private FloatingActionButton favoriteButton;
@@ -113,6 +115,9 @@ public class RanobeInfoActivity extends AppCompatActivity {
         preferences = mContext.getSharedPreferences(
                 StringResources.Rulate_Login_Pref, 0);
 
+        rfpreferences = mContext.getSharedPreferences(
+                StringResources.Ranoberf_Login_Pref, 0);
+
         favoriteButton.setOnClickListener(v -> {
 
             if (!mCurrentRanobe.getFavorited() && !mCurrentRanobe.getFavoritedInWeb()) {
@@ -132,6 +137,34 @@ public class RanobeInfoActivity extends AppCompatActivity {
                                 try {
                                     JSONObject jsonObject = new JSONObject(response);
                                     if (jsonObject.getString("status").equals("success")) {
+                                        wasadded = true;
+                                        mCurrentRanobe.setFavoritedInWeb(true);
+                                        runOnUiThread(() -> Toast.makeText(mContext,
+                                                mCurrentRanobe.getTitle() + " "
+                                                        + mContext.getString(
+                                                        R.string.added_to_web),
+                                                Toast.LENGTH_SHORT).show());
+                                    }
+                                } catch (JSONException e) {
+                                    MyLog.SendError(StringResources.LogType.WARN,
+                                            RanobeInfoActivity.class.toString(), "", e);
+
+                                }
+
+                            }
+
+                        } else if (mCurrentRanobe.getRanobeSite().equals(
+                                StringResources.RanobeRf_Site)) {
+
+                            String token = rfpreferences.getString(StringResources.KEY_Token, "");
+                            if (!token.equals("")) {
+
+                                String response = JsonRanobeRfApi.getInstance().AddBookmark(
+                                        mCurrentRanobe.getId(),
+                                        mCurrentRanobe.getChapterList().get(0).getId(), token);
+                                try {
+                                    JSONObject jsonObject = new JSONObject(response);
+                                    if (jsonObject.getInt("status") == 200) {
                                         wasadded = true;
                                         mCurrentRanobe.setFavoritedInWeb(true);
                                         runOnUiThread(() -> Toast.makeText(mContext,
@@ -175,20 +208,63 @@ public class RanobeInfoActivity extends AppCompatActivity {
 
                 if (mCurrentRanobe.getFavoritedInWeb()) {
 
-                    String token = preferences.getString(StringResources.KEY_Token, "");
-                    if (!token.equals("")) {
+                    if (mCurrentRanobe.getRanobeSite().contains(StringResources.Rulate_Site)) {
+                        String token = preferences.getString(StringResources.KEY_Token, "");
+                        if (!token.equals("")) {
 
-                        String response = JsonRulateApi.getInstance().RemoveBookmark(
-                                mCurrentRanobe.getId(), token);
-                        try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            if (jsonObject.getString("status").equals("success")) {
-                                mCurrentRanobe.setFavoritedInWeb(false);
-                                favoriteButton.setImageDrawable(borderImage);
+                            String response = JsonRulateApi.getInstance().RemoveBookmark(
+                                    mCurrentRanobe.getId(), token);
+                            try {
+                                JSONObject jsonObject = new JSONObject(response);
+                                if (jsonObject.getString("status").equals("success")) {
+                                    mCurrentRanobe.setFavoritedInWeb(false);
+                                    AsyncTask.execute(
+                                            () -> DatabaseDao.getInstance(
+                                                    mContext).getRanobeDao().deleteWeb(
+                                                    mCurrentRanobe.getUrl()));
+                                    favoriteButton.setImageDrawable(borderImage);
+                                }
+                            } catch (JSONException e) {
+                                MyLog.SendError(StringResources.LogType.WARN,
+                                        RanobeInfoActivity.class.toString(), "", e);
+
                             }
-                        } catch (JSONException e) {
-                            MyLog.SendError(StringResources.LogType.WARN,
-                                    RanobeInfoActivity.class.toString(), "", e);
+                        }
+
+                    } else if (mCurrentRanobe.getRanobeSite().contains(
+                            StringResources.RanobeRf_Site)) {
+                        String token = rfpreferences.getString(StringResources.KEY_Token, "");
+                        if (!token.equals("")) {
+
+                            Thread thread = new Thread(() -> {
+
+                                String response = JsonRanobeRfApi.getInstance().RemoveBookmark(
+                                        mCurrentRanobe.getBookmarkIdRf(), token);
+                                try {
+                                    JSONObject jsonObject = new JSONObject(response);
+                                    if (jsonObject.getInt("status") == 200) {
+                                        mCurrentRanobe.setFavoritedInWeb(false);
+                                        AsyncTask.execute(
+                                                () -> DatabaseDao.getInstance(
+                                                        mContext).getRanobeDao().deleteWeb(
+                                                        mCurrentRanobe.getUrl()));
+                                        runOnUiThread(
+                                                () -> favoriteButton.setImageDrawable(
+                                                        borderImage));
+
+                                    }
+                                } catch (JSONException e) {
+
+                                    runOnUiThread(() -> Toast.makeText(mContext,
+                                            mContext.getString(
+                                                    R.string.update_to_remove),
+                                            Toast.LENGTH_SHORT).show());
+
+                                }
+
+                            });
+
+                            thread.start();
 
                         }
                     }
@@ -242,7 +318,6 @@ public class RanobeInfoActivity extends AppCompatActivity {
         int size = mCurrentRanobe.getChapterList().size();
 
         recyclerView = findViewById(R.id.chapter_list);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         adapter = new ChapterRecyclerViewAdapter(recycleChapterList, this, mCurrentRanobe);
         adapter.setDownloadDoneImage(downloadDoneImage);
@@ -286,12 +361,13 @@ public class RanobeInfoActivity extends AppCompatActivity {
 
     private void loadChapters(boolean clean) {
 
+        int size_prev = recycleChapterList.size();
         if (clean) {
             loadedChapterCount = RanobeKeeper.getInstance().getChapterCount();
             recycleChapterList.clear();
+            size_prev = 0;
         }
 
-        int size_prev = recycleChapterList.size();
         loadedChapterCount = Math.min(size_prev + RanobeKeeper.getInstance().getChapterCount(),
                 mCurrentRanobe.getChapterList().size());
         List<Chapter> newList = mCurrentRanobe.getChapterList().subList(size_prev,
@@ -309,7 +385,10 @@ public class RanobeInfoActivity extends AppCompatActivity {
                 }
             }
         }
+        // Todo:
         recycleChapterList.addAll(newList);
+        //   recyclerView.getAdapter().notifyDataSetChanged();
+        //  recyclerView.getAdapter().notifyItemRangeChanged(size_prev,recycleChapterList.size());
 
         adapter = new ChapterRecyclerViewAdapter(recycleChapterList, this, mCurrentRanobe);
         adapter.setDownloadDoneImage(downloadDoneImage);
@@ -343,7 +422,7 @@ public class RanobeInfoActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        adapter.notifyDataSetChanged();
+        adapter.notifyItemRangeChanged(0, recycleChapterList.size());
     }
 
     @Override

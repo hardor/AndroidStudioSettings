@@ -18,7 +18,7 @@ import ru.profapp.RanobeReader.Models.TextChapter;
 public abstract class DatabaseDao extends RoomDatabase {
 
     private static final String DB_NAME = "DatabaseDao.db";
-    private static final Migration FROM_1_TO_2 = new Migration(1, 2) {
+    private static final Migration FROM_2_TO_3 = new Migration(2, 3) {
         @Override
         public void migrate(@NonNull final SupportSQLiteDatabase database) {
             // database.execSQL("DROP TABLE IF EXISTS ranobe");
@@ -40,7 +40,7 @@ public abstract class DatabaseDao extends RoomDatabase {
                 context,
                 DatabaseDao.class,
                 DB_NAME)
-              //  .addMigrations(FROM_1_TO_2)
+                //.addMigrations(FROM_2_TO_3)
                 .build();
     }
 

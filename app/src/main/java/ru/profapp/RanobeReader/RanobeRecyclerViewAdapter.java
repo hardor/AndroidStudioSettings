@@ -45,6 +45,7 @@ class RanobeRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private final int visibleThreshold = 7;
     private int lastVisibleItem, totalItemCount;
 
+
     public RanobeRecyclerViewAdapter(RecyclerView recyclerView, List<Ranobe> items          ) {
         mValues = items;
 
@@ -171,6 +172,7 @@ class RanobeRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             ChapterRecyclerViewAdapter adapter = new ChapterRecyclerViewAdapter(
                     newList.subList(0, Math.min(4, newList.size())), mContext,
                     ((RanobeViewHolder) holder).mItem);
+
             adapter.setDownloadDoneImage(downloadDoneImage);
             ((RanobeViewHolder) holder).mChaptersListView.setAdapter(adapter);
 

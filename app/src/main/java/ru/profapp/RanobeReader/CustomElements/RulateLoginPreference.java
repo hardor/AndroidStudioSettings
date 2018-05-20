@@ -15,7 +15,7 @@ import ru.profapp.RanobeReader.Common.SessionManager;
 import ru.profapp.RanobeReader.Common.StringResources;
 import ru.profapp.RanobeReader.R;
 
-public final class LoginPreference extends DialogPreference implements
+public final class RulateLoginPreference extends DialogPreference implements
         DialogInterface.OnClickListener {
 
     private SessionManager session;
@@ -26,7 +26,7 @@ public final class LoginPreference extends DialogPreference implements
     private EditText mLoginEditor;
     private EditText mPasswordEditor;
 
-    public LoginPreference(Context context, AttributeSet attrs) {
+    public RulateLoginPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
         setPositiveButtonText("Login");
         setNegativeButtonText("Cancel");
@@ -93,7 +93,7 @@ public final class LoginPreference extends DialogPreference implements
         AlertDialog alert = new AlertDialog.Builder(getContext()).create();
         // Check if username, password is filled
         if (username.trim().length() > 0 && password.trim().length() > 0) {
-            String[] result = session.createLoginSession(username, password);
+            String[] result = session.createRulateLoginSession(username, password);
             Boolean resBool = Boolean.valueOf(result[0]);
             if (resBool) {
                 sharedPref.edit().putString(StringResources.KEY_Token, result[2]).commit();
@@ -101,7 +101,7 @@ public final class LoginPreference extends DialogPreference implements
             } else {
                 sharedPref.edit().putString(StringResources.KEY_Token, "").commit();
 
-                setSummary(getContext().getString(R.string.login_to_rulate_summary));
+                setSummary(getContext().getString(R.string.login_to_summary));
             }
 
             alert.setTitle(username);
@@ -119,7 +119,7 @@ public final class LoginPreference extends DialogPreference implements
             alert.setButton(Dialog.BUTTON_POSITIVE, "OK", (dialog, which) -> {
                 sharedPref.edit().putString(StringResources.KEY_Token, "").commit();
 
-                setSummary(getContext().getString(R.string.login_to_rulate_summary));
+                setSummary(getContext().getString(R.string.login_to_summary));
             });
             alert.setButton(Dialog.BUTTON_NEUTRAL, "Cancel", (dialog, which) -> {
 

@@ -6,14 +6,6 @@
               android:orientation="vertical"
               tools:context="ru.profapp.RanobeReader.SearchFragment">
 
-    <TextView
-        android:id="@+id/search.result.label"
-        style="@style/TitleCardViewStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/not_found"
-        android:visibility="gone"/>
-
     <android.support.v7.widget.SearchView
         android:id="@+id/search"
         android:layout_width="match_parent"
@@ -21,7 +13,15 @@
         android:clickable="true"
         android:focusable="true"
         app:iconifiedByDefault="false"
-        app:queryHint="@string/search_here"/>
+        app:queryHint="@string/search_here">
+    </android.support.v7.widget.SearchView>
+    <TextView
+        android:id="@+id/search.result.label"
+        style="@style/TitleCardViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/not_found"
+        android:visibility="gone"/>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/ranobeListView"
         android:layout_width="match_parent"

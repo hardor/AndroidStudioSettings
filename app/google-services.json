@@ -15,16 +15,24 @@
       },
       "oauth_client": [
         {
-          "client_id": "789465050624-arn9rnn7j682tc4jftn4o7k297cql3il.apps.googleusercontent.com",
-          "client_type": 3
-        },
-        {
-          "client_id": "789465050624-qa1r5muvhb0t61hpdc491qutkkm3bg5q.apps.googleusercontent.com",
+          "client_id": "789465050624-drcqnaln1020atvpom4h49k4smo15740.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "ru.profapp.RanobeReader",
             "certificate_hash": "0773e75c7f6db3e45865376998b8071ad9badc8e"
           }
+        },
+        {
+          "client_id": "789465050624-t6p3k6lrpe6eb4tla1a9f832816hpqbs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ru.profapp.RanobeReader",
+            "certificate_hash": "85ffaaeca8854006d7893769c2bae22c12542507"
+          }
+        },
+        {
+          "client_id": "789465050624-arn9rnn7j682tc4jftn4o7k297cql3il.apps.googleusercontent.com",
+          "client_type": 3
         }
       ],
       "api_key": [

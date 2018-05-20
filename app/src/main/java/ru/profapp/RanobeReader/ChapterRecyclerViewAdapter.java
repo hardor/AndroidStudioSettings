@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import ru.profapp.RanobeReader.Common.RanobeConstans;
 import ru.profapp.RanobeReader.Common.StringResources;
 import ru.profapp.RanobeReader.DAO.DatabaseDao;
 import ru.profapp.RanobeReader.Helpers.MyLog;
@@ -36,6 +37,16 @@ public class ChapterRecyclerViewAdapter extends
     private final List<Chapter> mValues;
     private final Context mContext;
     private Drawable downloadDoneImage;
+
+    private RanobeConstans.FragmentType fragmentType;
+
+    public RanobeConstans.FragmentType getFragmentType() {
+        return fragmentType;
+    }
+
+    public void setFragmentType(RanobeConstans.FragmentType fragmentType) {
+        this.fragmentType = fragmentType;
+    }
 
     ChapterRecyclerViewAdapter(List<Chapter> chapterList, Context Context, Ranobe ranobe) {
         // hide payed chapters
@@ -83,11 +94,16 @@ public class ChapterRecyclerViewAdapter extends
 
                     Ranobe ranobe = new Ranobe();
                     ranobe.setUrl(holder.mChapterItem.getRanobeUrl());
-                    try {
-                        ranobe.updateRanobe(mContext);
-                    } catch (Exception ignored) {
+                    if((RanobeKeeper.getInstance().getFragmentType() !=null && RanobeKeeper.getInstance().getFragmentType() != RanobeConstans.FragmentType.History)){
+                        try {
+                            ranobe.updateRanobe(mContext);
+                        } catch (Exception ignored) {
+                            ranobe = mRanobe;
+                        }
+                    }else{
                         ranobe = mRanobe;
                     }
+
 
                     RanobeKeeper.getInstance().setRanobe(ranobe);
                 }
