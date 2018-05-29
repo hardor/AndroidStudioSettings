@@ -30,7 +30,7 @@
 
     <string name="general">Общие</string>
     <string name="tools">Настройки</string>
-    <string name="load_more">Загрузить больше</string>
+    <string name="load_all">Загрузить всё</string>
     <string name="comments">Комментарии</string>
 
     <string name="login_failed">Ошибка входа…</string>
@@ -51,7 +51,7 @@
     <string name="feedback">Отзыв</string>
 
     <string name="action_bookmark">Закладка</string>
-    <string name="bookmark_added">Закладка добавлена</string>
+    <string name="bookmark_saved">Закладка добавлена</string>
     <string name="app_theme">Темная тема</string>
     <string name="Turn_off_dark_theme">Выключить темную тему</string>
     <string name="Turn_on_dark_theme">Включить темную тему</string>
@@ -65,4 +65,14 @@
         закладки
     </string>
     <string name="information">Информация</string>
+    <string name="select_all">Выбрать все</string>
+    <string name="select_none">Снять выбор</string>
+    <string name="download">Скачать</string>
+    <string name="readyToDownload">Вы уверены, что хотите загрузить отмеченные главы и удалить не
+        отмеченные?
+    </string>
+    <string name="title_activity_download">Загрузка</string>
+    <string name="sort">Сортировка</string>
+    <string name="task_finished">Загрузка завершена</string>
+    <string name="add_to_favorite">Добавить в избранное</string>
 </resources>

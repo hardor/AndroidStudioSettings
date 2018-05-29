@@ -108,8 +108,6 @@ public class SearchFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 
         mRanobeRecyclerViewAdapter = new RanobeRecyclerViewAdapter(recyclerView, mRanobeList);
-        mRanobeRecyclerViewAdapter.setDownloadDoneImage(
-                mContext.getResources().getDrawable(R.drawable.ic_cloud_done_black_24dp));
         recyclerView.setAdapter(mRanobeRecyclerViewAdapter);
         return view;
     }

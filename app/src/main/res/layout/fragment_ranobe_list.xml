@@ -13,6 +13,7 @@
         android:layout_height="match_parent"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
+        android:scrollbars="vertical"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         tools:context="ru.profapp.RanobeReader.RanobeRecyclerFragment"
         tools:listitem="@layout/ranobe_item"

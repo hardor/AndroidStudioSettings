@@ -92,6 +92,17 @@ public class Ranobe {
         // Null-safe, short-circuit evaluation.
         return s == null || s.trim().isEmpty();
     }
+    @Ignore
+    private boolean isReversed = false;
+
+    public void ReversChapters(){
+        Collections.reverse(chapterList);
+        isReversed=!isReversed;
+    }
+
+    public boolean getReversed() {
+        return isReversed;
+    }
 
     public void UpdateRulateRanobe(RulateBook book) {
 
@@ -133,7 +144,7 @@ public class Ranobe {
         Rating = book.getRating() != null ? book.getRating() : Rating;
 
         if (book.getChapters() != null) {
-
+            chapterList.clear();
             for (int i = 0; i < book.getChapters().size(); i++) {
                 Chapter chapter = new Chapter(book.getChapters().get(i));
                 chapter.setRanobeId(Id);
@@ -192,7 +203,7 @@ public class Ranobe {
                 : Rating) : Rating;
 
         if (book.getParts() != null) {
-
+            chapterList.clear();
             for (int i = 0; i < book.getParts().size(); i++) {
 
                 Chapter chapter = new Chapter(book.getParts().get(i));

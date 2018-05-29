@@ -59,7 +59,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 return true;
             };
 
-    public Context mContext;
+    private Context mContext;
 
     private static boolean isXLargeTablet(Context context) {
         return (context.getResources().getConfiguration().screenLayout

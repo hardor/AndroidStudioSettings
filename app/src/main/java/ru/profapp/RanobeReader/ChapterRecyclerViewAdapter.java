@@ -1,34 +1,23 @@
 package ru.profapp.RanobeReader;
 
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import ru.profapp.RanobeReader.Common.RanobeConstans;
-import ru.profapp.RanobeReader.Common.StringResources;
-import ru.profapp.RanobeReader.DAO.DatabaseDao;
-import ru.profapp.RanobeReader.Helpers.MyLog;
 import ru.profapp.RanobeReader.Helpers.RanobeKeeper;
 import ru.profapp.RanobeReader.Models.Chapter;
 import ru.profapp.RanobeReader.Models.Ranobe;
-import ru.profapp.RanobeReader.Models.TextChapter;
 
 public class ChapterRecyclerViewAdapter extends
         RecyclerView.Adapter<ChapterRecyclerViewAdapter.ViewHolder> {
@@ -36,38 +25,14 @@ public class ChapterRecyclerViewAdapter extends
     private final Ranobe mRanobe;
     private final List<Chapter> mValues;
     private final Context mContext;
-    private Drawable downloadDoneImage;
 
-    private RanobeConstans.FragmentType fragmentType;
+    ChapterRecyclerViewAdapter(List<Chapter> chapterList,
+            Context Context, Ranobe ranobe) {
 
-    public RanobeConstans.FragmentType getFragmentType() {
-        return fragmentType;
-    }
-
-    public void setFragmentType(RanobeConstans.FragmentType fragmentType) {
-        this.fragmentType = fragmentType;
-    }
-
-    ChapterRecyclerViewAdapter(List<Chapter> chapterList, Context Context, Ranobe ranobe) {
-        // hide payed chapters
-        List<Chapter> newList = new ArrayList<>();
-        if (RanobeKeeper.getInstance().getHideUnavailableChapters()) {
-            for (Chapter item : chapterList) {
-                if (item.getCanRead()) {
-                    newList.add(item);
-                }
-            }
-            mValues = newList;
-        } else {
-            mValues = chapterList;
-        }
+        mValues = chapterList;
         mRanobe = ranobe;
         mContext = Context;
-    }
 
-    void setDownloadDoneImage(Drawable downloadDoneImage) {
-
-        this.downloadDoneImage = downloadDoneImage;
     }
 
     @Override
@@ -84,7 +49,6 @@ public class ChapterRecyclerViewAdapter extends
 
         if (!holder.mChapterItem.getCanRead()) {
             holder.mTextView.setBackgroundColor(Color.GRAY);
-            holder.mImageButton.setVisibility(View.INVISIBLE);
         } else {
             holder.mTextView.setOnClickListener(v -> {
 
@@ -94,96 +58,99 @@ public class ChapterRecyclerViewAdapter extends
 
                     Ranobe ranobe = new Ranobe();
                     ranobe.setUrl(holder.mChapterItem.getRanobeUrl());
-                    if((RanobeKeeper.getInstance().getFragmentType() !=null && RanobeKeeper.getInstance().getFragmentType() != RanobeConstans.FragmentType.History)){
+                    if ((RanobeKeeper.getInstance().getFragmentType() != null
+                            && RanobeKeeper.getInstance().getFragmentType()
+                            != RanobeConstans.FragmentType.History)) {
                         try {
                             ranobe.updateRanobe(mContext);
                         } catch (Exception ignored) {
                             ranobe = mRanobe;
                         }
-                    }else{
+                    } else {
                         ranobe = mRanobe;
                     }
 
-
                     RanobeKeeper.getInstance().setRanobe(ranobe);
                 }
-                if(RanobeKeeper.getInstance().getRanobe() !=null){
+                if (RanobeKeeper.getInstance().getRanobe() != null) {
                     Intent intent = new Intent(v.getContext(), ChapterTextActivity.class);
                     intent.putExtra("ChapterIndex", holder.getAdapterPosition());
 
                     v.getContext().startActivity(intent);
                 }
 
-
             });
 
-            holder.mImageButton.setOnClickListener(v -> {
-
-                if (holder.mChapterItem.getDownloaded()) {
-
-                    try {
-                        new Thread() {
-                            @Override
-                            public void run() {
-                                DatabaseDao.getInstance(mContext).getTextDao().delete(
-                                        holder.mChapterItem.getUrl());
-                            }
-
-                        }.start();
-                        holder.mImageButton.setImageDrawable(holder.downloadImage);
-                        holder.mChapterItem.setDownloaded(false);
-                        holder.mChapterItem.setText("");
-                    } catch (Exception ignored) {
-                    }
-
-                } else {
-                    Pair<String, Boolean> res = getText(holder.mChapterItem, holder.mContext);
-
-                    if (res.first != null && !res.first.isEmpty()) {
-                        if (res.second) {
-                            holder.mImageButton.setImageDrawable(downloadDoneImage);
-                            holder.mChapterItem.setDownloaded(true);
-                        } else {
-                            Toast.makeText(mContext, "Loading error", Toast.LENGTH_SHORT).show();
-                        }
-                        holder.mChapterItem.setText(res.first);
-                    }
-                }
-            });
+//            holder.mImageButton.setOnClickListener(v -> {
+//
+//                if (holder.mChapterItem.getDownloaded()) {
+//
+//                    try {
+//                        new Thread() {
+//                            @Override
+//                            public void run() {
+//                                DatabaseDao.getInstance(mContext).getTextDao().delete(
+//                                        holder.mChapterItem.getUrl());
+//                            }
+//
+//                        }.start();
+//                        holder.mImageButton.setImageDrawable(holder.downloadImage);
+//                        holder.mChapterItem.setDownloaded(false);
+//                        holder.mChapterItem.setText("");
+//                    } catch (Exception ignored) {
+//                    }
+//
+//                } else {
+//                    Pair<String, Boolean> res = getText(holder.mChapterItem, holder.mContext);
+//
+//                    if (res.first != null && !res.first.isEmpty()) {
+//                        if (res.second) {
+//                            holder.mImageButton.setImageDrawable(downloadDoneImage);
+//                            holder.mChapterItem.setDownloaded(true);
+//                        } else {
+//                            Toast.makeText(mContext, "Loading error", Toast.LENGTH_SHORT).show();
+//                        }
+//                        holder.mChapterItem.setText(res.first);
+//                    }
+//                }
+//            });
 
         }
 
         if (holder.mChapterItem.getReaded()) {
-            holder.mView.setBackgroundColor( ContextCompat.getColor(mContext, R.color.colorPrimaryDark));
+            holder.mView.setBackgroundColor(
+                    ContextCompat.getColor(mContext, R.color.colorPrimaryDark));
         }
 
-        AsyncTask.execute(() -> {
-
-            try {
-                if (holder.mChapterItem.getDownloaded()) {
-                    ((AppCompatActivity) mContext).runOnUiThread(() -> holder.mImageButton.setImageDrawable(downloadDoneImage));
-                } else {
-                    TextChapter chapter = DatabaseDao.getInstance(
-                            mContext).getTextDao().getTextByChapterUrl(
-                            holder.mChapterItem.getUrl());
-                    if (chapter != null) {
-                        String chapterText = chapter.getText();
-
-                        if (!chapter.getText().equals("")) {
-
-                            holder.mChapterItem.setText(chapterText);
-                            holder.mChapterItem.setDownloaded(true);
-                            ((AppCompatActivity) mContext).runOnUiThread(() -> holder.mImageButton.setImageDrawable(downloadDoneImage));
-
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                MyLog.SendError(StringResources.LogType.WARN,
-                        ChapterRecyclerViewAdapter.class.toString(), "", e);
-
-            }
-        });
+//        AsyncTask.execute(() -> {
+//
+//            try {
+//                if (holder.mChapterItem.getDownloaded()) {
+//                    ((AppCompatActivity) mContext).runOnUiThread(
+//                            () -> holder.mImageButton.setImageDrawable(downloadDoneImage));
+//                } else {
+//                    TextChapter chapter = DatabaseDao.getInstance(
+//                            mContext).getTextDao().getTextByChapterUrl(
+//                            holder.mChapterItem.getUrl());
+//                    if (chapter != null) {
+//                        String chapterText = chapter.getText();
+//
+//                        if (!chapter.getText().equals("")) {
+//
+//                            holder.mChapterItem.setText(chapterText);
+//                            holder.mChapterItem.setDownloaded(true);
+//                            ((AppCompatActivity) mContext).runOnUiThread(
+//                                    () -> holder.mImageButton.setImageDrawable(downloadDoneImage));
+//
+//                        }
+//                    }
+//                }
+//            } catch (Exception e) {
+//                MyLog.SendError(StringResources.LogType.WARN,
+//                        ChapterRecyclerViewAdapter.class.toString(), "", e);
+//
+//            }
+//        });
     }
 
     private Pair<String, Boolean> getText(Chapter chapter, Context context) {
@@ -200,9 +167,7 @@ public class ChapterRecyclerViewAdapter extends
     class ViewHolder extends RecyclerView.ViewHolder {
         final View mView;
         final TextView mTextView;
-        final ImageButton mImageButton;
         final Context mContext;
-        final Drawable downloadImage;
         Chapter mChapterItem;
 
         ViewHolder(View view) {
@@ -210,8 +175,7 @@ public class ChapterRecyclerViewAdapter extends
             mView = view;
             mTextView = view.findViewById(R.id.id);
             mContext = view.getContext();
-            mImageButton = view.findViewById(R.id.imageButton_download);
-            downloadImage = mImageButton.getDrawable();
+
         }
 
     }

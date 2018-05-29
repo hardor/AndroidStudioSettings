@@ -7,8 +7,6 @@ import android.content.SharedPreferences.Editor;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-
 import ru.profapp.RanobeReader.JsonApi.JsonRanobeRfApi;
 import ru.profapp.RanobeReader.JsonApi.JsonRulateApi;
 

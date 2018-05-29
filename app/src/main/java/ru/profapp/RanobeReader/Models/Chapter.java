@@ -4,6 +4,7 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 import android.content.Context;
@@ -227,6 +228,17 @@ public class Chapter {
 
     public void setReaded(Boolean readed) {
         Readed = readed;
+    }
+
+    @Ignore
+    private boolean isChecked;
+
+    public boolean getChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
     }
 
     public void UpdateChapter(RulateText response, Context context, boolean isButton) {

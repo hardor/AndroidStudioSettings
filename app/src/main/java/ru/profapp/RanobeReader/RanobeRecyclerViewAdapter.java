@@ -1,9 +1,9 @@
 package ru.profapp.RanobeReader;
 
+import static ru.profapp.RanobeReader.Common.RanobeConstans.chaptersNum;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,7 +16,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -40,13 +39,11 @@ class RanobeRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private final int VIEW_TYPE_GROUP_TITLE = 2;
     private Context mContext;
     private OnLoadMoreListener onLoadMoreListener;
-    private Drawable downloadDoneImage;
+
     private boolean isLoading;
-    private final int visibleThreshold = 7;
-    private int lastVisibleItem, totalItemCount;
+    private int pastVisiblesItems, lastVisibleItem, totalItemCount;
 
-
-    public RanobeRecyclerViewAdapter(RecyclerView recyclerView, List<Ranobe> items          ) {
+    public RanobeRecyclerViewAdapter(RecyclerView recyclerView, List<Ranobe> items) {
         mValues = items;
 
         final LinearLayoutManager linearLayoutManager =
@@ -54,24 +51,29 @@ class RanobeRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                totalItemCount = linearLayoutManager.getItemCount();
-                lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
-                if (!isLoading && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
-                    if (onLoadMoreListener != null) {
-                        onLoadMoreListener.onLoadMore();
+
+                if (dy > 0) {
+                    lastVisibleItem = linearLayoutManager.getChildCount();
+                    totalItemCount = linearLayoutManager.getItemCount();
+                    pastVisiblesItems = linearLayoutManager.findFirstVisibleItemPosition();
+
+                    if (!isLoading) {
+                        if ((lastVisibleItem + pastVisiblesItems) >= totalItemCount) {
+
+                            if (onLoadMoreListener != null) {
+                                isLoading = true;
+                                onLoadMoreListener.onLoadMore();
+                            } else {
+                                isLoading = false;
+                            }
+                        }
                     }
-                    isLoading = true;
                 }
             }
         });
 
     }
 
-    void setDownloadDoneImage(Drawable downloadDoneImage) {
-
-        this.downloadDoneImage = downloadDoneImage;
-    }
 
     @Override
     public int getItemViewType(int position) {
@@ -108,7 +110,6 @@ class RanobeRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         }
 
-
     }
 
     @Override
@@ -129,11 +130,12 @@ class RanobeRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         minutes);
 
                 ((RanobeViewHolder) holder).mUpdateTime.setText(updateTime);
-            }else{
+            } else {
                 ((RanobeViewHolder) holder).mUpdateTime.setVisibility(View.INVISIBLE);
             }
 
-            if(mValues.get(position).getImage()!=null && !mValues.get(position).getImage().equals("") ) {
+            if (mValues.get(position).getImage() != null && !mValues.get(
+                    position).getImage().equals("")) {
                 ((RanobeViewHolder) holder).mImageView.setVisibility(View.VISIBLE);
                 Glide.with(mContext)
                         .load(mValues.get(position).getImage()).apply(
@@ -142,7 +144,7 @@ class RanobeRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                                 .error(R.drawable.ic_error_outline_black_24dp)
                                 .fitCenter()
                 ).into(((RanobeViewHolder) holder).mImageView);
-            }else{
+            } else {
                 ((RanobeViewHolder) holder).mImageView.setVisibility(View.GONE);
             }
             ((RanobeViewHolder) holder).mView.setOnClickListener(v -> {
@@ -150,30 +152,19 @@ class RanobeRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 Intent intent = new Intent(mContext, RanobeInfoActivity.class);
                 RanobeKeeper.getInstance().setRanobe(((RanobeViewHolder) holder).mItem);
 
-                if( RanobeKeeper.getInstance().getRanobe() !=null){
-                        mContext.startActivity(intent);
+                if (RanobeKeeper.getInstance().getRanobe() != null) {
+                    mContext.startActivity(intent);
                 }
 
             });
 
             List<Chapter> chapterList = ((RanobeViewHolder) holder).mItem.getChapterList();
 
-            // hide payed chapters
-            List<Chapter> newList = new ArrayList<>();
-            if (RanobeKeeper.getInstance().getHideUnavailableChapters()) {
-                for (Chapter item : chapterList) {
-                    if (item.getCanRead()) {
-                        newList.add(item);
-                    }
-                }
-            } else {
-                newList = chapterList;
-            }
             ChapterRecyclerViewAdapter adapter = new ChapterRecyclerViewAdapter(
-                    newList.subList(0, Math.min(4, newList.size())), mContext,
+                    chapterList.subList(0, Math.min(chaptersNum, chapterList.size())), mContext,
                     ((RanobeViewHolder) holder).mItem);
 
-            adapter.setDownloadDoneImage(downloadDoneImage);
+
             ((RanobeViewHolder) holder).mChaptersListView.setAdapter(adapter);
 
         } else if (holder instanceof LoadingViewHolder) {
@@ -219,10 +210,10 @@ class RanobeRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     class RanobeViewHolder extends RecyclerView.ViewHolder {
         final View mView;
         final ImageView mImageView;
-        Ranobe mItem;
         final RecyclerView mChaptersListView;
         private final TextView mTitleView;
         private final TextView mUpdateTime;
+        Ranobe mItem;
 
         RanobeViewHolder(View view) {
             super(view);

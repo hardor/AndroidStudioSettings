@@ -2,7 +2,6 @@ package ru.profapp.RanobeReader;
 
 import static ru.profapp.RanobeReader.Common.StringResources.KEY_Login;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -234,12 +233,8 @@ public class MainActivity extends AppCompatActivity
             }
             case R.id.nav_info: {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("Информация")
-                        .setMessage("Приложение пока не стабильно. Рекомендую перенести свои локальные закладки в web.\n"
-                                + "2.14\n"
-                                + "Добавлена возможность синхронизации с Ранобэ.рф\n"
-                                + "Исправлены ошибки с сохраненными главами\n"
-                                + "Исправлено отображение времени обновления для ранобэ")
+                builder.setTitle(R.string.information)
+                        .setMessage(getString(R.string.AboutVersion))
                         .setIcon(R.drawable.ic_info_black_24dp)
                         .setCancelable(true)
                         .setPositiveButton("OK",

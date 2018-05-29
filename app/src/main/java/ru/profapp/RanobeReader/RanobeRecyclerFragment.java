@@ -2,6 +2,7 @@ package ru.profapp.RanobeReader;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import static ru.profapp.RanobeReader.Common.RanobeConstans.chaptersNum;
 import static ru.profapp.RanobeReader.Common.RanobeConstans.fragmentBundle;
 import static ru.profapp.RanobeReader.Common.StringResources.is_readed_Pref;
 import static ru.profapp.RanobeReader.Models.Ranobe.empty;
@@ -9,7 +10,6 @@ import static ru.profapp.RanobeReader.Models.Ranobe.empty;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -32,6 +32,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import ru.profapp.RanobeReader.Common.RanobeConstans;
 import ru.profapp.RanobeReader.Common.StringResources;
@@ -112,9 +113,7 @@ public class RanobeRecyclerFragment extends Fragment {
             recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 
             mRanobeRecyclerViewAdapter = new RanobeRecyclerViewAdapter(recyclerView, ranobeList);
-            Drawable downloadDoneImage = mContext.getResources().getDrawable(
-                    R.drawable.ic_cloud_done_black_24dp);
-            mRanobeRecyclerViewAdapter.setDownloadDoneImage(downloadDoneImage);
+
             recyclerView.setAdapter(mRanobeRecyclerViewAdapter);
 
             //set load more listener for the RecyclerView adapter
@@ -187,29 +186,38 @@ public class RanobeRecyclerFragment extends Fragment {
                         is_readed_Pref,
                         MODE_PRIVATE);
                 if (sPref != null) {
-                    Object[] allReadedChapters = sPref.getAll().keySet().toArray();
-
-                    for (Chapter chapter : ranobe.getChapterList()) {
+                    int sizeList = ranobe.getChapterList().size();
+                    for (Chapter chapter : ranobe.getChapterList().subList(0,
+                            Math.min(chaptersNum, sizeList))) {
                         if (!chapter.getReaded()) {
-
-                            for (Object readed : allReadedChapters) {
-
-                                if (chapter.getUrl().equals(readed.toString())) {
-                                    chapter.setReaded(true);
-                                    break;
-                                }
-                            }
+                            chapter.setReaded(sPref.getBoolean(chapter.getUrl(), false));
                         }
-
                     }
                 }
+
+//                if (sPref != null) {
+//                    Object[] allReadedChapters = sPref.getAll().keySet().toArray();
+//
+//                    for (Chapter chapter : ranobe.getChapterList()) {
+//                        if (!chapter.getReaded()) {
+//
+//                            for (Object readed : allReadedChapters) {
+//
+//                                if (chapter.getUrl().equals(readed.toString())) {
+//                                    chapter.setReaded(true);
+//                                    break;
+//                                }
+//                            }
+//                        }
+//
+//                    }
+//                }
             }
         }
 
-//        mRanobeRecyclerViewAdapter.notifyItemRangeInserted(oldListSize,
-//                ranobeList.size() - oldListSize);
+        mRanobeRecyclerViewAdapter.notifyItemRangeInserted(oldListSize,
+                ranobeList.size() - oldListSize);
 
-        mRanobeRecyclerViewAdapter.notifyDataSetChanged();
         mRanobeRecyclerViewAdapter.setLoaded();
 
         mSwipeRefreshLayout.setRefreshing(false);
@@ -362,7 +370,7 @@ public class RanobeRecyclerFragment extends Fragment {
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         mSwipeRefreshLayout.setRefreshing(false);
         progressDialog.show();
-
+        RanobeKeeper.getInstance().setRanobe(null);
         Thread t = new Thread() {
 
             @Override
@@ -434,7 +442,8 @@ public class RanobeRecyclerFragment extends Fragment {
 //
 //                }
 
-                getActivity().runOnUiThread(() -> onItemsLoadComplete(remove));
+                Objects.requireNonNull(getActivity()).runOnUiThread(
+                        () -> onItemsLoadComplete(remove));
 
                 progressDialog.dismiss();
 
@@ -578,12 +587,12 @@ public class RanobeRecyclerFragment extends Fragment {
                         }
                     }
 
-                    getActivity().runOnUiThread(() -> onItemsLoadComplete(remove));
+                    Objects.requireNonNull(getActivity()).runOnUiThread(() -> onItemsLoadComplete(remove));
 
                     page++;
                 } catch (JsonParseException | NullPointerException e) {
                     MyLog.SendError(StringResources.LogType.WARN, "RanobeRecyclerFragment", "", e);
-                    getActivity().runOnUiThread(() -> onItemsLoadFailed());
+                    Objects.requireNonNull(getActivity()).runOnUiThread(() -> onItemsLoadFailed());
                 }
 
             }
@@ -615,13 +624,13 @@ public class RanobeRecyclerFragment extends Fragment {
                         }
                     }
 
-                    getActivity().runOnUiThread(() -> onItemsLoadComplete(remove));
+                    Objects.requireNonNull(getActivity()).runOnUiThread(() -> onItemsLoadComplete(remove));
 
                     page++;
                 } catch (JsonParseException | NullPointerException e) {
                     MyLog.SendError(StringResources.LogType.WARN,
                             RanobeRecyclerFragment.class.toString(), "", e);
-                    getActivity().runOnUiThread(() -> onItemsLoadFailed());
+                    Objects.requireNonNull(getActivity()).runOnUiThread(() -> onItemsLoadFailed());
 
                 }
 
@@ -653,12 +662,12 @@ public class RanobeRecyclerFragment extends Fragment {
 
                     }
 
-                    getActivity().runOnUiThread(() -> onItemsLoadComplete(remove));
+                    Objects.requireNonNull(getActivity()).runOnUiThread(() -> onItemsLoadComplete(remove));
 
                 } catch (JSONException | JsonParseException | NullPointerException e) {
                     MyLog.SendError(StringResources.LogType.WARN,
                             RanobeRecyclerFragment.class.toString(), "", e);
-                    getActivity().runOnUiThread(() -> onItemsLoadFailed());
+                    Objects.requireNonNull(getActivity()).runOnUiThread(() -> onItemsLoadFailed());
 
                 }
             }

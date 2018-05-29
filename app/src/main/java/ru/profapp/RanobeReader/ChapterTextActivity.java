@@ -1,5 +1,8 @@
 package ru.profapp.RanobeReader;
 
+import static ru.profapp.RanobeReader.Common.StringResources.Chapter_Position;
+import static ru.profapp.RanobeReader.Common.StringResources.Chapter_Url;
+import static ru.profapp.RanobeReader.Common.StringResources.CleanString;
 import static ru.profapp.RanobeReader.Common.StringResources.is_readed_Pref;
 
 import android.content.Context;
@@ -27,6 +30,7 @@ import com.google.gson.JsonParseException;
 
 import org.jsoup.Jsoup;
 
+import java.util.Collections;
 import java.util.List;
 
 import io.fabric.sdk.android.Fabric;
@@ -67,9 +71,9 @@ public class ChapterTextActivity extends AppCompatActivity {
             case R.id.navigation_next:
                 OnClicked(-1);
                 return true;
-//            case R.id.navigation_bookmark:
-//                set_bookmark();
-//                return true;
+            case R.id.navigation_bookmark:
+                set_bookmark();
+                return true;
 
         }
 
@@ -80,8 +84,12 @@ public class ChapterTextActivity extends AppCompatActivity {
 
     private void set_bookmark() {
 
-        sChapterPref.edit().putInt(mCurrentChapter.getUrl(), mWebView.getScrollY()).commit();
-        Toast.makeText(mContext, getString(R.string.bookmark_added), Toast.LENGTH_SHORT).show();
+        sChapterPref = mContext.getSharedPreferences(CleanString(mCurrentChapter.getRanobeUrl()),
+                MODE_PRIVATE);
+
+        sChapterPref.edit().putInt(Chapter_Position, mWebView.getScrollY()).commit();
+        sChapterPref.edit().putString(Chapter_Url, mCurrentChapter.getUrl()).commit();
+        Toast.makeText(mContext, getString(R.string.bookmark_saved), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -91,13 +99,21 @@ public class ChapterTextActivity extends AppCompatActivity {
         setupActionBar();
         setContentView(R.layout.activity_chapter_text);
 
-        mContext =ChapterTextActivity.this;
+        mContext = ChapterTextActivity.this;
         mIndex = getIntent().getIntExtra("ChapterIndex", 0);
 
-            Ranobe currentRanobe = RanobeKeeper.getInstance().getRanobe();
-            mChapterList = currentRanobe.getChapterList();
-            mChapterCount = mChapterList.size();
-            mCurrentChapter = mChapterList.get(mIndex);
+        Ranobe currentRanobe = RanobeKeeper.getInstance().getRanobe();
+        mChapterList = currentRanobe.getChapterList();
+        mCurrentChapter = mChapterList.get(mIndex);
+        mChapterCount = mChapterList.size();
+
+        if (currentRanobe.getReversed()) {
+            Collections.reverse(mChapterList);
+            mIndex=mChapterCount-mIndex-1;
+        }
+
+
+
 
         progressUrl = findViewById(R.id.progressBar2);
 
@@ -116,7 +132,12 @@ public class ChapterTextActivity extends AppCompatActivity {
                 newView.postDelayed(new Runnable() {
                     public void run() {
                         if (newView.getProgress() == 100) {
-                            newView.postDelayed(() -> newView.scrollTo(0, mScrollY), 100);
+                            newView.postDelayed(() -> {
+                                if (mScrollY == null) {
+                                    mScrollY = 0;
+                                }
+                                newView.scrollTo(0, mScrollY);
+                            }, 100);
                         } else {
                             newView.post(this);
                         }
@@ -128,7 +149,16 @@ public class ChapterTextActivity extends AppCompatActivity {
 
         });
 
-     //   sChapterPref = mContext.getSharedPreferences(StringResources.Last_readed_Pref,                MODE_PRIVATE);
+        if (getIntent().getBooleanExtra("Bookmark", false)) {
+            sChapterPref = mContext.getSharedPreferences(
+                    CleanString(mCurrentChapter.getRanobeUrl()),
+                    MODE_PRIVATE);
+            if (sChapterPref != null) {
+                mScrollY = sChapterPref.getInt(Chapter_Position, 0);
+            } else {
+                mScrollY = 0;
+            }
+        }
 
         mWebView.getSettings().setBuiltInZoomControls(true);
         mWebView.getSettings().setDisplayZoomControls(false);
@@ -143,10 +173,9 @@ public class ChapterTextActivity extends AppCompatActivity {
 
         // the scroll listener:
         mWebView.setOnScrollChangedCallback((l, t, oldl, oldt) -> {
-            if(t> oldt){
+            if (t > oldt) {
                 navigation.animate().translationY(navigation.getHeight());
-            }
-            else if(t< oldt){
+            } else if (t < oldt) {
                 navigation.animate().translationY(0);
             }
         });
@@ -171,20 +200,11 @@ public class ChapterTextActivity extends AppCompatActivity {
         String style = "style = \"text-align: justify; text-indent: 20px;font-size: "
                 + RanobeKeeper.getInstance().getChapterTextSize().toString() + "px;"
                 + "color: " + String.format("#%06X", (0xFFFFFF & color))
-                +"; background-color: " + String.format("#%06X", (0xFFFFFF & color2))
+                + "; background-color: " + String.format("#%06X", (0xFFFFFF & color2))
                 + "\"";
-
 
         String summary =
                 "<html><body " + style + ">" + mCurrentChapter.getText() + "</body></html>";
-
-//        sChapterPref = mContext.getSharedPreferences(StringResources.Last_readed_Pref,
-//                MODE_PRIVATE);
-//        if (sChapterPref != null) {
-//            mScrollY = sChapterPref.getInt(mCurrentChapter.getUrl(), 0);
-//        } else {
-            mScrollY = 0;
-//        }
 
         mWebView.loadDataWithBaseURL(null, summary, "text/html", "UTF-8", null);
 
@@ -253,7 +273,8 @@ public class ChapterTextActivity extends AppCompatActivity {
 
             }
         } catch (JsonParseException e) {
-            MyLog.SendError(StringResources.LogType.WARN, ChapterTextActivity.class.toString(), response,
+            MyLog.SendError(StringResources.LogType.WARN, ChapterTextActivity.class.toString(),
+                    response,
                     e);
             return false;
         }
@@ -279,7 +300,8 @@ public class ChapterTextActivity extends AppCompatActivity {
                 return false;
             }
         } catch (Exception e) {
-            MyLog.SendError(StringResources.LogType.WARN, ChapterTextActivity.class.toString(), response,
+            MyLog.SendError(StringResources.LogType.WARN, ChapterTextActivity.class.toString(),
+                    response,
                     e);
 
             try {
@@ -315,7 +337,8 @@ public class ChapterTextActivity extends AppCompatActivity {
                 initWebView(loadResult);
             } catch (ArrayIndexOutOfBoundsException e) {
                 mIndex -= i;
-                MyLog.SendError(StringResources.LogType.WARN, ChapterTextActivity.class.toString(), "", e);
+                MyLog.SendError(StringResources.LogType.WARN, ChapterTextActivity.class.toString(),
+                        "", e);
 
             }
         } else {

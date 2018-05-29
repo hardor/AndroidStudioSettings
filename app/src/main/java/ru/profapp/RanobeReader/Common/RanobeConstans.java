@@ -7,6 +7,7 @@ package ru.profapp.RanobeReader.Common;
 public class RanobeConstans {
 
     public static final String fragmentBundle = "fragmentType";
+    public static final int chaptersNum = 4;
 
     public enum FragmentType {
         Favorite,

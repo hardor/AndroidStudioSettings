@@ -1,8 +1,11 @@
 package ru.profapp.RanobeReader;
 
+import static ru.profapp.RanobeReader.Common.StringResources.Chapter_Url;
+import static ru.profapp.RanobeReader.Common.StringResources.CleanString;
 import static ru.profapp.RanobeReader.Common.StringResources.is_readed_Pref;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -15,9 +18,12 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -36,6 +42,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import io.fabric.sdk.android.Fabric;
 import ru.profapp.RanobeReader.Common.StringResources;
@@ -52,12 +59,10 @@ public class RanobeInfoActivity extends AppCompatActivity {
     private List<Chapter> recycleChapterList = new ArrayList<>();
     private int loadedChapterCount;
     private RecyclerView recyclerView;
-    private Drawable downloadDoneImage;
     private SharedPreferences preferences;
     private SharedPreferences rfpreferences;
     private Ranobe mCurrentRanobe;
     private Context mContext;
-    private FloatingActionButton favoriteButton;
     private Drawable borderImage;
     private Drawable fillImage;
     private ChapterRecyclerViewAdapter adapter;
@@ -89,21 +94,50 @@ public class RanobeInfoActivity extends AppCompatActivity {
         adView.loadAd(adRequest.build());
         mContext = RanobeInfoActivity.this;
         Button loadButton = findViewById(R.id.loadButton);
+        ImageButton sortButton = findViewById(R.id.sortButton);
+        sortButton.setOnClickListener(v -> {
+            mCurrentRanobe.ReversChapters();
+            loadChapters(true);
+        });
         borderImage = mContext.getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp);
         fillImage = mContext.getResources().getDrawable(
                 R.drawable.ic_favorite_black_24dp);
-        downloadDoneImage = mContext.getResources().getDrawable(
-                R.drawable.ic_cloud_done_black_24dp);
 
         NestedScrollView nestedScrollView = findViewById(R.id.ranobe_info_NestedScrollView);
 
         FloatingActionButton fab = findViewById(R.id.fav_toTop_fab);
         fab.setOnClickListener(view -> nestedScrollView.scrollTo(0, 0));
 
+        FloatingActionButton bookmarkFab = findViewById(R.id.bookmark_fab);
+        bookmarkFab.setOnClickListener(view -> {
+
+            SharedPreferences sChapterPref = mContext.getSharedPreferences(
+                    CleanString(mCurrentRanobe.getUrl()), MODE_PRIVATE);
+
+            String url = sChapterPref.getString(Chapter_Url, null);
+            Intent intent = new Intent(mContext, ChapterTextActivity.class);
+            int tempIndex = mCurrentRanobe.getChapterList().size() - 1;
+            if (url != null) {
+
+                for (Chapter chapter : mCurrentRanobe.getChapterList()) {
+                    if (chapter.getUrl().equals(url)) {
+                        tempIndex = tempIndex - chapter.getIndex();
+                        break;
+                    }
+
+                }
+            }
+            intent.putExtra("ChapterIndex", tempIndex);
+            intent.putExtra("Bookmark", true);
+
+            mContext.startActivity(intent);
+
+        });
+
         Toolbar toolbar = findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        favoriteButton = findViewById(R.id.fav_fab);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+
         TextView aboutTextView = findViewById(R.id.text_about);
         TextView additionalInfoTextView = findViewById(R.id.text_info);
         CardView infoCard = findViewById(R.id.ranobe_info_card);
@@ -111,175 +145,12 @@ public class RanobeInfoActivity extends AppCompatActivity {
 
         mCurrentRanobe = RanobeKeeper.getInstance().getRanobe();
         getSupportActionBar().setTitle(mCurrentRanobe.getTitle());
-        initFavoriteButton();
+
         preferences = mContext.getSharedPreferences(
                 StringResources.Rulate_Login_Pref, 0);
 
         rfpreferences = mContext.getSharedPreferences(
                 StringResources.Ranoberf_Login_Pref, 0);
-
-        favoriteButton.setOnClickListener(v -> {
-
-            if (!mCurrentRanobe.getFavorited() && !mCurrentRanobe.getFavoritedInWeb()) {
-                favoriteButton.setImageDrawable(fillImage);
-
-                new Thread() {
-                    @Override
-                    public void run() {
-                        boolean wasadded = false;
-                        if (mCurrentRanobe.getRanobeSite().equals(StringResources.Rulate_Site)) {
-
-                            String token = preferences.getString(StringResources.KEY_Token, "");
-                            if (!token.equals("")) {
-
-                                String response = JsonRulateApi.getInstance().AddBookmark(
-                                        mCurrentRanobe.getId(), token);
-                                try {
-                                    JSONObject jsonObject = new JSONObject(response);
-                                    if (jsonObject.getString("status").equals("success")) {
-                                        wasadded = true;
-                                        mCurrentRanobe.setFavoritedInWeb(true);
-                                        runOnUiThread(() -> Toast.makeText(mContext,
-                                                mCurrentRanobe.getTitle() + " "
-                                                        + mContext.getString(
-                                                        R.string.added_to_web),
-                                                Toast.LENGTH_SHORT).show());
-                                    }
-                                } catch (JSONException e) {
-                                    MyLog.SendError(StringResources.LogType.WARN,
-                                            RanobeInfoActivity.class.toString(), "", e);
-
-                                }
-
-                            }
-
-                        } else if (mCurrentRanobe.getRanobeSite().equals(
-                                StringResources.RanobeRf_Site)) {
-
-                            String token = rfpreferences.getString(StringResources.KEY_Token, "");
-                            if (!token.equals("")) {
-
-                                String response = JsonRanobeRfApi.getInstance().AddBookmark(
-                                        mCurrentRanobe.getId(),
-                                        mCurrentRanobe.getChapterList().get(0).getId(), token);
-                                try {
-                                    JSONObject jsonObject = new JSONObject(response);
-                                    if (jsonObject.getInt("status") == 200) {
-                                        wasadded = true;
-                                        mCurrentRanobe.setFavoritedInWeb(true);
-                                        runOnUiThread(() -> Toast.makeText(mContext,
-                                                mCurrentRanobe.getTitle() + " "
-                                                        + mContext.getString(
-                                                        R.string.added_to_web),
-                                                Toast.LENGTH_SHORT).show());
-                                    }
-                                } catch (JSONException e) {
-                                    MyLog.SendError(StringResources.LogType.WARN,
-                                            RanobeInfoActivity.class.toString(), "", e);
-
-                                }
-
-                            }
-
-                        }
-
-                        if (!wasadded) {
-                            mCurrentRanobe.setFavorited(true);
-                            AsyncTask.execute(
-                                    () -> {
-                                        DatabaseDao.getInstance(mContext).getRanobeDao().insert(
-                                                mCurrentRanobe);
-                                        DatabaseDao.getInstance(mContext).getChapterDao().insertAll(
-                                                mCurrentRanobe.getChapterList().toArray(
-                                                        new Chapter[mCurrentRanobe.getChapterList
-                                                                ().size()]));
-
-                                    });
-
-                            runOnUiThread(() -> Toast.makeText(mContext,
-                                    mCurrentRanobe.getTitle() + " " + mContext.getString(
-                                            R.string.added_to_local), Toast.LENGTH_SHORT).show());
-
-                        }
-                    }
-                }.run();
-
-            } else {
-
-                if (mCurrentRanobe.getFavoritedInWeb()) {
-
-                    if (mCurrentRanobe.getRanobeSite().contains(StringResources.Rulate_Site)) {
-                        String token = preferences.getString(StringResources.KEY_Token, "");
-                        if (!token.equals("")) {
-
-                            String response = JsonRulateApi.getInstance().RemoveBookmark(
-                                    mCurrentRanobe.getId(), token);
-                            try {
-                                JSONObject jsonObject = new JSONObject(response);
-                                if (jsonObject.getString("status").equals("success")) {
-                                    mCurrentRanobe.setFavoritedInWeb(false);
-                                    AsyncTask.execute(
-                                            () -> DatabaseDao.getInstance(
-                                                    mContext).getRanobeDao().deleteWeb(
-                                                    mCurrentRanobe.getUrl()));
-                                    favoriteButton.setImageDrawable(borderImage);
-                                }
-                            } catch (JSONException e) {
-                                MyLog.SendError(StringResources.LogType.WARN,
-                                        RanobeInfoActivity.class.toString(), "", e);
-
-                            }
-                        }
-
-                    } else if (mCurrentRanobe.getRanobeSite().contains(
-                            StringResources.RanobeRf_Site)) {
-                        String token = rfpreferences.getString(StringResources.KEY_Token, "");
-                        if (!token.equals("")) {
-
-                            Thread thread = new Thread(() -> {
-
-                                String response = JsonRanobeRfApi.getInstance().RemoveBookmark(
-                                        mCurrentRanobe.getBookmarkIdRf(), token);
-                                try {
-                                    JSONObject jsonObject = new JSONObject(response);
-                                    if (jsonObject.getInt("status") == 200) {
-                                        mCurrentRanobe.setFavoritedInWeb(false);
-                                        AsyncTask.execute(
-                                                () -> DatabaseDao.getInstance(
-                                                        mContext).getRanobeDao().deleteWeb(
-                                                        mCurrentRanobe.getUrl()));
-                                        runOnUiThread(
-                                                () -> favoriteButton.setImageDrawable(
-                                                        borderImage));
-
-                                    }
-                                } catch (JSONException e) {
-
-                                    runOnUiThread(() -> Toast.makeText(mContext,
-                                            mContext.getString(
-                                                    R.string.update_to_remove),
-                                            Toast.LENGTH_SHORT).show());
-
-                                }
-
-                            });
-
-                            thread.start();
-
-                        }
-                    }
-
-                } else {
-                    AsyncTask.execute(
-                            () -> DatabaseDao.getInstance(mContext).getRanobeDao().delete(
-                                    mCurrentRanobe.getUrl()));
-                    mCurrentRanobe.setFavorited(false);
-                    favoriteButton.setImageDrawable(borderImage);
-                }
-
-            }
-
-        });
 
         if (!mCurrentRanobe.getWasUpdated()) {
             try {
@@ -320,7 +191,7 @@ public class RanobeInfoActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.chapter_list);
 
         adapter = new ChapterRecyclerViewAdapter(recycleChapterList, this, mCurrentRanobe);
-        adapter.setDownloadDoneImage(downloadDoneImage);
+
         recyclerView.setAdapter(adapter);
 
         loadChapters(true);
@@ -365,6 +236,7 @@ public class RanobeInfoActivity extends AppCompatActivity {
         if (clean) {
             loadedChapterCount = RanobeKeeper.getInstance().getChapterCount();
             recycleChapterList.clear();
+            adapter.notifyItemRangeRemoved(0, size_prev);
             size_prev = 0;
         }
 
@@ -372,61 +244,247 @@ public class RanobeInfoActivity extends AppCompatActivity {
                 mCurrentRanobe.getChapterList().size());
         List<Chapter> newList = mCurrentRanobe.getChapterList().subList(size_prev,
                 loadedChapterCount);
-
         if (sPref != null) {
-            Object[] allReadedChapters = sPref.getAll().keySet().toArray();
-
-            for (Object readed : allReadedChapters) {
-                for (Chapter chapter : newList) {
-                    if (chapter.getUrl().equals(readed.toString())) {
-                        chapter.setReaded(true);
-                        break;
-                    }
+            for (Chapter chapter : newList) {
+                if (!chapter.getReaded()) {
+                    chapter.setReaded(sPref.getBoolean(chapter.getUrl(), false));
                 }
             }
         }
-        // Todo:
+
+//        if (sPref != null) {
+//            Object[] allReadedChapters = sPref.getAll().keySet().toArray();
+//
+//            for (Object readed : allReadedChapters) {
+//                for (Chapter chapter : newList) {
+//                    if (chapter.getUrl().equals(readed.toString())) {
+//                        chapter.setReaded(true);
+//                        break;
+//                    }
+//                }
+//            }
+//        }
+
         recycleChapterList.addAll(newList);
-        //   recyclerView.getAdapter().notifyDataSetChanged();
-        //  recyclerView.getAdapter().notifyItemRangeChanged(size_prev,recycleChapterList.size());
-
-        adapter = new ChapterRecyclerViewAdapter(recycleChapterList, this, mCurrentRanobe);
-        adapter.setDownloadDoneImage(downloadDoneImage);
-        recyclerView.setAdapter(adapter);
+        adapter.notifyItemRangeInserted(size_prev, recycleChapterList.size());
 
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == android.R.id.home) {
-            onBackPressed();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void initFavoriteButton() {
+    private void getFavoriteIcon(MenuItem item) {
         AsyncTask.execute(() -> {
-            if (mCurrentRanobe.getFavoritedInWeb() || DatabaseDao.getInstance(
+            if (mCurrentRanobe.getFavorited() || mCurrentRanobe.getFavoritedInWeb()
+                    || DatabaseDao.getInstance(
                     mContext).getRanobeDao().IsRanobeFavorite(
                     mCurrentRanobe.getUrl())
                     != null) {
-                favoriteButton.setImageDrawable(fillImage);
+                item.setIcon(fillImage);
             } else {
-                favoriteButton.setImageDrawable(borderImage);
+                item.setIcon(borderImage);
             }
         });
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        adapter.notifyItemRangeChanged(0, recycleChapterList.size());
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.action, menu);
+
+        if (menu != null) {
+            MenuItem item = menu.findItem(R.id.fav_button);
+            if (item != null) {
+                getFavoriteIcon(item);
+            }
+        }
+
+        return true;
+    }
+
+    private void SetToFavorite(MenuItem item) {
+
+        if (!mCurrentRanobe.getFavorited() && !mCurrentRanobe.getFavoritedInWeb()) {
+            item.setIcon(fillImage);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    boolean wasadded = false;
+                    if (mCurrentRanobe.getRanobeSite().equals(StringResources.Rulate_Site)) {
+
+                        String token = preferences.getString(StringResources.KEY_Token, "");
+                        if (!token.equals("")) {
+
+                            String response = JsonRulateApi.getInstance().AddBookmark(
+                                    mCurrentRanobe.getId(), token);
+                            try {
+                                JSONObject jsonObject = new JSONObject(response);
+                                if (jsonObject.getString("status").equals("success")) {
+                                    wasadded = true;
+                                    mCurrentRanobe.setFavoritedInWeb(true);
+                                    runOnUiThread(() -> Toast.makeText(mContext,
+                                            mCurrentRanobe.getTitle() + " "
+                                                    + mContext.getString(
+                                                    R.string.added_to_web),
+                                            Toast.LENGTH_SHORT).show());
+                                }
+                            } catch (JSONException e) {
+                                MyLog.SendError(StringResources.LogType.WARN,
+                                        RanobeInfoActivity.class.toString(), "", e);
+
+                            }
+
+                        }
+
+                    } else if (mCurrentRanobe.getRanobeSite().equals(
+                            StringResources.RanobeRf_Site)) {
+
+                        String token = rfpreferences.getString(StringResources.KEY_Token, "");
+                        if (!token.equals("")) {
+
+                            String response = JsonRanobeRfApi.getInstance().AddBookmark(
+                                    mCurrentRanobe.getId(),
+                                    mCurrentRanobe.getChapterList().get(0).getId(), token);
+                            try {
+                                JSONObject jsonObject = new JSONObject(response);
+                                if (jsonObject.getInt("status") == 200) {
+                                    wasadded = true;
+                                    mCurrentRanobe.setFavoritedInWeb(true);
+                                    runOnUiThread(() -> Toast.makeText(mContext,
+                                            mCurrentRanobe.getTitle() + " "
+                                                    + mContext.getString(
+                                                    R.string.added_to_web),
+                                            Toast.LENGTH_SHORT).show());
+                                }
+                            } catch (JSONException e) {
+                                MyLog.SendError(StringResources.LogType.WARN,
+                                        RanobeInfoActivity.class.toString(), "", e);
+
+                            }
+
+                        }
+
+                    }
+
+                    if (!wasadded) {
+                        mCurrentRanobe.setFavorited(true);
+                        AsyncTask.execute(
+                                () -> {
+                                    DatabaseDao.getInstance(mContext).getRanobeDao().insert(
+                                            mCurrentRanobe);
+                                    DatabaseDao.getInstance(mContext).getChapterDao().insertAll(
+                                            mCurrentRanobe.getChapterList().toArray(
+                                                    new Chapter[mCurrentRanobe.getChapterList
+                                                            ().size()]));
+
+                                });
+
+                        runOnUiThread(() -> Toast.makeText(mContext,
+                                mCurrentRanobe.getTitle() + " " + mContext.getString(
+                                        R.string.added_to_local), Toast.LENGTH_SHORT).show());
+
+                    }
+                }
+            }.run();
+
+        } else {
+
+            if (mCurrentRanobe.getFavoritedInWeb()) {
+
+                if (mCurrentRanobe.getRanobeSite().contains(StringResources.Rulate_Site)) {
+                    String token = preferences.getString(StringResources.KEY_Token, "");
+                    if (!token.equals("")) {
+
+                        String response = JsonRulateApi.getInstance().RemoveBookmark(
+                                mCurrentRanobe.getId(), token);
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            if (jsonObject.getString("status").equals("success")) {
+                                mCurrentRanobe.setFavoritedInWeb(false);
+                                AsyncTask.execute(
+                                        () -> DatabaseDao.getInstance(
+                                                mContext).getRanobeDao().deleteWeb(
+                                                mCurrentRanobe.getUrl()));
+                                item.setIcon(borderImage);
+                            }
+                        } catch (JSONException e) {
+                            MyLog.SendError(StringResources.LogType.WARN,
+                                    RanobeInfoActivity.class.toString(), "", e);
+
+                        }
+                    }
+
+                } else if (mCurrentRanobe.getRanobeSite().contains(
+                        StringResources.RanobeRf_Site)) {
+                    String token = rfpreferences.getString(StringResources.KEY_Token, "");
+                    if (!token.equals("")) {
+
+                        Thread thread = new Thread(() -> {
+
+                            String response = JsonRanobeRfApi.getInstance().RemoveBookmark(
+                                    mCurrentRanobe.getBookmarkIdRf(), token);
+                            try {
+                                JSONObject jsonObject = new JSONObject(response);
+                                if (jsonObject.getInt("status") == 200) {
+                                    mCurrentRanobe.setFavoritedInWeb(false);
+                                    AsyncTask.execute(
+                                            () -> DatabaseDao.getInstance(
+                                                    mContext).getRanobeDao().deleteWeb(
+                                                    mCurrentRanobe.getUrl()));
+                                    runOnUiThread(
+                                            () -> item.setIcon(
+                                                    borderImage));
+
+                                }
+                            } catch (JSONException e) {
+
+                                runOnUiThread(() -> Toast.makeText(mContext,
+                                        mContext.getString(
+                                                R.string.update_to_remove),
+                                        Toast.LENGTH_SHORT).show());
+
+                            }
+
+                        });
+
+                        thread.start();
+
+                    }
+                }
+
+            } else {
+                AsyncTask.execute(
+                        () -> DatabaseDao.getInstance(mContext).getRanobeDao().delete(
+                                mCurrentRanobe.getUrl()));
+                mCurrentRanobe.setFavorited(false);
+                item.setIcon(borderImage);
+            }
+
+        }
+
     }
 
     @Override
-    public void onBackPressed() {
-        finish();
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
+            case R.id.fav_button:
+                SetToFavorite(item);
+                break;
+            case R.id.download_chapters:
+                Intent intent = new Intent(mContext, DownloadActivity.class);
+                if (RanobeKeeper.getInstance().getRanobe() != null) {
+                    mContext.startActivity(intent);
+                }
+                break;
+        }
+        return true;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        adapter.notifyItemRangeChanged(0, recycleChapterList.size());
+
     }
 }

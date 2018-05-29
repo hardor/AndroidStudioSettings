@@ -13,8 +13,6 @@
         android:id="@+id/textWebview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-
-        android:background="@android:color/holo_blue_bright"
     />
 
     <android.support.design.widget.BottomNavigationView
@@ -28,8 +26,7 @@
         android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/navigation"
-
-    />
+     />
     <ProgressBar
         android:id="@+id/progressBar2"
         android:layout_width="wrap_content"

@@ -197,7 +197,7 @@ public class JsonRanobeRfApi {
                         "application/x-www-form-urlencoded"); //e.g key = Accept, value =
                 // application/json
                 con.setRequestProperty("Authorization", "Bearer " + token);
-                ; //e.g key = Accept, value = application/json
+                //e.g key = Accept, value = application/json
                 con.setRequestProperty("Accept",
                         "*/*"); //e.g key = Accept, value = application/json
 
@@ -213,7 +213,7 @@ public class JsonRanobeRfApi {
                 BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 
                 String inputLine;
-                StringBuffer response = new StringBuffer();
+                StringBuilder response = new StringBuilder();
 
                 while ((inputLine = in.readLine()) != null) {
                     response.append(inputLine);
