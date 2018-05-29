@@ -9,7 +9,7 @@ import ru.profapp.RanobeReader.Models.Ranobe;
 
 public class RanobeKeeper {
     private static volatile RanobeKeeper instance;
-    private Integer chapterCount;
+    public static Integer chapterCount = 100;
     private Ranobe ranobe;
     private String RanobeRfToken;
 
@@ -72,17 +72,6 @@ public class RanobeKeeper {
 
     public void setAutoSaveText(Boolean autoSaveText) {
         AutoSaveText = autoSaveText;
-    }
-
-    public Integer getChapterCount() {
-        if (chapterCount == null || chapterCount == 0) {
-            return 100;
-        }
-        return chapterCount;
-    }
-
-    public void setChapterCount(Integer chapterCount) {
-        this.chapterCount = chapterCount;
     }
 
     public String getRanobeRfToken() {

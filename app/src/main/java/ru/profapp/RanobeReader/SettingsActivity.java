@@ -44,18 +44,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
                     ThemeUtils.setTheme(Boolean.valueOf(value.toString()));
                     ThemeUtils.onActivityCreateSetTheme();
-                    //ThemeUtils.change(mContext.getApplicationContext());
-                } else if (preference.getKey().equals(preference.getContext().getString(
-                        R.string.pref_general_list_size))) {
-
-                    if (Integer.valueOf(value.toString()) > 100) {
-                        RanobeKeeper.getInstance().setChapterTextSize(
-                                Integer.valueOf(value.toString()));
-                    } else {
-                        return false;
-                    }
-
                 }
+
                 return true;
             };
 
@@ -186,14 +176,11 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             findPreference(
                     getString(R.string.pref_general_auto_save)).setOnPreferenceChangeListener(
                     sChangePreferenceListener);
-            // TOdo: theme
+
             findPreference(
                     getString(R.string.pref_general_app_theme)).setOnPreferenceChangeListener(
                     sChangePreferenceListener);
 
-            Preference listSizepref = findPreference(
-                    getString(R.string.pref_general_list_size));
-            listSizepref.setOnPreferenceChangeListener(sChangePreferenceListener);
 
         }
 

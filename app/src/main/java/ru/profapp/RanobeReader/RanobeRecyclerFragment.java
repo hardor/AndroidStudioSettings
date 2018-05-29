@@ -195,23 +195,7 @@ public class RanobeRecyclerFragment extends Fragment {
                     }
                 }
 
-//                if (sPref != null) {
-//                    Object[] allReadedChapters = sPref.getAll().keySet().toArray();
-//
-//                    for (Chapter chapter : ranobe.getChapterList()) {
-//                        if (!chapter.getReaded()) {
-//
-//                            for (Object readed : allReadedChapters) {
-//
-//                                if (chapter.getUrl().equals(readed.toString())) {
-//                                    chapter.setReaded(true);
-//                                    break;
-//                                }
-//                            }
-//                        }
-//
-//                    }
-//                }
+
             }
         }
 
@@ -296,7 +280,7 @@ public class RanobeRecyclerFragment extends Fragment {
                 for (Ranobe ranobe : newRanobeList) {
 
                     boolean error = false;
-                    // Todo:
+
                     if (getActivity() != null) {
                         getActivity().runOnUiThread(
                                 () -> progressDialog.setMessage(ranobe.getTitle()));
@@ -432,15 +416,6 @@ public class RanobeRecyclerFragment extends Fragment {
                     ranobeList.addAll(rulateList);
                 }
 
-//                for (Ranobe ranobe : ranobeList) {
-//                    int index = ranobe.getChapterList().size() - 1;
-//
-//                    for (Chapter chapter : ranobe.getChapterList()) {
-//                        chapter.setIndex(index);
-//                        index--;
-//                    }
-//
-//                }
 
                 Objects.requireNonNull(getActivity()).runOnUiThread(
                         () -> onItemsLoadComplete(remove));
@@ -602,7 +577,7 @@ public class RanobeRecyclerFragment extends Fragment {
 
     }
 
-    //
+
     private void ranoberfLoadRanobe(final boolean remove) {
 
         Thread t = new Thread() {
@@ -695,16 +670,7 @@ public class RanobeRecyclerFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
+
     public interface OnListFragmentInteractionListener {
 
     }

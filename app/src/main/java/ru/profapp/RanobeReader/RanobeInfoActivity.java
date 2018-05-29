@@ -79,9 +79,6 @@ public class RanobeInfoActivity extends AppCompatActivity {
 
         Fabric.with(this, crashlyticsKit);
         setContentView(R.layout.activity_ranobe_info);
-
-        loadedChapterCount = RanobeKeeper.getInstance().getChapterCount();
-
         MobileAds.initialize(this, getString(R.string.app_admob_id));
 
         AdView adView = findViewById(R.id.adView);
@@ -200,7 +197,7 @@ public class RanobeInfoActivity extends AppCompatActivity {
             loadButton.setOnClickListener(v -> {
                 loadButton.setVisibility(View.GONE);
                 loadChapters(false);
-                loadButton.setVisibility(View.VISIBLE);
+                //loadButton.setVisibility(View.VISIBLE);
             });
         }
 
@@ -234,14 +231,16 @@ public class RanobeInfoActivity extends AppCompatActivity {
 
         int size_prev = recycleChapterList.size();
         if (clean) {
-            loadedChapterCount = RanobeKeeper.getInstance().getChapterCount();
+            RanobeKeeper.getInstance();
+            loadedChapterCount = RanobeKeeper.chapterCount;
             recycleChapterList.clear();
             adapter.notifyItemRangeRemoved(0, size_prev);
             size_prev = 0;
+        }else{
+            loadedChapterCount = mCurrentRanobe.getChapterList().size();
         }
 
-        loadedChapterCount = Math.min(size_prev + RanobeKeeper.getInstance().getChapterCount(),
-                mCurrentRanobe.getChapterList().size());
+
         List<Chapter> newList = mCurrentRanobe.getChapterList().subList(size_prev,
                 loadedChapterCount);
         if (sPref != null) {
@@ -252,18 +251,6 @@ public class RanobeInfoActivity extends AppCompatActivity {
             }
         }
 
-//        if (sPref != null) {
-//            Object[] allReadedChapters = sPref.getAll().keySet().toArray();
-//
-//            for (Object readed : allReadedChapters) {
-//                for (Chapter chapter : newList) {
-//                    if (chapter.getUrl().equals(readed.toString())) {
-//                        chapter.setReaded(true);
-//                        break;
-//                    }
-//                }
-//            }
-//        }
 
         recycleChapterList.addAll(newList);
         adapter.notifyItemRangeInserted(size_prev, recycleChapterList.size());

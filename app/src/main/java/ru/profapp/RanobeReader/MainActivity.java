@@ -122,10 +122,6 @@ public class MainActivity extends AppCompatActivity
                 settingPref.getBoolean(
                         getApplicationContext().getString(R.string.pref_general_auto_save),
                         false));
-        RanobeKeeper.getInstance().setChapterCount(Integer.valueOf(
-                settingPref.getString(
-                        getApplicationContext().getString(R.string.pref_general_list_size),
-                        "100")));
 
         SharedPreferences rfPref = getApplicationContext().getSharedPreferences(
                 StringResources.Ranoberf_Login_Pref, MODE_PRIVATE);

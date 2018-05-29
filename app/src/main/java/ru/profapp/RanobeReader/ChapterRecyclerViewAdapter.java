@@ -48,7 +48,7 @@ public class ChapterRecyclerViewAdapter extends
         holder.mTextView.setText(mValues.get(position).getTitle());
 
         if (!holder.mChapterItem.getCanRead()) {
-            holder.mTextView.setBackgroundColor(Color.GRAY);
+            holder.mView.setBackgroundColor(Color.GRAY);
         } else {
             holder.mTextView.setOnClickListener(v -> {
 
@@ -81,40 +81,6 @@ public class ChapterRecyclerViewAdapter extends
 
             });
 
-//            holder.mImageButton.setOnClickListener(v -> {
-//
-//                if (holder.mChapterItem.getDownloaded()) {
-//
-//                    try {
-//                        new Thread() {
-//                            @Override
-//                            public void run() {
-//                                DatabaseDao.getInstance(mContext).getTextDao().delete(
-//                                        holder.mChapterItem.getUrl());
-//                            }
-//
-//                        }.start();
-//                        holder.mImageButton.setImageDrawable(holder.downloadImage);
-//                        holder.mChapterItem.setDownloaded(false);
-//                        holder.mChapterItem.setText("");
-//                    } catch (Exception ignored) {
-//                    }
-//
-//                } else {
-//                    Pair<String, Boolean> res = getText(holder.mChapterItem, holder.mContext);
-//
-//                    if (res.first != null && !res.first.isEmpty()) {
-//                        if (res.second) {
-//                            holder.mImageButton.setImageDrawable(downloadDoneImage);
-//                            holder.mChapterItem.setDownloaded(true);
-//                        } else {
-//                            Toast.makeText(mContext, "Loading error", Toast.LENGTH_SHORT).show();
-//                        }
-//                        holder.mChapterItem.setText(res.first);
-//                    }
-//                }
-//            });
-
         }
 
         if (holder.mChapterItem.getReaded()) {
@@ -122,35 +88,6 @@ public class ChapterRecyclerViewAdapter extends
                     ContextCompat.getColor(mContext, R.color.colorPrimaryDark));
         }
 
-//        AsyncTask.execute(() -> {
-//
-//            try {
-//                if (holder.mChapterItem.getDownloaded()) {
-//                    ((AppCompatActivity) mContext).runOnUiThread(
-//                            () -> holder.mImageButton.setImageDrawable(downloadDoneImage));
-//                } else {
-//                    TextChapter chapter = DatabaseDao.getInstance(
-//                            mContext).getTextDao().getTextByChapterUrl(
-//                            holder.mChapterItem.getUrl());
-//                    if (chapter != null) {
-//                        String chapterText = chapter.getText();
-//
-//                        if (!chapter.getText().equals("")) {
-//
-//                            holder.mChapterItem.setText(chapterText);
-//                            holder.mChapterItem.setDownloaded(true);
-//                            ((AppCompatActivity) mContext).runOnUiThread(
-//                                    () -> holder.mImageButton.setImageDrawable(downloadDoneImage));
-//
-//                        }
-//                    }
-//                }
-//            } catch (Exception e) {
-//                MyLog.SendError(StringResources.LogType.WARN,
-//                        ChapterRecyclerViewAdapter.class.toString(), "", e);
-//
-//            }
-//        });
     }
 
     private Pair<String, Boolean> getText(Chapter chapter, Context context) {
