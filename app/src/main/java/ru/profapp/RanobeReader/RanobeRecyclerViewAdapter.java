@@ -134,8 +134,7 @@ class RanobeRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 ((RanobeViewHolder) holder).mUpdateTime.setVisibility(View.INVISIBLE);
             }
 
-            if (mValues.get(position).getImage() != null && !mValues.get(
-                    position).getImage().equals("")) {
+
                 ((RanobeViewHolder) holder).mImageView.setVisibility(View.VISIBLE);
                 Glide.with(mContext)
                         .load(mValues.get(position).getImage()).apply(
@@ -144,9 +143,7 @@ class RanobeRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                                 .error(R.drawable.ic_error_outline_black_24dp)
                                 .fitCenter()
                 ).into(((RanobeViewHolder) holder).mImageView);
-            } else {
-                ((RanobeViewHolder) holder).mImageView.setVisibility(View.GONE);
-            }
+
             ((RanobeViewHolder) holder).mView.setOnClickListener(v -> {
 
                 Intent intent = new Intent(mContext, RanobeInfoActivity.class);

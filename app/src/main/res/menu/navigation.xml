@@ -8,6 +8,11 @@
         android:title="@string/previous"
         />
     <item
+        android:id="@+id/navigation_day_night"
+        android:icon="@drawable/ic_settings_brightness_black_24dp"
+        android:title="@string/day_night"/>
+
+    <item
         android:id="@+id/navigation_bookmark"
         android:icon="@drawable/ic_bookmark_border_black_24dp"
         android:title="@string/action_bookmark"/>

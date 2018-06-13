@@ -29,6 +29,10 @@ public class RfChapter {
     @SerializedName("sponsor")
     @Expose
     private Boolean sponsor;
+
+    @SerializedName("payment")
+    @Expose
+    private Boolean payment	;
     @SerializedName("view")
     @Expose
     private Integer view;
@@ -95,6 +99,14 @@ public class RfChapter {
 
     public void setView(Integer view) {
         this.view = view;
+    }
+
+    public Boolean getPayment() {
+        return payment;
+    }
+
+    public void setPayment(Boolean payment) {
+        this.payment = payment;
     }
 }
 

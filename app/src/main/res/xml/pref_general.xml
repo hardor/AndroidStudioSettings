@@ -30,30 +30,5 @@
         android:summary="@string/select_text_size"
         android:title="@string/text_size" />
 
-    <!--<EditTextPreference-->
-        <!--android:defaultValue="100"-->
-        <!--android:key="@string/pref_general_list_size"-->
-        <!--android:selectAllOnFocus="true"-->
-        <!--android:inputType="numberDecimal"-->
-        <!--android:digits="0123456789"-->
-        <!--android:singleLine="true"-->
-        <!--android:title="@string/NumberDisplayed"-->
-        <!--android:summary="@string/NumberDisplayed100"-->
-    <!--/>-->
-    <Preference android:title="@string/сlean_cache"
-                android:key="@string/CleanCacheButton"
-                android:summary="@string/Delete_downloaded_chapters"/>
-
-    <Preference android:title="@string/clean_history"
-                android:key="@string/CleanHistoryButton"
-                android:summary="@string/clean_history_full"/>
-
-    <Preference android:title="@string/сlean_favorite"
-                android:key="@string/CleanFavoriteButton"
-                android:summary="@string/Delete_favorited_ranobes"/>
-
-
-
-
 
 </PreferenceScreen>

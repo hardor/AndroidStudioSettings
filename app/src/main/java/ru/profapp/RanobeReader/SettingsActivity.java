@@ -109,7 +109,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         return PreferenceFragment.class.getName().equals(fragmentName)
                 || GeneralPreferenceFragment.class.getName().equals(fragmentName)
                 || RulatePreferenceFragment.class.getName().equals(fragmentName)
-                || RanobeRfPreferenceFragment.class.getName().equals(fragmentName);
+                || RanobeRfPreferenceFragment.class.getName().equals(fragmentName)
+                || DataPreferenceFragment.class.getName().equals(fragmentName);
     }
 
     @Override
@@ -135,40 +136,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             addPreferencesFromResource(R.xml.pref_general);
             setHasOptionsMenu(true);
 
-            Preference cacheButton = findPreference(getString(R.string.CleanCacheButton));
-            cacheButton.setOnPreferenceClickListener((Preference preference) -> {
-                final Context context = preference.getContext();
-                AsyncTask.execute(() -> DatabaseDao.getInstance(context).getTextDao().cleanTable());
-                Toast.makeText(context, context.getText(R.string.cache_cleaned),
-                        Toast.LENGTH_SHORT).show();
-                return true;
-            });
 
-            Preference favButton = findPreference(getString(R.string.CleanFavoriteButton));
-            favButton.setOnPreferenceClickListener((Preference preference) -> {
-                final Context context = preference.getContext();
-                AsyncTask.execute(() -> DatabaseDao.getInstance(
-                        context).getRanobeDao().cleanTable());
-                Toast.makeText(context, context.getText(R.string.bookmarks_cleaned),
-                        Toast.LENGTH_SHORT).show();
-                return true;
-            });
-
-            Preference prefButton = findPreference(getString(R.string.CleanHistoryButton));
-            prefButton.setOnPreferenceClickListener(preference -> {
-                final Context context = preference.getContext();
-                AsyncTask.execute(() -> {
-
-                    getActivity().getSharedPreferences(StringResources.Last_readed_Pref,
-                            0).edit().clear().apply();
-                    getActivity().getSharedPreferences(StringResources.is_readed_Pref,
-                            0).edit().clear().apply();
-
-                });
-                Toast.makeText(context, context.getText(R.string.cache_cleaned),
-                        Toast.LENGTH_SHORT).show();
-                return true;
-            });
 
             findPreference(
                     getString(R.string.pref_general_hide_chapter)).setOnPreferenceChangeListener(
@@ -250,6 +218,62 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             } else {
                 prefLogin.setSummary(getActivity().getString(R.string.login_to_summary));
             }
+            setHasOptionsMenu(true);
+        }
+
+        @Override
+        public boolean onOptionsItemSelected(MenuItem item) {
+            int id = item.getItemId();
+            if (id == android.R.id.home) {
+                getActivity().onBackPressed();
+                return true;
+            }
+            return super.onOptionsItemSelected(item);
+        }
+
+    }
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    public static class DataPreferenceFragment extends PreferenceFragment {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            addPreferencesFromResource(R.xml.pref_data);
+
+            Preference cacheButton = findPreference(getString(R.string.CleanCacheButton));
+            cacheButton.setOnPreferenceClickListener((Preference preference) -> {
+                final Context context = preference.getContext();
+                AsyncTask.execute(() -> DatabaseDao.getInstance(context).getTextDao().cleanTable());
+                Toast.makeText(context, context.getText(R.string.cache_cleaned),
+                        Toast.LENGTH_SHORT).show();
+                return true;
+            });
+
+            Preference favButton = findPreference(getString(R.string.CleanFavoriteButton));
+            favButton.setOnPreferenceClickListener((Preference preference) -> {
+                final Context context = preference.getContext();
+                AsyncTask.execute(() -> DatabaseDao.getInstance(
+                        context).getRanobeDao().cleanTable());
+                Toast.makeText(context, context.getText(R.string.bookmarks_cleaned),
+                        Toast.LENGTH_SHORT).show();
+                return true;
+            });
+
+            Preference prefButton = findPreference(getString(R.string.CleanHistoryButton));
+            prefButton.setOnPreferenceClickListener(preference -> {
+                final Context context = preference.getContext();
+                AsyncTask.execute(() -> {
+
+                    getActivity().getSharedPreferences(StringResources.Last_readed_Pref,
+                            0).edit().clear().apply();
+                    getActivity().getSharedPreferences(StringResources.is_readed_Pref,
+                            0).edit().clear().apply();
+
+                });
+                Toast.makeText(context, context.getText(R.string.cache_cleaned),
+                        Toast.LENGTH_SHORT).show();
+                return true;
+            });
+
             setHasOptionsMenu(true);
         }
 

@@ -64,6 +64,7 @@
 
     <string name="load_ranobes">Loading favorite ranobe</string>
     <string name="load_please_wait">Please wait for the load to complete</string>
+    <string name="load_chapters">Chapters loading…</string>
     <string name="load_all">Load all</string>
 
     <string name="tools">Tools</string>
@@ -114,15 +115,17 @@
     <string name="select_none">Select none</string>
     <string name="AboutVersion" translatable="false">Приложение пока не стабильно. Рекомендую
         перенести свои локальные закладки в web.\n
-        2.16\n
-        Загрузка глав перенесена в отдельное окно\n
-        Добавлена возможность ставить закладку и продолжить чтение с этого места\n
-        Исправлены баги и ошибки. Улучшена производительность\n
-        На устройствах с киткак возможны сбои\n
+        2.24 Ранобэ.рф добавила премиум подписку. Добавлено сообщение, если глава платная.\n
+        2.22 Фикс вылетов закладок в некоторых случаях \n
+        2.21 Исправлена работа закладок Исправлено отображение после смены темы/ориентации\n
+        Дефолтная картинка если нет изображения
     </string>
     <string name="readyToDownload">Are you sure you want to download the marked chapters and delete
         not marked?
     </string>
     <string name="task_finished">Task finished</string>
+    <string name="app.email">admin@profapp.ru</string>
+    <string name="data">Data</string>
+    <string name="day_night">Day/Night</string>
 
 </resources>

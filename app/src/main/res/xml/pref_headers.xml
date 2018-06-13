@@ -12,6 +12,8 @@
     <header
         android:fragment="ru.profapp.RanobeReader.SettingsActivity$RanobeRfPreferenceFragment"
         android:title="@string/ranobe_rf" />
-
+    <header
+        android:fragment="ru.profapp.RanobeReader.SettingsActivity$DataPreferenceFragment"
+        android:title="@string/data" />
 
 </preference-headers>

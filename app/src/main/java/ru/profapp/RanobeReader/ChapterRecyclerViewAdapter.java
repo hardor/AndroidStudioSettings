@@ -9,6 +9,7 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.List;
@@ -20,11 +21,14 @@ import ru.profapp.RanobeReader.Models.Chapter;
 import ru.profapp.RanobeReader.Models.Ranobe;
 
 public class ChapterRecyclerViewAdapter extends
-        RecyclerView.Adapter<ChapterRecyclerViewAdapter.ViewHolder> {
+        RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final Ranobe mRanobe;
     private final List<Chapter> mValues;
     private final Context mContext;
+
+    private final int VIEW_TYPE_ITEM = 0;
+    private final int VIEW_TYPE_LOADING = 1;
 
     ChapterRecyclerViewAdapter(List<Chapter> chapterList,
             Context Context, Ranobe ranobe) {
@@ -36,58 +40,84 @@ public class ChapterRecyclerViewAdapter extends
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.chapter_item, parent, false);
-        return new ViewHolder(view);
+    public int getItemViewType(int position) {
+        if (mValues.get(position) == null) {
+            return VIEW_TYPE_LOADING;
+        } else {
+            return VIEW_TYPE_ITEM;
+        }
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mChapterItem = mValues.get(position);
-        holder.mTextView.setText(mValues.get(position).getTitle());
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        switch (viewType) {
+            case VIEW_TYPE_ITEM: {
+                View view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.chapter_item, parent, false);
+                return new ViewHolder(view);
+            }
+            default:
+            case VIEW_TYPE_LOADING: {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_loading,
+                        parent, false);
+                return new LoadingViewHolder(view);
+            }
 
-        if (!holder.mChapterItem.getCanRead()) {
-            holder.mView.setBackgroundColor(Color.GRAY);
-        } else {
-            holder.mTextView.setOnClickListener(v -> {
+        }
 
-                if (RanobeKeeper.getInstance().getRanobe() == null || !Objects.equals(
-                        holder.mChapterItem.getRanobeUrl(),
-                        RanobeKeeper.getInstance().getRanobe().getUrl())) {
+    }
 
-                    Ranobe ranobe = new Ranobe();
-                    ranobe.setUrl(holder.mChapterItem.getRanobeUrl());
-                    if ((RanobeKeeper.getInstance().getFragmentType() != null
-                            && RanobeKeeper.getInstance().getFragmentType()
-                            != RanobeConstans.FragmentType.History)) {
-                        try {
-                            ranobe.updateRanobe(mContext);
-                        } catch (Exception ignored) {
+    @Override
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
+
+        if (holder instanceof ViewHolder) {
+            ((ViewHolder) holder).mChapterItem = mValues.get(position);
+            ((ViewHolder) holder).mTextView.setText(mValues.get(position).getTitle());
+
+            if (!((ViewHolder) holder).mChapterItem.getCanRead()) {
+                ((ViewHolder) holder).mView.setBackgroundColor(Color.GRAY);
+            } else {
+                ((ViewHolder) holder).mTextView.setOnClickListener(v -> {
+
+                    if (RanobeKeeper.getInstance().getRanobe() == null || !Objects.equals(
+                            ((ViewHolder) holder).mChapterItem.getRanobeUrl(),
+                            RanobeKeeper.getInstance().getRanobe().getUrl())) {
+
+                        Ranobe ranobe = new Ranobe();
+                        ranobe.setUrl(((ViewHolder) holder).mChapterItem.getRanobeUrl());
+                        if ((RanobeKeeper.getInstance().getFragmentType() != null
+                                && RanobeKeeper.getInstance().getFragmentType()
+                                != RanobeConstans.FragmentType.History)) {
+                            try {
+                                ranobe.updateRanobe(mContext);
+                            } catch (Exception ignored) {
+                                ranobe = mRanobe;
+                            }
+                        } else {
                             ranobe = mRanobe;
                         }
-                    } else {
-                        ranobe = mRanobe;
+
+                        RanobeKeeper.getInstance().setRanobe(ranobe);
+                    }
+                    if (RanobeKeeper.getInstance().getRanobe() != null) {
+                        Intent intent = new Intent(v.getContext(), ChapterTextActivity.class);
+                        intent.putExtra("ChapterIndex", holder.getAdapterPosition());
+
+                        v.getContext().startActivity(intent);
                     }
 
-                    RanobeKeeper.getInstance().setRanobe(ranobe);
-                }
-                if (RanobeKeeper.getInstance().getRanobe() != null) {
-                    Intent intent = new Intent(v.getContext(), ChapterTextActivity.class);
-                    intent.putExtra("ChapterIndex", holder.getAdapterPosition());
+                });
 
-                    v.getContext().startActivity(intent);
-                }
+            }
 
-            });
+            if (((ViewHolder) holder).mChapterItem.getReaded()) {
+                ((ViewHolder) holder).mView.setBackgroundColor(
+                        ContextCompat.getColor(mContext, R.color.colorPrimaryDark));
+            }
 
+        } else if (holder instanceof LoadingViewHolder) {
+            ((LoadingViewHolder) holder).progressBar.setIndeterminate(true);
         }
-
-        if (holder.mChapterItem.getReaded()) {
-            holder.mView.setBackgroundColor(
-                    ContextCompat.getColor(mContext, R.color.colorPrimaryDark));
-        }
-
     }
 
     private Pair<String, Boolean> getText(Chapter chapter, Context context) {
@@ -115,5 +145,14 @@ public class ChapterRecyclerViewAdapter extends
 
         }
 
+    }
+
+    class LoadingViewHolder extends RecyclerView.ViewHolder {
+        final ProgressBar progressBar;
+
+        LoadingViewHolder(View view) {
+            super(view);
+            progressBar = view.findViewById(R.id.progressBar);
+        }
     }
 }

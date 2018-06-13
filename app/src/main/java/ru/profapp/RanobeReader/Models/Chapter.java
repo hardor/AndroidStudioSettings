@@ -52,6 +52,8 @@ public class Chapter {
     private Boolean Readed;
     private String Text;
     private String RanobeName;
+    @Ignore
+    private boolean isChecked;
 
     public Chapter() {
 
@@ -90,6 +92,7 @@ public class Chapter {
         if (!Url.contains(StringResources.RanobeRf_Site)) {
             Url = StringResources.RanobeRf_Site + Url;
         }
+        CanRead = !rChapter.getPayment();
     }
 
     private static boolean empty(final String s) {
@@ -230,9 +233,6 @@ public class Chapter {
         Readed = readed;
     }
 
-    @Ignore
-    private boolean isChecked;
-
     public boolean getChecked() {
         return isChecked;
     }
@@ -268,7 +268,7 @@ public class Chapter {
             // Text =  StringHelper.getInstance().removeTags(response.getPart().getContent());
             Text = response.getPart().getContent();
             Url = response.getPart().getUrl();
-            if (RanobeKeeper.getInstance().getAutoSaveText() || isButton) {
+            if ((RanobeKeeper.getInstance().getAutoSaveText() || isButton) && !Text.equals("")) {
                 new Thread() {
                     @Override
                     public void run() {

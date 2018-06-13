@@ -9,7 +9,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
@@ -95,6 +97,11 @@ public class RanobeInfoActivity extends AppCompatActivity {
         sortButton.setOnClickListener(v -> {
             mCurrentRanobe.ReversChapters();
             loadChapters(true);
+
+            if (mCurrentRanobe.getChapterList().size() > loadedChapterCount) {
+                loadButton.setVisibility(View.VISIBLE);
+            }
+
         });
         borderImage = mContext.getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp);
         fillImage = mContext.getResources().getDrawable(
@@ -115,10 +122,11 @@ public class RanobeInfoActivity extends AppCompatActivity {
             Intent intent = new Intent(mContext, ChapterTextActivity.class);
             int tempIndex = mCurrentRanobe.getChapterList().size() - 1;
             if (url != null) {
-
-                for (Chapter chapter : mCurrentRanobe.getChapterList()) {
+                List<Chapter> tempList = mCurrentRanobe.getChapterList();
+                for (int i = 0; i < tempList.size(); i++) {
+                    Chapter chapter = tempList.get(i);
                     if (chapter.getUrl().equals(url)) {
-                        tempIndex = tempIndex - chapter.getIndex();
+                        tempIndex = i;
                         break;
                     }
 
@@ -187,6 +195,15 @@ public class RanobeInfoActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.chapter_list);
 
+        recyclerView.setOnFlingListener(new RecyclerView.OnFlingListener() {
+            @RequiresApi(Build.VERSION_CODES.KITKAT)
+            @Override
+            public boolean onFling(int velocityX, int velocityY) {
+                recyclerView.dispatchNestedFling(velocityX, velocityY, false);
+                return false;
+            }
+        });
+
         adapter = new ChapterRecyclerViewAdapter(recycleChapterList, this, mCurrentRanobe);
 
         recyclerView.setAdapter(adapter);
@@ -197,7 +214,6 @@ public class RanobeInfoActivity extends AppCompatActivity {
             loadButton.setOnClickListener(v -> {
                 loadButton.setVisibility(View.GONE);
                 loadChapters(false);
-                //loadButton.setVisibility(View.VISIBLE);
             });
         }
 
@@ -214,6 +230,16 @@ public class RanobeInfoActivity extends AppCompatActivity {
         if (mCurrentRanobe.getRulateComments().size() > 0) {
             RecyclerView commentRecycleView = findViewById(R.id.comment_list);
             commentRecycleView.setLayoutManager(new LinearLayoutManager(mContext));
+
+            commentRecycleView.setOnFlingListener(
+                    new RecyclerView.OnFlingListener() {
+                        @Override
+                        @RequiresApi(Build.VERSION_CODES.KITKAT)
+                        public boolean onFling(int velocityX, int velocityY) {
+                            commentRecycleView.dispatchNestedFling(velocityX, velocityY, false);
+                            return false;
+                        }
+                    });
 
             CommentsRecyclerViewAdapter commentsAdapter = new CommentsRecyclerViewAdapter(
                     mCurrentRanobe.getRulateComments(), mContext);
@@ -236,13 +262,12 @@ public class RanobeInfoActivity extends AppCompatActivity {
             recycleChapterList.clear();
             adapter.notifyItemRangeRemoved(0, size_prev);
             size_prev = 0;
-        }else{
+        } else {
             loadedChapterCount = mCurrentRanobe.getChapterList().size();
         }
 
-
         List<Chapter> newList = mCurrentRanobe.getChapterList().subList(size_prev,
-                loadedChapterCount);
+                Math.min(loadedChapterCount, mCurrentRanobe.getChapterList().size()));
         if (sPref != null) {
             for (Chapter chapter : newList) {
                 if (!chapter.getReaded()) {
@@ -251,9 +276,8 @@ public class RanobeInfoActivity extends AppCompatActivity {
             }
         }
 
-
         recycleChapterList.addAll(newList);
-        adapter.notifyItemRangeInserted(size_prev, recycleChapterList.size());
+        adapter.notifyItemRangeInserted(size_prev, newList.size());
 
     }
 
@@ -264,9 +288,9 @@ public class RanobeInfoActivity extends AppCompatActivity {
                     mContext).getRanobeDao().IsRanobeFavorite(
                     mCurrentRanobe.getUrl())
                     != null) {
-                item.setIcon(fillImage);
+                runOnUiThread(() -> item.setIcon(fillImage));
             } else {
-                item.setIcon(borderImage);
+                runOnUiThread(() -> item.setIcon(borderImage));
             }
         });
     }
@@ -468,10 +492,4 @@ public class RanobeInfoActivity extends AppCompatActivity {
         return true;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        adapter.notifyItemRangeChanged(0, recycleChapterList.size());
-
-    }
 }

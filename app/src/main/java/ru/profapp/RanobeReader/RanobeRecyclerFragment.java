@@ -199,9 +199,10 @@ public class RanobeRecyclerFragment extends Fragment {
             }
         }
 
-        mRanobeRecyclerViewAdapter.notifyItemRangeInserted(oldListSize,
-                ranobeList.size() - oldListSize);
+//        mRanobeRecyclerViewAdapter.notifyItemRangeInserted(oldListSize,
+//                ranobeList.size() - oldListSize);
 
+        mRanobeRecyclerViewAdapter.notifyDataSetChanged();
         mRanobeRecyclerViewAdapter.setLoaded();
 
         mSwipeRefreshLayout.setRefreshing(false);

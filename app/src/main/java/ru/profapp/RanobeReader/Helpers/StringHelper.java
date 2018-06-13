@@ -37,4 +37,9 @@ public class StringHelper {
 
     }
 
+    public String cleanAdditionalInfo(String string) {
+
+        //string = string.replace("\n",", ");
+        return Jsoup.parse(string).text();
+    }
 }

@@ -79,11 +79,16 @@ public class Ranobe {
     private String Genres = "";
     @Ignore
     private List<Chapter> chapterList = new ArrayList<>();
+
+    @Ignore
+    private List<Chapter> chapterListHided = new ArrayList<>();
     @Ignore
     private List<RulateComment> mRulateComments = new ArrayList<>();
 
     @Ignore
     private Integer BookmarkIdRf;
+    @Ignore
+    private boolean isReversed = false;
 
     public Ranobe() {
     }
@@ -92,12 +97,28 @@ public class Ranobe {
         // Null-safe, short-circuit evaluation.
         return s == null || s.trim().isEmpty();
     }
-    @Ignore
-    private boolean isReversed = false;
 
-    public void ReversChapters(){
-        Collections.reverse(chapterList);
-        isReversed=!isReversed;
+    public List<Chapter> getChapterListHided() {
+
+
+            chapterListHided = new ArrayList<>();
+            for (Chapter item : chapterList) {
+                if (item.getCanRead()) {
+                    chapterListHided.add(item);
+                }
+            }
+            return chapterListHided;
+
+    }
+
+    public void ReversChapters() {
+        if (chapterList != null) {
+            Collections.reverse(chapterList);
+        }
+        if (chapterListHided != null) {
+            Collections.reverse(chapterListHided);
+        }
+        isReversed = !isReversed;
     }
 
     public boolean getReversed() {
@@ -186,7 +207,7 @@ public class Ranobe {
                 ? StringHelper.getInstance().removeTags(book.getDescription())
                 : Description) : Description;
         AdditionalInfo = empty(AdditionalInfo) ? (book.getInfo() != null
-                ? StringHelper.getInstance().removeTags(book.getInfo())
+                ? StringHelper.getInstance().cleanAdditionalInfo(book.getInfo())
                 : AdditionalInfo) : AdditionalInfo;
 
         ReadyDate = ReadyDate == null ? (book.getLastUpdatedBook() != null ? new Date(
@@ -210,10 +231,13 @@ public class Ranobe {
                 chapter.setRanobeUrl(Url);
                 chapter.setRanobeName(Title);
                 chapter.setIndex(i);
+
                 chapterList.add(chapter);
             }
 
         }
+
+
 
     }
 
@@ -234,12 +258,12 @@ public class Ranobe {
             chapterList.add(chapter);
         }
         if (chapterList.size() > 0) {
-            ReadyDate = result.getParts().get(chapterList.size() - 1) != null ? new Date(
-                    result.getParts().get(chapterList.size() - 1).getPublishedAt() * 1000)
+            ReadyDate = result.getParts().get(0) != null ? new Date(
+                    result.getParts().get(0).getPublishedAt() * 1000)
                     : ReadyDate;
         }
 
-        Collections.reverse(chapterList);
+       // Collections.reverse(chapterList);
     }
 
     public List<RulateComment> getRulateComments() {
@@ -531,14 +555,9 @@ public class Ranobe {
         if (chapterList == null) {
             return new ArrayList<>();
         }
-        List<Chapter> newList = new ArrayList<>();
+
         if (RanobeKeeper.getInstance().getHideUnavailableChapters()) {
-            for (Chapter item : chapterList) {
-                if (item.getCanRead()) {
-                    newList.add(item);
-                }
-            }
-            return newList;
+            return getChapterListHided();
         } else {
             return chapterList;
         }
@@ -592,8 +611,6 @@ public class Ranobe {
             MyLog.SendError(StringResources.LogType.WARN, RfBookInfoGson.class.toString(), "", e);
 
         }
-
-        //    UpdateRanobe(response, RanobeConstans.JsonObjectFrom.RanobeRfGetBookInfo);
 
     }
 

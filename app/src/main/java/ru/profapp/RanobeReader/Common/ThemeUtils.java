@@ -24,6 +24,7 @@ public class ThemeUtils {
     }
 
     public static void setTheme(boolean theme) {
-        sTheme = (theme) ?  AppCompatDelegate.MODE_NIGHT_YES :  AppCompatDelegate.MODE_NIGHT_NO;
+        sTheme = (theme) ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO;
     }
+
 }

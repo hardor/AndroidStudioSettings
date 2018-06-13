@@ -35,6 +35,7 @@
         </activity>
         <activity
             android:name=".ChapterTextActivity"
+            android:configChanges="orientation"
             android:label="@string/title_activity_chapter_text">
         </activity>
 

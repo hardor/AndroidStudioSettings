@@ -8,8 +8,10 @@ import static ru.profapp.RanobeReader.Common.StringResources.is_readed_Pref;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.ColorInt;
 import android.support.design.internal.BottomNavigationItemView;
 import android.support.design.widget.BottomNavigationView;
@@ -32,9 +34,11 @@ import org.jsoup.Jsoup;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import io.fabric.sdk.android.Fabric;
 import ru.profapp.RanobeReader.Common.StringResources;
+import ru.profapp.RanobeReader.Common.ThemeUtils;
 import ru.profapp.RanobeReader.CustomElements.ObservableWebView;
 import ru.profapp.RanobeReader.Helpers.MyLog;
 import ru.profapp.RanobeReader.Helpers.RanobeKeeper;
@@ -52,7 +56,7 @@ public class ChapterTextActivity extends AppCompatActivity {
     private ObservableWebView mWebView;
     private Context mContext;
     private Integer mIndex;
-    private Integer mScrollY;
+    private float mProgress;
     private Integer mChapterCount;
     private List<Chapter> mChapterList;
     private SharedPreferences sPref;
@@ -74,22 +78,46 @@ public class ChapterTextActivity extends AppCompatActivity {
             case R.id.navigation_bookmark:
                 set_bookmark();
                 return true;
+            case R.id.navigation_day_night:
+                set_web_colors();
+                return true;
 
         }
 
         return false;
     };
-
     private ProgressBar progressUrl;
+
+    private void set_web_colors() {
+
+        SharedPreferences settingPref = PreferenceManager.getDefaultSharedPreferences(
+                getApplicationContext());
+        boolean oldColor = settingPref.getBoolean(
+                getResources().getString(R.string.pref_general_app_theme), false);
+        settingPref.edit().putBoolean(getResources().getString(R.string.pref_general_app_theme),
+                !oldColor).commit();
+        ThemeUtils.setTheme(!oldColor);
+        ThemeUtils.onActivityCreateSetTheme();
+        this.recreate();
+
+    }
 
     private void set_bookmark() {
 
         sChapterPref = mContext.getSharedPreferences(CleanString(mCurrentChapter.getRanobeUrl()),
                 MODE_PRIVATE);
 
-        sChapterPref.edit().putInt(Chapter_Position, mWebView.getScrollY()).commit();
+
+        sChapterPref.edit().putFloat(Chapter_Position, this.calculateProgression()).commit();
         sChapterPref.edit().putString(Chapter_Url, mCurrentChapter.getUrl()).commit();
         Toast.makeText(mContext, getString(R.string.bookmark_saved), Toast.LENGTH_SHORT).show();
+    }
+
+    private float calculateProgression() {
+        float positionTopView = mWebView.getTop();
+        float contentHeight = mWebView.getContentHeight();
+        float currentScrollPosition = mWebView.getScrollY();
+        return (currentScrollPosition - positionTopView) / contentHeight;
     }
 
     @Override
@@ -99,8 +127,16 @@ public class ChapterTextActivity extends AppCompatActivity {
         setupActionBar();
         setContentView(R.layout.activity_chapter_text);
 
+        if (savedInstanceState != null) {
+            mIndex = savedInstanceState.getInt("ChapterIndex",
+                    getIntent().getIntExtra("ChapterIndex", 0));
+            mProgress = savedInstanceState.getFloat("Progress", -1);
+        } else {
+            mIndex = getIntent().getIntExtra("ChapterIndex", 0);
+            mProgress = getIntent().getFloatExtra("Progress", -1);
+        }
+
         mContext = ChapterTextActivity.this;
-        mIndex = getIntent().getIntExtra("ChapterIndex", 0);
 
         Ranobe currentRanobe = RanobeKeeper.getInstance().getRanobe();
         mChapterList = currentRanobe.getChapterList();
@@ -109,11 +145,8 @@ public class ChapterTextActivity extends AppCompatActivity {
 
         if (currentRanobe.getReversed()) {
             Collections.reverse(mChapterList);
-            mIndex=mChapterCount-mIndex-1;
+            mIndex = mChapterCount - mIndex - 1;
         }
-
-
-
 
         progressUrl = findViewById(R.id.progressBar2);
 
@@ -121,30 +154,40 @@ public class ChapterTextActivity extends AppCompatActivity {
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                setTitle(mCurrentChapter.getTitle());
                 progressUrl.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
-                setTitle(mCurrentChapter.getTitle());
+
                 final WebView newView = view;
 
                 newView.postDelayed(new Runnable() {
                     public void run() {
                         if (newView.getProgress() == 100) {
                             newView.postDelayed(() -> {
-                                if (mScrollY == null) {
-                                    mScrollY = 0;
+
+                                int mScrollY = 0;
+                                if (mProgress > -1) {
+                                    float webviewsize =
+                                            newView.getContentHeight() - newView.getTop();
+                                    float positionInWV = webviewsize * mProgress;
+                                    mScrollY = Math.round(newView.getTop() + positionInWV);
+                                    mProgress = -1;
                                 }
+
                                 newView.scrollTo(0, mScrollY);
-                            }, 100);
+
+                            }, 300);
                         } else {
                             newView.post(this);
                         }
                     }
-                }, 100);
+                }, 300);
 
                 progressUrl.setVisibility(View.GONE);
+                super.onPageFinished(view, url);
             }
 
         });
@@ -154,9 +197,23 @@ public class ChapterTextActivity extends AppCompatActivity {
                     CleanString(mCurrentChapter.getRanobeUrl()),
                     MODE_PRIVATE);
             if (sChapterPref != null) {
-                mScrollY = sChapterPref.getInt(Chapter_Position, 0);
+
+                for (Map.Entry<String, ?> key : sChapterPref.getAll().entrySet()) {
+                    if (key.getKey().equals(Chapter_Position)) {
+                        Object result = key.getValue();
+
+                        if (result instanceof Integer) {
+                            mProgress = ((Integer) result).floatValue();
+                        } else if (result instanceof Float) {
+                            mProgress = (Float) result;
+                        }
+
+                        break;
+                    }
+                }
+
             } else {
-                mScrollY = 0;
+                mProgress = -1;
             }
         }
 
@@ -267,6 +324,10 @@ public class ChapterTextActivity extends AppCompatActivity {
             if (readyGson.getStatus() == 200) {
 
                 mCurrentChapter.UpdateChapter(readyGson.getResult(), mContext, isButton);
+                if(readyGson.getResult().getPart().getPayment() && mCurrentChapter.getText().equals("")){
+                    mCurrentChapter.setText("Даннная страница находится на платной подписке");
+                    return false;
+                }
                 return true;
             } else {
                 mCurrentChapter.setText(readyGson.getMessage());
@@ -365,6 +426,27 @@ public class ChapterTextActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        // Checks the orientation of the screen
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        // Make sure to call the super method so that the states of our views are saved
+        super.onSaveInstanceState(outState);
+        // Save our own state now
+        outState.putInt("ChapterIndex", mIndex);
+        outState.putFloat("Progress", calculateProgression());
     }
 
 }

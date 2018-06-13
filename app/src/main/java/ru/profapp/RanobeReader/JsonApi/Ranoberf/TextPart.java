@@ -29,6 +29,9 @@ public class TextPart {
     @SerializedName("updatedAt")
     @Expose
     private Long updatedAt;
+    @SerializedName("payment")
+    @Expose
+    private Boolean payment;
 
     public Integer getId() {
         return id;
@@ -94,4 +97,11 @@ public class TextPart {
         this.updatedAt = updatedAt;
     }
 
+    public Boolean getPayment() {
+        return payment;
+    }
+
+    public void setPayment(Boolean payment) {
+        this.payment = payment;
+    }
 }

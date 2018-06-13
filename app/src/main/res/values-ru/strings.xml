@@ -35,6 +35,7 @@
 
     <string name="login_failed">Ошибка входа…</string>
     <string name="load_ranobes">Загрузка избранных ранобэ</string>
+    <string name="load_chapters">Загрузка глав</string>
 
     <string name="load_please_wait">Пожалуйста подождите завершения загрузки</string>
     <string name="enter_user_pass">Пожалуйста введите логин и пароль</string>
@@ -75,4 +76,7 @@
     <string name="sort">Сортировка</string>
     <string name="task_finished">Загрузка завершена</string>
     <string name="add_to_favorite">Добавить в избранное</string>
+    <string name="app.email">admin@profapp.ru</string>
+    <string name="day_night">Day/Night</string>
+    <string name="data">Данные</string>
 </resources>
