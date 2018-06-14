@@ -79,4 +79,5 @@
     <string name="app.email">admin@profapp.ru</string>
     <string name="day_night">Day/Night</string>
     <string name="data">Данные</string>
+    <string name="not_exist">Глава отсутствет</string>
 </resources>

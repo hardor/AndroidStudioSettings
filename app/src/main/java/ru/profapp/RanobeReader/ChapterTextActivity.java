@@ -59,10 +59,8 @@ public class ChapterTextActivity extends AppCompatActivity {
     private float mProgress;
     private Integer mChapterCount;
     private List<Chapter> mChapterList;
-    private SharedPreferences sPref;
-    private SharedPreferences sChapterPref;
-    private BottomNavigationItemView nextMenu;
-    private BottomNavigationItemView prevMenu;
+    private SharedPreferences sPref, sChapterPref;
+    private BottomNavigationItemView nextMenu, prevMenu;
     private final BottomNavigationView.OnNavigationItemSelectedListener
             mOnNavigationItemSelectedListener
             = item -> {
@@ -74,12 +72,6 @@ public class ChapterTextActivity extends AppCompatActivity {
                 return true;
             case R.id.navigation_next:
                 OnClicked(-1);
-                return true;
-            case R.id.navigation_bookmark:
-                set_bookmark();
-                return true;
-            case R.id.navigation_day_night:
-                set_web_colors();
                 return true;
 
         }
@@ -106,7 +98,6 @@ public class ChapterTextActivity extends AppCompatActivity {
 
         sChapterPref = mContext.getSharedPreferences(CleanString(mCurrentChapter.getRanobeUrl()),
                 MODE_PRIVATE);
-
 
         sChapterPref.edit().putFloat(Chapter_Position, this.calculateProgression()).commit();
         sChapterPref.edit().putString(Chapter_Url, mCurrentChapter.getUrl()).commit();
@@ -261,7 +252,8 @@ public class ChapterTextActivity extends AppCompatActivity {
                 + "\"";
 
         String summary =
-                "<html><body " + style + ">" + mCurrentChapter.getText() + "</body></html>";
+                "<html><body " + style + ">" + "<b>" + mCurrentChapter.getTitle() + "</b>" + "</br>"
+                        + mCurrentChapter.getText() + "</body></html>";
 
         mWebView.loadDataWithBaseURL(null, summary, "text/html", "UTF-8", null);
 
@@ -269,20 +261,32 @@ public class ChapterTextActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == android.R.id.home) {
-            onBackPressed();
-            return true;
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
+            case R.id.action_settings:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.navigation_bookmark:
+                set_bookmark();
+                break;
+            case R.id.navigation_day_night:
+                set_web_colors();
+                break;
+
+            case R.id.navigation_prev2:
+                OnClicked(+1);
+                break;
+            case R.id.navigation_next2:
+                OnClicked(-1);
+                break;
         }
 
-        if (id == R.id.action_settings) {
-            Intent intent = new Intent(this, SettingsActivity.class);
-            startActivity(intent);
+        return true;
 
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     private void setupActionBar() {
@@ -324,7 +328,8 @@ public class ChapterTextActivity extends AppCompatActivity {
             if (readyGson.getStatus() == 200) {
 
                 mCurrentChapter.UpdateChapter(readyGson.getResult(), mContext, isButton);
-                if(readyGson.getResult().getPart().getPayment() && mCurrentChapter.getText().equals("")){
+                if (readyGson.getResult().getPart().getPayment()
+                        && mCurrentChapter.getText().equals("")) {
                     mCurrentChapter.setText("Даннная страница находится на платной подписке");
                     return false;
                 }
@@ -335,8 +340,7 @@ public class ChapterTextActivity extends AppCompatActivity {
             }
         } catch (JsonParseException e) {
             MyLog.SendError(StringResources.LogType.WARN, ChapterTextActivity.class.toString(),
-                    response,
-                    e);
+                    mCurrentChapter.getUrl(), e);
             return false;
         }
         return false;
@@ -362,7 +366,7 @@ public class ChapterTextActivity extends AppCompatActivity {
             }
         } catch (Exception e) {
             MyLog.SendError(StringResources.LogType.WARN, ChapterTextActivity.class.toString(),
-                    response,
+                    mCurrentChapter.getUrl(),
                     e);
 
             try {
@@ -379,7 +383,7 @@ public class ChapterTextActivity extends AppCompatActivity {
             } catch (Exception e2) {
 
                 MyLog.SendError(StringResources.LogType.WARN, ChapterTextActivity.class.toString(),
-                        response,
+                        mCurrentChapter.getUrl(),
                         e2);
                 return false;
             }
@@ -393,7 +397,6 @@ public class ChapterTextActivity extends AppCompatActivity {
         mIndex += i;
         if (mIndex >= 0 && mIndex <= mChapterCount - 1) {
             try {
-
                 Boolean loadResult = GetChapterText(mChapterList.get(mIndex), false);
                 initWebView(loadResult);
             } catch (ArrayIndexOutOfBoundsException e) {
@@ -403,6 +406,7 @@ public class ChapterTextActivity extends AppCompatActivity {
 
             }
         } else {
+            Toast.makeText(mContext, R.string.not_exist, Toast.LENGTH_SHORT).show();
             mIndex -= i;
         }
 
@@ -424,20 +428,13 @@ public class ChapterTextActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.chaptermain, menu);
         return true;
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-
-        // Checks the orientation of the screen
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
-        }
     }
 
     @Override

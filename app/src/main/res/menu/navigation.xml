@@ -2,25 +2,17 @@
 <menu
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+
     <item
         android:id="@+id/navigation_prev"
         android:icon="@android:drawable/ic_media_previous"
         android:title="@string/previous"
-        />
-    <item
-        android:id="@+id/navigation_day_night"
-        android:icon="@drawable/ic_settings_brightness_black_24dp"
-        android:title="@string/day_night"/>
-
-    <item
-        android:id="@+id/navigation_bookmark"
-        android:icon="@drawable/ic_bookmark_border_black_24dp"
-        android:title="@string/action_bookmark"/>
+    />
 
     <item
         android:id="@+id/navigation_next"
         android:icon="@android:drawable/ic_media_next"
         android:title="@string/next"
-     />
+    />
 
 </menu>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:title="@string/action_settings"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/navigation_day_night"
+        android:icon="@drawable/ic_settings_brightness_black_24dp"
+        android:title="@string/day_night"
+        app:showAsAction="ifRoom"
+    />
+
+    <item
+        android:id="@+id/navigation_bookmark"
+        android:icon="@drawable/ic_bookmark_border_black_24dp"
+        android:title="@string/action_bookmark"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/navigation_prev2"
+        android:icon="@android:drawable/ic_media_previous"
+        android:title="@string/previous"
+        app:showAsAction="ifRoom"
+    />
+
+    <item
+        android:id="@+id/navigation_next2"
+        android:icon="@android:drawable/ic_media_next"
+        android:title="@string/next"
+        app:showAsAction="ifRoom"
+    />
+</menu>

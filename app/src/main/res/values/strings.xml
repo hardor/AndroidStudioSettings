@@ -127,5 +127,6 @@
     <string name="app.email">admin@profapp.ru</string>
     <string name="data">Data</string>
     <string name="day_night">Day/Night</string>
+    <string name="not_exist">Not exist</string>
 
 </resources>

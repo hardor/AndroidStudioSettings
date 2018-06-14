@@ -256,7 +256,7 @@ public class JsonRanobeRfApi {
             String result = html.body().html();
             return StringHelper.getInstance().cleanJson(result);
         } catch (InterruptedException | NullPointerException | ExecutionException e) {
-            MyLog.SendError(StringResources.LogType.WARN, JsonRulateApi.class.toString(), "", e);
+          //  MyLog.SendError(StringResources.LogType.WARN, JsonRulateApi.class.toString(), params[0], e);
         }
         return "";
     }

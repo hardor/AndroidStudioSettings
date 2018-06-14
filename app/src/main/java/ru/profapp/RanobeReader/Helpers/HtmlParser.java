@@ -79,7 +79,7 @@ public class HtmlParser extends AsyncTask<String, Void, Document> {
 
 
         } catch (IOException e) {
-            MyLog.SendError(StringResources.LogType.WARN, HtmlParser.class.toString(), "", e);
+           // MyLog.SendError(StringResources.LogType.WARN, HtmlParser.class.toString(), "", e);
             return null;
         }
 

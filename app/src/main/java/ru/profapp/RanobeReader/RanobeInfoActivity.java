@@ -149,8 +149,9 @@ public class RanobeInfoActivity extends AppCompatActivity {
         CardView descriptionCard = findViewById(R.id.ranobe_description_card);
 
         mCurrentRanobe = RanobeKeeper.getInstance().getRanobe();
-        getSupportActionBar().setTitle(mCurrentRanobe.getTitle());
-
+        try {
+            getSupportActionBar().setTitle(mCurrentRanobe.getTitle());
+        }catch (Exception ignore){}
         preferences = mContext.getSharedPreferences(
                 StringResources.Rulate_Login_Pref, 0);
 

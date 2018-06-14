@@ -80,5 +80,8 @@ public class MyLog {
 
         }
         Crashlytics.logException(exception);
+        if(Message != null && !Message.equals("")){
+            Crashlytics.log(Message);
+        }
     }
 }

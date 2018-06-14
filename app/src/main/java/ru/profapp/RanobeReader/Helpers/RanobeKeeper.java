@@ -42,6 +42,8 @@ public class RanobeKeeper {
     }
 
     public Ranobe getRanobe() {
+        if(ranobe == null)
+            return new Ranobe();
         return ranobe;
     }
 
