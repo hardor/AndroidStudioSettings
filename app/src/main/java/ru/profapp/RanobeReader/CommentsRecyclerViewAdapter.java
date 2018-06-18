@@ -41,8 +41,8 @@ public class CommentsRecyclerViewAdapter extends
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         holder.mBodyTextView.setText(holder.mItem.getBody());
-        holder.mDateView.setText(String.format("%s %s",
-                DateFormat.getDateFormat(mContext).format(new Date((long)holder.mItem.getTime()*1000)), holder.mItem.getAuthor()));
+        holder.mDateView.setText(String.format("%s %s", holder.mItem.getAuthor(),
+                DateFormat.getDateFormat(mContext).format(new Date((long)holder.mItem.getTime()*1000))));
 
         Glide.with(mContext)
                 .load(mValues.get(position).getAvatar()).apply(

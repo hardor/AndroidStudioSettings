@@ -47,6 +47,8 @@ public class MainActivity extends AppCompatActivity
                     "Uncaught exception", ex);
     private AdView adView;
 
+    private String currentFragment, currentTitle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         initSettingPreference();
@@ -60,17 +62,19 @@ public class MainActivity extends AppCompatActivity
 
         Thread.setDefaultUncaughtExceptionHandler(ExceptionHandler);
         setContentView(R.layout.activity_main);
+        if (!BuildConfig.PAID_VERSION) {
 
-        MobileAds.initialize(this, getString(R.string.app_admob_id));
-        adView = findViewById(R.id.adView);
+            MobileAds.initialize(this, getString(R.string.app_admob_id));
+            adView = findViewById(R.id.adView);
 
-        AdRequest.Builder adRequest = new AdRequest.Builder();
+            AdRequest.Builder adRequest = new AdRequest.Builder();
 
-        if (BuildConfig.DEBUG) {
-            adRequest.addTestDevice("sdfsdf");
+            if (BuildConfig.DEBUG) {
+                adRequest.addTestDevice("sdfsdf");
+            }
+
+            adView.loadAd(adRequest.build());
         }
-
-        adView.loadAd(adRequest.build());
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -78,10 +82,22 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.mainFrame,
-                RanobeRecyclerFragment.newInstance(RanobeConstans.FragmentType.Favorite.name()));
+        currentFragment = RanobeConstans.FragmentType.Favorite.name();
+        currentTitle = getResources().getText(R.string.favorite).toString();
+        if (savedInstanceState != null) {
+            currentFragment = savedInstanceState.getString("Fragment",
+                    RanobeConstans.FragmentType.Favorite.name());
+            currentTitle = savedInstanceState.getString("Title",
+                    getResources().getText(R.string.favorite).toString());
+        }
+        if (currentFragment.equals(RanobeConstans.FragmentType.Search.name())) {
+            ft.replace(R.id.mainFrame, SearchFragment.newInstance());
+        } else {
+            ft.replace(R.id.mainFrame, RanobeRecyclerFragment.newInstance(currentFragment));
+        }
+
         ft.commit();
-        setTitle(getResources().getText(R.string.favorite));
+        setTitle(currentTitle);
 
         FloatingActionButton floatingActionButton = findViewById(R.id.fab);
         floatingActionButton.setOnClickListener(view -> {
@@ -180,21 +196,27 @@ public class MainActivity extends AppCompatActivity
 
         switch (id) {
             case R.id.nav_favorite: {
+                currentFragment = RanobeConstans.FragmentType.Favorite.name();
                 fragment = RanobeRecyclerFragment.newInstance(
                         RanobeConstans.FragmentType.Favorite.name());
                 setTitle(getResources().getText(R.string.favorite));
+                currentTitle=getResources().getText(R.string.favorite).toString();
                 break;
             }
             case R.id.nav_rulate: {
+                currentFragment = RanobeConstans.FragmentType.Rulate.name();
                 fragment = RanobeRecyclerFragment.newInstance(
                         RanobeConstans.FragmentType.Rulate.name());
                 setTitle(getResources().getText(R.string.tl_rulate_name));
+                currentTitle=getResources().getText(R.string.tl_rulate_name).toString();
                 break;
             }
             case R.id.nav_ranoberf: {
+                currentFragment = RanobeConstans.FragmentType.Ranoberf.name();
                 fragment = RanobeRecyclerFragment.newInstance(
                         RanobeConstans.FragmentType.Ranoberf.name());
                 setTitle(getResources().getText(R.string.ranobe_rf));
+                currentTitle=getResources().getText(R.string.ranobe_rf).toString();
                 break;
             }
             case R.id.nav_manage: {
@@ -203,23 +225,30 @@ public class MainActivity extends AppCompatActivity
                 break;
             }
             case R.id.nav_search: {
+                currentFragment = RanobeConstans.FragmentType.Search.name();
                 fragment = SearchFragment.newInstance();
                 setTitle(getResources().getText(R.string.search));
+                currentTitle=getResources().getText(R.string.search).toString();
                 break;
             }
             case R.id.nav_chapters: {
+                currentFragment = RanobeConstans.FragmentType.History.name();
                 //  fragment = SavedChaptersFragment.newInstance();
                 fragment = RanobeRecyclerFragment.newInstance(
                         RanobeConstans.FragmentType.History.name());
                 setTitle(getResources().getText(R.string.saved_chapters));
+                currentTitle=getResources().getText(R.string.saved_chapters).toString();
                 break;
             }
             case R.id.nav_send: {
-                final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
+                final String appPackageName =
+                        getPackageName(); // getPackageName() from Context or Activity object
                 try {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                    startActivity(new Intent(Intent.ACTION_VIEW,
+                            Uri.parse("market://details?id=" + appPackageName)));
                 } catch (android.content.ActivityNotFoundException anfe) {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(
+                            "https://play.google.com/store/apps/details?id=" + appPackageName)));
                 }
 
 //                Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
@@ -227,25 +256,25 @@ public class MainActivity extends AppCompatActivity
 //                startActivity(Intent.createChooser(intent, "Choose an Email client :"));
                 break;
             }
-            case R.id.nav_info: {
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle(R.string.information)
-                        .setMessage(getString(R.string.AboutVersion))
-                        .setIcon(R.drawable.ic_info_black_24dp)
-                        .setCancelable(true)
-                        .setPositiveButton("OK",
-                                (dialog, id1) -> dialog.cancel());
-
-
-                AlertDialog alert = builder.create();
-                alert.show();
-                break;
-            }
+//            case R.id.nav_info: {
+//                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+//                builder.setTitle(R.string.information)
+//                        .setMessage(getString(R.string.AboutVersion))
+//                        .setIcon(R.drawable.ic_info_black_24dp)
+//                        .setCancelable(true)
+//                        .setPositiveButton("OK",
+//                                (dialog, id1) -> dialog.cancel());
+//
+//                AlertDialog alert = builder.create();
+//                alert.show();
+//                break;
+//            }
         }
 
         if (fragment != null) {
-            adView.loadAd(new AdRequest.Builder().build());
-
+            if (!BuildConfig.PAID_VERSION) {
+                adView.loadAd(new AdRequest.Builder().build());
+            }
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.mainFrame, fragment);
             ft.commit();
@@ -254,6 +283,17 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        // Make sure to call the super method so that the states of our views are saved
+        super.onSaveInstanceState(outState);
+        // Save our own state now
+
+        outState.putString("Fragment", currentFragment);
+        outState.putString("Title", currentTitle);
+
     }
 
 }

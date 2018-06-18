@@ -432,10 +432,6 @@ public class ChapterTextActivity extends AppCompatActivity {
         return true;
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {

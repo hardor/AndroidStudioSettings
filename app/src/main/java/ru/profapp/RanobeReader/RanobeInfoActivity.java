@@ -3,6 +3,7 @@ package ru.profapp.RanobeReader;
 import static ru.profapp.RanobeReader.Common.StringResources.Chapter_Url;
 import static ru.profapp.RanobeReader.Common.StringResources.CleanString;
 import static ru.profapp.RanobeReader.Common.StringResources.is_readed_Pref;
+import static ru.profapp.RanobeReader.Models.Ranobe.empty;
 
 import android.content.Context;
 import android.content.Intent;
@@ -81,16 +82,19 @@ public class RanobeInfoActivity extends AppCompatActivity {
 
         Fabric.with(this, crashlyticsKit);
         setContentView(R.layout.activity_ranobe_info);
-        MobileAds.initialize(this, getString(R.string.app_admob_id));
+        if (!BuildConfig.PAID_VERSION) {
+            MobileAds.initialize(this, getString(R.string.app_admob_id));
+            AdView adView = findViewById(R.id.adView);
+            AdRequest.Builder adRequest = new AdRequest.Builder();
 
-        AdView adView = findViewById(R.id.adView);
-        AdRequest.Builder adRequest = new AdRequest.Builder();
+            if (BuildConfig.DEBUG) {
+                adRequest.addTestDevice("sdfsdf");
+            }
 
-        if (BuildConfig.DEBUG) {
-            adRequest.addTestDevice("sdfsdf");
+            adView.loadAd(adRequest.build());
+
         }
 
-        adView.loadAd(adRequest.build());
         mContext = RanobeInfoActivity.this;
         Button loadButton = findViewById(R.id.loadButton);
         ImageButton sortButton = findViewById(R.id.sortButton);
@@ -151,7 +155,8 @@ public class RanobeInfoActivity extends AppCompatActivity {
         mCurrentRanobe = RanobeKeeper.getInstance().getRanobe();
         try {
             getSupportActionBar().setTitle(mCurrentRanobe.getTitle());
-        }catch (Exception ignore){}
+        } catch (Exception ignore) {
+        }
         preferences = mContext.getSharedPreferences(
                 StringResources.Rulate_Login_Pref, 0);
 
@@ -183,9 +188,14 @@ public class RanobeInfoActivity extends AppCompatActivity {
                 .apply(myOptions)
                 .into(imageView);
 
-        aboutTextView.setText(
-                String.format("%s\n%s", mCurrentRanobe.getDescription(),
-                        mCurrentRanobe.getGenres()));
+        String aboutText = String.format("%s / %s \n\n%s", mCurrentRanobe.getTitle(),
+                mCurrentRanobe.getEngTitle(), mCurrentRanobe.getDescription());
+
+        if (!empty(mCurrentRanobe.getGenres())) {
+            aboutText = aboutText + "\n\n" + mCurrentRanobe.getGenres();
+        }
+
+        aboutTextView.setText(aboutText);
         additionalInfoTextView.setText(mCurrentRanobe.getAdditionalInfo());
 
         sPref = mContext.getSharedPreferences(

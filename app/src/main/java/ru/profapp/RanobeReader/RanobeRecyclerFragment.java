@@ -195,7 +195,6 @@ public class RanobeRecyclerFragment extends Fragment {
                     }
                 }
 
-
             }
         }
 
@@ -233,7 +232,13 @@ public class RanobeRecyclerFragment extends Fragment {
                 int step = 0;
 
                 List<Ranobe> newRanobeList = new ArrayList<>();
-
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(
+                            () ->
+                                    progressDialog.setTitle(
+                                            getString(R.string.Load_local_bookmarks))
+                    );
+                }
                 List<Ranobe> favRanobeList = DatabaseDao.getInstance(
                         mContext).getRanobeDao().GetFavoriteBySite(StringResources.Rulate_Site);
                 if (favRanobeList.size() > 0) {
@@ -246,7 +251,8 @@ public class RanobeRecyclerFragment extends Fragment {
                 }
 
                 favRanobeList = DatabaseDao.getInstance(
-                        mContext).getRanobeDao().GetFavoriteBySite(StringResources.RanobeRf_Site);
+                        mContext).getRanobeDao().GetFavoriteBySite(
+                        StringResources.RanobeRf_Site);
                 if (favRanobeList.size() > 0) {
                     Ranobe TitleRanobe = new Ranobe();
                     TitleRanobe.setTitle(getString(R.string.ranobe_rf));
@@ -255,7 +261,11 @@ public class RanobeRecyclerFragment extends Fragment {
                     newRanobeList.addAll(favRanobeList);
                     step--;
                 }
-
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(
+                            () ->
+                                    progressDialog.setTitle(getString(R.string.Load_from_Rulate)));
+                }
                 List<Ranobe> rulateWebList = getRulateWebFavorite();
                 if (rulateWebList.size() > 0) {
                     Ranobe TitleRanobe = new Ranobe();
@@ -265,7 +275,12 @@ public class RanobeRecyclerFragment extends Fragment {
                     step--;
                 }
                 newRanobeList.addAll(rulateWebList);
-
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(
+                            () ->
+                                    progressDialog.setTitle(
+                                            getString(R.string.Load_from_RanobeRf)));
+                }
                 List<Ranobe> ranoberfWebList = getRanoberfWebFavorite();
                 if (ranoberfWebList.size() > 0) {
                     Ranobe TitleRanobe = new Ranobe();
@@ -276,6 +291,12 @@ public class RanobeRecyclerFragment extends Fragment {
                 }
                 newRanobeList.addAll(ranoberfWebList);
 
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(
+                            () ->
+                                    progressDialog.setTitle(getString(R.string.Update_ranobe_info))
+                    );
+                }
                 progressDialog.setMax(newRanobeList.size() + step);
 
                 for (Ranobe ranobe : newRanobeList) {
@@ -292,10 +313,13 @@ public class RanobeRecyclerFragment extends Fragment {
                             ranobe.updateRanobe(mContext);
                             AsyncTask.execute(() -> {
 
-                                if (!ranobe.getFavoritedInWeb() && !ranobe.getRanobeSite().equals(
+                                if (!ranobe.getFavoritedInWeb()
+                                        && !ranobe.getRanobeSite().equals(
                                         StringResources.Title_Site)) {
-                                    DatabaseDao.getInstance(mContext).getRanobeDao().update(ranobe);
-                                    DatabaseDao.getInstance(mContext).getChapterDao().insertAll(
+                                    DatabaseDao.getInstance(
+                                            mContext).getRanobeDao().update(ranobe);
+                                    DatabaseDao.getInstance(
+                                            mContext).getChapterDao().insertAll(
                                             ranobe.getChapterList().toArray(
                                                     new Chapter[0]));
 
@@ -303,7 +327,8 @@ public class RanobeRecyclerFragment extends Fragment {
 
                             });
                         } catch (NullPointerException e) {
-                            MyLog.SendError(StringResources.LogType.WARN, "RanobeRecyclerFragment",
+                            MyLog.SendError(StringResources.LogType.WARN,
+                                    "RanobeRecyclerFragment",
                                     "", e);
                             error = true;
                             getActivity().runOnUiThread(
@@ -398,7 +423,8 @@ public class RanobeRecyclerFragment extends Fragment {
                 for (Ranobe ranobe : newRanobeList) {
                     if (ranobe.getRanobeSite().equals(StringResources.RanobeRf_Site)) {
                         ranobeRfList.add(ranobe);
-                    } else if (ranobe.getRanobeSite().equals(StringResources.Rulate_Site)) {
+                    } else if (ranobe.getRanobeSite().equals(
+                            StringResources.Rulate_Site)) {
                         rulateList.add(ranobe);
                     }
                 }
@@ -416,7 +442,6 @@ public class RanobeRecyclerFragment extends Fragment {
                     ranobeList.add(TitleRanobe);
                     ranobeList.addAll(rulateList);
                 }
-
 
                 Objects.requireNonNull(getActivity()).runOnUiThread(
                         () -> onItemsLoadComplete(remove));
@@ -456,18 +481,21 @@ public class RanobeRecyclerFragment extends Fragment {
 
                         JSONObject value = jsonArray.getJSONObject(i);
                         Ranobe ranobe = new Ranobe();
-                        ranobe.UpdateRanobe(value, RanobeConstans.JsonObjectFrom.RulateFavorite);
+                        ranobe.UpdateRanobe(value,
+                                RanobeConstans.JsonObjectFrom.RulateFavorite);
 
                         if (!loadFromDatabase) {
                             ranobe.updateRanobe(mContext);
                             ranobe.setFavoritedInWeb(true);
-                            DatabaseDao.getInstance(mContext).getRanobeDao().insert(ranobe);
+                            DatabaseDao.getInstance(mContext).getRanobeDao().insert(
+                                    ranobe);
                             DatabaseDao.getInstance(mContext).getChapterDao().insertAll(
                                     ranobe.getChapterList().toArray(
                                             new Chapter[0]));
                         } else {
                             Ranobe dbRanobe = DatabaseDao.getInstance(
-                                    mContext).getRanobeDao().getRanobeByUrl(ranobe.getUrl());
+                                    mContext).getRanobeDao().getRanobeByUrl(
+                                    ranobe.getUrl());
                             if (dbRanobe != null) {
                                 ranobe = dbRanobe;
                             }
@@ -479,7 +507,8 @@ public class RanobeRecyclerFragment extends Fragment {
 
                 }
             } catch (JSONException | NullPointerException e) {
-                MyLog.SendError(StringResources.LogType.WARN, "RanobeRecyclerFragment", "", e);
+                MyLog.SendError(StringResources.LogType.WARN, "RanobeRecyclerFragment",
+                        "", e);
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(this::onItemsLoadFailed);
                 }
@@ -516,13 +545,15 @@ public class RanobeRecyclerFragment extends Fragment {
                         if (!loadFromDatabase) {
                             ranobe.updateRanobe(mContext);
                             ranobe.setFavoritedInWeb(true);
-                            DatabaseDao.getInstance(mContext).getRanobeDao().insert(ranobe);
+                            DatabaseDao.getInstance(mContext).getRanobeDao().insert(
+                                    ranobe);
                             DatabaseDao.getInstance(mContext).getChapterDao().insertAll(
                                     ranobe.getChapterList().toArray(
                                             new Chapter[0]));
                         } else {
                             Ranobe dbRanobe = DatabaseDao.getInstance(
-                                    mContext).getRanobeDao().getRanobeByUrl(ranobe.getUrl());
+                                    mContext).getRanobeDao().getRanobeByUrl(
+                                    ranobe.getUrl());
                             if (dbRanobe != null) {
                                 ranobe = dbRanobe;
                             }
@@ -534,7 +565,8 @@ public class RanobeRecyclerFragment extends Fragment {
 
                 }
             } catch (JSONException | NullPointerException e) {
-                MyLog.SendError(StringResources.LogType.WARN, "RanobeRecyclerFragment", "", e);
+                MyLog.SendError(StringResources.LogType.WARN, "RanobeRecyclerFragment",
+                        "", e);
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(this::onItemsLoadFailed);
                 }
@@ -553,7 +585,8 @@ public class RanobeRecyclerFragment extends Fragment {
                         String.valueOf(page + 1));
 
                 try {
-                    RulateReadyGson readyGson = gson.fromJson(response, RulateReadyGson.class);
+                    RulateReadyGson readyGson = gson.fromJson(response,
+                            RulateReadyGson.class);
                     if (readyGson.getStatus().equals("success")) {
 
                         for (RulateBook book : readyGson.getBooks()) {
@@ -563,12 +596,15 @@ public class RanobeRecyclerFragment extends Fragment {
                         }
                     }
 
-                    Objects.requireNonNull(getActivity()).runOnUiThread(() -> onItemsLoadComplete(remove));
+                    Objects.requireNonNull(getActivity()).runOnUiThread(
+                            () -> onItemsLoadComplete(remove));
 
                     page++;
                 } catch (JsonParseException | NullPointerException e) {
-                    MyLog.SendError(StringResources.LogType.WARN, "RanobeRecyclerFragment", "", e);
-                    Objects.requireNonNull(getActivity()).runOnUiThread(() -> onItemsLoadFailed());
+                    MyLog.SendError(StringResources.LogType.WARN,
+                            "RanobeRecyclerFragment", "", e);
+                    Objects.requireNonNull(getActivity()).runOnUiThread(
+                            () -> onItemsLoadFailed());
                 }
 
             }
@@ -578,7 +614,6 @@ public class RanobeRecyclerFragment extends Fragment {
 
     }
 
-
     private void ranoberfLoadRanobe(final boolean remove) {
 
         Thread t = new Thread() {
@@ -586,7 +621,8 @@ public class RanobeRecyclerFragment extends Fragment {
             public void run() {
                 String response = JsonRanobeRfApi.getInstance().GetReadyBooks(page);
                 try {
-                    RfGetReadyGson readyGson = gson.fromJson(response, RfGetReadyGson.class);
+                    RfGetReadyGson readyGson = gson.fromJson(response,
+                            RfGetReadyGson.class);
 
                     if (readyGson.getStatus() == 200) {
                         JsonRanobeRfApi.getInstance().setSequence(readyGson.getResult()
@@ -600,13 +636,15 @@ public class RanobeRecyclerFragment extends Fragment {
                         }
                     }
 
-                    Objects.requireNonNull(getActivity()).runOnUiThread(() -> onItemsLoadComplete(remove));
+                    Objects.requireNonNull(getActivity()).runOnUiThread(
+                            () -> onItemsLoadComplete(remove));
 
                     page++;
                 } catch (JsonParseException | NullPointerException e) {
                     MyLog.SendError(StringResources.LogType.WARN,
                             RanobeRecyclerFragment.class.toString(), "", e);
-                    Objects.requireNonNull(getActivity()).runOnUiThread(() -> onItemsLoadFailed());
+                    Objects.requireNonNull(getActivity()).runOnUiThread(
+                            () -> onItemsLoadFailed());
 
                 }
 
@@ -638,12 +676,14 @@ public class RanobeRecyclerFragment extends Fragment {
 
                     }
 
-                    Objects.requireNonNull(getActivity()).runOnUiThread(() -> onItemsLoadComplete(remove));
+                    Objects.requireNonNull(getActivity()).runOnUiThread(
+                            () -> onItemsLoadComplete(remove));
 
                 } catch (JSONException | JsonParseException | NullPointerException e) {
                     MyLog.SendError(StringResources.LogType.WARN,
                             RanobeRecyclerFragment.class.toString(), "", e);
-                    Objects.requireNonNull(getActivity()).runOnUiThread(() -> onItemsLoadFailed());
+                    Objects.requireNonNull(getActivity()).runOnUiThread(
+                            () -> onItemsLoadFailed());
 
                 }
             }
@@ -670,7 +710,6 @@ public class RanobeRecyclerFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
-
 
     public interface OnListFragmentInteractionListener {
 

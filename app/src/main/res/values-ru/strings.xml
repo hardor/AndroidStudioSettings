@@ -80,4 +80,8 @@
     <string name="day_night">Day/Night</string>
     <string name="data">Данные</string>
     <string name="not_exist">Глава отсутствет</string>
+    <string name="Load_local_bookmarks">Загрузка локальных закладок</string>
+    <string name="Load_from_Rulate">Загрузка закладок с сайта Rulate</string>
+    <string name="Load_from_RanobeRf">Загрузка закладок с сайта Ранобэ.рф</string>
+    <string name="Update_ranobe_info">Обновление информации о ранобэ</string>
 </resources>

@@ -197,6 +197,7 @@ public class Ranobe {
         Title = empty(Title) ? (book.getName() != null ? book.getName() : Title) : Title;
         Title = empty(Title) ? (book.getTitle() != null ? book.getTitle() : Title) : Title;
 
+        EngTitle = (book.getFullTitle() != null ? book.getFullTitle().replace(getTitle()+ " / ", "") : EngTitle);
         Url = empty(Url) ? (book.getAlias() != null ? book.getAlias() : Url) : Url;
         Url = empty(Url) ? (book.getUrl() != null ? book.getUrl() : Url) : Url;
         if (!Url.contains(StringResources.RanobeRf_Site)) {
@@ -409,7 +410,7 @@ public class Ranobe {
 
     @NonNull
     public String getUrl() {
-        return Url;
+        return Url == null? "" : Url;
     }
 
     public void setUrl(@NonNull String url) {
@@ -431,7 +432,7 @@ public class Ranobe {
     }
 
     public String getEngTitle() {
-        return EngTitle;
+        return EngTitle  == null ? "" : EngTitle;
     }
 
     public void setEngTitle(String engTitle) {

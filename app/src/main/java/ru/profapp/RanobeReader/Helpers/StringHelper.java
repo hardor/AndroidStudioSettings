@@ -31,29 +31,50 @@ public class StringHelper {
                 .replace("\\>", "\\\\>");
 
         // Ранобэ.Рф
-        int a1 = string.indexOf("\"content\":\"");
-        int b1 = 0;
+        String s1 = "\"content\":\"";
+        String s2 = "\",\"payment\"";
+        int a1 = string.indexOf(s1);
+        int a2 = 0;
         if (a1 > 0) {
-            b1 = string.indexOf("\",\"payment\"", a1);
+            a2 = string.indexOf(s2, a1);
         }
-        if (a1 > 0 && b1 > 0) {
-            String midS = string.substring(a1 + "\"content\":\"".length(), b1);
-            midS = midS.replaceAll("([^\\\\])\"", "$1\\\\\"");
-            return string.substring(0, a1) + "\"content\":\"" + midS + string.substring(
-                    b1, string.length());
+        if (a1 > 0 && a2 > 0) {
+            String midS = string.substring(a1 + s1.length(), a2);
+
+            midS = midS.replaceAll("([^\\\\])\"", "$1\\\\\"").replaceAll("([^\\\\])\"", "$1\\\\\"");
+            return string.substring(0, a1) + s1 + midS + string.substring(
+                    a2, string.length());
         }
 
         // Рулейт
-         a1 = string.indexOf("\"text\":\"");
-         b1 = 0;
+
+        //title
+        s1 = "\"title\":\"";
+        s2 = "\",\"text\"";
+        a1 = string.indexOf(s1);
+        a2 = 0;
         if (a1 > 0) {
-            b1 = string.indexOf("\",\"comments\"", a1);
+            a2 = string.indexOf(s2, a1);
         }
-        if (a1 > 0 && b1 > 0) {
-            String midS = string.substring(a1 + "\"text\":\"".length(), b1);
-            midS = midS.replaceAll("([^\\\\])\"", "$1\\\\\"");
-            return string.substring(0, a1) + "\"text\":\"" + midS + string.substring(
-                    b1, string.length());
+        if (a1 > 0 && a2 > 0) {
+            String midS = string.substring(a1 + s1.length(), a2);
+            midS = midS.replaceAll("([^\\\\])\"", "$1\\\\\"").replaceAll("([^\\\\])\"", "$1\\\\\"");
+            return string.substring(0, a1) + s1 + midS + string.substring(
+                    a2, string.length());
+        }
+        //text
+        s1 = "\"text\":\"";
+        s2 = "\",\"comments\"";
+        a1 = string.indexOf(s1);
+        a2 = 0;
+        if (a1 > 0) {
+            a2 = string.indexOf(s2, a1);
+        }
+        if (a1 > 0 && a2 > 0) {
+            String midS = string.substring(a1 + s1.length(), a2);
+            midS = midS.replaceAll("([^\\\\])\"", "$1\\\\\"").replaceAll("([^\\\\])\"", "$1\\\\\"");
+            return string.substring(0, a1) + s1 + midS + string.substring(
+                    a2, string.length());
         }
 
         return string.replaceAll("([^\"][^,\\[{\\\\])\"([^,\\]:}])", "$1\\\\\"$2").replaceAll(

@@ -128,5 +128,13 @@
     <string name="data">Data</string>
     <string name="day_night">Day/Night</string>
     <string name="not_exist">Not exist</string>
+    <string name="Load_local_bookmarks">Load local bookmarks</string>
+    <string name="Load_from_Rulate">Load bookmarks from Rulate site</string>
+    <string name="Load_from_RanobeRf">Load bookmarks from Ранобэ.рф site</string>
+    <string name="Update_ranobe_info">Update ranobes information</string>
+    <string name="sync">Synchronization</string>
+    <string name="save_history">Save history</string>
+    <string name="SaveHistoryButton">SaveHistoryButton</string>
+    <string name="save_history_full">Save information about readed chapters</string>
 
 </resources>

@@ -49,7 +49,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 return true;
             };
 
-    private Context mContext;
 
     private static boolean isXLargeTablet(Context context) {
         return (context.getResources().getConfiguration().screenLayout
@@ -69,7 +68,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
         setupActionBar();
         setTitle(getResources().getText(R.string.action_settings));
-        mContext = getApplicationContext();
+
     }
 
     /**
@@ -172,6 +171,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     public static class RulatePreferenceFragment extends PreferenceFragment {
         @Override
         public void onCreate(Bundle savedInstanceState) {
+
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_rulate);
             Preference prefLogin = findPreference(getString(R.string.rulate_authorization_pref));
