@@ -7,6 +7,7 @@ import static ru.profapp.RanobeReader.Common.RanobeConstans.fragmentBundle;
 import static ru.profapp.RanobeReader.Common.StringResources.is_readed_Pref;
 import static ru.profapp.RanobeReader.Models.Ranobe.empty;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -50,7 +51,7 @@ import ru.profapp.RanobeReader.Models.Ranobe;
 import ru.profapp.RanobeReader.Models.TextChapter;
 
 public class RanobeRecyclerFragment extends Fragment {
-
+    private Activity mActivity;
     private final Gson gson = new GsonBuilder().setLenient().create();
     private final List<Ranobe> ranobeList = new ArrayList<>();
     private ProgressDialog progressDialog;
@@ -76,6 +77,7 @@ public class RanobeRecyclerFragment extends Fragment {
         page = 0;
         loadFromDatabase = true;
     }
+
 
     public static RanobeRecyclerFragment newInstance(String fragmentType) {
         RanobeRecyclerFragment fragment = new RanobeRecyclerFragment();
@@ -216,7 +218,7 @@ public class RanobeRecyclerFragment extends Fragment {
 
     private void favoriteLoadRanobe(final boolean remove) {
 
-        progressDialog = new ProgressDialog(getActivity());
+        progressDialog = new ProgressDialog(mContext);
         progressDialog.setMessage(getResources().getString(R.string.load_please_wait));
         progressDialog.setTitle(getResources().getString(R.string.load_ranobes));
         progressDialog.setCancelable(true);
@@ -236,7 +238,7 @@ public class RanobeRecyclerFragment extends Fragment {
                     getActivity().runOnUiThread(
                             () ->
                                     progressDialog.setTitle(
-                                            getString(R.string.Load_local_bookmarks))
+                                           mContext.getString(R.string.Load_local_bookmarks))
                     );
                 }
                 List<Ranobe> favRanobeList = DatabaseDao.getInstance(
@@ -264,7 +266,7 @@ public class RanobeRecyclerFragment extends Fragment {
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(
                             () ->
-                                    progressDialog.setTitle(getString(R.string.Load_from_Rulate)));
+                                    progressDialog.setTitle( mContext.getString(R.string.Load_from_Rulate)));
                 }
                 List<Ranobe> rulateWebList = getRulateWebFavorite();
                 if (rulateWebList.size() > 0) {
@@ -279,7 +281,7 @@ public class RanobeRecyclerFragment extends Fragment {
                     getActivity().runOnUiThread(
                             () ->
                                     progressDialog.setTitle(
-                                            getString(R.string.Load_from_RanobeRf)));
+                                            mContext.getString(R.string.Load_from_RanobeRf)));
                 }
                 List<Ranobe> ranoberfWebList = getRanoberfWebFavorite();
                 if (ranoberfWebList.size() > 0) {
@@ -294,7 +296,7 @@ public class RanobeRecyclerFragment extends Fragment {
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(
                             () ->
-                                    progressDialog.setTitle(getString(R.string.Update_ranobe_info))
+                                    progressDialog.setTitle( mContext.getString(R.string.Update_ranobe_info))
                     );
                 }
                 progressDialog.setMax(newRanobeList.size() + step);
@@ -373,7 +375,7 @@ public class RanobeRecyclerFragment extends Fragment {
 
     private void HistoryLoadRanobe(final boolean remove) {
 
-        progressDialog = new ProgressDialog(getActivity());
+        progressDialog = new ProgressDialog(mContext);
         progressDialog.setMessage(getResources().getString(R.string.load_please_wait));
         progressDialog.setTitle(getResources().getString(R.string.load_ranobes));
         progressDialog.setCancelable(true);

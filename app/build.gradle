@@ -1,7 +1,7 @@
 ext {
 
     majVersion = 2
-    minVersion = 27
+    minVersion = 29
 
     calculateVersionName = {
         return "${majVersion}.${minVersion}"
@@ -84,13 +84,13 @@ android {
         free {
             buildConfigField "boolean", "PAID_VERSION", "false"
         }
-        paid {
-
-            applicationIdSuffix ".paid"
-            versionNameSuffix "-paid"
-
-            buildConfigField "boolean", "PAID_VERSION", "true"
-        }
+//        paid {
+//
+//            applicationIdSuffix ".paid"
+//            versionNameSuffix "-paid"
+//
+//            buildConfigField "boolean", "PAID_VERSION", "true"
+//        }
     }
 }
 
@@ -132,6 +132,7 @@ dependencies {
         transitive = true
     }
     implementation 'com.google.code.gson:gson:2.8.2'
+    implementation "org.apache.commons:commons-text:1.4"
 }
 
 apply plugin: 'com.google.gms.google-services'

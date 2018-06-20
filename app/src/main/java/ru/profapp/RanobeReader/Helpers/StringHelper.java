@@ -1,5 +1,6 @@
 package ru.profapp.RanobeReader.Helpers;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.jsoup.Jsoup;
 
 /**
@@ -26,9 +27,16 @@ public class StringHelper {
 
     public String cleanJson(String string) {
 
-        string = string.substring(0, string.lastIndexOf("}") + 1).replace("\\&quot;",
-                "").replace("&lt;", "<").replace("&gt;", ">")
-                .replace("\\>", "\\\\>");
+        String teststr = "\"\" \\ &lt; &gt; &quot; '";
+        String str = StringEscapeUtils.escapeJson(teststr);
+        String str1 = StringEscapeUtils.escapeJava(teststr);
+        String str2= StringEscapeUtils.escapeHtml4(teststr);
+        String str3= StringEscapeUtils.unescapeHtml3(teststr);
+        String str4= StringEscapeUtils.unescapeHtml4(teststr);
+
+        string = string.substring(0, string.lastIndexOf("}") + 1);
+        string = StringEscapeUtils.unescapeHtml4(string);
+ 
 
         // Ранобэ.Рф
         String s1 = "\"content\":\"";
