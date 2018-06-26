@@ -322,7 +322,7 @@ public class RanobeRecyclerFragment extends Fragment {
                                             mContext).getRanobeDao().update(ranobe);
                                     DatabaseDao.getInstance(
                                             mContext).getChapterDao().insertAll(
-                                            ranobe.getChapterList().toArray(
+                                            ranobe.getFullChapterList().toArray(
                                                     new Chapter[0]));
 
                                 }
@@ -492,7 +492,7 @@ public class RanobeRecyclerFragment extends Fragment {
                             DatabaseDao.getInstance(mContext).getRanobeDao().insert(
                                     ranobe);
                             DatabaseDao.getInstance(mContext).getChapterDao().insertAll(
-                                    ranobe.getChapterList().toArray(
+                                    ranobe.getFullChapterList().toArray(
                                             new Chapter[0]));
                         } else {
                             Ranobe dbRanobe = DatabaseDao.getInstance(
@@ -550,7 +550,7 @@ public class RanobeRecyclerFragment extends Fragment {
                             DatabaseDao.getInstance(mContext).getRanobeDao().insert(
                                     ranobe);
                             DatabaseDao.getInstance(mContext).getChapterDao().insertAll(
-                                    ranobe.getChapterList().toArray(
+                                    ranobe.getFullChapterList().toArray(
                                             new Chapter[0]));
                         } else {
                             Ranobe dbRanobe = DatabaseDao.getInstance(

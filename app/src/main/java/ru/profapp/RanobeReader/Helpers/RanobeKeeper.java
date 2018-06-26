@@ -60,7 +60,7 @@ public class RanobeKeeper {
         ChapterTextSize = chapterTextSize;
     }
 
-    public Boolean getHideUnavailableChapters() {
+    public Boolean HidePaidChapters() {
         return HideUnavailableChapters == null ? false : HideUnavailableChapters;
     }
 

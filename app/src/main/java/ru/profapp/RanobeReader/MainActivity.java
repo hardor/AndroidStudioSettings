@@ -14,7 +14,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -200,7 +199,7 @@ public class MainActivity extends AppCompatActivity
                 fragment = RanobeRecyclerFragment.newInstance(
                         RanobeConstans.FragmentType.Favorite.name());
                 setTitle(getResources().getText(R.string.favorite));
-                currentTitle=getResources().getText(R.string.favorite).toString();
+                currentTitle = getResources().getText(R.string.favorite).toString();
                 break;
             }
             case R.id.nav_rulate: {
@@ -208,7 +207,7 @@ public class MainActivity extends AppCompatActivity
                 fragment = RanobeRecyclerFragment.newInstance(
                         RanobeConstans.FragmentType.Rulate.name());
                 setTitle(getResources().getText(R.string.tl_rulate_name));
-                currentTitle=getResources().getText(R.string.tl_rulate_name).toString();
+                currentTitle = getResources().getText(R.string.tl_rulate_name).toString();
                 break;
             }
             case R.id.nav_ranoberf: {
@@ -216,7 +215,7 @@ public class MainActivity extends AppCompatActivity
                 fragment = RanobeRecyclerFragment.newInstance(
                         RanobeConstans.FragmentType.Ranoberf.name());
                 setTitle(getResources().getText(R.string.ranobe_rf));
-                currentTitle=getResources().getText(R.string.ranobe_rf).toString();
+                currentTitle = getResources().getText(R.string.ranobe_rf).toString();
                 break;
             }
             case R.id.nav_manage: {
@@ -228,7 +227,7 @@ public class MainActivity extends AppCompatActivity
                 currentFragment = RanobeConstans.FragmentType.Search.name();
                 fragment = SearchFragment.newInstance();
                 setTitle(getResources().getText(R.string.search));
-                currentTitle=getResources().getText(R.string.search).toString();
+                currentTitle = getResources().getText(R.string.search).toString();
                 break;
             }
             case R.id.nav_chapters: {
@@ -237,7 +236,7 @@ public class MainActivity extends AppCompatActivity
                 fragment = RanobeRecyclerFragment.newInstance(
                         RanobeConstans.FragmentType.History.name());
                 setTitle(getResources().getText(R.string.saved_chapters));
-                currentTitle=getResources().getText(R.string.saved_chapters).toString();
+                currentTitle = getResources().getText(R.string.saved_chapters).toString();
                 break;
             }
             case R.id.nav_send: {
@@ -246,9 +245,8 @@ public class MainActivity extends AppCompatActivity
                 try {
                     startActivity(new Intent(Intent.ACTION_VIEW,
                             Uri.parse("market://details?id=" + appPackageName)));
-                } catch (android.content.ActivityNotFoundException anfe) {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(
-                            "https://play.google.com/store/apps/details?id=" + appPackageName)));
+                } catch (android.content.ActivityNotFoundException ignored) {
+
                 }
 
 //                Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(

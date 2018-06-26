@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -66,8 +67,8 @@ public class RanobeInfoActivity extends AppCompatActivity {
     private SharedPreferences rfpreferences;
     private Ranobe mCurrentRanobe;
     private Context mContext;
-    private Drawable borderImage;
-    private Drawable fillImage;
+    private Drawable borderImage,fillImage;
+    private Drawable visibleImage, hideImage ;
     private ChapterRecyclerViewAdapter adapter;
     private SharedPreferences sPref;
 
@@ -96,6 +97,8 @@ public class RanobeInfoActivity extends AppCompatActivity {
         }
 
         mContext = RanobeInfoActivity.this;
+        mCurrentRanobe = RanobeKeeper.getInstance().getRanobe();
+
         Button loadButton = findViewById(R.id.loadButton);
         ImageButton sortButton = findViewById(R.id.sortButton);
         sortButton.setOnClickListener(v -> {
@@ -107,6 +110,35 @@ public class RanobeInfoActivity extends AppCompatActivity {
             }
 
         });
+
+
+        visibleImage = mContext.getResources().getDrawable(
+                R.drawable.ic_visibility_black_24dp);
+        hideImage = mContext.getResources().getDrawable(
+                R.drawable.ic_visibility_off_black_24dp);
+        ImageButton hideButton = findViewById(R.id.hideButton);
+        mCurrentRanobe.setHidePaidChapters(RanobeKeeper.getInstance().HidePaidChapters());
+        if(RanobeKeeper.getInstance().HidePaidChapters()){
+            hideButton.setImageDrawable(hideImage);
+        }else{
+            hideButton.setImageDrawable(visibleImage);
+        }
+        hideButton.setOnClickListener(v -> {
+            mCurrentRanobe.setHidePaidChapters(! mCurrentRanobe.isHidePaidChapters());
+
+            if( mCurrentRanobe.isHidePaidChapters()){
+                runOnUiThread(() ->   hideButton.setImageDrawable(hideImage));
+            }else{
+                runOnUiThread(() ->  hideButton.setImageDrawable(visibleImage));
+            }
+            loadChapters(true);
+
+            if (mCurrentRanobe.getChapterList().size() > loadedChapterCount) {
+                loadButton.setVisibility(View.VISIBLE);
+            }
+
+        });
+
         borderImage = mContext.getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp);
         fillImage = mContext.getResources().getDrawable(
                 R.drawable.ic_favorite_black_24dp);
@@ -152,7 +184,7 @@ public class RanobeInfoActivity extends AppCompatActivity {
         CardView infoCard = findViewById(R.id.ranobe_info_card);
         CardView descriptionCard = findViewById(R.id.ranobe_description_card);
 
-        mCurrentRanobe = RanobeKeeper.getInstance().getRanobe();
+
         try {
             getSupportActionBar().setTitle(mCurrentRanobe.getTitle());
         } catch (Exception ignore) {
@@ -188,8 +220,8 @@ public class RanobeInfoActivity extends AppCompatActivity {
                 .apply(myOptions)
                 .into(imageView);
 
-        String aboutText = String.format("%s / %s \n\n%s", mCurrentRanobe.getTitle(),
-                mCurrentRanobe.getEngTitle(), mCurrentRanobe.getDescription());
+        String aboutText = String.format("%s / %s \n\nРейтинг: %s\n%s", mCurrentRanobe.getTitle(),
+                mCurrentRanobe.getEngTitle(),mCurrentRanobe.getRating(), mCurrentRanobe.getDescription());
 
         if (!empty(mCurrentRanobe.getGenres())) {
             aboutText = aboutText + "\n\n" + mCurrentRanobe.getGenres();
@@ -499,6 +531,20 @@ public class RanobeInfoActivity extends AppCompatActivity {
                     mContext.startActivity(intent);
                 }
                 break;
+            case R.id.navigation_open_in_browser:
+                String url = mCurrentRanobe.getUrl();
+
+            if (!url.startsWith("http://") && !url.startsWith("https://"))
+                url = "https://" + url;
+
+            try {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse(url));
+                startActivity(browserIntent);
+            } catch (Exception ignored) {
+
+            }
+            break;
         }
         return true;
     }

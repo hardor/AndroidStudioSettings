@@ -32,10 +32,10 @@ import ru.profapp.RanobeReader.Models.Chapter;
  * Created by Ruslan on 09.02.2018.
  */
 
-public class JsonRanobeRfApi {
+public class JsonRanobeRfApi extends JsonBaseClass {
     private static volatile JsonRanobeRfApi instance;
 
-    private Map<String, String> Cookies = new HashMap<>();
+
     private String sequence = "";
 
     private JsonRanobeRfApi() {
@@ -153,7 +153,7 @@ public class JsonRanobeRfApi {
     public String SearchBooks(String search) {
         String request = StringResources.RanobeRf_Site + "/v1/book/search/?q=" + search;
 
-        return getDocumentText(Cookies, request);
+        return getUrlText(request);
     }
 
     public String GetChapterText(Chapter chapter) {
@@ -167,7 +167,7 @@ public class JsonRanobeRfApi {
         chapterName = chapterName.replace("/", "");
         String request = StringResources.RanobeRf_Site + "/v1/part/load/?bookAlias=" + ranobeName
                 + "&partAlias=" + chapterName;
-        return getDocumentText(Cookies, request);
+        return getUrlText(request);
 
     }
 
@@ -175,7 +175,7 @@ public class JsonRanobeRfApi {
 
         String request = StringResources.RanobeRf_Site + "/v1/book/load/?book_alias=" + ranobeName;
 
-        return getDocumentText(Cookies, request);
+        return getUrlText(request);
     }
 
     public String RemoveBookmark(int bookmark_id, String token) {
@@ -248,47 +248,7 @@ public class JsonRanobeRfApi {
         }
     }
 
-    private String getDocumentText(Map<String, String> Cookies, String... params) {
 
-        Document html;
-        try {
-            html = new HtmlParser(Cookies).execute(params).get();
-            String result = html.body().html();
-            return StringHelper.getInstance().cleanJson(result);
-        } catch (InterruptedException | NullPointerException | ExecutionException e) {
-          //  MyLog.SendError(StringResources.LogType.WARN, JsonRulateApi.class.toString(), params[0], e);
-        }
-        return "";
-    }
-
-    private String getDocumentText(Map<String, String> Cookies, Map<String, String> Data,
-            String... params) {
-
-        Document html;
-        try {
-            html = new HtmlParser(Cookies, Data).execute(params).get();
-            String result = html.body().html();
-            return StringHelper.getInstance().cleanJson(result);
-        } catch (InterruptedException | NullPointerException | ExecutionException e) {
-            MyLog.SendError(StringResources.LogType.WARN, JsonRulateApi.class.toString(), "", e);
-        }
-        return "";
-    }
-
-    private String getDocumentText(Map<String, String> Cookies, Map<String, String> Data,
-            Map<String, String> Header,
-            String... params) {
-
-        Document html;
-        try {
-            html = new HtmlParser(Cookies, Data, Header).execute(params).get();
-            String result = html.body().html();
-            return StringHelper.getInstance().cleanJson(result);
-        } catch (InterruptedException | NullPointerException | ExecutionException e) {
-            MyLog.SendError(StringResources.LogType.WARN, JsonRulateApi.class.toString(), "", e);
-        }
-        return "";
-    }
 
     public String Login(String name, String password) {
         String request = StringResources.RanobeRf_Site + "/v1/auth/login/";

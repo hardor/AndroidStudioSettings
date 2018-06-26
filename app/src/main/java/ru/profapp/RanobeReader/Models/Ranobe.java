@@ -90,6 +90,9 @@ public class Ranobe {
     @Ignore
     private boolean isReversed = false;
 
+    @Ignore
+    private Boolean HidePaidChapters;
+
     public Ranobe() {
     }
 
@@ -181,8 +184,7 @@ public class Ranobe {
             mRulateComments = book.getComments();
             Collections.reverse(mRulateComments);
         }
-        Description = "Рейтинг: " + Rating +
-                "\nСтатус: " + Status +
+        Description = "Статус: " + Status +
                 "\nПеревод: " + Lang +
                 "\nКоличество глав: " + ChapterCount;
 
@@ -220,9 +222,7 @@ public class Ranobe {
         Image = empty(Image) ? (book.getImage() != null ? book.getImage().getDesktop().getImage()
                 : Image) : Image;
 
-        Rating = empty(Rating) ? (book.getLikes() != null ? "Likes: " + book.getLikes() + (
-                book.getDislikes() != null ? Rating + "\nDislikes: " + book.getDislikes() : "")
-                : Rating) : Rating;
+        Rating = empty(Rating) ? (book.getLikes() != null ? "Likes: " + book.getLikes() + ", Dislikes: " + book.getDislikes() : "") : Rating;
 
         if (book.getParts() != null) {
             chapterList.clear();
@@ -264,16 +264,10 @@ public class Ranobe {
                     : ReadyDate;
         }
 
-       // Collections.reverse(chapterList);
     }
 
     public List<RulateComment> getRulateComments() {
         return mRulateComments;
-    }
-
-    public void setRulateComments(
-            List<RulateComment> rulateComments) {
-        mRulateComments = rulateComments;
     }
 
     public void UpdateRanobe(JSONObject object, RanobeConstans.JsonObjectFrom enumFrom) {
@@ -557,12 +551,24 @@ public class Ranobe {
             return new ArrayList<>();
         }
 
-        if (RanobeKeeper.getInstance().getHideUnavailableChapters()) {
+        if (isHidePaidChapters()) {
             return getChapterListHided();
         } else {
             return chapterList;
         }
 
+    }
+
+    public List<Chapter> getFullChapterList() {
+            return chapterList;
+    }
+
+    public boolean isHidePaidChapters() {
+        return HidePaidChapters == null? RanobeKeeper.getInstance().HidePaidChapters() : HidePaidChapters;
+    }
+
+    public void setHidePaidChapters(boolean hidePaidChapters) {
+        this.HidePaidChapters = hidePaidChapters;
     }
 
     public void setChapterList(List<Chapter> chapterList) {

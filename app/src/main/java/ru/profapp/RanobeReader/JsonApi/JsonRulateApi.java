@@ -2,8 +2,11 @@ package ru.profapp.RanobeReader.JsonApi;
 
 import org.jsoup.nodes.Document;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import ru.profapp.RanobeReader.Common.StringResources;
 import ru.profapp.RanobeReader.Helpers.HtmlParser;
 import ru.profapp.RanobeReader.Helpers.StringHelper;
 
@@ -11,10 +14,10 @@ import ru.profapp.RanobeReader.Helpers.StringHelper;
  * Created by Ruslan on 09.02.2018.
  */
 
-public class JsonRulateApi {
+public class JsonRulateApi  extends JsonBaseClass {
 
     private static volatile JsonRulateApi instance;
-    private final String ApiString = "http://tl.rulate.ru/api/%s?key=fpoiKLUues81werht039";
+    private final String ApiString = "https://tl.rulate.ru/api/%s?key=fpoiKLUues81werht039";
 
     private JsonRulateApi() {
     }
@@ -36,7 +39,7 @@ public class JsonRulateApi {
         request += "&login=" + login;
         request += "&pass=" + pass;
 
-        return getDocumentText(request);
+        return getUrlText(request);
     }
 
     public String GetReadyTranslates(String limit, String page) {
@@ -49,7 +52,7 @@ public class JsonRulateApi {
             request += "&page=" + page;
         }
 
-        return getDocumentText(request);
+        return getUrlText(request);
     }
 
     public String SearchBooks(String search) {
@@ -60,7 +63,7 @@ public class JsonRulateApi {
         String request = String.format(ApiString, "searchBooks");
         request += "&search=" + search;
 
-        return getDocumentText(request);
+        return getUrlText(request);
     }
 
     public String GetFavoriteBooks(String token) {
@@ -71,11 +74,10 @@ public class JsonRulateApi {
         String request = String.format(ApiString, "bookmarks");
         request += "&token=" + token;
 
-        return getDocumentText(request);
+        return getUrlText(request);
     }
 
     public String GetChapterText(int book_id, int chapter_id, String token) {
-        // http://tl.rulate.ru/api/chapter?key=fpoiKLUues81werht039&chapter_id=&book_id=
         String request = String.format(ApiString, "chapter");
         if (!token.isEmpty()) {
             request += "&token=" + token;
@@ -84,7 +86,9 @@ public class JsonRulateApi {
         request += "&chapter_id=" + chapter_id;
         request += "&book_id=" + book_id;
 
-        return getDocumentText(request);
+        String str = getUrlText(request);
+
+        return str.replaceAll("(src=\\\\\\\")\\\\\\/","$1https:\\\\\\/\\\\\\/tl.rulate.ru\\\\\\/");
     }
 
     public String AddBookmark(int book_id, String token) {
@@ -96,7 +100,7 @@ public class JsonRulateApi {
         }
         request += "&book_id=" + book_id;
 
-        return getDocumentText(request);
+        return getUrlText(request);
     }
 
     public String RemoveBookmark(int book_id, String token) {
@@ -108,7 +112,7 @@ public class JsonRulateApi {
         }
         request += "&book_id=" + book_id;
 
-        return getDocumentText(request);
+        return getUrlText(request);
     }
 
     public String GetBookInfo(int book_id, String token) {
@@ -119,21 +123,8 @@ public class JsonRulateApi {
         }
         request += "&book_id=" + book_id;
 
-        return getDocumentText(request).replace("comments\":\"\",", "\":null,");
+        return getUrlText(request);
     }
 
-    private String getDocumentText(String request){
-
-        Document html;
-        try {
-            html = new HtmlParser().execute(request).get();
-            String result = html.body().html();
-            return StringHelper.getInstance().cleanJson(result);
-        } catch (InterruptedException | NullPointerException | ExecutionException  e) {
-          //  MyLog.SendError(StringResources.LogType.WARN, JsonRulateApi.class.toString(), "", e);
-
-        }
-        return "";
-    }
 
 }

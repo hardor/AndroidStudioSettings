@@ -1,7 +1,7 @@
 ext {
 
     majVersion = 2
-    minVersion = 29
+    minVersion = 30
 
     calculateVersionName = {
         return "${majVersion}.${minVersion}"

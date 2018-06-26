@@ -8,8 +8,8 @@ import static ru.profapp.RanobeReader.Common.StringResources.is_readed_Pref;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.ColorInt;
@@ -29,8 +29,6 @@ import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
-
-import org.jsoup.Jsoup;
 
 import java.util.Collections;
 import java.util.List;
@@ -283,6 +281,24 @@ public class ChapterTextActivity extends AppCompatActivity {
             case R.id.navigation_next2:
                 OnClicked(-1);
                 break;
+            case R.id.navigation_open_in_browser:
+                String url = mCurrentChapter.getUrl();
+
+                if (!url.startsWith("http://") && !url.startsWith("https://")) {
+                    url = "https://" + url;
+                }
+
+                if (url.contains(StringResources.Rulate_Site)) {
+                    url = url + "/ready";
+                }
+                try {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+                            Uri.parse(url));
+                    startActivity(browserIntent);
+                } catch (Exception ignored) {
+
+                }
+                break;
         }
 
         return true;
@@ -368,27 +384,9 @@ public class ChapterTextActivity extends AppCompatActivity {
             MyLog.SendError(StringResources.LogType.WARN, ChapterTextActivity.class.toString(),
                     mCurrentChapter.getUrl(),
                     e);
+            return false;
 
-            try {
-                ChapterTextGson readyGson = gson.fromJson(Jsoup.parse(response).text(),
-                        ChapterTextGson.class);
-
-                if (readyGson.getStatus().equals("success")) {
-
-                    mCurrentChapter.UpdateChapter(readyGson.getResponse(), mContext, isButton);
-                    return true;
-                } else {
-                    mCurrentChapter.setText(readyGson.getMsg());
-                }
-            } catch (Exception e2) {
-
-                MyLog.SendError(StringResources.LogType.WARN, ChapterTextActivity.class.toString(),
-                        mCurrentChapter.getUrl(),
-                        e2);
-                return false;
-            }
         }
-        return false;
 
     }
 
@@ -431,7 +429,6 @@ public class ChapterTextActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.chaptermain, menu);
         return true;
     }
-
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {

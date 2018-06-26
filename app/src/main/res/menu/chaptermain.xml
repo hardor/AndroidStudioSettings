@@ -8,6 +8,14 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/navigation_open_in_browser"
+        android:icon="@drawable/ic_language_black_24dp"
+        android:title="@string/open_in_browser"
+        app:showAsAction="ifRoom"
+    />
+
+
+    <item
         android:id="@+id/navigation_day_night"
         android:icon="@drawable/ic_settings_brightness_black_24dp"
         android:title="@string/day_night"

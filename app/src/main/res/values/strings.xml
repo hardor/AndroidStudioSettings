@@ -136,5 +136,6 @@
     <string name="save_history">Save history</string>
     <string name="SaveHistoryButton">SaveHistoryButton</string>
     <string name="save_history_full">Save information about readed chapters</string>
+    <string name="open_in_browser">Open in browser</string>
 
 </resources>
