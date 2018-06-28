@@ -123,7 +123,7 @@ public class JsonRulateApi  extends JsonBaseClass {
         }
         request += "&book_id=" + book_id;
 
-        return getUrlText(request);
+        return getUrlText(request).replace("comments\":\"\",", "\":null,");
     }
 
 
