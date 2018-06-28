@@ -112,7 +112,12 @@ public class DownloadActivity extends AppCompatActivity {
                         break;
                     }
                 }
-                runOnUiThread(()-> progressDialog.setMessage(getString(R.string.task_finished)));
+
+                runOnUiThread(()-> {
+                    progressDialog.getButton(BUTTON_NEGATIVE).setText(R.string.finish);
+                    progressDialog.setMessage(getString(R.string.task_finished));
+                        }
+                );
 
             }
         }.start();

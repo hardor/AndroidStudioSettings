@@ -169,13 +169,14 @@ public class Ranobe {
 
         if (book.getChapters() != null) {
             chapterList.clear();
-            for (int i = 0; i < book.getChapters().size(); i++) {
+            int size = book.getChapters().size();
+            for (int i = 0; i < size; i++) {
                 Chapter chapter = new Chapter(book.getChapters().get(i));
                 chapter.setRanobeId(Id);
                 chapter.setRanobeUrl(Url);
                 chapter.setUrl(Url + "/" + chapter.getId());
                 chapter.setRanobeName(Title);
-                chapter.setIndex(i);
+                chapter.setIndex(size-1-i);
                 chapterList.add(chapter);
             }
             Collections.reverse(chapterList);
@@ -596,7 +597,7 @@ public class Ranobe {
                 UpdateRulateRanobe(bookGson.getResponse());
             }
         } catch (JsonParseException e) {
-            MyLog.SendError(StringResources.LogType.WARN, Ranobe.class.toString(), "", e);
+            MyLog.SendError(StringResources.LogType.WARN, Ranobe.class.toString(), "book_id" + getId(), e);
 
         }
 
@@ -615,7 +616,7 @@ public class Ranobe {
                 UpdateRanobeRfRanobe(bookGson.getResult());
             }
         } catch (JsonParseException e) {
-            MyLog.SendError(StringResources.LogType.WARN, RfBookInfoGson.class.toString(), "", e);
+            MyLog.SendError(StringResources.LogType.WARN, RfBookInfoGson.class.toString(), ranobeName, e);
 
         }
 
@@ -639,7 +640,7 @@ public class Ranobe {
 
         } catch (NullPointerException e) {
             WasUpdated = false;
-            MyLog.SendError(StringResources.LogType.WARN, Ranobe.class.toString(), "", e);
+            MyLog.SendError(StringResources.LogType.WARN, Ranobe.class.toString(), getUrl(), e);
             throw new NullPointerException();
         }
 

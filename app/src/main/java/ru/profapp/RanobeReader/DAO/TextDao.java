@@ -42,6 +42,6 @@ public interface TextDao {
     @Query("DELETE FROM textChapter")
     void cleanTable();
 
-    @Query("SELECT * FROM textChapter order by RanobeName Asc, `Index` DESC")
+    @Query("SELECT * FROM textChapter order by RanobeName Asc, `Index` ASC")
     List<TextChapter> getAllText();
 }

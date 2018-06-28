@@ -39,7 +39,7 @@ public interface ChapterDao {
     @Query("SELECT * FROM chapter")
     List<Chapter> getAllChapters();
 
-    @Query("SELECT * FROM chapter WHERE RanobeUrl IS :RanobeUrl order by chapter.`Index` Desc")
+    @Query("SELECT * FROM chapter WHERE RanobeUrl IS :RanobeUrl order by chapter.`Index` Asc")
     List<Chapter> getChaptersForRanobe(String RanobeUrl);
 
 }

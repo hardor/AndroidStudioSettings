@@ -13,8 +13,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.ColorInt;
-import android.support.design.internal.BottomNavigationItemView;
-import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -22,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -37,7 +36,6 @@ import java.util.Map;
 import io.fabric.sdk.android.Fabric;
 import ru.profapp.RanobeReader.Common.StringResources;
 import ru.profapp.RanobeReader.Common.ThemeUtils;
-import ru.profapp.RanobeReader.CustomElements.ObservableWebView;
 import ru.profapp.RanobeReader.Helpers.MyLog;
 import ru.profapp.RanobeReader.Helpers.RanobeKeeper;
 import ru.profapp.RanobeReader.JsonApi.JsonRanobeRfApi;
@@ -51,31 +49,15 @@ public class ChapterTextActivity extends AppCompatActivity {
 
     private final Gson gson = new GsonBuilder().setLenient().create();
     Chapter mCurrentChapter;
-    private ObservableWebView mWebView;
+    private WebView mWebView;
     private Context mContext;
     private Integer mIndex;
     private float mProgress;
     private Integer mChapterCount;
     private List<Chapter> mChapterList;
     private SharedPreferences sPref, sChapterPref;
-    private BottomNavigationItemView nextMenu, prevMenu;
-    private final BottomNavigationView.OnNavigationItemSelectedListener
-            mOnNavigationItemSelectedListener
-            = item -> {
+    private ImageButton nextMenu, prevMenu, bookmarkMenu;
 
-        switch (item.getItemId()) {
-
-            case R.id.navigation_prev:
-                OnClicked(+1);
-                return true;
-            case R.id.navigation_next:
-                OnClicked(-1);
-                return true;
-
-        }
-
-        return false;
-    };
     private ProgressBar progressUrl;
 
     private void set_web_colors() {
@@ -214,23 +196,23 @@ public class ChapterTextActivity extends AppCompatActivity {
 
         Boolean loadResult = GetChapterText(mCurrentChapter, false);
 
-        BottomNavigationView navigation = findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
-        // the scroll listener:
-        mWebView.setOnScrollChangedCallback((l, t, oldl, oldt) -> {
-            if (t > oldt) {
-                navigation.animate().translationY(navigation.getHeight());
-            } else if (t < oldt) {
-                navigation.animate().translationY(0);
-            }
-        });
-
         prevMenu = findViewById(R.id.navigation_prev);
         nextMenu = findViewById(R.id.navigation_next);
+        bookmarkMenu = findViewById(R.id.navigation_bookmark);
 
         prevMenu.setVisibility(mIndex < mChapterCount - 1 ? View.VISIBLE : View.INVISIBLE);
         nextMenu.setVisibility(mIndex > 0 ? View.VISIBLE : View.INVISIBLE);
+
+        nextMenu.setOnClickListener(v ->
+                OnClicked(-1)
+        );
+
+        prevMenu.setOnClickListener(v ->
+                OnClicked(+1)
+        );
+        bookmarkMenu.setOnClickListener(v ->
+                set_bookmark()
+        );
 
         initWebView(loadResult);
 
@@ -268,18 +250,8 @@ public class ChapterTextActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.navigation_bookmark:
-                set_bookmark();
-                break;
             case R.id.navigation_day_night:
                 set_web_colors();
-                break;
-
-            case R.id.navigation_prev2:
-                OnClicked(+1);
-                break;
-            case R.id.navigation_next2:
-                OnClicked(-1);
                 break;
             case R.id.navigation_open_in_browser:
                 String url = mCurrentChapter.getUrl();
