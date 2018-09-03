@@ -35,7 +35,6 @@
 
     <string name="login_failed">Ошибка входа…</string>
     <string name="load_ranobes">Загрузка избранных ранобэ</string>
-    <string name="load_chapters">Загрузка глав</string>
 
     <string name="load_please_wait">Пожалуйста подождите завершения загрузки</string>
     <string name="enter_user_pass">Пожалуйста введите логин и пароль</string>
@@ -56,8 +55,6 @@
     <string name="app_theme">Темная тема</string>
     <string name="Turn_off_dark_theme">Выключить темную тему</string>
     <string name="Turn_on_dark_theme">Включить темную тему</string>
-    <string name="NumberDisplayed">Количество показываемых глав</string>
-    <string name="NumberDisplayed100">Не меньше 100</string>
     <string name="login_email">Логин/E-mail</string>
     <string name="ranoberf_authorization">Авторизация ранобэ.рф</string>
     <string name="auth_error">Ошибка авторизации</string>
@@ -65,7 +62,6 @@
     <string name="update_to_remove">Пожалуйста обновите список избранных для удаления этой
         закладки
     </string>
-    <string name="information">Информация</string>
     <string name="select_all">Выбрать все</string>
     <string name="select_none">Снять выбор</string>
     <string name="download">Скачать</string>

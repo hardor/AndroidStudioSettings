@@ -46,7 +46,6 @@
     <string name="chapters">Chapters</string>
     <string name="description">Description</string>
     <string name="additional_information">Additional Information</string>
-    <string name="information">Information</string>
     <string name="title_activity_chapter_text" translatable="false">ChapterText</string>
     <string name="previous">Previous</string>
     <string name="next">Next</string>
@@ -65,7 +64,6 @@
 
     <string name="load_ranobes">Loading favorite ranobe</string>
     <string name="load_please_wait">Please wait for the load to complete</string>
-    <string name="load_chapters">Chapters loading…</string>
     <string name="load_all">Load all</string>
 
     <string name="tools">Tools</string>
@@ -101,9 +99,6 @@
     <string name="app_theme">Dark theme</string>
     <string name="Turn_off_dark_theme">Turn off dark theme</string>
     <string name="Turn_on_dark_theme">Turn on dark theme</string>
-    <string name="pref_general_list_size" translatable="false">pref_general_list_size</string>
-    <string name="NumberDisplayed">Number of Chapters displayed</string>
-    <string name="NumberDisplayed100">Not less than 100</string>
     <string name="email" translatable="false">e-mail</string>
     <string name="auth_error">Error authorization</string>
     <string name="auth_succes">Authorization success</string>
@@ -114,13 +109,6 @@
     <string name="sort">Sort</string>
     <string name="select_all">Select all</string>
     <string name="select_none">Select none</string>
-    <string name="AboutVersion" translatable="false">Приложение пока не стабильно. Рекомендую
-        перенести свои локальные закладки в web.\n
-        2.24 Ранобэ.рф добавила премиум подписку. Добавлено сообщение, если глава платная.\n
-        2.22 Фикс вылетов закладок в некоторых случаях \n
-        2.21 Исправлена работа закладок Исправлено отображение после смены темы/ориентации\n
-        Дефолтная картинка если нет изображения
-    </string>
     <string name="readyToDownload">Are you sure you want to download the marked chapters and delete
         not marked?
     </string>
@@ -133,19 +121,8 @@
     <string name="Load_from_Rulate">Load bookmarks from Rulate site</string>
     <string name="Load_from_RanobeRf">Load bookmarks from Ранобэ.рф site</string>
     <string name="Update_ranobe_info">Update ranobes information</string>
-    <string name="sync" translatable="false">Synchronization</string>
-    <string name="save_history" translatable="false">Save history</string>
-    <string name="SaveHistoryButton" translatable="false">SaveHistoryButton</string>
-    <string name="save_history_full" translatable="false">Save information about readed chapters</string>
     <string name="open_in_browser" translatable="false">Open in browser</string>
     <string name="finish">Finish</string>
-    <string name="export_import">Export/Import</string>
-    <string name="export">Export</string>
-    <string name="dimport">Import</string>
-    <string name="ExportButton" translatable="false">ExportButton</string>
-    <string name="export_to_device">Export data to device</string>
-    <string name="import_to_device">Import data from device</string>
-    <string name="ImportButton">ImportButton</string>
     <string name="ErrorConnection">Error Connection</string>
     <string name="Error">Error</string>
 

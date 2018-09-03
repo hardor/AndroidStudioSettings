@@ -154,7 +154,7 @@
                                     android:layout_marginRight="16dp"
                                     android:isScrollContainer="false"
                                     android:nestedScrollingEnabled="false"
-                                    app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                                     tools:context="ru.profapp.RanobeReader.RanobeInfoActivity"
                                     tools:listitem="@layout/chapter_item"/>
                                 <Button android:id="@+id/loadButton"
@@ -182,7 +182,7 @@
                                 android:layout_marginRight="16dp"
                                 android:isScrollContainer="false"
                                 android:nestedScrollingEnabled="false"
-                                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                                 tools:context="ru.profapp.RanobeReader.RanobeInfoActivity"
                                 tools:listitem="@layout/item_comment"
                             />

@@ -1,8 +1,8 @@
 package ru.profapp.RanobeReader.Common;
 
 import android.app.Activity;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 /**
  * Created by Ruslan on 15.03.2018.
