@@ -4,6 +4,7 @@ import static ru.profapp.RanobeReader.Common.RanobeConstans.chaptersNum;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -161,7 +162,9 @@ class RanobeRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     chapterList.subList(0, Math.min(chaptersNum, chapterList.size())), mContext,
                     ((RanobeViewHolder) holder).mItem);
 
-
+            DividerItemDecoration itemDecorator = new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL);
+            itemDecorator.setDrawable(mContext.getResources().getDrawable(R.drawable.divider));
+            ((RanobeViewHolder) holder).mChaptersListView.addItemDecoration(itemDecorator);
             ((RanobeViewHolder) holder).mChaptersListView.setAdapter(adapter);
 
         } else if (holder instanceof LoadingViewHolder) {
@@ -219,6 +222,7 @@ class RanobeRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             mImageView = view.findViewById(R.id.imageView);
             mUpdateTime = view.findViewById(R.id.ranobeUpdateTime);
             mChaptersListView = view.findViewById(R.id.list_chapter_list);
+          //  mChaptersListView.setHasFixedSize(true);
             mChaptersListView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         }
 

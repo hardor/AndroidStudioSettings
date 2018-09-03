@@ -103,8 +103,7 @@ public class MainActivity extends AppCompatActivity
             try {
                 RecyclerView ranobeListview = findViewById(R.id.ranobeListView);
                 ranobeListview.scrollToPosition(0);
-            } catch (NullPointerException e) {
-                MyLog.SendError(StringResources.LogType.WARN, MainActivity.class.toString(), "", e);
+            } catch (NullPointerException ignored) {
 
             }
 
@@ -216,6 +215,14 @@ public class MainActivity extends AppCompatActivity
                         RanobeConstans.FragmentType.Ranoberf.name());
                 setTitle(getResources().getText(R.string.ranobe_rf));
                 currentTitle = getResources().getText(R.string.ranobe_rf).toString();
+                break;
+            }
+            case R.id.nav_ranobehub: {
+                currentFragment = RanobeConstans.FragmentType.RanobeHub.name();
+                fragment = RanobeRecyclerFragment.newInstance(
+                        RanobeConstans.FragmentType.RanobeHub.name());
+                setTitle(getResources().getText(R.string.ranobe_hub));
+                currentTitle = getResources().getText(R.string.ranobe_hub).toString();
                 break;
             }
             case R.id.nav_manage: {

@@ -19,6 +19,7 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -49,6 +50,7 @@ import java.util.List;
 import java.util.Objects;
 
 import io.fabric.sdk.android.Fabric;
+import ru.profapp.RanobeReader.Common.ErrorConnectionException;
 import ru.profapp.RanobeReader.Common.StringResources;
 import ru.profapp.RanobeReader.DAO.DatabaseDao;
 import ru.profapp.RanobeReader.Helpers.MyLog;
@@ -67,10 +69,11 @@ public class RanobeInfoActivity extends AppCompatActivity {
     private SharedPreferences rfpreferences;
     private Ranobe mCurrentRanobe;
     private Context mContext;
-    private Drawable borderImage,fillImage;
-    private Drawable visibleImage, hideImage ;
+    private Drawable borderImage, fillImage;
+    private Drawable visibleImage, hideImage;
     private ChapterRecyclerViewAdapter adapter;
     private SharedPreferences sPref;
+    private LinearLayoutManager mChapterLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,25 +114,24 @@ public class RanobeInfoActivity extends AppCompatActivity {
 
         });
 
-
         visibleImage = mContext.getResources().getDrawable(
                 R.drawable.ic_visibility_black_24dp);
         hideImage = mContext.getResources().getDrawable(
                 R.drawable.ic_visibility_off_black_24dp);
         ImageButton hideButton = findViewById(R.id.hideButton);
         mCurrentRanobe.setHidePaidChapters(RanobeKeeper.getInstance().HidePaidChapters());
-        if(RanobeKeeper.getInstance().HidePaidChapters()){
+        if (RanobeKeeper.getInstance().HidePaidChapters()) {
             hideButton.setImageDrawable(hideImage);
-        }else{
+        } else {
             hideButton.setImageDrawable(visibleImage);
         }
         hideButton.setOnClickListener(v -> {
-            mCurrentRanobe.setHidePaidChapters(! mCurrentRanobe.isHidePaidChapters());
+            mCurrentRanobe.setHidePaidChapters(!mCurrentRanobe.isHidePaidChapters());
 
-            if( mCurrentRanobe.isHidePaidChapters()){
-                runOnUiThread(() ->   hideButton.setImageDrawable(hideImage));
-            }else{
-                runOnUiThread(() ->  hideButton.setImageDrawable(visibleImage));
+            if (mCurrentRanobe.isHidePaidChapters()) {
+                runOnUiThread(() -> hideButton.setImageDrawable(hideImage));
+            } else {
+                runOnUiThread(() -> hideButton.setImageDrawable(visibleImage));
             }
             loadChapters(true);
 
@@ -184,7 +186,6 @@ public class RanobeInfoActivity extends AppCompatActivity {
         CardView infoCard = findViewById(R.id.ranobe_info_card);
         CardView descriptionCard = findViewById(R.id.ranobe_description_card);
 
-
         try {
             getSupportActionBar().setTitle(mCurrentRanobe.getTitle());
         } catch (Exception ignore) {
@@ -221,7 +222,8 @@ public class RanobeInfoActivity extends AppCompatActivity {
                 .into(imageView);
 
         String aboutText = String.format("%s / %s \n\nРейтинг: %s\n%s", mCurrentRanobe.getTitle(),
-                mCurrentRanobe.getEngTitle(),mCurrentRanobe.getRating(), mCurrentRanobe.getDescription());
+                mCurrentRanobe.getEngTitle(), mCurrentRanobe.getRating(),
+                mCurrentRanobe.getDescription());
 
         if (!empty(mCurrentRanobe.getGenres())) {
             aboutText = aboutText + "\n\n" + mCurrentRanobe.getGenres();
@@ -237,7 +239,8 @@ public class RanobeInfoActivity extends AppCompatActivity {
         int size = mCurrentRanobe.getChapterList().size();
 
         recyclerView = findViewById(R.id.chapter_list);
-
+        mChapterLayoutManager = new LinearLayoutManager(mContext);
+        recyclerView.setLayoutManager(mChapterLayoutManager);
         recyclerView.setOnFlingListener(new RecyclerView.OnFlingListener() {
             @RequiresApi(Build.VERSION_CODES.KITKAT)
             @Override
@@ -248,12 +251,17 @@ public class RanobeInfoActivity extends AppCompatActivity {
         });
 
         adapter = new ChapterRecyclerViewAdapter(recycleChapterList, this, mCurrentRanobe);
+        DividerItemDecoration itemDecorator = new DividerItemDecoration(mContext,
+                DividerItemDecoration.VERTICAL);
+        itemDecorator.setDrawable(mContext.getResources().getDrawable(R.drawable.divider));
+        recyclerView.addItemDecoration(itemDecorator);
 
         recyclerView.setAdapter(adapter);
 
         loadChapters(true);
         if (size > loadedChapterCount) {
             loadButton.setVisibility(View.VISIBLE);
+
             loadButton.setOnClickListener(v -> {
                 loadButton.setVisibility(View.GONE);
                 loadChapters(false);
@@ -273,7 +281,7 @@ public class RanobeInfoActivity extends AppCompatActivity {
         if (mCurrentRanobe.getRulateComments().size() > 0) {
             RecyclerView commentRecycleView = findViewById(R.id.comment_list);
             commentRecycleView.setLayoutManager(new LinearLayoutManager(mContext));
-
+            commentRecycleView.setHasFixedSize(true);
             commentRecycleView.setOnFlingListener(
                     new RecyclerView.OnFlingListener() {
                         @Override
@@ -311,6 +319,10 @@ public class RanobeInfoActivity extends AppCompatActivity {
 
         List<Chapter> newList = mCurrentRanobe.getChapterList().subList(size_prev,
                 Math.min(loadedChapterCount, mCurrentRanobe.getChapterList().size()));
+
+        sPref = mContext.getSharedPreferences(
+                is_readed_Pref,
+                MODE_PRIVATE);
         if (sPref != null) {
             for (Chapter chapter : newList) {
                 if (!chapter.getReaded()) {
@@ -366,10 +378,10 @@ public class RanobeInfoActivity extends AppCompatActivity {
 
                         String token = preferences.getString(StringResources.KEY_Token, "");
                         if (!token.equals("")) {
-
-                            String response = JsonRulateApi.getInstance().AddBookmark(
-                                    mCurrentRanobe.getId(), token);
                             try {
+                                String response = JsonRulateApi.getInstance().AddBookmark(
+                                        mCurrentRanobe.getId(), token);
+
                                 JSONObject jsonObject = new JSONObject(response);
                                 if (jsonObject.getString("status").equals("success")) {
                                     wasadded = true;
@@ -384,6 +396,8 @@ public class RanobeInfoActivity extends AppCompatActivity {
                                 MyLog.SendError(StringResources.LogType.WARN,
                                         RanobeInfoActivity.class.toString(), "", e);
 
+                            } catch (ErrorConnectionException ignored) {
+
                             }
 
                         }
@@ -393,11 +407,11 @@ public class RanobeInfoActivity extends AppCompatActivity {
 
                         String token = rfpreferences.getString(StringResources.KEY_Token, "");
                         if (!token.equals("")) {
-
-                            String response = JsonRanobeRfApi.getInstance().AddBookmark(
-                                    mCurrentRanobe.getId(),
-                                    mCurrentRanobe.getChapterList().get(0).getId(), token);
                             try {
+                                String response = JsonRanobeRfApi.getInstance().AddBookmark(
+                                        mCurrentRanobe.getId(),
+                                        mCurrentRanobe.getChapterList().get(0).getId(), token);
+
                                 JSONObject jsonObject = new JSONObject(response);
                                 if (jsonObject.getInt("status") == 200) {
                                     wasadded = true;
@@ -411,6 +425,8 @@ public class RanobeInfoActivity extends AppCompatActivity {
                             } catch (JSONException e) {
                                 MyLog.SendError(StringResources.LogType.WARN,
                                         RanobeInfoActivity.class.toString(), "", e);
+
+                            } catch (ErrorConnectionException ignored) {
 
                             }
 
@@ -437,7 +453,7 @@ public class RanobeInfoActivity extends AppCompatActivity {
 
                     }
                 }
-            }.run();
+            }.start();
 
         } else {
 
@@ -446,10 +462,10 @@ public class RanobeInfoActivity extends AppCompatActivity {
                 if (mCurrentRanobe.getRanobeSite().contains(StringResources.Rulate_Site)) {
                     String token = preferences.getString(StringResources.KEY_Token, "");
                     if (!token.equals("")) {
-
-                        String response = JsonRulateApi.getInstance().RemoveBookmark(
-                                mCurrentRanobe.getId(), token);
                         try {
+                            String response = JsonRulateApi.getInstance().RemoveBookmark(
+                                    mCurrentRanobe.getId(), token);
+
                             JSONObject jsonObject = new JSONObject(response);
                             if (jsonObject.getString("status").equals("success")) {
                                 mCurrentRanobe.setFavoritedInWeb(false);
@@ -463,6 +479,8 @@ public class RanobeInfoActivity extends AppCompatActivity {
                             MyLog.SendError(StringResources.LogType.WARN,
                                     RanobeInfoActivity.class.toString(), "", e);
 
+                        } catch (ErrorConnectionException ignored) {
+
                         }
                     }
 
@@ -472,10 +490,10 @@ public class RanobeInfoActivity extends AppCompatActivity {
                     if (!token.equals("")) {
 
                         Thread thread = new Thread(() -> {
-
-                            String response = JsonRanobeRfApi.getInstance().RemoveBookmark(
-                                    mCurrentRanobe.getBookmarkIdRf(), token);
                             try {
+                                String response = JsonRanobeRfApi.getInstance().RemoveBookmark(
+                                        mCurrentRanobe.getBookmarkIdRf(), token);
+
                                 JSONObject jsonObject = new JSONObject(response);
                                 if (jsonObject.getInt("status") == 200) {
                                     mCurrentRanobe.setFavoritedInWeb(false);
@@ -534,17 +552,18 @@ public class RanobeInfoActivity extends AppCompatActivity {
             case R.id.navigation_open_in_browser:
                 String url = mCurrentRanobe.getUrl();
 
-            if (!url.startsWith("http://") && !url.startsWith("https://"))
-                url = "https://" + url;
+                if (!url.startsWith("http://") && !url.startsWith("https://")) {
+                    url = "https://" + url;
+                }
 
-            try {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse(url));
-                startActivity(browserIntent);
-            } catch (Exception ignored) {
+                try {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+                            Uri.parse(url));
+                    startActivity(browserIntent);
+                } catch (Exception ignored) {
 
-            }
-            break;
+                }
+                break;
         }
         return true;
     }

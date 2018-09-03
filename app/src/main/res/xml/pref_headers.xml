@@ -15,5 +15,9 @@
     <header
         android:fragment="ru.profapp.RanobeReader.SettingsActivity$DataPreferenceFragment"
         android:title="@string/data" />
+    <!--<header-->
+        <!--android:fragment="ru.profapp.RanobeReader.SettingsActivity$ExportPreferenceFragment"-->
+        <!--android:title="@string/export_import" />-->
+
 
 </preference-headers>

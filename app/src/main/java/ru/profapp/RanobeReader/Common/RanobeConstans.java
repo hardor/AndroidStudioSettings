@@ -13,6 +13,7 @@ public class RanobeConstans {
         Favorite,
         Rulate,
         Ranoberf,
+        RanobeHub,
         Search,
         History
     }
@@ -26,6 +27,7 @@ public class RanobeConstans {
         RanobeRfGetChapterText,
         RanobeRfSearch,
         RulateSearch,
+        RanobeHubSearch,
         RulateFavorite,
 
     }

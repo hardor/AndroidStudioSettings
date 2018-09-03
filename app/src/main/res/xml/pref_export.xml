@@ -1,0 +1,14 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="@string/export_import"/>
+
+
+    <Preference android:title="@string/export"
+                android:key="@string/ExportButton"
+                android:summary="@string/export_to_device"/>
+
+    <Preference android:title="@string/dimport"
+                android:key="@string/ImportButton"
+                android:summary="@string/import_to_device"/>
+
+</PreferenceScreen>

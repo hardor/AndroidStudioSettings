@@ -14,6 +14,7 @@ public class StringResources {
     public static final String KEY_Token = "token";
     public static final String Rulate_Site = "tl.rulate.ru";
     public static final String RanobeRf_Site = "https://xn--80ac9aeh6f.xn--p1ai";
+    public static final String RanobeHub_Site = "https://ranobehub.org";
     public static final String Title_Site = "Title";
 
     public static final String Chapter_Position = "position";

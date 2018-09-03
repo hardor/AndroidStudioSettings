@@ -15,6 +15,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.ColorInt;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,8 +35,10 @@ import java.util.List;
 import java.util.Map;
 
 import io.fabric.sdk.android.Fabric;
+import ru.profapp.RanobeReader.Common.ErrorConnectionException;
 import ru.profapp.RanobeReader.Common.StringResources;
 import ru.profapp.RanobeReader.Common.ThemeUtils;
+import ru.profapp.RanobeReader.DAO.DatabaseDao;
 import ru.profapp.RanobeReader.Helpers.MyLog;
 import ru.profapp.RanobeReader.Helpers.RanobeKeeper;
 import ru.profapp.RanobeReader.JsonApi.JsonRanobeRfApi;
@@ -44,6 +47,7 @@ import ru.profapp.RanobeReader.JsonApi.Ranoberf.RfChapterTextGson;
 import ru.profapp.RanobeReader.JsonApi.Rulate.ChapterTextGson;
 import ru.profapp.RanobeReader.Models.Chapter;
 import ru.profapp.RanobeReader.Models.Ranobe;
+import ru.profapp.RanobeReader.Models.TextChapter;
 
 public class ChapterTextActivity extends AppCompatActivity {
 
@@ -162,6 +166,7 @@ public class ChapterTextActivity extends AppCompatActivity {
             }
 
         });
+        mWebView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
         if (getIntent().getBooleanExtra("Bookmark", false)) {
             sChapterPref = mContext.getSharedPreferences(
@@ -188,8 +193,10 @@ public class ChapterTextActivity extends AppCompatActivity {
             }
         }
 
-        mWebView.getSettings().setBuiltInZoomControls(true);
-        mWebView.getSettings().setDisplayZoomControls(false);
+        // mWebView.getSettings().setBuiltInZoomControls(true);
+        // mWebView.getSettings().setDisplayZoomControls(false);
+
+        mWebView.setBackgroundColor(getResources().getColor(R.color.webViewBackground));
 
         sPref = getSharedPreferences(is_readed_Pref,
                 MODE_PRIVATE);
@@ -232,10 +239,12 @@ public class ChapterTextActivity extends AppCompatActivity {
                 + "\"";
 
         String summary =
-                "<html><body " + style + ">" + "<b>" + mCurrentChapter.getTitle() + "</b>" + "</br>"
+                "<html><style>img{display: inline;height: auto;max-width: 90%;}</style><body "
+                        + style + ">" + "<b>" + mCurrentChapter.getTitle() + "</b>" + "</br>"
                         + mCurrentChapter.getText() + "</body></html>";
 
-        mWebView.loadDataWithBaseURL(null, summary, "text/html", "UTF-8", null);
+        mWebView.loadDataWithBaseURL("https:\\\\" + mCurrentChapter.getUrl() + "/", summary,
+                "text/html", "UTF-8", null);
 
     }
 
@@ -294,22 +303,42 @@ public class ChapterTextActivity extends AppCompatActivity {
 
         mCurrentChapter = chapter;
         if (mCurrentChapter.getText() == null || mCurrentChapter.getText().isEmpty()) {
-            String url = mCurrentChapter.getRanobeUrl();
             try {
-                if (url.contains(StringResources.RanobeRf_Site)) {
-                    return GetRanobeRfChapterText(isButton);
-                } else if (url.contains(StringResources.Rulate_Site)) {
-                    return GetRulateChapterText(isButton);
+                Thread t = new Thread(() -> {
+                    TextChapter tc = DatabaseDao.getInstance(
+                            mContext).getTextDao().getTextByChapterUrl(
+                            mCurrentChapter.getUrl());
+
+                    if (tc != null && !tc.getText().equals("")) {
+                        mCurrentChapter.setText(tc.getText());
+                    }
+                });
+
+                t.start();
+                t.join();
+                if (mCurrentChapter.getText() == null || mCurrentChapter.getText().isEmpty()) {
+                    String url = mCurrentChapter.getRanobeUrl();
+                    try {
+                        if (url.contains(StringResources.RanobeRf_Site)) {
+                            return GetRanobeRfChapterText(isButton);
+                        } else if (url.contains(StringResources.Rulate_Site)) {
+                            return GetRulateChapterText(isButton);
+                        }
+                    } catch (Exception ignored) {
+                        return false;
+                    }
+
                 }
-            } catch (Exception ignored) {
+
+            } catch (InterruptedException e) {
                 return false;
             }
-
         }
+
         return true;
     }
 
-    private boolean GetRanobeRfChapterText(boolean isButton) {
+    private boolean GetRanobeRfChapterText(boolean isButton)  throws ErrorConnectionException {
         String response = JsonRanobeRfApi.getInstance().GetChapterText(mCurrentChapter);
         try {
             RfChapterTextGson readyGson = gson.fromJson(response, RfChapterTextGson.class);
@@ -338,10 +367,11 @@ public class ChapterTextActivity extends AppCompatActivity {
         SharedPreferences preferences = mContext.getSharedPreferences(
                 StringResources.Rulate_Login_Pref, 0);
         String token = preferences.getString(StringResources.KEY_Token, "");
-        String response = JsonRulateApi.getInstance().GetChapterText(mCurrentChapter.getRanobeId(),
+        try {
+            String response = JsonRulateApi.getInstance().GetChapterText(mCurrentChapter.getRanobeId(),
                 mCurrentChapter.getId(),
                 token);
-        try {
+
             ChapterTextGson readyGson = gson.fromJson(response, ChapterTextGson.class);
 
             if (readyGson.getStatus().equals("success")) {
@@ -352,6 +382,7 @@ public class ChapterTextActivity extends AppCompatActivity {
                 mCurrentChapter.setText(readyGson.getMsg());
                 return false;
             }
+
         } catch (Exception e) {
             MyLog.SendError(StringResources.LogType.WARN, ChapterTextActivity.class.toString(),
                     mCurrentChapter.getUrl(),
@@ -371,9 +402,6 @@ public class ChapterTextActivity extends AppCompatActivity {
                 initWebView(loadResult);
             } catch (ArrayIndexOutOfBoundsException e) {
                 mIndex -= i;
-                MyLog.SendError(StringResources.LogType.WARN, ChapterTextActivity.class.toString(),
-                        "", e);
-
             }
         } else {
             Toast.makeText(mContext, R.string.not_exist, Toast.LENGTH_SHORT).show();

@@ -7,7 +7,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,12 +18,9 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
+import ru.profapp.RanobeReader.Common.ErrorConnectionException;
 import ru.profapp.RanobeReader.Common.StringResources;
-import ru.profapp.RanobeReader.Helpers.HtmlParser;
-import ru.profapp.RanobeReader.Helpers.MyLog;
-import ru.profapp.RanobeReader.Helpers.StringHelper;
 import ru.profapp.RanobeReader.JsonApi.Ranoberf.Sequence;
 import ru.profapp.RanobeReader.Models.Chapter;
 
@@ -32,7 +28,7 @@ import ru.profapp.RanobeReader.Models.Chapter;
  * Created by Ruslan on 09.02.2018.
  */
 
-public class JsonRanobeRfApi extends JsonBaseClass {
+public class JsonRanobeRfApi extends JsonBaseClass  {
     private static volatile JsonRanobeRfApi instance;
 
 
@@ -63,8 +59,8 @@ public class JsonRanobeRfApi extends JsonBaseClass {
         this.sequence = gson.toJson(sequence, listType);
     }
 
-    public String GetReadyBooks(int page) {
-        String request = StringResources.RanobeRf_Site + "/v1/book/main-page-books/";
+    public String GetReadyBooks(int page)  throws ErrorConnectionException{
+        String request = StringResources.RanobeRf_Site + "/v1/book/last/";
 
         Map<String, String> data = new HashMap<>();
         data.put("page", String.valueOf(page + 1));
@@ -83,7 +79,6 @@ public class JsonRanobeRfApi extends JsonBaseClass {
                 jsonObject = new JSONObject(response);
             } catch (JSONException ignore) {
                 jsonObject = null;
-                ignore.printStackTrace();
             }
             if (jsonObject == null || jsonObject.optInt("status") == 422) {
 
@@ -111,7 +106,7 @@ public class JsonRanobeRfApi extends JsonBaseClass {
         return response;
     }
 
-    public String GetAllBooks() {
+    public String GetAllBooks()  throws ErrorConnectionException{
         String request = StringResources.RanobeRf_Site
                 + "/v1/book/list/?country=&limit=500&offset=0&order=popular";
 
@@ -123,7 +118,6 @@ public class JsonRanobeRfApi extends JsonBaseClass {
                 jsonObject = new JSONObject(response);
             } catch (JSONException ignore) {
                 jsonObject = null;
-                ignore.printStackTrace();
             }
             if (jsonObject == null || jsonObject.optInt("status") == 422) {
 
@@ -150,13 +144,13 @@ public class JsonRanobeRfApi extends JsonBaseClass {
         return response;
     }
 
-    public String SearchBooks(String search) {
+    public String SearchBooks(String search)  throws ErrorConnectionException{
         String request = StringResources.RanobeRf_Site + "/v1/book/search/?q=" + search;
 
         return getUrlText(request);
     }
 
-    public String GetChapterText(Chapter chapter) {
+    public String GetChapterText(Chapter chapter)  throws ErrorConnectionException{
 
         String ranobeName = chapter.getRanobeUrl().replace(StringResources.RanobeRf_Site, "");
 
@@ -165,15 +159,15 @@ public class JsonRanobeRfApi extends JsonBaseClass {
 
         ranobeName = ranobeName.replace("/", "");
         chapterName = chapterName.replace("/", "");
-        String request = StringResources.RanobeRf_Site + "/v1/part/load/?bookAlias=" + ranobeName
+        String request = StringResources.RanobeRf_Site + "/v1/part/get/?bookAlias=" + ranobeName
                 + "&partAlias=" + chapterName;
         return getUrlText(request);
 
     }
 
-    public String GetBookInfo(String ranobeName) {
+    public String GetBookInfo(String ranobeName)  throws ErrorConnectionException{
 
-        String request = StringResources.RanobeRf_Site + "/v1/book/load/?book_alias=" + ranobeName;
+        String request = StringResources.RanobeRf_Site + "/v1/book/get/?bookAlias=" + ranobeName;
 
         return getUrlText(request);
     }
@@ -222,8 +216,7 @@ public class JsonRanobeRfApi extends JsonBaseClass {
                 in.close();
 
                 return response.toString();
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (Exception ignored) {
             }
 
         }
@@ -231,7 +224,7 @@ public class JsonRanobeRfApi extends JsonBaseClass {
 
     }
 
-    public String AddBookmark(int book_id, int part_id, String token) {
+    public String AddBookmark(int book_id, int part_id, String token) throws ErrorConnectionException {
         if (!token.isEmpty()) {
             String request = StringResources.RanobeRf_Site + "/v1/bookmark/add/";
 
@@ -250,7 +243,7 @@ public class JsonRanobeRfApi extends JsonBaseClass {
 
 
 
-    public String Login(String name, String password) {
+    public String Login(String name, String password)  throws ErrorConnectionException{
         String request = StringResources.RanobeRf_Site + "/v1/auth/login/";
 
         Map<String, String> data = new HashMap<>();
@@ -264,7 +257,7 @@ public class JsonRanobeRfApi extends JsonBaseClass {
         return getDocumentText(Cookies, data, header, request, Connection.Method.POST.name());
     }
 
-    public String GetFavoriteBooks(String token) {
+    public String GetFavoriteBooks(String token)  throws ErrorConnectionException{
         String request = StringResources.RanobeRf_Site + "/v1/bookmark/index/";
 
         Map<String, String> data = new HashMap<>();

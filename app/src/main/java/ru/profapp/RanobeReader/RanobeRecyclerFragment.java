@@ -35,13 +35,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import ru.profapp.RanobeReader.Common.ErrorConnectionException;
 import ru.profapp.RanobeReader.Common.RanobeConstans;
 import ru.profapp.RanobeReader.Common.StringResources;
 import ru.profapp.RanobeReader.DAO.DatabaseDao;
 import ru.profapp.RanobeReader.Helpers.MyLog;
 import ru.profapp.RanobeReader.Helpers.RanobeKeeper;
+import ru.profapp.RanobeReader.JsonApi.JsonRanobeHubApi;
 import ru.profapp.RanobeReader.JsonApi.JsonRanobeRfApi;
 import ru.profapp.RanobeReader.JsonApi.JsonRulateApi;
+import ru.profapp.RanobeReader.JsonApi.RanobeHub.RanobeHubBook;
+import ru.profapp.RanobeReader.JsonApi.RanobeHub.RanobeHubReadyGson;
 import ru.profapp.RanobeReader.JsonApi.Ranoberf.RfBook;
 import ru.profapp.RanobeReader.JsonApi.Ranoberf.RfGetReadyGson;
 import ru.profapp.RanobeReader.JsonApi.Rulate.RulateBook;
@@ -51,9 +55,9 @@ import ru.profapp.RanobeReader.Models.Ranobe;
 import ru.profapp.RanobeReader.Models.TextChapter;
 
 public class RanobeRecyclerFragment extends Fragment {
-    private Activity mActivity;
     private final Gson gson = new GsonBuilder().setLenient().create();
     private final List<Ranobe> ranobeList = new ArrayList<>();
+    private Activity mActivity;
     private ProgressDialog progressDialog;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private final Thread.UncaughtExceptionHandler ExceptionHandler =
@@ -77,7 +81,6 @@ public class RanobeRecyclerFragment extends Fragment {
         page = 0;
         loadFromDatabase = true;
     }
-
 
     public static RanobeRecyclerFragment newInstance(String fragmentType) {
         RanobeRecyclerFragment fragment = new RanobeRecyclerFragment();
@@ -165,6 +168,9 @@ public class RanobeRecyclerFragment extends Fragment {
             case Ranoberf:
                 ranoberfLoadRanobe(remove);
                 break;
+            case RanobeHub:
+                ranobehubLoadRanobe(remove);
+                break;
             case Favorite:
                 favoriteLoadRanobe(remove);
                 break;
@@ -209,8 +215,8 @@ public class RanobeRecyclerFragment extends Fragment {
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
-    private void onItemsLoadFailed() {
-        Toast.makeText(mContext, "Error connection", Toast.LENGTH_SHORT).show();
+    private void onItemsLoadFailed(String errorMessage) {
+        Toast.makeText(mContext, errorMessage, Toast.LENGTH_SHORT).show();
         mRanobeRecyclerViewAdapter.setLoaded();
 
         mSwipeRefreshLayout.setRefreshing(false);
@@ -238,7 +244,7 @@ public class RanobeRecyclerFragment extends Fragment {
                     getActivity().runOnUiThread(
                             () ->
                                     progressDialog.setTitle(
-                                           mContext.getString(R.string.Load_local_bookmarks))
+                                            mContext.getString(R.string.Load_local_bookmarks))
                     );
                 }
                 List<Ranobe> favRanobeList = DatabaseDao.getInstance(
@@ -266,7 +272,8 @@ public class RanobeRecyclerFragment extends Fragment {
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(
                             () ->
-                                    progressDialog.setTitle( mContext.getString(R.string.Load_from_Rulate)));
+                                    progressDialog.setTitle(
+                                            mContext.getString(R.string.Load_from_Rulate)));
                 }
                 List<Ranobe> rulateWebList = getRulateWebFavorite();
                 if (rulateWebList.size() > 0) {
@@ -296,7 +303,8 @@ public class RanobeRecyclerFragment extends Fragment {
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(
                             () ->
-                                    progressDialog.setTitle( mContext.getString(R.string.Update_ranobe_info))
+                                    progressDialog.setTitle(
+                                            mContext.getString(R.string.Update_ranobe_info))
                     );
                 }
                 progressDialog.setMax(newRanobeList.size() + step);
@@ -329,12 +337,17 @@ public class RanobeRecyclerFragment extends Fragment {
 
                             });
                         } catch (NullPointerException e) {
-                            MyLog.SendError(StringResources.LogType.WARN,
-                                    "RanobeRecyclerFragment",
-                                    "", e);
+
                             error = true;
                             getActivity().runOnUiThread(
-                                    () -> Toast.makeText(mContext, "Error connection",
+                                    () -> Toast.makeText(mContext, getString(R.string.Error),
+                                            Toast.LENGTH_SHORT).show());
+                        } catch (ErrorConnectionException e) {
+
+                            error = true;
+                            getActivity().runOnUiThread(
+                                    () -> Toast.makeText(mContext,
+                                            getString(R.string.ErrorConnection),
                                             Toast.LENGTH_SHORT).show());
                         }
 
@@ -474,8 +487,9 @@ public class RanobeRecyclerFragment extends Fragment {
 
         String token = mPreferences.getString(StringResources.KEY_Token, "");
         if (!token.equals("")) {
-            String response = JsonRulateApi.getInstance().GetFavoriteBooks(token);
             try {
+                String response = JsonRulateApi.getInstance().GetFavoriteBooks(token);
+
                 JSONObject jsonObject = new JSONObject(response);
                 if (jsonObject.get("status").equals("success")) {
                     JSONArray jsonArray = jsonObject.getJSONArray("response");
@@ -512,8 +526,13 @@ public class RanobeRecyclerFragment extends Fragment {
                 MyLog.SendError(StringResources.LogType.WARN, "RanobeRecyclerFragment",
                         "", e);
                 if (getActivity() != null) {
-                    getActivity().runOnUiThread(this::onItemsLoadFailed);
+                    getActivity().runOnUiThread(() -> onItemsLoadFailed(getString(R.string.Error)));
                 }
+            } catch (ErrorConnectionException e) {
+                MyLog.SendError(StringResources.LogType.WARN,
+                        "RanobeRecyclerFragment", "", e);
+                Objects.requireNonNull(getActivity()).runOnUiThread(
+                        () -> onItemsLoadFailed(getString(R.string.ErrorConnection)));
             }
 
         }
@@ -528,8 +547,9 @@ public class RanobeRecyclerFragment extends Fragment {
 
         String token = mPreferences.getString(StringResources.KEY_Token, "");
         if (!token.equals("")) {
-            String response = JsonRanobeRfApi.getInstance().GetFavoriteBooks(token);
+
             try {
+                String response = JsonRanobeRfApi.getInstance().GetFavoriteBooks(token);
                 JSONObject jsonObject = new JSONObject(response);
                 if (jsonObject.getInt("status") == 200) {
 
@@ -570,8 +590,13 @@ public class RanobeRecyclerFragment extends Fragment {
                 MyLog.SendError(StringResources.LogType.WARN, "RanobeRecyclerFragment",
                         "", e);
                 if (getActivity() != null) {
-                    getActivity().runOnUiThread(this::onItemsLoadFailed);
+                    getActivity().runOnUiThread(() -> onItemsLoadFailed(getString(R.string.Error)));
                 }
+            } catch (ErrorConnectionException e) {
+                MyLog.SendError(StringResources.LogType.WARN,
+                        "RanobeRecyclerFragment", "", e);
+                Objects.requireNonNull(getActivity()).runOnUiThread(
+                        () -> onItemsLoadFailed(getString(R.string.ErrorConnection)));
             }
 
         }
@@ -583,10 +608,10 @@ public class RanobeRecyclerFragment extends Fragment {
         Thread t = new Thread() {
             @Override
             public void run() {
-                String response = JsonRulateApi.getInstance().GetReadyTranslates("",
-                        String.valueOf(page + 1));
 
                 try {
+                    String response = JsonRulateApi.getInstance().GetReadyBooks(
+                            page + 1);
                     RulateReadyGson readyGson = gson.fromJson(response,
                             RulateReadyGson.class);
                     if (readyGson.getStatus().equals("success")) {
@@ -606,7 +631,12 @@ public class RanobeRecyclerFragment extends Fragment {
                     MyLog.SendError(StringResources.LogType.WARN,
                             "RanobeRecyclerFragment", "", e);
                     Objects.requireNonNull(getActivity()).runOnUiThread(
-                            () -> onItemsLoadFailed());
+                            () -> onItemsLoadFailed(getString(R.string.Error)));
+                } catch (ErrorConnectionException e) {
+                    MyLog.SendError(StringResources.LogType.WARN,
+                            "RanobeRecyclerFragment", "", e);
+                    Objects.requireNonNull(getActivity()).runOnUiThread(
+                            () -> onItemsLoadFailed(getString(R.string.ErrorConnection)));
                 }
 
             }
@@ -621,8 +651,9 @@ public class RanobeRecyclerFragment extends Fragment {
         Thread t = new Thread() {
             @Override
             public void run() {
-                String response = JsonRanobeRfApi.getInstance().GetReadyBooks(page);
                 try {
+                    String response = JsonRanobeRfApi.getInstance().GetReadyBooks(page);
+
                     RfGetReadyGson readyGson = gson.fromJson(response,
                             RfGetReadyGson.class);
 
@@ -646,8 +677,59 @@ public class RanobeRecyclerFragment extends Fragment {
                     MyLog.SendError(StringResources.LogType.WARN,
                             RanobeRecyclerFragment.class.toString(), "", e);
                     Objects.requireNonNull(getActivity()).runOnUiThread(
-                            () -> onItemsLoadFailed());
+                            () -> onItemsLoadFailed(getString(R.string.Error)));
 
+                } catch (ErrorConnectionException e) {
+                    MyLog.SendError(StringResources.LogType.WARN,
+                            "RanobeRecyclerFragment", "", e);
+                    Objects.requireNonNull(getActivity()).runOnUiThread(
+                            () -> onItemsLoadFailed(getString(R.string.ErrorConnection)));
+                }
+
+            }
+
+        };
+        t.setUncaughtExceptionHandler(ExceptionHandler);
+        t.start();
+
+    }
+
+    private void ranobehubLoadRanobe(final boolean remove) {
+
+        Thread t = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    String response = JsonRanobeHubApi.getInstance().GetReadyBooks(page+1);
+
+                    RanobeHubReadyGson readyGson = gson.fromJson(response,
+                            RanobeHubReadyGson.class);
+
+
+                        for (RanobeHubBook value : readyGson.getRaw().getData()) {
+
+                            Ranobe ranobe = new Ranobe();
+                            ranobe.UpdateRanobeHubRanobe(value);
+                            ranobeList.add(ranobe);
+
+                        }
+
+
+                    Objects.requireNonNull(getActivity()).runOnUiThread(
+                            () -> onItemsLoadComplete(remove));
+
+                    page++;
+                } catch (JsonParseException | NullPointerException e) {
+                    MyLog.SendError(StringResources.LogType.WARN,
+                            RanobeRecyclerFragment.class.toString(), "", e);
+                    Objects.requireNonNull(getActivity()).runOnUiThread(
+                            () -> onItemsLoadFailed(getString(R.string.Error)));
+
+                } catch (ErrorConnectionException e) {
+                    MyLog.SendError(StringResources.LogType.WARN,
+                            "RanobeRecyclerFragment", "", e);
+                    Objects.requireNonNull(getActivity()).runOnUiThread(
+                            () -> onItemsLoadFailed(getString(R.string.ErrorConnection)));
                 }
 
             }
@@ -663,8 +745,9 @@ public class RanobeRecyclerFragment extends Fragment {
         Thread t = new Thread() {
             @Override
             public void run() {
-                String response = JsonRanobeRfApi.getInstance().GetAllBooks();
                 try {
+                    String response = JsonRanobeRfApi.getInstance().GetAllBooks();
+
                     JSONObject jsonObject = new JSONObject(response);
 
                     JSONArray jsonArray = jsonObject.getJSONArray("result");
@@ -685,8 +768,14 @@ public class RanobeRecyclerFragment extends Fragment {
                     MyLog.SendError(StringResources.LogType.WARN,
                             RanobeRecyclerFragment.class.toString(), "", e);
                     Objects.requireNonNull(getActivity()).runOnUiThread(
-                            () -> onItemsLoadFailed());
 
+                            () -> onItemsLoadFailed(getString(R.string.Error)));
+
+                } catch (ErrorConnectionException e) {
+                    MyLog.SendError(StringResources.LogType.WARN,
+                            "RanobeRecyclerFragment", "", e);
+                    Objects.requireNonNull(getActivity()).runOnUiThread(
+                            () -> onItemsLoadFailed(getString(R.string.ErrorConnection)));
                 }
             }
 

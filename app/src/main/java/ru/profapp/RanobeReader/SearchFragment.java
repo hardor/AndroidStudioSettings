@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,10 +21,13 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+import ru.profapp.RanobeReader.Common.ErrorConnectionException;
 import ru.profapp.RanobeReader.Common.RanobeConstans;
 import ru.profapp.RanobeReader.Common.StringResources;
 import ru.profapp.RanobeReader.Helpers.MyLog;
+import ru.profapp.RanobeReader.JsonApi.JsonRanobeHubApi;
 import ru.profapp.RanobeReader.JsonApi.JsonRanobeRfApi;
 import ru.profapp.RanobeReader.JsonApi.JsonRulateApi;
 import ru.profapp.RanobeReader.Models.Ranobe;
@@ -90,7 +94,7 @@ public class SearchFragment extends Fragment {
                 if (mRanobeList.size() == 0) {
                     resultLabel.setVisibility(View.VISIBLE);
                 }
-                mRanobeRecyclerViewAdapter.notifyItemRangeInserted(0,mRanobeList.size());
+                mRanobeRecyclerViewAdapter.notifyItemRangeInserted(0, mRanobeList.size());
                 recyclerView.scrollToPosition(0);
                 progressDialog.dismiss();
 
@@ -132,7 +136,7 @@ public class SearchFragment extends Fragment {
     private void findRanobe(String searchString) {
         int size = mRanobeList.size();
         mRanobeList.clear();
-        mRanobeRecyclerViewAdapter.notifyItemRangeRemoved(0,size);
+        mRanobeRecyclerViewAdapter.notifyItemRangeRemoved(0, size);
         try {
             searchString = URLEncoder.encode(searchString, "UTF-8");
         } catch (UnsupportedEncodingException e) {
@@ -140,16 +144,24 @@ public class SearchFragment extends Fragment {
             MyLog.SendError(StringResources.LogType.WARN, SearchFragment.class.toString(), "", e);
         }
 
-        findRanoberfRanobe(searchString);
-        findRulateRanobe(searchString);
+        try {
+          //  findRanoberfRanobe(searchString);
+        //    findRulateRanobe(searchString);
+            findRanobeHubRanobe(searchString);
+        } catch (ErrorConnectionException e) {
+            Objects.requireNonNull(getActivity()).runOnUiThread(
+                    () -> Toast.makeText(mContext,
+                            getString(R.string.ErrorConnection),
+                            Toast.LENGTH_SHORT).show());
+        }
+
     }
 
-    private void findRulateRanobe(String searchString) {
+    private void findRulateRanobe(String searchString) throws ErrorConnectionException {
         List<Ranobe> ranobes = new ArrayList<>();
-
-        String response = JsonRulateApi.getInstance().SearchBooks(searchString);
-
         try {
+            String response = JsonRulateApi.getInstance().SearchBooks(searchString);
+
             JSONObject jsonObject = new JSONObject(response);
             if (jsonObject.get("status").equals("success")) {
 
@@ -180,12 +192,46 @@ public class SearchFragment extends Fragment {
 
     }
 
-    private void findRanoberfRanobe(String searchString) {
+    private void findRanobeHubRanobe(String searchString) throws ErrorConnectionException {
         List<Ranobe> ranobes = new ArrayList<>();
-
-        String response = JsonRanobeRfApi.getInstance().SearchBooks(searchString);
-
         try {
+            String response = JsonRanobeHubApi.getInstance().SearchBooks(searchString);
+
+            JSONObject jsonObject = new JSONObject(response);
+
+
+                JSONArray jsonArray = jsonObject.getJSONObject("categories").getJSONObject("ranobe").getJSONArray("items");
+                for (int i = 0; i < jsonArray.length(); i++) {
+
+                    JSONObject value = jsonArray.getJSONObject(i);
+                    Ranobe ranobe = new Ranobe();
+                    ranobe.UpdateRanobe(value, RanobeConstans.JsonObjectFrom.RanobeHubSearch);
+                    ranobes.add(ranobe);
+
+                }
+
+
+        } catch (JSONException e) {
+            MyLog.SendError(StringResources.LogType.WARN, SearchFragment.class.toString(), "", e);
+
+        }
+
+        if (ranobes.size() > 0) {
+            Ranobe ranobet = new Ranobe();
+            ranobet.setRanobeSite(StringResources.Title_Site);
+            ranobet.setTitle(this.getString(R.string.ranobe_rf));
+            mRanobeList.add(ranobet);
+
+            mRanobeList.addAll(ranobes);
+        }
+
+    }
+
+    private void findRanoberfRanobe(String searchString) throws ErrorConnectionException {
+        List<Ranobe> ranobes = new ArrayList<>();
+        try {
+            String response = JsonRanobeRfApi.getInstance().SearchBooks(searchString);
+
             JSONObject jsonObject = new JSONObject(response);
             if (jsonObject.getInt("status") == 200) {
 
@@ -215,7 +261,6 @@ public class SearchFragment extends Fragment {
         }
 
     }
-
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated

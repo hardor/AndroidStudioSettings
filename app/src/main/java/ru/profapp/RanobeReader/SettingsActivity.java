@@ -2,8 +2,10 @@ package ru.profapp.RanobeReader;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -48,7 +50,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
                 return true;
             };
-
 
     private static boolean isXLargeTablet(Context context) {
         return (context.getResources().getConfiguration().screenLayout
@@ -110,6 +111,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 || RulatePreferenceFragment.class.getName().equals(fragmentName)
                 || RanobeRfPreferenceFragment.class.getName().equals(fragmentName)
                 || DataPreferenceFragment.class.getName().equals(fragmentName);
+                //|| ExportPreferenceFragment.class.getName().equals(fragmentName);
     }
 
     @Override
@@ -135,8 +137,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             addPreferencesFromResource(R.xml.pref_general);
             setHasOptionsMenu(true);
 
-
-
             findPreference(
                     getString(R.string.pref_general_hide_chapter)).setOnPreferenceChangeListener(
                     sChangePreferenceListener);
@@ -147,7 +147,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             findPreference(
                     getString(R.string.pref_general_app_theme)).setOnPreferenceChangeListener(
                     sChangePreferenceListener);
-
 
         }
 
@@ -232,6 +231,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         }
 
     }
+
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class DataPreferenceFragment extends PreferenceFragment {
         @Override
@@ -276,16 +276,81 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
             setHasOptionsMenu(true);
         }
-
-        @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
-            int id = item.getItemId();
-            if (id == android.R.id.home) {
-                getActivity().onBackPressed();
-                return true;
-            }
-            return super.onOptionsItemSelected(item);
-        }
-
     }
+
+//    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+//    public static class ExportPreferenceFragment extends PreferenceFragment {
+//
+//        @Override
+//        public void onCreate(Bundle savedInstanceState) {
+//            super.onCreate(savedInstanceState);
+//            addPreferencesFromResource(R.xml.pref_export);
+//
+//            Preference exportButton = findPreference(getString(R.string.ExportButton));
+//            exportButton.setOnPreferenceClickListener((Preference preference) -> {
+//                final Context context = preference.getContext();
+//
+//                String fileName = "ranobeReader.backup";
+//
+//
+//                File output = new File(context.getFilesDir(), fileName);
+//                AsyncTask.execute(() -> {
+//                try {
+//                    String value = "";
+//                    FileOutputStream fileout = new FileOutputStream(output.getAbsolutePath());
+//                    OutputStreamWriter outputWriter = new OutputStreamWriter(fileout);
+//
+//                    List<Ranobe> ranobes = DatabaseDao.getInstance(
+//                            context).getRanobeDao().GetFavoriteRanobes();
+//                    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+//
+//                    //value = gson.toJson(ranobes.get(0));
+//                    // TypeToken<List<Ranobe>>() {}.getType());
+//
+//                    outputWriter.write(value);
+//                    outputWriter.close();
+//                    Toast.makeText(context, "File saved successfully!",
+//                            Toast.LENGTH_SHORT).show();
+//                } catch (IOException e) {
+//                    Log.e("Exception", "File write failed: " + e.toString());
+//                }
+//
+//
+//
+//                });
+//                return true;
+//            });
+//
+//            Preference importButton = findPreference(getString(R.string.ImportButton));
+//            importButton.setOnPreferenceClickListener((Preference preference) -> {
+//                final Context context = preference.getContext();
+//                Intent intent = new Intent()
+//                        .setType("*/*")
+//                        .setAction(Intent.ACTION_GET_CONTENT);
+//
+//                startActivityForResult(Intent.createChooser(intent, "Select a file"), 123);
+//
+//                return true;
+//            });
+//
+//
+//
+//            setHasOptionsMenu(true);
+//        }
+//
+//        @Override
+//        public boolean onOptionsItemSelected(MenuItem item) {
+//            int id = item.getItemId();
+//            if (id == android.R.id.home) {
+//                getActivity().onBackPressed();
+//                return true;
+//            }
+//            return super.onOptionsItemSelected(item);
+//        }
+//
+//    }
+
+
+
 }
+

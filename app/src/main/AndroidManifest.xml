@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
           package="ru.profapp.RanobeReader">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
-
+    <!--<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
 
     <application
         android:allowBackup="true"
@@ -46,10 +47,10 @@
 
         <activity
             android:name=".DownloadActivity"
-            android:label="@string/title_activity_download" >
+            android:label="@string/title_activity_download">
         </activity>
         <meta-data android:name="com.google.android.backup.api_key"
-                   android:value="AEdPqrEAAAAIcORPcg1t8lO1zc5q5si6PVokDoSqx9zWn1G_MA" />
+                   android:value="AEdPqrEAAAAIcORPcg1t8lO1zc5q5si6PVokDoSqx9zWn1G_MA"/>
     </application>
 
 </manifest>

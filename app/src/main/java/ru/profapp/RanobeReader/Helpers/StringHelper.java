@@ -1,13 +1,6 @@
 package ru.profapp.RanobeReader.Helpers;
 
-import com.google.gson.JsonObject;
-
-import org.apache.commons.text.StringEscapeUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.safety.Whitelist;
 
 /**
  * Created by Ruslan on 08.02.2018.

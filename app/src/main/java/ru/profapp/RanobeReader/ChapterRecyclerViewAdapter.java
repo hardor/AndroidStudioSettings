@@ -3,9 +3,9 @@ package ru.profapp.RanobeReader;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,13 +48,52 @@ public class ChapterRecyclerViewAdapter extends
         }
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         switch (viewType) {
             case VIEW_TYPE_ITEM: {
                 View view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.chapter_item, parent, false);
-                return new ViewHolder(view);
+                final ViewHolder holder = new ViewHolder(view);
+                final int position = holder.getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    if (!holder.mChapterItem.getCanRead()) {
+                        holder.itemView.setBackgroundColor(Color.GRAY);
+                    } else {
+                        holder.itemView.setOnClickListener(v -> {
+                            if (RanobeKeeper.getInstance().getRanobe() == null || !Objects.equals(
+
+                                    holder.mChapterItem.getRanobeUrl(),
+                                    RanobeKeeper.getInstance().getRanobe().getUrl())) {
+
+                                Ranobe ranobe = new Ranobe();
+                                ranobe.setUrl(holder.mChapterItem.getRanobeUrl());
+                                if ((RanobeKeeper.getInstance().getFragmentType() != null
+                                        && RanobeKeeper.getInstance().getFragmentType()
+                                        != RanobeConstans.FragmentType.History)) {
+                                    try {
+                                        ranobe.updateRanobe(mContext);
+                                    } catch (Exception ignored) {
+                                        ranobe = mRanobe;
+                                    }
+                                } else {
+                                    ranobe = mRanobe;
+                                }
+
+                                RanobeKeeper.getInstance().setRanobe(ranobe);
+                            }
+                            if (RanobeKeeper.getInstance().getRanobe() != null) {
+                                Intent intent = new Intent(v.getContext(),
+                                        ChapterTextActivity.class);
+                                intent.putExtra("ChapterIndex", holder.getAdapterPosition());
+
+                                v.getContext().startActivity(intent);
+                            }
+                        });
+                    }
+                }
+                return holder;
             }
             default:
             case VIEW_TYPE_LOADING: {
@@ -64,11 +103,10 @@ public class ChapterRecyclerViewAdapter extends
             }
 
         }
-
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, int position) {
 
         if (holder instanceof ViewHolder) {
             ((ViewHolder) holder).mChapterItem = mValues.get(position);
@@ -77,36 +115,36 @@ public class ChapterRecyclerViewAdapter extends
             if (!((ViewHolder) holder).mChapterItem.getCanRead()) {
                 ((ViewHolder) holder).mView.setBackgroundColor(Color.GRAY);
             } else {
-                ((ViewHolder) holder).mTextView.setOnClickListener(v -> {
-
-                    if (RanobeKeeper.getInstance().getRanobe() == null || !Objects.equals(
-                            ((ViewHolder) holder).mChapterItem.getRanobeUrl(),
-                            RanobeKeeper.getInstance().getRanobe().getUrl())) {
-
-                        Ranobe ranobe = new Ranobe();
-                        ranobe.setUrl(((ViewHolder) holder).mChapterItem.getRanobeUrl());
-                        if ((RanobeKeeper.getInstance().getFragmentType() != null
-                                && RanobeKeeper.getInstance().getFragmentType()
-                                != RanobeConstans.FragmentType.History)) {
-                            try {
-                                ranobe.updateRanobe(mContext);
-                            } catch (Exception ignored) {
-                                ranobe = mRanobe;
-                            }
-                        } else {
-                            ranobe = mRanobe;
-                        }
-
-                        RanobeKeeper.getInstance().setRanobe(ranobe);
-                    }
-                    if (RanobeKeeper.getInstance().getRanobe() != null) {
-                        Intent intent = new Intent(v.getContext(), ChapterTextActivity.class);
-                        intent.putExtra("ChapterIndex", holder.getAdapterPosition());
-
-                        v.getContext().startActivity(intent);
-                    }
-
-                });
+//                ((ViewHolder) holder).mTextView.setOnClickListener(v -> {
+//
+//                    if (RanobeKeeper.getInstance().getRanobe() == null || !Objects.equals(
+//                            ((ViewHolder) holder).mChapterItem.getRanobeUrl(),
+//                            RanobeKeeper.getInstance().getRanobe().getUrl())) {
+//
+//                        Ranobe ranobe = new Ranobe();
+//                        ranobe.setUrl(((ViewHolder) holder).mChapterItem.getRanobeUrl());
+//                        if ((RanobeKeeper.getInstance().getFragmentType() != null
+//                                && RanobeKeeper.getInstance().getFragmentType()
+//                                != RanobeConstans.FragmentType.History)) {
+//                            try {
+//                                ranobe.updateRanobe(mContext);
+//                            } catch (Exception ignored) {
+//                                ranobe = mRanobe;
+//                            }
+//                        } else {
+//                            ranobe = mRanobe;
+//                        }
+//
+//                        RanobeKeeper.getInstance().setRanobe(ranobe);
+//                    }
+//                    if (RanobeKeeper.getInstance().getRanobe() != null) {
+//                        Intent intent = new Intent(v.getContext(), ChapterTextActivity.class);
+//                        intent.putExtra("ChapterIndex", holder.getAdapterPosition());
+//
+//                        v.getContext().startActivity(intent);
+//                    }
+//
+//                });
 
             }
 
@@ -118,12 +156,6 @@ public class ChapterRecyclerViewAdapter extends
         } else if (holder instanceof LoadingViewHolder) {
             ((LoadingViewHolder) holder).progressBar.setIndeterminate(true);
         }
-    }
-
-    private Pair<String, Boolean> getText(Chapter chapter, Context context) {
-        ChapterTextActivity chapterText = new ChapterTextActivity();
-        Boolean res = chapterText.GetChapterText(chapter, context);
-        return new Pair<>(chapterText.mCurrentChapter.getText(), res);
     }
 
     @Override

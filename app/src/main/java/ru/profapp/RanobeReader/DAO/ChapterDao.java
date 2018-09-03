@@ -17,11 +17,11 @@ import ru.profapp.RanobeReader.Models.Chapter;
 
 @Dao
 public interface ChapterDao {
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+//Todo: change replace to ignore
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Chapter chapter);
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(Chapter... chapters);
 
     @Update

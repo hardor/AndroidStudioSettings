@@ -39,6 +39,7 @@
 
     <string name="pref_general_app_theme" translatable="false">pref_general_app_theme</string>
     <string name="ranobe_rf" translatable="false">Ранобэ.рф</string>
+    <string name="ranobe_hub" translatable="false">RanobeHub</string>
 
 
     <string name="title_activity_ranobe_info" translatable="false">RanobeInfo</string>
@@ -132,11 +133,20 @@
     <string name="Load_from_Rulate">Load bookmarks from Rulate site</string>
     <string name="Load_from_RanobeRf">Load bookmarks from Ранобэ.рф site</string>
     <string name="Update_ranobe_info">Update ranobes information</string>
-    <string name="sync">Synchronization</string>
-    <string name="save_history">Save history</string>
-    <string name="SaveHistoryButton">SaveHistoryButton</string>
-    <string name="save_history_full">Save information about readed chapters</string>
-    <string name="open_in_browser">Open in browser</string>
+    <string name="sync" translatable="false">Synchronization</string>
+    <string name="save_history" translatable="false">Save history</string>
+    <string name="SaveHistoryButton" translatable="false">SaveHistoryButton</string>
+    <string name="save_history_full" translatable="false">Save information about readed chapters</string>
+    <string name="open_in_browser" translatable="false">Open in browser</string>
     <string name="finish">Finish</string>
+    <string name="export_import">Export/Import</string>
+    <string name="export">Export</string>
+    <string name="dimport">Import</string>
+    <string name="ExportButton" translatable="false">ExportButton</string>
+    <string name="export_to_device">Export data to device</string>
+    <string name="import_to_device">Import data from device</string>
+    <string name="ImportButton">ImportButton</string>
+    <string name="ErrorConnection">Error Connection</string>
+    <string name="Error">Error</string>
 
 </resources>

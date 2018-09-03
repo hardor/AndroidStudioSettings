@@ -1,20 +1,12 @@
 package ru.profapp.RanobeReader.JsonApi;
 
-import org.jsoup.nodes.Document;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-
-import ru.profapp.RanobeReader.Common.StringResources;
-import ru.profapp.RanobeReader.Helpers.HtmlParser;
-import ru.profapp.RanobeReader.Helpers.StringHelper;
+import ru.profapp.RanobeReader.Common.ErrorConnectionException;
 
 /**
  * Created by Ruslan on 09.02.2018.
  */
 
-public class JsonRulateApi  extends JsonBaseClass {
+public class JsonRulateApi extends JsonBaseClass  {
 
     private static volatile JsonRulateApi instance;
     private final String ApiString = "https://tl.rulate.ru/api/%s?key=fpoiKLUues81werht039";
@@ -32,8 +24,9 @@ public class JsonRulateApi  extends JsonBaseClass {
         }
         return instance;
     }
-
-    public String Login(String login, String pass) {
+    
+   
+    public String Login(String login, String pass) throws ErrorConnectionException {
         String request = String.format(ApiString, "auth");
 
         request += "&login=" + login;
@@ -42,20 +35,17 @@ public class JsonRulateApi  extends JsonBaseClass {
         return getUrlText(request);
     }
 
-    public String GetReadyTranslates(String limit, String page) {
+   
+    public String GetReadyBooks(int page) throws ErrorConnectionException {
         String request = String.format(ApiString, "getReady");
 
-        if (limit != null) {
-            request += "&limit=" + limit;
-        }
-        if (page != null) {
-            request += "&page=" + page;
-        }
+        request += "&page=" + String.valueOf(page);
 
         return getUrlText(request);
     }
 
-    public String SearchBooks(String search) {
+   
+    public String SearchBooks(String search) throws ErrorConnectionException {
         if (search.isEmpty()) {
             return "";
         }
@@ -66,7 +56,7 @@ public class JsonRulateApi  extends JsonBaseClass {
         return getUrlText(request);
     }
 
-    public String GetFavoriteBooks(String token) {
+    public String GetFavoriteBooks(String token) throws ErrorConnectionException {
         if (token.isEmpty()) {
             return "";
         }
@@ -77,7 +67,9 @@ public class JsonRulateApi  extends JsonBaseClass {
         return getUrlText(request);
     }
 
-    public String GetChapterText(int book_id, int chapter_id, String token) {
+   
+    public String GetChapterText(int book_id, int chapter_id, String token)
+            throws ErrorConnectionException {
         String request = String.format(ApiString, "chapter");
         if (!token.isEmpty()) {
             request += "&token=" + token;
@@ -87,11 +79,10 @@ public class JsonRulateApi  extends JsonBaseClass {
         request += "&book_id=" + book_id;
 
         String str = getUrlText(request);
-
-        return str.replaceAll("(src=\\\\\\\")\\\\\\/","$1https:\\\\\\/\\\\\\/tl.rulate.ru\\\\\\/");
+        return str;
     }
 
-    public String AddBookmark(int book_id, String token) {
+    public String AddBookmark(int book_id, String token) throws ErrorConnectionException {
         String request = String.format(ApiString, "addBookmark");
         if (!token.isEmpty()) {
             request += "&token=" + token;
@@ -103,7 +94,7 @@ public class JsonRulateApi  extends JsonBaseClass {
         return getUrlText(request);
     }
 
-    public String RemoveBookmark(int book_id, String token) {
+    public String RemoveBookmark(int book_id, String token) throws ErrorConnectionException {
         String request = String.format(ApiString, "removeBookmark");
         if (!token.isEmpty()) {
             request += "&token=" + token;
@@ -115,7 +106,8 @@ public class JsonRulateApi  extends JsonBaseClass {
         return getUrlText(request);
     }
 
-    public String GetBookInfo(int book_id, String token) {
+   
+    public String GetBookInfo(int book_id, String token) throws ErrorConnectionException {
         String request = String.format(ApiString, "book");
 
         if (!token.isEmpty()) {
@@ -125,6 +117,5 @@ public class JsonRulateApi  extends JsonBaseClass {
 
         return getUrlText(request).replace("comments\":\"\",", "\":null,");
     }
-
 
 }
