@@ -288,6 +288,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                     recyclerView.adapter = adapterExpandable
 
                 }, { error ->
+                    MyLog.SendError(MyLog.LogType.ERROR, "loadChapters", "", error.fillInStackTrace())
                     mCurrentRanobe.wasUpdated = false
                     progressBar.visibility = View.GONE
                 })

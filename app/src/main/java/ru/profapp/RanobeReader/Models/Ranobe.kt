@@ -7,7 +7,6 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.google.gson.GsonBuilder
-import com.google.gson.JsonParseException
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -18,10 +17,6 @@ import ru.profapp.RanobeReader.Common.RanobeConstants.RanobeSite.*
 import ru.profapp.RanobeReader.Common.StringResources
 import ru.profapp.RanobeReader.Fragments.RepositoryProvider
 import ru.profapp.RanobeReader.Helpers.MyLog
-import ru.profapp.RanobeReader.JsonApi.JsonRanobeRfApi
-import ru.profapp.RanobeReader.JsonApi.Ranoberf.ResultBookInfo
-import ru.profapp.RanobeReader.JsonApi.Ranoberf.RfBook
-import ru.profapp.RanobeReader.JsonApi.Ranoberf.RfBookInfoGson
 import ru.profapp.RanobeReader.JsonApi.Rulate.RulateComment
 import java.util.*
 
@@ -184,7 +179,7 @@ class Ranobe() {
     private fun updateRanobeHubRanobe() {
 
         val repository = RepositoryProvider.provideRanobeHubRepository()
-        repository.GetChapters(id).observeOn(AndroidSchedulers.mainThread())
+        repository.getChapters(id).observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
 
                 .subscribe { result ->
@@ -215,7 +210,7 @@ class Ranobe() {
             } else if (ranobeSite == RanobeHub.url || url.contains(
                             RanobeHub.url)) {
                 //updateRanobeHubRanobe()
-                return RepositoryProvider.provideRanobeHubRepository().GetBookInfo(this)
+                return RepositoryProvider.provideRanobeHubRepository().getBookInfo(this)
 
             } else if (ranobeSite != Title.url) {
                 throw NullPointerException()

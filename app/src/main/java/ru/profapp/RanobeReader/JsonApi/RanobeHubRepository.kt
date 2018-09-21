@@ -8,6 +8,7 @@ import ru.profapp.RanobeReader.JsonApi.IApiServices.IRanobeHubApiService
 import ru.profapp.RanobeReader.JsonApi.RanobeHub.RanobeHubBook
 import ru.profapp.RanobeReader.JsonApi.RanobeHub.RanobeHubReadyGson
 import ru.profapp.RanobeReader.JsonApi.RanobeHub.tChapter
+import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.Models.Ranobe
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -15,8 +16,32 @@ import java.util.*
 
 object RanobeHubRepository {
 
-    fun GetBookInfo(ranobe: Ranobe): Observable<Ranobe> {
-        return Observable.create { ranobe }
+    fun getBookInfo(ranobe: Ranobe): Observable<Ranobe> {
+        return IRanobeHubApiService.create().GetChapters(ranobe.id)
+                .map {
+
+
+                    ranobe.chapterList.clear()
+                    var index = 0
+                    for( volume in it.data ) {
+                        for ( rChapter in volume.chapters) {
+                            val chapter = Chapter()
+
+                            chapter.title = if (chapter.title.isBlank()) rChapter.name else chapter.title
+
+                            chapter.url = if (chapter.url.isBlank()) "${ranobe.url}/${volume.num}/${rChapter.num}" else chapter.url
+
+                            chapter.ranobeUrl = ranobe.url
+                            chapter.ranobeName = ranobe.title
+                            chapter.index = index++
+
+                            ranobe.chapterList.add(chapter)
+                        }
+                    }
+                    return@map ranobe
+                }
+
+
     }
 
     fun getReadyBooks(page: Int): Observable<ArrayList<Ranobe>> {
@@ -56,10 +81,10 @@ object RanobeHubRepository {
                 }
     }
 
-    fun GetChapters(ranobe_id: Int): Observable<List<tChapter>> {
+    fun getChapters(ranobe_id: Int): Observable<List<tChapter>> {
         return IRanobeHubApiService.create().GetChapters(ranobe_id)
                 .map {
-                    return@map it[0].chapters
+                    return@map it.data.map { c -> c.chapters }.flatten()
                 }
     }
 
@@ -69,14 +94,14 @@ object RanobeHubRepository {
 
         for (value in it) {
             val ranobe = Ranobe(RanobeConstants.RanobeSite.RanobeHub)
-            ranobe.UpdateRanobeHubRanobe(value)
+            ranobe.updateRanobeHubRanobe(value)
             or.add(ranobe)
 
         }
         return or
     }
 
-    private infix fun Ranobe.UpdateRanobeHubRanobe(book: RanobeHubBook) {
+    private infix fun Ranobe.updateRanobeHubRanobe(book: RanobeHubBook) {
 
         id = if (id == -1) book.id ?: id else id
 

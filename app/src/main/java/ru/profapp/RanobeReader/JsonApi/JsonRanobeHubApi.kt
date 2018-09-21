@@ -16,26 +16,6 @@ class JsonRanobeHubApi private constructor() : JsonBaseClass() {
     }
 
 
-    fun GetReadyBooks(page: Int): String {
-        val request = RanobeHub.url + "/GetReadyBooks?page=" + page.toString()
-
-        val header = HashMap<String, String>()
-        header["X-Requested-With"] = "XMLHttpRequest"
-        header["X-Csrf-Token"] = "bUiRubkaLYvzrYV9IiexSeCAbAQ8xd5OXNDGWzIA"
-
-        return getUrlText(request, header)
-    }
-
-
-    fun SearchBooks(search: String): String {
-        val request = RanobeHub.url + "/api/ranobe/getByName/" + search
-
-        val header = HashMap<String, String>()
-        // header.put("X-Requested-With", "XMLHttpRequest");
-
-        return getUrlText(request, header)
-    }
-
 
     fun GetFavoriteBooks(token: String): String? {
         return null

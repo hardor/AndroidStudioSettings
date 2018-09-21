@@ -93,7 +93,7 @@ object RanobeRfRepository {
 
 
 
-        engTitle = book.fullTitle?.replace(title + " / ", "")
+        engTitle = book.fullTitle?.replace("$title / ", "")
 //        url = book.alias
         description = book.description?.let { StringHelper.removeTags(it) }
         additionalInfo = book.info?.let { StringHelper.cleanAdditionalInfo(it) }

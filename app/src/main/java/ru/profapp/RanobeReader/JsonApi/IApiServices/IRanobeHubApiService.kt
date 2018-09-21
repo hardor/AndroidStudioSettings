@@ -27,7 +27,7 @@ interface IRanobeHubApiService {
     fun SearchBooks(@Path("name") name: String): Observable<RanobeHubSearchGson>
 
     @GET("/api/ranobe/{ranobe_id}/contents")
-    fun GetChapters(@Path("ranobe_id") ranobe_id: Int): Observable<List<ChaptersGson>>
+    fun GetChapters(@Path("ranobe_id") ranobe_id: Int): Observable<ChaptersGson>
 
     @GET("/api/ranobe/chapter")
     fun GetChapterText(@Query("ranobe_id") ranobe_id: Int, @Query("volume_num") volume_num: Int, @Query("chapter_num") chapter_num: Int): Observable<ChapterTextGson>
