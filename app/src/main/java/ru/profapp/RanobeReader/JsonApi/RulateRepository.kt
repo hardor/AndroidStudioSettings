@@ -19,7 +19,7 @@ import java.util.*
 
 object RulateRepository {
 
-    fun GetBookInfo(ranobe: Ranobe, token: String = "", book_id: Int): Observable<Ranobe> {
+    fun getBookInfo(ranobe: Ranobe, token: String = "", book_id: Int): Observable<Ranobe> {
         return IRulateApiService.create().GetBookInfo(token, book_id)
                 .map {
                     if (it.status == "success") {

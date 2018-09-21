@@ -24,24 +24,16 @@ internal class ParentDataItem(internal val parentName: String = "", internal val
 
 class ExpandableChapterRecyclerViewAdapter(private val mRanobe: Ranobe) : RecyclerView.Adapter<ExpandableChapterRecyclerViewAdapter.MyViewHolder>() {
 
-    private val notAvailable: String = "Not Available"
-
     constructor(mChapters: ArrayList<Chapter>, mRanobe: Ranobe) : this(mRanobe) {
 
-        val notAvailableChapters = mChapters.filter { chapter -> !chapter.canRead }
-        if (notAvailableChapters.any())
-            parentDataItems.add(ParentDataItem(notAvailable, notAvailableChapters))
-
-        val availableChapters = mChapters.filter { chapter -> chapter.canRead }
         val numInGroup = 100
-        val num = availableChapters.size / numInGroup
+        val num = mChapters.size / numInGroup
         for (i in 0..num) {
             val parentDataItem = ParentDataItem(
-                    "${availableChapters[minOf((i + 1) * numInGroup, availableChapters.size - 1)].title} - ${availableChapters[minOf(i * numInGroup, availableChapters.size - 1)].title}",
-                    (availableChapters.subList(i * numInGroup, minOf((i + 1) * numInGroup, availableChapters.size))))
+                    "${mChapters[minOf((i + 1) * numInGroup, mChapters.size - 1)].title} - ${mChapters[minOf(i * numInGroup, mChapters.size - 1)].title}",
+                    (mChapters.subList(i * numInGroup, minOf((i + 1) * numInGroup, mChapters.size))))
             parentDataItems.add(parentDataItem)
         }
-
 
     }
 
@@ -58,9 +50,7 @@ class ExpandableChapterRecyclerViewAdapter(private val mRanobe: Ranobe) : Recycl
 
         val parentDataItem = parentDataItems[position]
         holder.textView_parentName.text = parentDataItem.parentName
-        if (holder.textView_parentName.text == notAvailable)
-            holder.textView_parentName.setBackgroundColor(Color.GRAY)
-        //
+
         val noOfChildTextViews = holder.linearLayout_childItems.childCount
         val noOfChild = parentDataItem.childDataItems
         if (noOfChild.size < noOfChildTextViews) {

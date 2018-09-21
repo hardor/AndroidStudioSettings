@@ -116,13 +116,6 @@ class Ranobe() {
     var bookmarkIdRf: Int = 0
 
 
-    private fun UpdateRanobeRfRanobe(result: ResultBookInfo) {
-
-    }
-
-    private fun UpdateRanobeRfRanobe(result: RfBook) {
-
-    }
 
     fun UpdateRanobe(`object`: JSONObject, enumFrom: RanobeConstants.JsonObjectFrom) {
 
@@ -186,25 +179,7 @@ class Ranobe() {
 
     }
 
-    private fun updateRanobeRfRanobe() {
 
-        var ranobeName = url.replace(RanobeRf.url, "")
-        ranobeName = ranobeName.substring(1, ranobeName.length - 1)
-        val response = JsonRanobeRfApi.getInstance()!!.GetBookInfo(ranobeName)
-
-        try {
-            val bookGson = gson.fromJson(response, RfBookInfoGson::class.java)
-
-            if (bookGson.status == 200) {
-                UpdateRanobeRfRanobe(bookGson.result!!)
-            }
-        } catch (e: JsonParseException) {
-            MyLog.SendError(MyLog.LogType.WARN, RfBookInfoGson::class.java.toString(),
-                    ranobeName, e)
-
-        }
-
-    }
 
     private fun updateRanobeHubRanobe() {
 
@@ -231,11 +206,10 @@ class Ranobe() {
             if (ranobeSite == Rulate.url || url.contains(Rulate.url)) {
                 val mPreferences = mContext.getSharedPreferences(
                         StringResources.Rulate_Login_Pref, 0)
-                val token = mPreferences.getString(StringResources.KEY_Token, "")
-                return RepositoryProvider.provideRulateRepository().GetBookInfo(this, token!!, id)
+                val token = mPreferences.getString(StringResources.KEY_Token, "")?:""
+                return RepositoryProvider.provideRulateRepository().getBookInfo(this, token, id)
 
-            } else if (ranobeSite == RanobeRf.url || url.contains(
-                            RanobeRf.url)) {
+            } else if (ranobeSite == RanobeRf.url || url.contains(                      RanobeRf.url)) {
                 // updateRanobeRfRanobe()
                 return RepositoryProvider.provideRanobeRfRepository().getBookInfo(this)
             } else if (ranobeSite == RanobeHub.url || url.contains(

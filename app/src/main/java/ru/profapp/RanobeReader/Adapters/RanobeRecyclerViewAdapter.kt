@@ -138,8 +138,7 @@ class RanobeRecyclerViewAdapter(recyclerView: RecyclerView, private val mValues:
             val chapterList = holder.mItem.chapterList
 
             val adapter = ChapterRecyclerViewAdapter(
-                    ArrayList(
-                            chapterList.subList(0, Math.min(RanobeConstants.chaptersNum, chapterList.size))),
+                    ArrayList(chapterList.subList(0, Math.min(RanobeConstants.chaptersNum, chapterList.size))),
                     holder.mItem)
 
             val itemDecorator = DividerItemDecoration(holder.context,DividerItemDecoration.VERTICAL)

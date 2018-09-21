@@ -5,8 +5,11 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
+import ru.profapp.RanobeReader.JsonApi.Ranoberf.RfBookInfoGson
+import ru.profapp.RanobeReader.JsonApi.Ranoberf.RfChapterTextGson
 import ru.profapp.RanobeReader.JsonApi.Ranoberf.RfGetReadyGson
 import ru.profapp.RanobeReader.JsonApi.Ranoberf.RfSearchJson
+import ru.profapp.RanobeReader.JsonApi.Rulate.BookInfoGson
 
 
 interface IRanobeRfApiService {
@@ -17,6 +20,12 @@ interface IRanobeRfApiService {
 
     @GET("/v1/book/search/")
     fun SearchBooks(@Query("q") search: String): Observable<RfSearchJson>
+
+    @GET("/v1/part/get/")
+    fun GetChapterText(@Query("bookAlias") bookAlias: String = "", @Query("partAlias") partAlias: String = ""): Observable<RfChapterTextGson>
+
+    @GET("/v1/book/get/")
+    fun GetBookInfo(@Query("bookAlias") bookAlias: String=""): Observable<RfBookInfoGson>
 
     companion object Factory {
 
