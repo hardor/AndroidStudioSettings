@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ru.profapp.RanobeReader.DownloadActivity"
+    tools:context="ru.profapp.RanobeReader.Activities.DownloadActivity"
 >
     <androidx.cardview.widget.CardView
         android:id="@+id/linearLayout"
@@ -24,7 +24,7 @@
             android:isScrollContainer="false"
             android:scrollbars="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:context="ru.profapp.RanobeReader.DownloadActivity"
+            tools:context="ru.profapp.RanobeReader.Activities.DownloadActivity"
             tools:listitem="@layout/chapter_item_download"/>
 
 

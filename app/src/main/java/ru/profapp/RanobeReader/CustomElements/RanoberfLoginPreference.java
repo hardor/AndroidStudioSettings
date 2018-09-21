@@ -102,7 +102,7 @@ public final class RanoberfLoginPreference extends DialogPreference implements
             if (resBool) {
                 sharedPref.edit().putString(StringResources.KEY_Token, result[2]).commit();
                 setSummary(username);
-                RanobeKeeper.getInstance().setRanobeRfToken(
+                RanobeKeeper.Companion.setRanobeRfToken(
                         result[2]);
                 alert.setMessage(getContext().getString(R.string.auth_succes));
             } else {

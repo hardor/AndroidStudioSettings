@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
 
 
-    tools:context="ru.profapp.RanobeReader.MainActivity">
+    tools:context="ru.profapp.RanobeReader.Activities.MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"

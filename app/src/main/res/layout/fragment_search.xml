@@ -4,7 +4,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
-              tools:context="ru.profapp.RanobeReader.SearchFragment">
+              tools:context="ru.profapp.RanobeReader.Fragments.SearchFragment">
 
     <androidx.appcompat.widget.SearchView
         android:id="@+id/search"
@@ -15,6 +15,12 @@
         app:iconifiedByDefault="false"
         app:queryHint="@string/search_here">
     </androidx.appcompat.widget.SearchView>
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <TextView
         android:id="@+id/search.result.label"
         style="@style/TitleCardViewStyle"
@@ -30,7 +36,7 @@
         android:layout_marginRight="16dp"
         android:scrollbars="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/ranobe_item"/>
+        tools:listitem="@layout/item_ranobe"/>
 
 </LinearLayout>
 

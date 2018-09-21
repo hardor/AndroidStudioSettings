@@ -28,7 +28,7 @@ public class SessionManager {
      **/
     public String[] createRulateLoginSession(String name, String password) {
         try {
-            String response = JsonRulateApi.getInstance().Login(name, password);
+            String response = JsonRulateApi.Companion.getInstance().Login(name, password);
 
             JSONObject jsonObject = new JSONObject(response);
             if (jsonObject.get("status").equals("success")) {
@@ -41,15 +41,13 @@ public class SessionManager {
         } catch (JSONException e) {
 
             return new String[]{"false", "Response error"};
-        } catch (ErrorConnectionException e) {
-            return new String[]{"false", "Connection error"};
         }
 
     }
 
     public String[] createRanobeRfLoginSession(String name, String password) {
         try {
-            String response = JsonRanobeRfApi.getInstance().Login(name, password);
+            String response = JsonRanobeRfApi.Companion.getInstance().Login(name, password);
 
             JSONObject jsonObject = new JSONObject(response);
             if (jsonObject.getInt("status") == 200) {
@@ -62,8 +60,6 @@ public class SessionManager {
         } catch (JSONException e) {
 
             return new String[]{"false", "Response error"};
-        } catch (ErrorConnectionException e) {
-            return new String[]{"false", "Connection error"};
         }
 
     }

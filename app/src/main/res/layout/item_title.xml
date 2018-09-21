@@ -14,4 +14,9 @@
         android:layout_gravity="center_horizontal"
         android:text="@string/tl.rulate_name"
     />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/colorAccent"/>
+
 </LinearLayout>

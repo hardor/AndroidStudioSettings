@@ -65,7 +65,7 @@ public class NumberPickerPreference extends DialogPreference {
             int newValue = picker.getValue();
             if (callChangeListener(newValue)) {
                 setValue(newValue);
-                RanobeKeeper.getInstance().setChapterTextSize(newValue);
+                RanobeKeeper.Companion.setChapterTextSize(newValue);
             }
         }
     }
