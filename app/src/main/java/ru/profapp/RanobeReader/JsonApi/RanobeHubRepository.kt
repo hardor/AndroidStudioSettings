@@ -1,9 +1,8 @@
 package ru.profapp.RanobeReader.JsonApi
 
-import io.reactivex.Observable
 import io.reactivex.Single
 import org.jsoup.Jsoup
-import ru.profapp.RanobeReader.Common.RanobeConstants
+import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Helpers.StringHelper
 import ru.profapp.RanobeReader.JsonApi.IApiServices.IRanobeHubApiService
 import ru.profapp.RanobeReader.JsonApi.RanobeHub.RanobeHubBook
@@ -60,10 +59,10 @@ object RanobeHubRepository {
 
            val items = Jsoup.parse(it.content).select("div.grid_item")
             for(item in items){
-                val ranobe = Ranobe(RanobeConstants.RanobeSite.RanobeHub)
+                val ranobe = Ranobe(Constants.RanobeSite.RanobeHub)
                 ranobe.url = item.selectFirst("a.image").attr("href")
-                ranobe.id =  ranobe.url.replace("${RanobeConstants.RanobeSite.RanobeHub.url}/ranobe/","").toInt()
-                ranobe.image =  RanobeConstants.RanobeSite.RanobeHub.url + item.selectFirst("img").attr("data-src")
+                ranobe.id =  ranobe.url.replace("${Constants.RanobeSite.RanobeHub.url}/ranobe/","").toInt()
+                ranobe.image =  Constants.RanobeSite.RanobeHub.url + item.selectFirst("img").attr("data-src")
                 ranobe.description = item.selectFirst("div.description").ownText()
                 ranobe.title = item.selectFirst("div.grid_item_header").selectFirst("a").text()
                 ranobe.engTitle = item.selectFirst("div.grid_item_header").selectFirst("h5").text()
@@ -93,7 +92,7 @@ object RanobeHubRepository {
         val or: MutableList<Ranobe> = arrayListOf()
 
         for (value in it) {
-            val ranobe = Ranobe(RanobeConstants.RanobeSite.RanobeHub)
+            val ranobe = Ranobe(Constants.RanobeSite.RanobeHub)
             ranobe.updateRanobeHubRanobe(value)
             or.add(ranobe)
 
@@ -108,7 +107,7 @@ object RanobeHubRepository {
         title = if (title.isBlank())  book.nameRus?:title else title
         engTitle = engTitle ?: book.nameEng
 
-        url = RanobeConstants.RanobeSite.RanobeHub.url + "/ranobe/" + id
+        url = Constants.RanobeSite.RanobeHub.url + "/ranobe/" + id
 
         description = description ?: StringHelper.removeTags(book.description!!)
 
@@ -123,7 +122,7 @@ object RanobeHubRepository {
             }
         }
 
-        image = image ?: RanobeConstants.RanobeSite.RanobeHub.url + "/img/ranobe/posters/" + id + "/0-min.jpg"
+        image = image ?: Constants.RanobeSite.RanobeHub.url + "/img/ranobe/posters/" + id + "/0-min.jpg"
 
         rating = book.rating?.toString()
         chapterCount = chapterCount ?: book.chapters

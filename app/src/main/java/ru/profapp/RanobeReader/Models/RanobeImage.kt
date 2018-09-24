@@ -9,9 +9,9 @@ import androidx.room.*
 @Entity(tableName = "ranobeImage", indices = [Index(value = ["RanobeUrl"])])
 class RanobeImage() {
     @Ignore
-    constructor(ranobeUrl: String, Id: Int, image: String) : this() {
+    constructor(ranobeUrl: String, image: String) : this() {
         this.ranobeUrl = ranobeUrl
-        this.id = Id
+
         this.image = image
     }
 
@@ -19,9 +19,23 @@ class RanobeImage() {
     @NonNull
     @ColumnInfo(name = "RanobeUrl")
     var ranobeUrl: String = ""
-    @ColumnInfo(name = "id")
-    var id: Int? = null
     @ColumnInfo(name = "Image")
     var image: String? = null
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as RanobeImage
+
+        if (ranobeUrl != other.ranobeUrl) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return ranobeUrl.hashCode()
+    }
+
 
 }

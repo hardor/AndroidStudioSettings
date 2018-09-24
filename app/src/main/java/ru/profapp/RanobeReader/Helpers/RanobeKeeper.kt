@@ -1,6 +1,6 @@
 package ru.profapp.RanobeReader.Helpers
 
-import ru.profapp.RanobeReader.Common.RanobeConstants
+import ru.profapp.RanobeReader.Common.Constants
 
 /**
  * Created by Ruslan on 03.03.2018.
@@ -17,7 +17,7 @@ class RanobeKeeper {
 
         var autoSaveText: Boolean = false
 
-        var fragmentType: RanobeConstants.FragmentType? = null
+        var fragmentType: Constants.FragmentType? = null
 
     }
 }

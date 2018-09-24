@@ -6,15 +6,13 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import com.google.gson.GsonBuilder
-import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.json.JSONException
 import org.json.JSONObject
-import ru.profapp.RanobeReader.Common.RanobeConstants
-import ru.profapp.RanobeReader.Common.RanobeConstants.RanobeSite.*
+import ru.profapp.RanobeReader.Common.Constants
+import ru.profapp.RanobeReader.Common.Constants.RanobeSite.*
 import ru.profapp.RanobeReader.Common.StringResources
 import ru.profapp.RanobeReader.Fragments.RepositoryProvider
 import ru.profapp.RanobeReader.Helpers.MyLog
@@ -27,7 +25,7 @@ import java.util.*
 @Entity(tableName = "ranobe")
 class Ranobe() {
 
-    constructor(ranobeSiteEnum: RanobeConstants.RanobeSite) : this() {
+    constructor(ranobeSiteEnum: Constants.RanobeSite) : this() {
         ranobeSite = ranobeSiteEnum.url
     }
 
@@ -44,7 +42,7 @@ class Ranobe() {
                 return try {
                     when (ranobeSite) {
                         Rulate.url -> url.replace("${Rulate.url}/book/", "").toInt()
-                        RanobeHub.url -> url.replace("${RanobeConstants.RanobeSite.RanobeHub.url}/ranobe/", "").toInt()
+                        RanobeHub.url -> url.replace("${Constants.RanobeSite.RanobeHub.url}/ranobe/", "").toInt()
                         else -> field
                     }
 
@@ -110,18 +108,18 @@ class Ranobe() {
 
 
 
-    fun UpdateRanobe(`object`: JSONObject, enumFrom: RanobeConstants.JsonObjectFrom) {
+    fun UpdateRanobe(`object`: JSONObject, enumFrom: Constants.JsonObjectFrom) {
 
         when (enumFrom) {
 
-            RanobeConstants.JsonObjectFrom.RanobeRfGetReady -> fromRanobeRfGetReady(`object`, enumFrom)
-            RanobeConstants.JsonObjectFrom.RulateFavorite -> fromRulateFavorite(`object`, enumFrom)
+            Constants.JsonObjectFrom.RanobeRfGetReady -> fromRanobeRfGetReady(`object`, enumFrom)
+            Constants.JsonObjectFrom.RulateFavorite -> fromRulateFavorite(`object`, enumFrom)
             else -> {
             }
         }//  throw isNew NullPointerException();
     }
 
-    private fun fromRulateFavorite(`object`: JSONObject, enumFrom: RanobeConstants.JsonObjectFrom) {
+    private fun fromRulateFavorite(`object`: JSONObject, enumFrom: Constants.JsonObjectFrom) {
         ranobeSite = Rulate.url
         isFavoriteInWeb = true
         try {
@@ -138,7 +136,7 @@ class Ranobe() {
 
     }
 
-    private fun fromRanobeRfGetReady(`object`: JSONObject, enumFrom: RanobeConstants.JsonObjectFrom) {
+    private fun fromRanobeRfGetReady(`object`: JSONObject, enumFrom: Constants.JsonObjectFrom) {
         ranobeSite = RanobeRf.url
         try {
 
@@ -217,5 +215,21 @@ class Ranobe() {
         return Single.create { this }
 
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Ranobe
+
+        if (url != other.url) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return url.hashCode()
+    }
+
 
 }

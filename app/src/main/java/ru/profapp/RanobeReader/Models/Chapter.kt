@@ -4,9 +4,9 @@ import androidx.annotation.NonNull
 import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
 import org.json.JSONObject
-import ru.profapp.RanobeReader.Common.RanobeConstants
-import ru.profapp.RanobeReader.Common.RanobeConstants.RanobeSite.RanobeRf
-import ru.profapp.RanobeReader.Common.RanobeConstants.RanobeSite.Rulate
+import ru.profapp.RanobeReader.Common.Constants
+import ru.profapp.RanobeReader.Common.Constants.RanobeSite.RanobeRf
+import ru.profapp.RanobeReader.Common.Constants.RanobeSite.Rulate
 import ru.profapp.RanobeReader.JsonApi.RanobeHub.tChapter
 import ru.profapp.RanobeReader.JsonApi.Ranoberf.RfText
 import ru.profapp.RanobeReader.JsonApi.Rulate.RulateChapter
@@ -98,13 +98,13 @@ class Chapter() {
         }
 
 
-    constructor(`object`: JSONObject, enumFrom: RanobeConstants.JsonObjectFrom) : this() {
+    constructor(`object`: JSONObject, enumFrom: Constants.JsonObjectFrom) : this() {
         when (enumFrom) {
-            RanobeConstants.JsonObjectFrom.RanobeRfGetReady -> {
+            Constants.JsonObjectFrom.RanobeRfGetReady -> {
                 title = `object`.optString("number") + ": " + `object`.optString("title")
                 url = `object`.optString("alias")
             }
-            RanobeConstants.JsonObjectFrom.RanobeRfSearch -> {
+            Constants.JsonObjectFrom.RanobeRfSearch -> {
                 title = `object`.optString("title")
                 url = `object`.optString("link")
             }
@@ -143,6 +143,21 @@ class Chapter() {
             text = response.part.content
             url = response.part.url!!
         }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Chapter
+
+        if (url != other.url) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return url.hashCode()
     }
 
 

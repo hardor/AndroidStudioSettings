@@ -1,8 +1,5 @@
 package ru.profapp.RanobeReader.JsonApi
 
-import ru.profapp.RanobeReader.Common.RanobeConstants.RanobeSite.RanobeHub
-import java.util.*
-
 /**
  * Created by Ruslan on 09.02.2018.
  */

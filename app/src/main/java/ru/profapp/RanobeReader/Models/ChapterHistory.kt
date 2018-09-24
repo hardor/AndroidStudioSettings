@@ -5,12 +5,13 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import java.util.*
 
 /**
  * Created by Ruslan on 21.02.2018.
  */
-@Entity(tableName = "textChapter",indices = [Index(value = ["ChapterUrl"])])
-class TextChapter {
+@Entity(tableName = "chapterHistory", indices = [Index(value = ["ChapterUrl"])])
+class ChapterHistory {
 
     @PrimaryKey
     @NonNull
@@ -20,33 +21,28 @@ class TextChapter {
     var chapterName: String
     @ColumnInfo(name = "RanobeName")
     var ranobeName: String
-    @ColumnInfo(name = "Text")
-    var text: String
+
     @ColumnInfo(name = "Index")
     var index: Int = 0
+    @ColumnInfo(name = "ReadDate")
+    var readDate: Date = Date()
+    @ColumnInfo(name = "Progress")
+    var progress: Float = 0F
 
 
-    constructor(@NonNull chapterUrl: String, text: String, chapterName: String, ranobeName: String, index: Int) {
+    constructor(chapterUrl: String, chapterName: String, ranobeName: String, index: Int,  progress: Float) {
         this.chapterUrl = chapterUrl
-        this.text = text
         this.chapterName = chapterName
         this.ranobeName = ranobeName
         this.index = index
-    }
-
-    constructor(chapter: Chapter){
-        this.chapterUrl = chapter.url
-        this.text = chapter.text.toString()
-        this.chapterName = chapter.title
-        this.ranobeName = chapter.ranobeName
-        this.index = chapter.index
+        this.progress = progress
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as TextChapter
+        other as ChapterHistory
 
         if (chapterUrl != other.chapterUrl) return false
 
@@ -59,3 +55,4 @@ class TextChapter {
 
 
 }
+

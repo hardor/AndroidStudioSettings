@@ -38,7 +38,7 @@ import org.json.JSONObject
 import ru.profapp.RanobeReader.Adapters.CommentsRecyclerViewAdapter
 import ru.profapp.RanobeReader.Adapters.ExpandableChapterRecyclerViewAdapter
 import ru.profapp.RanobeReader.BuildConfig
-import ru.profapp.RanobeReader.Common.RanobeConstants
+import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Common.StringResources
 import ru.profapp.RanobeReader.Helpers.MyLog
 import ru.profapp.RanobeReader.Helpers.StringHelper
@@ -289,6 +289,7 @@ class RanobeInfoActivity : AppCompatActivity() {
 
                 }, { error ->
                     MyLog.SendError(MyLog.LogType.ERROR, "loadChapters", "", error.fillInStackTrace())
+
                     mCurrentRanobe.wasUpdated = false
                     progressBar.visibility = View.GONE
                 })
@@ -328,7 +329,7 @@ class RanobeInfoActivity : AppCompatActivity() {
             object : Thread() {
                 override fun run() {
                     var wasadded = false
-                    if (mCurrentRanobe.ranobeSite == RanobeConstants.RanobeSite.Rulate.url) {
+                    if (mCurrentRanobe.ranobeSite == Constants.RanobeSite.Rulate.url) {
 
                         val token = preferences!!.getString(
                                 StringResources.KEY_Token, "")
@@ -357,7 +358,7 @@ class RanobeInfoActivity : AppCompatActivity() {
 
                         }
 
-                    } else if (mCurrentRanobe.ranobeSite == RanobeConstants.RanobeSite.RanobeRf.url) {
+                    } else if (mCurrentRanobe.ranobeSite == Constants.RanobeSite.RanobeRf.url) {
 
                         val token = rfpreferences!!.getString(
                                 StringResources.KEY_Token, "")
@@ -415,7 +416,7 @@ class RanobeInfoActivity : AppCompatActivity() {
             if (mCurrentRanobe.isFavoriteInWeb) {
 
                 if (mCurrentRanobe.ranobeSite.contains(
-                                RanobeConstants.RanobeSite.Rulate.url)) {
+                                Constants.RanobeSite.Rulate.url)) {
                     val token = preferences!!.getString(StringResources.KEY_Token,
                             "")
                     if (token != "") {
@@ -441,7 +442,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                     }
 
                 } else if (mCurrentRanobe.ranobeSite.contains(
-                                RanobeConstants.RanobeSite.RanobeRf.url)) {
+                                Constants.RanobeSite.RanobeRf.url)) {
                     val token = rfpreferences!!.getString(StringResources.KEY_Token,
                             "")
                     if (token != "") {

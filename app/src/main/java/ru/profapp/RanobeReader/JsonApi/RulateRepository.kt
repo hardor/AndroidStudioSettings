@@ -1,13 +1,13 @@
 package ru.profapp.RanobeReader.JsonApi
 
 import io.reactivex.Completable
-import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import ru.profapp.RanobeReader.Common.RanobeConstants
+import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Helpers.MyLog
 import ru.profapp.RanobeReader.JsonApi.IApiServices.IRulateApiService
+import ru.profapp.RanobeReader.JsonApi.Rulate.LoginGson
 import ru.profapp.RanobeReader.JsonApi.Rulate.ReadyGson
 import ru.profapp.RanobeReader.JsonApi.Rulate.RulateBook
 import ru.profapp.RanobeReader.Models.Chapter
@@ -44,6 +44,15 @@ object RulateRepository {
                 }
     }
 
+
+    fun login(login: String,password: String): Single<Array<String>>{
+        return IRulateApiService.create().Login(login,password).map{
+            if (it.status == "success") {
+                return@map arrayOf("true", it.msg, it.response.token)
+            } else arrayOf("false", it.msg)
+        }
+    }
+
     fun getChapterText(token: String, mCurrentChapter: Chapter): Single<Boolean> {
         return IRulateApiService.create().GetChapterText(token, mCurrentChapter.id, mCurrentChapter.ranobeId)
                 .map {
@@ -66,7 +75,7 @@ object RulateRepository {
         if (it.status == "success") {
 
             for (book in it.books) {
-                val ranobe = Ranobe(RanobeConstants.RanobeSite.Rulate)
+                val ranobe = Ranobe(Constants.RanobeSite.Rulate)
                 ranobe.updateRulateRanobe(book)
                 or.add(ranobe)
             }
@@ -103,7 +112,7 @@ object RulateRepository {
 
         readyDate = readyDate ?: (if (book.lastActivity != null) Date(book.lastActivity!! * 1000) else readyDate)
 
-        url = if (url.isBlank()) (RanobeConstants.RanobeSite.Rulate.url + "/book/" + id) else url
+        url = if (url.isBlank()) (Constants.RanobeSite.Rulate.url + "/book/" + id) else url
 
         chapterCount = chapterCount ?: book.chaptersTotal ?: chapterCount
 
@@ -140,7 +149,7 @@ object RulateRepository {
 
         if (!image.isNullOrBlank()) {
             Completable.fromAction {
-                MyApp.database?.ranobeImageDao()?.insert(RanobeImage(url, id, image!!))
+                MyApp.database?.ranobeImageDao()?.insert(RanobeImage(url, image!!))
             }.subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread()).subscribe()
 

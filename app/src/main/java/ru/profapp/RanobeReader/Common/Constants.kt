@@ -4,7 +4,7 @@ package ru.profapp.RanobeReader.Common
  * Created by Ruslan on 12.02.2018.
  */
 
-object RanobeConstants {
+object Constants {
     const val fragmentBundle = "fragmentType"
     const val chaptersNum = 4
 

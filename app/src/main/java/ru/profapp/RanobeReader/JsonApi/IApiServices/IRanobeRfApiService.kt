@@ -6,11 +6,9 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
-import ru.profapp.RanobeReader.JsonApi.Ranoberf.RfBookInfoGson
-import ru.profapp.RanobeReader.JsonApi.Ranoberf.RfChapterTextGson
-import ru.profapp.RanobeReader.JsonApi.Ranoberf.RfGetReadyGson
-import ru.profapp.RanobeReader.JsonApi.Ranoberf.RfSearchJson
+import ru.profapp.RanobeReader.JsonApi.Ranoberf.*
 import ru.profapp.RanobeReader.JsonApi.Rulate.BookInfoGson
+import ru.profapp.RanobeReader.JsonApi.Rulate.LoginGson
 
 
 interface IRanobeRfApiService {
@@ -26,7 +24,11 @@ interface IRanobeRfApiService {
     fun GetChapterText(@Query("bookAlias") bookAlias: String = "", @Query("partAlias") partAlias: String = ""): Single<RfChapterTextGson>
 
     @GET("/v1/book/get/")
-    fun GetBookInfo(@Query("bookAlias") bookAlias: String=""): Single<RfBookInfoGson>
+    fun GetBookInfo(@Query("bookAlias") bookAlias: String = ""): Single<RfBookInfoGson>
+
+    @FormUrlEncoded
+    @POST("/v1/auth/login/")
+    fun Login(@Field("email") email: String, @Field("password") password: String): Single<RfLoginGson>
 
     companion object Factory {
 

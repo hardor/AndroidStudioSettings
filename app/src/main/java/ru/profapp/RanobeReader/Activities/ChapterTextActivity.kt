@@ -19,15 +19,13 @@ import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import com.crashlytics.android.Crashlytics
-import com.google.gson.GsonBuilder
 import com.google.gson.JsonParseException
 import io.fabric.sdk.android.Fabric
 import io.reactivex.Completable
-import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import ru.profapp.RanobeReader.Common.RanobeConstants
+import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Common.StringResources
 import ru.profapp.RanobeReader.Common.StringResources.Chapter_Url
 import ru.profapp.RanobeReader.Common.ThemeUtils
@@ -36,7 +34,6 @@ import ru.profapp.RanobeReader.Helpers.MyLog
 import ru.profapp.RanobeReader.Helpers.RanobeKeeper
 import ru.profapp.RanobeReader.Helpers.StringHelper
 import ru.profapp.RanobeReader.JsonApi.JsonRanobeRfApi
-import ru.profapp.RanobeReader.JsonApi.Ranoberf.RfChapterTextGson
 import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.Models.TextChapter
 import ru.profapp.RanobeReader.MyApp
@@ -263,7 +260,7 @@ class ChapterTextActivity : AppCompatActivity() {
                     url = "https://$url"
                 }
 
-                if (url.contains(RanobeConstants.RanobeSite.Rulate.url)) {
+                if (url.contains(Constants.RanobeSite.Rulate.url)) {
                     url = "$url/ready"
                 }
                 try {
@@ -313,7 +310,7 @@ class ChapterTextActivity : AppCompatActivity() {
                     mCurrentChapter.text = it.text
                 } else {
                     val url = mCurrentChapter.ranobeUrl
-                    if (url.contains(RanobeConstants.RanobeSite.Rulate.url))
+                    if (url.contains(Constants.RanobeSite.Rulate.url))
                         return@flatMapSingle getRulateChapterText()
                     return@flatMapSingle Single.just(false)
                 }

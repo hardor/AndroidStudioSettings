@@ -34,7 +34,7 @@ interface IRulateApiService  {
     fun GetBookInfo(@Query("token") token: String="",  @Query("book_id") book_id: Int): Single<BookInfoGson>
 
     @GET("/api/auth?key=fpoiKLUues81werht039")
-    fun Login(@Query("login") token: String,  @Query("pass") pass: String): Single<LoginGson>
+    fun Login(@Query("login") login: String,  @Query("pass") pass: String): Single<LoginGson>
 
     companion object Factory {
 

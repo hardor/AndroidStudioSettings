@@ -11,7 +11,7 @@ import androidx.annotation.NonNull
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import ru.profapp.RanobeReader.Activities.ChapterTextActivity
-import ru.profapp.RanobeReader.Common.RanobeConstants
+import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Helpers.RanobeKeeper
 import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.Models.Ranobe
@@ -64,7 +64,7 @@ class ChapterRecyclerViewAdapter(private val mValues: List<Chapter>, private val
 
                         var ranobe = Ranobe()
                         ranobe.url = mChapterItem.ranobeUrl
-                        if (RanobeKeeper.fragmentType != null && RanobeKeeper.fragmentType != RanobeConstants.FragmentType.Saved) {
+                        if (RanobeKeeper.fragmentType != null && RanobeKeeper.fragmentType != Constants.FragmentType.Saved) {
                             try {
                                 ranobe.updateRanobe(mContext)
                             } catch (ignored: Exception) {

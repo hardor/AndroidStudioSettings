@@ -14,7 +14,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.gson.GsonBuilder
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -24,10 +23,10 @@ import org.json.JSONObject
 import ru.profapp.RanobeReader.Adapters.RanobeRecyclerViewAdapter
 import ru.profapp.RanobeReader.Common.ErrorConnectionException
 import ru.profapp.RanobeReader.Common.OnLoadMoreListener
-import ru.profapp.RanobeReader.Common.RanobeConstants
-import ru.profapp.RanobeReader.Common.RanobeConstants.RanobeSite.*
-import ru.profapp.RanobeReader.Common.RanobeConstants.chaptersNum
-import ru.profapp.RanobeReader.Common.RanobeConstants.fragmentBundle
+import ru.profapp.RanobeReader.Common.Constants
+import ru.profapp.RanobeReader.Common.Constants.RanobeSite.*
+import ru.profapp.RanobeReader.Common.Constants.chaptersNum
+import ru.profapp.RanobeReader.Common.Constants.fragmentBundle
 import ru.profapp.RanobeReader.Common.StringResources
 import ru.profapp.RanobeReader.Common.StringResources.is_readed_Pref
 import ru.profapp.RanobeReader.Helpers.MyLog
@@ -50,7 +49,7 @@ class RanobeRecyclerFragment : Fragment() {
     private var mListener: OnListFragmentInteractionListener? = null
     private lateinit var mRanobeRecyclerViewAdapter: RanobeRecyclerViewAdapter
     var mContext: Context? = null
-    private var fragmentType: RanobeConstants.FragmentType? = null
+    private var fragmentType: Constants.FragmentType? = null
     private var page: Int = 0
     var loadFromDatabase: Boolean = false
     private var oldListSize: Int = 0
@@ -62,7 +61,7 @@ class RanobeRecyclerFragment : Fragment() {
         val mPreferences = mContext!!.getSharedPreferences(
                 StringResources.Rulate_Login_Pref, 0)
 
-        val token = mPreferences.getString(StringResources.KEY_Token, "")
+        val token = mPreferences.getString(StringResources.KEY_Token, "")?:""
         if (token != "") {
             try {
                 val response = JsonRulateApi.getInstance()!!.GetFavoriteBooks(token)
@@ -75,7 +74,7 @@ class RanobeRecyclerFragment : Fragment() {
                         val value = jsonArray.getJSONObject(i)
                         var ranobe = Ranobe()
                         ranobe.UpdateRanobe(value,
-                                RanobeConstants.JsonObjectFrom.RulateFavorite)
+                                Constants.JsonObjectFrom.RulateFavorite)
 
                         if (!loadFromDatabase) {
                             ranobe.updateRanobe(mContext!!)
@@ -194,7 +193,7 @@ class RanobeRecyclerFragment : Fragment() {
 
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         if (arguments != null && arguments!!.containsKey(fragmentBundle)) {
-            fragmentType = RanobeConstants.FragmentType.valueOf(arguments!!.getString(fragmentBundle))
+            fragmentType = Constants.FragmentType.valueOf(arguments!!.getString(fragmentBundle))
         }
 
     }
@@ -216,11 +215,17 @@ class RanobeRecyclerFragment : Fragment() {
             recyclerView.adapter = mRanobeRecyclerViewAdapter
 
             //set load more listener for the RecyclerView adapterExpandable
-            if (fragmentType != RanobeConstants.FragmentType.Favorite
-                    && fragmentType != RanobeConstants.FragmentType.Search
-                    && fragmentType != RanobeConstants.FragmentType.Saved) {
+            if (fragmentType != Constants.FragmentType.Favorite
+                    && fragmentType != Constants.FragmentType.Search
+                    && fragmentType != Constants.FragmentType.Saved) {
 
-                mRanobeRecyclerViewAdapter.onLoadMoreListener = OnLoadMoreListener { refreshItems(false) }
+                mRanobeRecyclerViewAdapter.onLoadMoreListener = object : OnLoadMoreListener {
+                    override fun onLoadMore() {
+                        refreshItems(false)
+                    }
+
+
+                }
 
 
             }
@@ -254,11 +259,11 @@ class RanobeRecyclerFragment : Fragment() {
         val lastIndexPref = mContext!!.getSharedPreferences(is_readed_Pref, MODE_PRIVATE)
 
         val loader: Single<List<Ranobe>> = when (fragmentType) {
-            RanobeConstants.FragmentType.Rulate -> rulateLoadRanobe()
-            RanobeConstants.FragmentType.Ranoberf -> ranobeRfLoadRanobe()
-            RanobeConstants.FragmentType.RanobeHub -> ranobeHubLoadRanobe()
-            RanobeConstants.FragmentType.Favorite -> favoriteLoadRanobe()
-            RanobeConstants.FragmentType.Saved -> savedLoadRanobe()
+            Constants.FragmentType.Rulate -> rulateLoadRanobe()
+            Constants.FragmentType.Ranoberf -> ranobeRfLoadRanobe()
+            Constants.FragmentType.RanobeHub -> ranobeHubLoadRanobe()
+            Constants.FragmentType.Favorite -> favoriteLoadRanobe()
+            Constants.FragmentType.Saved -> savedLoadRanobe()
             else -> throw NullPointerException()
         }
 
@@ -271,7 +276,7 @@ class RanobeRecyclerFragment : Fragment() {
                 .map { ranobeList ->
                     for (ranobe in ranobeList) {
                         if (ranobe.image.isNullOrBlank()) {
-                            MyApp.database?.ranobeImageDao()?.getImageByRanobeId(ranobe.id)?.observeOn(AndroidSchedulers.mainThread())?.subscribeOn(Schedulers.io())?.subscribe { it ->
+                            MyApp.database?.ranobeImageDao()?.getImageByUrl(ranobe.url)?.observeOn(AndroidSchedulers.mainThread())?.subscribeOn(Schedulers.io())?.subscribe { it ->
                                 ranobe.image = it.image
                             }
                         }
@@ -627,7 +632,7 @@ class RanobeRecyclerFragment : Fragment() {
             val fragment = RanobeRecyclerFragment()
             val args = Bundle()
             args.putString(fragmentBundle, fragmentType)
-            RanobeKeeper.fragmentType = RanobeConstants.FragmentType.valueOf(fragmentType)
+            RanobeKeeper.fragmentType = Constants.FragmentType.valueOf(fragmentType)
             fragment.arguments = args
             return fragment
         }

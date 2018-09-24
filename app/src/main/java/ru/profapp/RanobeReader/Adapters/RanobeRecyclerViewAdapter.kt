@@ -15,7 +15,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import ru.profapp.RanobeReader.Activities.RanobeInfoActivity
 import ru.profapp.RanobeReader.Common.OnLoadMoreListener
-import ru.profapp.RanobeReader.Common.RanobeConstants
+import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Fragments.RanobeRecyclerFragment.OnListFragmentInteractionListener
 import ru.profapp.RanobeReader.Models.Ranobe
 import ru.profapp.RanobeReader.MyApp
@@ -66,7 +66,7 @@ class RanobeRecyclerViewAdapter(recyclerView: RecyclerView, private val mValues:
     }
 
     override fun getItemViewType(position: Int): Int {
-        return  if (mValues[position].ranobeSite == RanobeConstants.RanobeSite.Title.url) {
+        return  if (mValues[position].ranobeSite == Constants.RanobeSite.Title.url) {
             VIEW_TYPE_GROUP_TITLE
         } else {
             VIEW_TYPE_ITEM
@@ -139,7 +139,7 @@ class RanobeRecyclerViewAdapter(recyclerView: RecyclerView, private val mValues:
                 val chapterList = holder.mItem.chapterList
 
                 val adapter = ChapterRecyclerViewAdapter(
-                        ArrayList(chapterList.subList(0, Math.min(RanobeConstants.chaptersNum, chapterList.size))),
+                        ArrayList(chapterList.subList(0, Math.min(Constants.chaptersNum, chapterList.size))),
                         holder.mItem)
 
                 val itemDecorator = DividerItemDecoration(holder.context,DividerItemDecoration.VERTICAL)

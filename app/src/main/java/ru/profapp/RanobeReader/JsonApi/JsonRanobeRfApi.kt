@@ -6,7 +6,7 @@ import org.json.JSONException
 import org.json.JSONObject
 import org.jsoup.Connection
 import org.jsoup.Jsoup
-import ru.profapp.RanobeReader.Common.RanobeConstants.RanobeSite.RanobeRf
+import ru.profapp.RanobeReader.Common.Constants.RanobeSite.RanobeRf
 import ru.profapp.RanobeReader.JsonApi.Ranoberf.Sequence
 import ru.profapp.RanobeReader.Models.Chapter
 import java.io.BufferedReader

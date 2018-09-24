@@ -1,15 +1,15 @@
 package ru.profapp.RanobeReader.JsonApi.Rulate
 
 data class LoginGson(
-        var status: String? = null,
-        var msg: String? = null,
-        var response: Login? = null
+        var status: String,
+        var msg: String,
+        var response: Login
 )
 
 data class Login(
-        var id: Int? = null,
-        var token: String? = null,
-        var login: String? = null,
-        var avatar: String? = null,
-        var balance: Int? = null
+        var id: Int,
+        var token: String,
+        var login: String,
+        var avatar: String,
+        var balance: Int
 )

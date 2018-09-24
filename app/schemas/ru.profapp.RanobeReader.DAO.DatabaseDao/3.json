@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 3,
-    "identityHash": "0397d2d914877a0ddbaa1c326b535663",
+    "identityHash": "b01f0bbfa5f345be0e226c246318bea3",
     "entities": [
       {
         "tableName": "ranobe",
@@ -288,19 +288,13 @@
       },
       {
         "tableName": "ranobeImage",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`RanobeUrl` TEXT NOT NULL, `id` INTEGER, `Image` TEXT, PRIMARY KEY(`RanobeUrl`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`RanobeUrl` TEXT NOT NULL, `Image` TEXT, PRIMARY KEY(`RanobeUrl`))",
         "fields": [
           {
             "fieldPath": "ranobeUrl",
             "columnName": "RanobeUrl",
             "affinity": "TEXT",
             "notNull": true
-          },
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": false
           },
           {
             "fieldPath": "image",
@@ -326,11 +320,70 @@
           }
         ],
         "foreignKeys": []
+      },
+      {
+        "tableName": "chapterHistory",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ChapterUrl` TEXT NOT NULL, `ChapterName` TEXT NOT NULL, `RanobeName` TEXT NOT NULL, `Index` INTEGER NOT NULL, `ReadDate` INTEGER NOT NULL, `Progress` REAL NOT NULL, PRIMARY KEY(`ChapterUrl`))",
+        "fields": [
+          {
+            "fieldPath": "chapterUrl",
+            "columnName": "ChapterUrl",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "chapterName",
+            "columnName": "ChapterName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ranobeName",
+            "columnName": "RanobeName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "index",
+            "columnName": "Index",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "readDate",
+            "columnName": "ReadDate",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "progress",
+            "columnName": "Progress",
+            "affinity": "REAL",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "ChapterUrl"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_chapterHistory_ChapterUrl",
+            "unique": false,
+            "columnNames": [
+              "ChapterUrl"
+            ],
+            "createSql": "CREATE  INDEX `index_chapterHistory_ChapterUrl` ON `${TABLE_NAME}` (`ChapterUrl`)"
+          }
+        ],
+        "foreignKeys": []
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"0397d2d914877a0ddbaa1c326b535663\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"b01f0bbfa5f345be0e226c246318bea3\")"
     ]
   }
 }
