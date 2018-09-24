@@ -7,7 +7,6 @@ import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Helpers.MyLog
 import ru.profapp.RanobeReader.JsonApi.IApiServices.IRulateApiService
-import ru.profapp.RanobeReader.JsonApi.Rulate.LoginGson
 import ru.profapp.RanobeReader.JsonApi.Rulate.ReadyGson
 import ru.profapp.RanobeReader.JsonApi.Rulate.RulateBook
 import ru.profapp.RanobeReader.Models.Chapter
@@ -134,7 +133,7 @@ object RulateRepository {
         chapterList.reverse()
 
 
-        rulateComments = book.comments.asReversed()
+        comments = book.comments.asReversed()
         description = null
         if (status != null) {
             description = (description ?: "") + ("Статус: $status")

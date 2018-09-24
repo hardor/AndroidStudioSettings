@@ -22,7 +22,8 @@
         android:layout_below="@+id/textView3"
         android:inputType="text"
         android:singleLine="true"
-        android:hint="@string/login"/>
+        android:hint="@string/login"
+        android:importantForAutofill="no" />
 
     <!-- Password Label -->
     <TextView

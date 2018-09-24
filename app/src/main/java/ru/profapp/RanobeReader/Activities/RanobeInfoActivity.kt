@@ -60,7 +60,7 @@ class RanobeInfoActivity : AppCompatActivity() {
     var mContext: Context? = null
     private var borderImage: Drawable? = null
     private var fillImage: Drawable? = null
-
+    lateinit var tabHost:TabHost
     private var adapterExpandable: ExpandableChapterRecyclerViewAdapter? = null
     private var sPref: SharedPreferences? = null
     private var lastIndexPref: SharedPreferences? = null
@@ -97,8 +97,8 @@ class RanobeInfoActivity : AppCompatActivity() {
 
         val nestedScrollView = findViewById<NestedScrollView>(R.id.ranobe_info_NestedScrollView)
 
-        val fab = findViewById<FloatingActionButton>(R.id.fav_toTop_fab)
-        fab.setOnClickListener { view -> nestedScrollView.scrollTo(0, 0) }
+        val fab = findViewById<FloatingActionButton>(R.id.fav_button)
+        fab.setOnClickListener { SetToFavorite(fab) }
 
         val bookmarkFab = findViewById<FloatingActionButton>(R.id.bookmark_fab)
         bookmarkFab.setOnClickListener { view ->
@@ -174,37 +174,15 @@ class RanobeInfoActivity : AppCompatActivity() {
         progressBar.visibility = View.VISIBLE
         loadChapters()
 
-        val tabHost = findViewById<TabHost>(R.id.tabHost)
+        tabHost = findViewById<TabHost>(R.id.tabHost)
 
         tabHost.setup()
 
-        var tabSpec: TabHost.TabSpec = tabHost.newTabSpec("tag1")
+        val tabSpec: TabHost.TabSpec = tabHost.newTabSpec("chapters")
 
         tabSpec.setContent(R.id.linearLayout)
         tabSpec.setIndicator(resources.getString(R.string.chapters))
         tabHost.addTab(tabSpec)
-
-        if (mCurrentRanobe.rulateComments.isNotEmpty()) {
-            val commentRecycleView = findViewById<RecyclerView>(R.id.comment_list)
-            commentRecycleView.layoutManager = LinearLayoutManager(mContext)
-            commentRecycleView.setHasFixedSize(true)
-            commentRecycleView.onFlingListener = object : RecyclerView.OnFlingListener() {
-                @RequiresApi(Build.VERSION_CODES.KITKAT)
-                override fun onFling(velocityX: Int, velocityY: Int): Boolean {
-                    commentRecycleView.dispatchNestedFling(velocityX.toFloat(), velocityY.toFloat(), false)
-                    return false
-                }
-            }
-
-            val commentsAdapter = CommentsRecyclerViewAdapter(
-                    mCurrentRanobe.rulateComments)
-            commentRecycleView.adapter = commentsAdapter
-
-            tabSpec = tabHost.newTabSpec("tag2")
-            tabSpec.setContent(R.id.linearLayout2)
-            tabSpec.setIndicator(resources.getString(R.string.comments))
-            tabHost.addTab(tabSpec)
-        }
         tabHost.currentTab = 0
     }
 
@@ -287,6 +265,28 @@ class RanobeInfoActivity : AppCompatActivity() {
                     adapterExpandable = ExpandableChapterRecyclerViewAdapter(recycleChapterList, mCurrentRanobe)
                     recyclerView.adapter = adapterExpandable
 
+                    if (mCurrentRanobe.comments.isNotEmpty()) {
+                        val commentRecycleView = findViewById<RecyclerView>(R.id.comment_list)
+                        commentRecycleView.layoutManager = LinearLayoutManager(mContext)
+                        commentRecycleView.setHasFixedSize(true)
+                        commentRecycleView.onFlingListener = object : RecyclerView.OnFlingListener() {
+                            @RequiresApi(Build.VERSION_CODES.KITKAT)
+                            override fun onFling(velocityX: Int, velocityY: Int): Boolean {
+                                commentRecycleView.dispatchNestedFling(velocityX.toFloat(), velocityY.toFloat(), false)
+                                return false
+                            }
+                        }
+
+                        val commentsAdapter = CommentsRecyclerViewAdapter(
+                                mCurrentRanobe.comments)
+                        commentRecycleView.adapter = commentsAdapter
+
+                        val tabSpec: TabHost.TabSpec  = tabHost.newTabSpec("comments")
+                        tabSpec.setContent(R.id.linearLayout2)
+                        tabSpec.setIndicator(resources.getString(R.string.comments))
+                        tabHost.addTab(tabSpec)
+                    }
+
                 }, { error ->
                     MyLog.SendError(MyLog.LogType.ERROR, "loadChapters", "", error.fillInStackTrace())
 
@@ -321,10 +321,10 @@ class RanobeInfoActivity : AppCompatActivity() {
         return true
     }
 
-    private fun SetToFavorite(item: MenuItem) {
+    private fun SetToFavorite(item: FloatingActionButton) {
 
         if (!mCurrentRanobe.isFavorite && !mCurrentRanobe.isFavoriteInWeb) {
-            item.icon = fillImage
+            item.setImageDrawable(fillImage)
 
             object : Thread() {
                 override fun run() {
@@ -417,8 +417,7 @@ class RanobeInfoActivity : AppCompatActivity() {
 
                 if (mCurrentRanobe.ranobeSite.contains(
                                 Constants.RanobeSite.Rulate.url)) {
-                    val token = preferences!!.getString(StringResources.KEY_Token,
-                            "")
+                    val token = preferences!!.getString(StringResources.KEY_Token, "") ?: ""
                     if (token != "") {
                         try {
                             val response = JsonRulateApi.getInstance()!!.RemoveBookmark(
@@ -431,7 +430,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                                     MyApp.database?.ranobeDao()?.deleteWeb(
                                             mCurrentRanobe.url)
                                 }
-                                item.icon = borderImage
+                                item.setImageDrawable(borderImage)
                             }
                         } catch (e: JSONException) {
                             MyLog.SendError(MyLog.LogType.WARN,
@@ -443,8 +442,7 @@ class RanobeInfoActivity : AppCompatActivity() {
 
                 } else if (mCurrentRanobe.ranobeSite.contains(
                                 Constants.RanobeSite.RanobeRf.url)) {
-                    val token = rfpreferences!!.getString(StringResources.KEY_Token,
-                            "")
+                    val token = rfpreferences!!.getString(StringResources.KEY_Token, "") ?: ""
                     if (token != "") {
 
                         val thread = Thread {
@@ -460,7 +458,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                                                 mCurrentRanobe.url)
                                     }
                                     runOnUiThread {
-                                        item.icon = borderImage
+                                        item.setImageDrawable(borderImage)
                                     }
 
                                 }
@@ -488,7 +486,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                             mCurrentRanobe.url)
                 }
                 mCurrentRanobe.isFavorite = false
-                item.icon = borderImage
+                item.setImageDrawable(borderImage)
             }
 
         }
@@ -504,7 +502,6 @@ class RanobeInfoActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> onBackPressed()
-            R.id.fav_button -> SetToFavorite(item)
             R.id.download_chapters -> {
                 val intent = Intent(mContext, DownloadActivity::class.java)
                 if (MyApp.ranobe != null) {

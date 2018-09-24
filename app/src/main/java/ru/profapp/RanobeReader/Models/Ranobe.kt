@@ -81,7 +81,7 @@ class Ranobe() {
     @ColumnInfo(name = "ChapterCount")
     var chapterCount: Int? = null
 
-    @ColumnInfo(name = "LastReadCharpter")
+    @ColumnInfo(name = "LastReadChapter")
     var lastReadChapter: Int? = null
     @ColumnInfo(name = "WasUpdated")
     var wasUpdated: Boolean = false
@@ -101,7 +101,7 @@ class Ranobe() {
     var chapterList: MutableList<Chapter> = ArrayList()
 
     @Ignore
-    var rulateComments: List<RulateComment> = ArrayList()
+    var comments: List<RulateComment> = ArrayList()
 
     @Ignore
     var bookmarkIdRf: Int = 0

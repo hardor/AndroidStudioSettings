@@ -117,7 +117,7 @@ class RanobeRecyclerViewAdapter(recyclerView: RecyclerView, private val mValues:
 
                 holder.mImageView.visibility = View.VISIBLE
                 Glide.with(holder.context)
-                        .load("yuyuyu").apply(
+                        .load(mValues[position].image).apply(
                                 RequestOptions()
                                         .placeholder(R.drawable.ic_adb_black_24dp)
                                         .error(R.drawable.ic_error_outline_black_24dp)

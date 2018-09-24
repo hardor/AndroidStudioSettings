@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 3,
-    "identityHash": "b01f0bbfa5f345be0e226c246318bea3",
+    "identityHash": "701785422e8a5c2dbfc4d37d0303d473",
     "entities": [
       {
         "tableName": "ranobe",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`Url` TEXT NOT NULL, `id` INTEGER NOT NULL, `EngTitle` TEXT, `Title` TEXT NOT NULL, `Image` TEXT, `ReadyDate` INTEGER, `Lang` TEXT, `Description` TEXT, `AdditionalInfo` TEXT, `RanobeSite` TEXT NOT NULL, `ChapterCount` INTEGER, `LastReadCharpter` INTEGER, `WasUpdated` INTEGER NOT NULL, `IsFavorite` INTEGER NOT NULL, `IsFavoriteInWeb` INTEGER NOT NULL, `Rating` TEXT, `Status` TEXT, PRIMARY KEY(`Url`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`Url` TEXT NOT NULL, `id` INTEGER NOT NULL, `EngTitle` TEXT, `Title` TEXT NOT NULL, `Image` TEXT, `ReadyDate` INTEGER, `Lang` TEXT, `Description` TEXT, `AdditionalInfo` TEXT, `RanobeSite` TEXT NOT NULL, `ChapterCount` INTEGER, `LastReadChapter` INTEGER, `WasUpdated` INTEGER NOT NULL, `IsFavorite` INTEGER NOT NULL, `IsFavoriteInWeb` INTEGER NOT NULL, `Rating` TEXT, `Status` TEXT, PRIMARY KEY(`Url`))",
         "fields": [
           {
             "fieldPath": "url",
@@ -76,7 +76,7 @@
           },
           {
             "fieldPath": "lastReadChapter",
-            "columnName": "LastReadCharpter",
+            "columnName": "LastReadChapter",
             "affinity": "INTEGER",
             "notNull": false
           },
@@ -383,7 +383,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"b01f0bbfa5f345be0e226c246318bea3\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"701785422e8a5c2dbfc4d37d0303d473\")"
     ]
   }
 }
