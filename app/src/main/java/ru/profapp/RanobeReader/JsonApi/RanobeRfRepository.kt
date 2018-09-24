@@ -2,7 +2,7 @@ package ru.profapp.RanobeReader.JsonApi
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import io.reactivex.Observable
+import io.reactivex.Single
 import ru.profapp.RanobeReader.Common.RanobeConstants
 import ru.profapp.RanobeReader.Helpers.StringHelper
 import ru.profapp.RanobeReader.JsonApi.IApiServices.IRanobeRfApiService
@@ -25,7 +25,7 @@ object RanobeRfRepository {
     val gson = Gson()
     private val listType = object : TypeToken<List<Sequence>>() {}.type
 
-    fun getBookInfo(ranobe: Ranobe): Observable<Ranobe> {
+    fun getBookInfo(ranobe: Ranobe): Single<Ranobe> {
         var ranobeName = ranobe.url.replace(RanobeConstants.RanobeSite.RanobeRf.url, "")
         ranobeName = ranobeName.substring(1, ranobeName.length - 1)
         return IRanobeRfApiService.create().GetBookInfo(ranobeName)
@@ -37,7 +37,7 @@ object RanobeRfRepository {
                 }
     }
 
-    fun getReadyBooks(page: Int): Observable<ArrayList<Ranobe>> {
+    fun getReadyBooks(page: Int): Single<List<Ranobe>> {
         if (page == 1)
             sequence = ""
         return IRanobeRfApiService.create().GetReadyBooks(page, sequence)
@@ -49,8 +49,8 @@ object RanobeRfRepository {
                 }
     }
 
-    private fun getRanobeList(it: List<RfBook>?): ArrayList<Ranobe> {
-        val or: ArrayList<Ranobe> = ArrayList()
+    private fun getRanobeList(it: List<RfBook>?): List<Ranobe> {
+        val or: MutableList<Ranobe> = arrayListOf()
         for (value in it.orEmpty()) {
             val ranobe = Ranobe(RanobeConstants.RanobeSite.RanobeRf)
             ranobe.updateRanobeRfRanobe(value)
@@ -60,7 +60,7 @@ object RanobeRfRepository {
     }
 
 
-    fun searchBooks(search: String): Observable<ArrayList<Ranobe>> {
+    fun searchBooks(search: String): Single<ArrayList<Ranobe>> {
         return IRanobeRfApiService.create().SearchBooks(search)
                 .map {
                     val or: ArrayList<Ranobe> = ArrayList()

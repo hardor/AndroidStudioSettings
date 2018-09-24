@@ -8,6 +8,7 @@ import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.google.gson.GsonBuilder
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.json.JSONException
@@ -29,9 +30,6 @@ class Ranobe() {
     constructor(ranobeSiteEnum: RanobeConstants.RanobeSite) : this() {
         ranobeSite = ranobeSiteEnum.url
     }
-
-    @Ignore
-    private val gson = GsonBuilder().setLenient().disableHtmlEscaping().create()
 
     @PrimaryKey
     @NonNull
@@ -195,7 +193,7 @@ class Ranobe() {
 
     }
 
-    fun updateRanobe(mContext: Context): Observable<Ranobe> {
+    fun updateRanobe(mContext: Context): Single<Ranobe> {
 
         if (!wasUpdated) {
             if (ranobeSite == Rulate.url || url.contains(Rulate.url)) {
@@ -216,7 +214,7 @@ class Ranobe() {
                 throw NullPointerException()
             }
         }
-        return Observable.create { this }
+        return Single.create { this }
 
     }
 

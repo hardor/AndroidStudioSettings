@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
@@ -106,7 +107,7 @@ class SearchFragment : Fragment() {
         mRanobeList.clear()
         mRanobeRecyclerViewAdapter!!.notifyItemRangeRemoved(0, size)
 
-        request = Observable.mergeDelayError(findRulateRanobe(searchString), findRanobeRfRanobe(searchString), findRanobeHubRanobe(searchString))
+        request = Single.mergeDelayError(findRulateRanobe(searchString), findRanobeRfRanobe(searchString), findRanobeHubRanobe(searchString))
                 .map { ranobeList ->
                     for (ranobe in ranobeList) {
                         if (ranobe.image.isNullOrBlank()) {
@@ -142,7 +143,7 @@ class SearchFragment : Fragment() {
 
     }
 
-    private fun findRulateRanobe(searchString: String): Observable<ArrayList<Ranobe>> {
+    private fun findRulateRanobe(searchString: String): Single<ArrayList<Ranobe>> {
 
         return RepositoryProvider.provideRulateRepository().searchBooks(searchString).map {
             val or: ArrayList<Ranobe> = ArrayList()
@@ -159,7 +160,7 @@ class SearchFragment : Fragment() {
 
     }
 
-    private fun findRanobeHubRanobe(searchString: String): Observable<ArrayList<Ranobe>> {
+    private fun findRanobeHubRanobe(searchString: String): Single<ArrayList<Ranobe>> {
 
         return RepositoryProvider.provideRanobeHubRepository()
                 .searchBooks(searchString).map {
@@ -177,7 +178,7 @@ class SearchFragment : Fragment() {
 
     }
 
-    private fun findRanobeRfRanobe(searchString: String): Observable<ArrayList<Ranobe>> {
+    private fun findRanobeRfRanobe(searchString: String): Single<ArrayList<Ranobe>> {
 
         return RepositoryProvider.provideRanobeRfRepository()
                 .searchBooks(searchString).map {

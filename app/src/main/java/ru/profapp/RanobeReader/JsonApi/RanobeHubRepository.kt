@@ -1,6 +1,7 @@
 package ru.profapp.RanobeReader.JsonApi
 
 import io.reactivex.Observable
+import io.reactivex.Single
 import org.jsoup.Jsoup
 import ru.profapp.RanobeReader.Common.RanobeConstants
 import ru.profapp.RanobeReader.Helpers.StringHelper
@@ -16,7 +17,7 @@ import java.util.*
 
 object RanobeHubRepository {
 
-    fun getBookInfo(ranobe: Ranobe): Observable<Ranobe> {
+    fun getBookInfo(ranobe: Ranobe): Single<Ranobe> {
         return IRanobeHubApiService.create().GetChapters(ranobe.id)
                 .map {
 
@@ -44,7 +45,7 @@ object RanobeHubRepository {
 
     }
 
-    fun getReadyBooks(page: Int): Observable<ArrayList<Ranobe>> {
+    fun getReadyBooks(page: Int): Single<List<Ranobe>> {
         return IRanobeHubApiService.create().GetReadyBooks(page)
                 .map {
                     return@map getRanobeReadyList(it)
@@ -52,8 +53,8 @@ object RanobeHubRepository {
     }
 
 
-    private fun getRanobeReadyList(it: RanobeHubReadyGson): ArrayList<Ranobe> {
-        val or: ArrayList<Ranobe> = ArrayList()
+    private fun getRanobeReadyList(it: RanobeHubReadyGson): List<Ranobe> {
+        val or: MutableList<Ranobe> = arrayListOf()
 
         if (it.content.isNotBlank()) {
 
@@ -74,23 +75,22 @@ object RanobeHubRepository {
 
     }
 
-    fun searchBooks(search: String): Observable<ArrayList<Ranobe>> {
+    fun searchBooks(search: String): Single<List<Ranobe>> {
         return IRanobeHubApiService.create().SearchBooks(search)
                 .map {
                     return@map getRanobeList(it.categories.ranobe.items)
                 }
     }
 
-    fun getChapters(ranobe_id: Int): Observable<List<tChapter>> {
+    fun getChapters(ranobe_id: Int): Single<List<tChapter>> {
         return IRanobeHubApiService.create().GetChapters(ranobe_id)
                 .map {
                     return@map it.data.map { c -> c.chapters }.flatten()
                 }
     }
 
-    private fun getRanobeList(it: List<RanobeHubBook>): ArrayList<Ranobe> {
-        val or: ArrayList<Ranobe> = ArrayList()
-
+    private fun getRanobeList(it: List<RanobeHubBook>): List<Ranobe> {
+        val or: MutableList<Ranobe> = arrayListOf()
 
         for (value in it) {
             val ranobe = Ranobe(RanobeConstants.RanobeSite.RanobeHub)

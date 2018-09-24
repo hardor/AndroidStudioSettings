@@ -1,6 +1,7 @@
 package ru.profapp.RanobeReader.JsonApi.IApiServices
 
 import io.reactivex.Observable
+import io.reactivex.Single
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -20,17 +21,17 @@ interface IRanobeHubApiService {
                       @Field("country") country: Int?=null,
                       @Field("sort") sort: String?=null,
                       @Field("tags") tags: ArrayList<String>?=null,
-                      @Field("years") years: String?=null): Observable<RanobeHubReadyGson>
+                      @Field("years") years: String?=null): Single<RanobeHubReadyGson>
 
     @Headers("X-Requested-With: XMLHttpRequest")
     @GET("/api/ranobe/getByName/{name}")
-    fun SearchBooks(@Path("name") name: String): Observable<RanobeHubSearchGson>
+    fun SearchBooks(@Path("name") name: String): Single<RanobeHubSearchGson>
 
     @GET("/api/ranobe/{ranobe_id}/contents")
-    fun GetChapters(@Path("ranobe_id") ranobe_id: Int): Observable<ChaptersGson>
+    fun GetChapters(@Path("ranobe_id") ranobe_id: Int): Single<ChaptersGson>
 
     @GET("/api/ranobe/chapter")
-    fun GetChapterText(@Query("ranobe_id") ranobe_id: Int, @Query("volume_num") volume_num: Int, @Query("chapter_num") chapter_num: Int): Observable<ChapterTextGson>
+    fun GetChapterText(@Query("ranobe_id") ranobe_id: Int, @Query("volume_num") volume_num: Int, @Query("chapter_num") chapter_num: Int): Single<ChapterTextGson>
 
     companion object Factory {
 

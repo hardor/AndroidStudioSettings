@@ -21,19 +21,19 @@ class DownloadActivity : AppCompatActivity() {
     private var running = true
     @Volatile
     private var progressDialog: ProgressDialog? = null
-    private var mChapterList: List<Chapter>? = null
+    private var chapterList: List<Chapter> = arrayListOf()
     private var recyclerView: RecyclerView? = null
     private var adapter: DownloadRecyclerViewAdapter? = null
-    private var mContext: Context? = null
-    private val mOnNavigationItemSelectedListener =  BottomNavigationView.OnNavigationItemSelectedListener{ item ->
+    private var context: Context? = null
+    private val onNavigationItemSelectedListener =  BottomNavigationView.OnNavigationItemSelectedListener{ item ->
 
         when (item.itemId) {
 
             R.id.select_none -> {
-                for (chapter in mChapterList!!) {
+                for (chapter in chapterList) {
                     chapter.isChecked = false
                 }
-                adapter!!.notifyItemRangeChanged(0, mChapterList!!.size)
+                adapter!!.notifyItemRangeChanged(0, chapterList.size)
                 return@OnNavigationItemSelectedListener true
             }
             R.id.download -> {
@@ -57,10 +57,10 @@ class DownloadActivity : AppCompatActivity() {
                 return@OnNavigationItemSelectedListener true
             }
             R.id.select_all -> {
-                for (chapter in mChapterList!!) {
+                for (chapter in chapterList) {
                     chapter.isChecked = true
                 }
-                adapter!!.notifyItemRangeChanged(0, mChapterList!!.size)
+                adapter!!.notifyItemRangeChanged(0, chapterList.size)
                 return@OnNavigationItemSelectedListener true
             }
         }
@@ -81,7 +81,7 @@ class DownloadActivity : AppCompatActivity() {
 
         progressDialog!!.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
         progressDialog!!.progress = 0
-        progressDialog!!.max = mChapterList!!.size
+        progressDialog!!.max = chapterList.size
         progressDialog!!.show()
 
         val chapterText = ChapterTextActivity()
@@ -90,7 +90,7 @@ class DownloadActivity : AppCompatActivity() {
 
             override fun run() {
                 progressDialog!!.progress = 0
-                for (chapter in mChapterList!!) {
+                for (chapter in chapterList) {
                     if (running) {
                         if (!chapter.isChecked) {
 
@@ -103,7 +103,7 @@ class DownloadActivity : AppCompatActivity() {
                             chapter.text = ""
                             chapter.downloaded = false
                         } else {
-                            chapter.downloaded = chapterText.GetChapterText(chapter, mContext!!)
+                            chapter.downloaded = chapterText.GetChapterText(chapter, context!!)
                         }
                         progressDialog!!.incrementProgressBy(1)
                     } else {
@@ -122,10 +122,10 @@ class DownloadActivity : AppCompatActivity() {
 
     private fun updateList() {
 
-        for (chapter in mChapterList!!) {
+        for (chapter in chapterList) {
             chapter.isChecked = chapter.downloaded
         }
-        adapter!!.notifyItemRangeChanged(0, mChapterList!!.size)
+        adapter!!.notifyItemRangeChanged(0, chapterList.size)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -133,20 +133,20 @@ class DownloadActivity : AppCompatActivity() {
         Fabric.with(this, Crashlytics())
         setupActionBar()
         setContentView(R.layout.activity_download)
-        mContext = applicationContext
+        context = applicationContext
         val navigation = findViewById<BottomNavigationView>(R.id.navigation)
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+        navigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
 
         recyclerView = findViewById(R.id.chapter_list)
 
-        mChapterList = MyApp.ranobe!!.chapterList
+        chapterList = MyApp.ranobe!!.chapterList
         val pDialog = ProgressDialog(this)
         pDialog.setTitle("Loading")
         pDialog.setCancelable(false)
         pDialog.show()
         object : Thread() {
             override fun run() {
-                for (chapter in mChapterList!!) {
+                for (chapter in chapterList) {
                     if (!chapter.downloaded) {
 
                         val textChapter = MyApp.database?.textDao()?.getTextByChapterUrl(chapter.url)
@@ -163,7 +163,7 @@ class DownloadActivity : AppCompatActivity() {
                         chapter.isChecked = true
                     }
                 }
-                adapter = DownloadRecyclerViewAdapter(mChapterList, this@DownloadActivity)
+                adapter = DownloadRecyclerViewAdapter(chapterList)
                 runOnUiThread {
                     recyclerView!!.adapter = adapter
                     pDialog.dismiss()

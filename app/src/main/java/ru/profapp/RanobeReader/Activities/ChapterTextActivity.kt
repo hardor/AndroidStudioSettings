@@ -24,6 +24,7 @@ import com.google.gson.JsonParseException
 import io.fabric.sdk.android.Fabric
 import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReader.Common.RanobeConstants
@@ -43,7 +44,7 @@ import ru.profapp.RanobeReader.R
 
 class ChapterTextActivity : AppCompatActivity() {
 
-    val gson = GsonBuilder().setLenient().create()!!
+
     lateinit var mCurrentChapter: Chapter
     private lateinit var mWebView: WebView
     private var mContext: Context? = null
@@ -296,27 +297,27 @@ class ChapterTextActivity : AppCompatActivity() {
         //return GetChapterText(true)
     }
 
-    private fun GetChapterText(needSave: Boolean): Observable<Boolean> {
+    private fun GetChapterText(needSave: Boolean): Single<Boolean> {
 
 
-          var ch =  MyApp.database?.textDao()!!.getTextByChapterUrl(mCurrentChapter.url)
+        var ch = MyApp.database?.textDao()!!.getTextByChapterUrl(mCurrentChapter.url)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                    .blockingGet(TextChapter("e","e","e","e",2))
+                .blockingGet(TextChapter("e", "e", "e", "e", 2))
 
 
         if (mCurrentChapter.text == null || mCurrentChapter.text!!.isEmpty()) {
 
-            return MyApp.database?.textDao()!!.getTextByChapterUrl(mCurrentChapter.url).flatMapObservable {
+            return MyApp.database?.textDao()!!.getTextByChapterUrl(mCurrentChapter.url).flatMapSingle {
                 if (it != null) {
                     mCurrentChapter.text = it.text
                 } else {
                     val url = mCurrentChapter.ranobeUrl
                     if (url.contains(RanobeConstants.RanobeSite.Rulate.url))
-                        return@flatMapObservable getRulateChapterText()
-                    return@flatMapObservable Observable.just(false)
+                        return@flatMapSingle getRulateChapterText()
+                    return@flatMapSingle Single.just(false)
                 }
-                return@flatMapObservable Observable.just(false)
+                return@flatMapSingle Single.just(false)
             }.map {
 
                 if ((RanobeKeeper.autoSaveText || needSave) && mCurrentChapter.text.isNullOrBlank()) {
@@ -334,7 +335,7 @@ class ChapterTextActivity : AppCompatActivity() {
 
 
         }
-        return Observable.just(false)
+        return Single.just(false)
 
 
     }
@@ -342,19 +343,19 @@ class ChapterTextActivity : AppCompatActivity() {
     private fun getRanobeRfChapterText(): Boolean {
         val response = JsonRanobeRfApi.getInstance()!!.GetChapterText(mCurrentChapter)
         try {
-            val readyGson = gson.fromJson(response, RfChapterTextGson::class.java)
-            if (readyGson.status == 200) {
-
-                mCurrentChapter.UpdateChapter(readyGson.result!!)
-                if (readyGson.result.part!!.payment!! && mCurrentChapter.text == "") {
-                    mCurrentChapter.text = "Даннная страница находится на платной подписке"
-                    return false
-                }
-                return true
-            } else {
-                mCurrentChapter.text = readyGson.message
-
-            }
+//            val readyGson = gson.fromJson(response, RfChapterTextGson::class.java)
+//            if (readyGson.status == 200) {
+//
+//                mCurrentChapter.UpdateChapter(readyGson.result!!)
+//                if (readyGson.result.part!!.payment!! && mCurrentChapter.text == "") {
+//                    mCurrentChapter.text = "Даннная страница находится на платной подписке"
+//                    return false
+//                }
+//                return true
+//            } else {
+//                mCurrentChapter.text = readyGson.message
+//
+//            }
         } catch (e: JsonParseException) {
             MyLog.SendError(MyLog.LogType.WARN, ChapterTextActivity::class.java.toString(),
                     mCurrentChapter.url, e)
@@ -364,7 +365,7 @@ class ChapterTextActivity : AppCompatActivity() {
         return false
     }
 
-    private fun getRulateChapterText(): Observable<Boolean> {
+    private fun getRulateChapterText(): Single<Boolean> {
         val preferences = mContext!!.getSharedPreferences(StringResources.Rulate_Login_Pref, 0)
         val token: String = preferences.getString(StringResources.KEY_Token, "")
         val repository = RepositoryProvider.provideRulateRepository()
@@ -398,7 +399,7 @@ class ChapterTextActivity : AppCompatActivity() {
 
         //Todo: add to history table
 //        if (sPref == null) {
-//            sPref = mContext!!.getSharedPreferences(StringResources.is_readed_Pref, Context.MODE_PRIVATE)
+//            sPref = context!!.getSharedPreferences(StringResources.is_readed_Pref, Context.MODE_PRIVATE)
 //        }
         if (lastIndexPref == null) {
             lastIndexPref = mContext!!.getSharedPreferences(StringResources.last_chapter_id_Pref, Context.MODE_PRIVATE)

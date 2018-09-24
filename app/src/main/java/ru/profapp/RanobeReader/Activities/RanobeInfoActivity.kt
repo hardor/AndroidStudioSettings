@@ -197,7 +197,7 @@ class RanobeInfoActivity : AppCompatActivity() {
             }
 
             val commentsAdapter = CommentsRecyclerViewAdapter(
-                    mCurrentRanobe.rulateComments, mContext)
+                    mCurrentRanobe.rulateComments)
             commentRecycleView.adapter = commentsAdapter
 
             tabSpec = tabHost.newTabSpec("tag2")
@@ -302,7 +302,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                 runOnUiThread { item.icon = fillImage }
             } else {
                 runOnUiThread { item.icon = borderImage }
-            }//  || DatabaseDao.Companion.getInstance(                    mContext).ranobeDao().IsRanobeFavorite(                    mCurrentRanobe.getUrl())                    != null
+            }//  || DatabaseDao.Companion.getInstance(                    context).ranobeDao().IsRanobeFavorite(                    mCurrentRanobe.getUrl())                    != null
         }
     }
 

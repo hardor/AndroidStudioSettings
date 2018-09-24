@@ -1,6 +1,7 @@
 package ru.profapp.RanobeReader.JsonApi.IApiServices
 
 import io.reactivex.Observable
+import io.reactivex.Single
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -12,28 +13,28 @@ import ru.profapp.RanobeReader.JsonApi.Rulate.*
 interface IRulateApiService  {
 
     @GET("/api/getReady?key=fpoiKLUues81werht039")
-    fun GetReadyBooks(@Query("page") page: Int): Observable<ReadyGson>
+    fun GetReadyBooks(@Query("page") page: Int): Single<ReadyGson>
 
     @GET("/api/searchBooks?key=fpoiKLUues81werht039")
-    fun SearchBooks(@Query("search") search: String): Observable<ReadyGson>
+    fun SearchBooks(@Query("search") search: String): Single<ReadyGson>
 
     @GET("/api/bookmarks?key=fpoiKLUues81werht039")
-    fun GetFavoriteBooks(@Query("token") token: String): Observable<ReadyGson>
+    fun GetFavoriteBooks(@Query("token") token: String): Single<ReadyGson>
 
     @GET("/api/chapter?key=fpoiKLUues81werht039")
-    fun GetChapterText(@Query("token") token: String, @Query("chapter_id") chapter_id: Int, @Query("book_id") book_id: Int): Observable<ChapterTextGson>
+    fun GetChapterText(@Query("token") token: String, @Query("chapter_id") chapter_id: Int, @Query("book_id") book_id: Int): Single<ChapterTextGson>
 
     @GET("/api/addBookmark?key=fpoiKLUues81werht039")
-    fun AddBookmark(@Query("token") token: String, @Query("book_id") book_id: Int): Observable<BookmarkGson>
+    fun AddBookmark(@Query("token") token: String, @Query("book_id") book_id: Int): Single<BookmarkGson>
 
     @GET("/api/removeBookmark?key=fpoiKLUues81werht039")
-    fun RemoveBookmark(@Query("token") token: String,  @Query("book_id") book_id: Int): Observable<BookmarkGson>
+    fun RemoveBookmark(@Query("token") token: String,  @Query("book_id") book_id: Int): Single<BookmarkGson>
 
     @GET("/api/book?key=fpoiKLUues81werht039")
-    fun GetBookInfo(@Query("token") token: String="",  @Query("book_id") book_id: Int): Observable<BookInfoGson>
+    fun GetBookInfo(@Query("token") token: String="",  @Query("book_id") book_id: Int): Single<BookInfoGson>
 
     @GET("/api/auth?key=fpoiKLUues81werht039")
-    fun Login(@Query("login") token: String,  @Query("pass") pass: String): Observable<LoginGson>
+    fun Login(@Query("login") token: String,  @Query("pass") pass: String): Single<LoginGson>
 
     companion object Factory {
 

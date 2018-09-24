@@ -94,62 +94,62 @@ class RanobeRecyclerViewAdapter(recyclerView: RecyclerView, private val mValues:
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is RanobeViewHolder) {
-            holder.mItem = mValues[position]
-            holder.mTitleView.text = mValues[position].title
+        when (holder) {
+            is RanobeViewHolder -> {
+                holder.mItem = mValues[position]
+                holder.mTitleView.text = mValues[position].title
 
-            if (mValues[position].readyDate != null) {
-                val diff = ((Date().time - mValues[position].readyDate!!.time)
-                        / 1000 / 60)
+                if (mValues[position].readyDate != null) {
+                    val diff = ((Date().time - mValues[position].readyDate!!.time)
+                            / 1000 / 60)
 
-                val numOfDays = (diff / (60 * 24)).toInt()
-                val hours = (diff / 60 - numOfDays * 24).toInt()
-                val minutes = (diff % 60).toInt()
+                    val numOfDays = (diff / (60 * 24)).toInt()
+                    val hours = (diff / 60 - numOfDays * 24).toInt()
+                    val minutes = (diff % 60).toInt()
 
-                val updateTime = holder.context.getString(R.string.update_time, numOfDays, hours,
-                        minutes)
+                    val updateTime = holder.context.getString(R.string.update_time, numOfDays, hours,
+                            minutes)
 
-                holder.mUpdateTime.text = updateTime
-            } else {
-                holder.mUpdateTime.visibility = View.INVISIBLE
-            }
-
-            holder.mImageView.visibility = View.VISIBLE
-            Glide.with(holder.context)
-                    .load(mValues[position].image).apply(
-                            RequestOptions()
-                                    .placeholder(R.drawable.ic_adb_black_24dp)
-                                    .error(R.drawable.ic_error_outline_black_24dp)
-                                    .fitCenter()
-                    ).into(holder.mImageView)
-
-            holder.mView.setOnClickListener { v ->
-
-                val intent = Intent(holder.context, RanobeInfoActivity::class.java)
-
-                MyApp.ranobe =  holder.mItem
-
-                if (MyApp.ranobe != null) {
-                    holder.mView.context.startActivity(intent)
+                    holder.mUpdateTime.text = updateTime
+                } else {
+                    holder.mUpdateTime.visibility = View.INVISIBLE
                 }
 
+                holder.mImageView.visibility = View.VISIBLE
+                Glide.with(holder.context)
+                        .load("yuyuyu").apply(
+                                RequestOptions()
+                                        .placeholder(R.drawable.ic_adb_black_24dp)
+                                        .error(R.drawable.ic_error_outline_black_24dp)
+                                        .fitCenter()
+                        ).into(holder.mImageView)
+
+                holder.mView.setOnClickListener { v ->
+
+                    val intent = Intent(holder.context, RanobeInfoActivity::class.java)
+
+                    MyApp.ranobe =  holder.mItem
+
+                    if (MyApp.ranobe != null) {
+                        holder.mView.context.startActivity(intent)
+                    }
+
+                }
+
+                val chapterList = holder.mItem.chapterList
+
+                val adapter = ChapterRecyclerViewAdapter(
+                        ArrayList(chapterList.subList(0, Math.min(RanobeConstants.chaptersNum, chapterList.size))),
+                        holder.mItem)
+
+                val itemDecorator = DividerItemDecoration(holder.context,DividerItemDecoration.VERTICAL)
+                itemDecorator.setDrawable(holder.context.resources.getDrawable(R.drawable.divider))
+                holder.mChaptersListView.addItemDecoration(itemDecorator)
+                holder.mChaptersListView.adapter = adapter
+
             }
-
-            val chapterList = holder.mItem.chapterList
-
-            val adapter = ChapterRecyclerViewAdapter(
-                    ArrayList(chapterList.subList(0, Math.min(RanobeConstants.chaptersNum, chapterList.size))),
-                    holder.mItem)
-
-            val itemDecorator = DividerItemDecoration(holder.context,DividerItemDecoration.VERTICAL)
-            itemDecorator.setDrawable(holder.context.resources.getDrawable(R.drawable.divider))
-            holder.mChaptersListView.addItemDecoration(itemDecorator)
-            holder.mChaptersListView.adapter = adapter
-
-        } else if (holder is LoadingViewHolder) {
-            holder.progressBar.isIndeterminate = true
-        } else if (holder is TitleViewHolder) {
-            holder.mTextView.text = mValues[position].title
+            is LoadingViewHolder -> holder.progressBar.isIndeterminate = true
+            is TitleViewHolder -> holder.mTextView.text = mValues[position].title
         }
     }
 

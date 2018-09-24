@@ -3,6 +3,7 @@ package ru.profapp.RanobeReader.DAO
 import androidx.room.*
 import io.reactivex.Flowable
 import io.reactivex.Maybe
+import io.reactivex.Single
 import ru.profapp.RanobeReader.Models.TextChapter
 
 /**
@@ -12,7 +13,7 @@ import ru.profapp.RanobeReader.Models.TextChapter
 interface TextDao {
 
     @Query("SELECT * FROM textChapter order by RanobeName Asc, `Index` ASC")
-    fun allText(): Flowable<List<TextChapter>>
+    fun allText(): Single<List<TextChapter>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(text: TextChapter)

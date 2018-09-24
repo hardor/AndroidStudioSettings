@@ -2,6 +2,7 @@ package ru.profapp.RanobeReader.DAO
 
 import androidx.room.*
 import io.reactivex.Flowable
+import io.reactivex.Single
 import ru.profapp.RanobeReader.Models.Ranobe
 
 /**
@@ -38,10 +39,7 @@ interface RanobeDao {
     @Query("SELECT * FROM ranobe WHERE url=:UrlToRanobe")
     fun getRanobeByUrl(UrlToRanobe: String): Ranobe
     @Query("SELECT * FROM ranobe WHERE IsFavorite = 1")
-    fun getFavoriteRanobes(): List<Ranobe>
-
-    @Query("SELECT * FROM ranobe WHERE IsFavorite = 1 AND RanobeSite = :ranobeSite")
-    fun getFavoriteBySite(ranobeSite: String): List<Ranobe>
+    fun getFavoriteRanobes(): Single<List<Ranobe>>
 
     @Query("SELECT * FROM ranobe WHERE IsFavorite = 1 AND url=:UrlToRanobe LIMIT 1")
     fun isRanobeFavorite(UrlToRanobe: String): Ranobe

@@ -89,7 +89,7 @@ data class RulateComment(
 
         var body: String? = null,
 
-        var time: Int? = null,
+        var time: Long? = null,
 
         var author: String? = null,
 

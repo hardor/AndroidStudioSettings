@@ -2,6 +2,7 @@ package ru.profapp.RanobeReader.JsonApi
 
 import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReader.Common.RanobeConstants
@@ -19,7 +20,7 @@ import java.util.*
 
 object RulateRepository {
 
-    fun getBookInfo(ranobe: Ranobe, token: String = "", book_id: Int): Observable<Ranobe> {
+    fun getBookInfo(ranobe: Ranobe, token: String = "", book_id: Int): Single<Ranobe> {
         return IRulateApiService.create().GetBookInfo(token, book_id)
                 .map {
                     if (it.status == "success") {
@@ -29,21 +30,21 @@ object RulateRepository {
                 }
     }
 
-    fun getReadyBooks(page: Int): Observable<ArrayList<Ranobe>> {
+    fun getReadyBooks(page: Int): Single<List<Ranobe>> {
         return IRulateApiService.create().GetReadyBooks(page)
                 .map {
                     return@map getRanobeList(it)
                 }
     }
 
-    fun searchBooks(search: String): Observable<ArrayList<Ranobe>> {
+    fun searchBooks(search: String): Single<List<Ranobe>> {
         return IRulateApiService.create().SearchBooks(search)
                 .map {
                     return@map getRanobeList(it)
                 }
     }
 
-    fun getChapterText(token: String, mCurrentChapter: Chapter): Observable<Boolean> {
+    fun getChapterText(token: String, mCurrentChapter: Chapter): Single<Boolean> {
         return IRulateApiService.create().GetChapterText(token, mCurrentChapter.id, mCurrentChapter.ranobeId)
                 .map {
                     if (it.status == "success") {
@@ -60,8 +61,8 @@ object RulateRepository {
                 }
     }
 
-    private fun getRanobeList(it: ReadyGson): ArrayList<Ranobe> {
-        val or: ArrayList<Ranobe> = ArrayList()
+    private fun getRanobeList(it: ReadyGson): List<Ranobe> {
+        val or: MutableList<Ranobe> = arrayListOf()
         if (it.status == "success") {
 
             for (book in it.books) {
