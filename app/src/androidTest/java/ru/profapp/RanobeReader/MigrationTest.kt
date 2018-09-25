@@ -1,10 +1,14 @@
 package ru.profapp.RanobeReader
 
 
+import androidx.room.Room
 import androidx.room.testing.MigrationTestHelper
 import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
+import io.reactivex.Single
+import org.junit.Assert
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -26,14 +30,9 @@ class MigrationTest {
             Objects.requireNonNull(DatabaseDao::class.java.canonicalName),
             FrameworkSQLiteOpenHelperFactory())
 
-    @Test
-    @Throws(IOException::class)
-    fun migrate2To3() {
-        var db = helper.createDatabase(TEST_DB, 2)
-
-        // db has schema version 1. insert some data using SQL queries.
-        // You cannot use DAO classes because they expect the latest schema.
-
+    @Before
+    fun setUp() {
+        val db = helper.createDatabase(TEST_DB, 2)
         try {
             db.execSQL("INSERT INTO chapter (Url, RanobeUrl, Id, Title, Status, CanRead, New, \"Index\", Time, RanobeId, Downloaded, Readed, Text, RanobeName) VALUES ('tl.rulate.ru/book/3693/248127', 'tl.rulate.ru/book/3693', 248127, 'Том 5. Глава 1 - Победа над мелочью (Часть 2) Версия №2', '', 0, 1, 0, 0, 3693, 0, 0, NULL, 'Искатель подземелья');");
             db.execSQL("INSERT INTO chapter (Url, RanobeUrl, Id, Title, Status, CanRead, New, \"Index\", Time, RanobeId, Downloaded, Readed, Text, RanobeName) VALUES ('tl.rulate.ru/book/3693/248126', 'tl.rulate.ru/book/3693', 248126, 'Том 5. Глава 1 - Победа над мелочью (Часть 2) Версия №1', '', 0, 1, 1, 0, 3693, 0, 0, NULL, 'Искатель подземелья');")
@@ -44,13 +43,30 @@ class MigrationTest {
             e.printStackTrace()
         }
         db.close()
+    }
 
-        // Re-open the database with version 2 and provide
-        // MIGRATION_1_2 as the migration process.
-        db = helper.runMigrationsAndValidate(TEST_DB, 3, true, MIGRATION_2_3);
+    @Test
+    @Throws(IOException::class)
+    fun migrate2To3() {
 
+        val db = helper.runMigrationsAndValidate(TEST_DB, 3, true, MIGRATION_2_3);
+
+        db.close()
 
     }
+    @Test
+    fun migrateData() {
+        val database: DatabaseDao? = Room.databaseBuilder(InstrumentationRegistry.getTargetContext(), DatabaseDao::class.java, TEST_DB).addMigrations(MIGRATION_2_3).build()
+        val chapters = database?.chapterDao()?.getChaptersForRanobe("tl.rulate.ru/book/3693")?: arrayListOf()
+        val textChapters = database?.textDao()?.allText()?: Single.just(arrayListOf())
+
+        Assert.assertTrue(chapters.any())
+        Assert.assertTrue(textChapters.blockingGet().any())
+
+    }
+
+
+
 
     companion object {
         private val TEST_DB = "test-db"
