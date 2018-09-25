@@ -2,14 +2,14 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "922a1905804f059b77204bac0f109049",
+    "identityHash": "f80bb9bc8912d3a5543f6ff6218026c2",
     "entities": [
       {
         "tableName": "ranobe",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`Url` TEXT NOT NULL, `Id` INTEGER NOT NULL, `EngTitle` TEXT, `Title` TEXT, `Image` TEXT, `ReadyDate` INTEGER, `Lang` TEXT, `Description` TEXT, `AdditionalInfo` TEXT, `RanobeSite` TEXT NOT NULL, `CharpterCount` INTEGER, `LastReadedCharpter` INTEGER, `WasUpdated` INTEGER NOT NULL, `Favorited` INTEGER NOT NULL, `FavoritedInWeb` INTEGER NOT NULL, `Rating` TEXT, `Status` TEXT, PRIMARY KEY(`Url`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`Url` TEXT NOT NULL, `Id` INTEGER NOT NULL, `EngTitle` TEXT, `Title` TEXT, `Image` TEXT, `ReadyDate` INTEGER, `Lang` TEXT, `Description` TEXT, `AdditionalInfo` TEXT, `RanobeSite` TEXT, `CharpterCount` INTEGER NOT NULL, `LastReadedCharpter` INTEGER NOT NULL, `WasUpdated` INTEGER, `Favorited` INTEGER, `FavoritedInWeb` INTEGER, `Rating` TEXT, `Status` TEXT, PRIMARY KEY(`Url`))",
         "fields": [
           {
-            "fieldPath": "url",
+            "fieldPath": "Url",
             "columnName": "Url",
             "affinity": "TEXT",
             "notNull": true
@@ -21,91 +21,91 @@
             "notNull": true
           },
           {
-            "fieldPath": "engTitle",
+            "fieldPath": "EngTitle",
             "columnName": "EngTitle",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "title",
+            "fieldPath": "Title",
             "columnName": "Title",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "image",
+            "fieldPath": "Image",
             "columnName": "Image",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "readyDate",
+            "fieldPath": "ReadyDate",
             "columnName": "ReadyDate",
             "affinity": "INTEGER",
             "notNull": false
           },
           {
-            "fieldPath": "lang",
+            "fieldPath": "Lang",
             "columnName": "Lang",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "description",
+            "fieldPath": "Description",
             "columnName": "Description",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "additionalInfo",
+            "fieldPath": "AdditionalInfo",
             "columnName": "AdditionalInfo",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "ranobeSite",
+            "fieldPath": "RanobeSite",
             "columnName": "RanobeSite",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
-            "fieldPath": "chapterCount",
+            "fieldPath": "ChapterCount",
             "columnName": "CharpterCount",
             "affinity": "INTEGER",
-            "notNull": false
+            "notNull": true
           },
           {
-            "fieldPath": "lastReadedChapter",
+            "fieldPath": "LastReadedChapter",
             "columnName": "LastReadedCharpter",
             "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "WasUpdated",
+            "columnName": "WasUpdated",
+            "affinity": "INTEGER",
             "notNull": false
           },
           {
-            "fieldPath": "wasUpdated",
-            "columnName": "WasUpdated",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "favorited",
+            "fieldPath": "Favorited",
             "columnName": "Favorited",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": false
           },
           {
-            "fieldPath": "favoritedInWeb",
+            "fieldPath": "FavoritedInWeb",
             "columnName": "FavoritedInWeb",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": false
           },
           {
-            "fieldPath": "rating",
+            "fieldPath": "Rating",
             "columnName": "Rating",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "status",
+            "fieldPath": "Status",
             "columnName": "Status",
             "affinity": "TEXT",
             "notNull": false
@@ -122,83 +122,17 @@
       },
       {
         "tableName": "chapter",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`Url` TEXT NOT NULL, `RanobeUrl` TEXT NOT NULL, `Title` TEXT, `Status` TEXT, `CanRead` INTEGER NOT NULL, `New` INTEGER NOT NULL, `Index` INTEGER NOT NULL, `Time` INTEGER, `RanobeId` INTEGER NOT NULL, `Downloaded` INTEGER NOT NULL, `Readed` INTEGER NOT NULL, `Text` TEXT, `RanobeName` TEXT, `Id` INTEGER NOT NULL, PRIMARY KEY(`Url`), FOREIGN KEY(`RanobeUrl`) REFERENCES `ranobe`(`Url`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`Url` TEXT NOT NULL, `RanobeUrl` TEXT, `Id` INTEGER NOT NULL, `Title` TEXT, `Status` TEXT, `CanRead` INTEGER, `New` INTEGER, `Index` INTEGER NOT NULL, `Time` INTEGER, `RanobeId` INTEGER NOT NULL, `Downloaded` INTEGER, `Readed` INTEGER, `Text` TEXT, `RanobeName` TEXT, PRIMARY KEY(`Url`), FOREIGN KEY(`RanobeUrl`) REFERENCES `ranobe`(`Url`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
-            "fieldPath": "url",
+            "fieldPath": "Url",
             "columnName": "Url",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "ranobeUrl",
+            "fieldPath": "RanobeUrl",
             "columnName": "RanobeUrl",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "title",
-            "columnName": "Title",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "status",
-            "columnName": "Status",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "canRead",
-            "columnName": "CanRead",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "isNew",
-            "columnName": "New",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "index",
-            "columnName": "Index",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "time",
-            "columnName": "Time",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "ranobeId",
-            "columnName": "RanobeId",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "downloaded",
-            "columnName": "Downloaded",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "readed",
-            "columnName": "Readed",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "text",
-            "columnName": "Text",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "ranobeName",
-            "columnName": "RanobeName",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -207,6 +141,72 @@
             "columnName": "Id",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "Title",
+            "columnName": "Title",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "Status",
+            "columnName": "Status",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "CanRead",
+            "columnName": "CanRead",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "New",
+            "columnName": "New",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "Index",
+            "columnName": "Index",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "Time",
+            "columnName": "Time",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "RanobeId",
+            "columnName": "RanobeId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "Downloaded",
+            "columnName": "Downloaded",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "Readed",
+            "columnName": "Readed",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "Text",
+            "columnName": "Text",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "RanobeName",
+            "columnName": "RanobeName",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -244,31 +244,31 @@
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ChapterUrl` TEXT NOT NULL, `ChapterName` TEXT, `RanobeName` TEXT, `Text` TEXT, `Index` INTEGER NOT NULL, PRIMARY KEY(`ChapterUrl`))",
         "fields": [
           {
-            "fieldPath": "chapterUrl",
+            "fieldPath": "ChapterUrl",
             "columnName": "ChapterUrl",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "chapterName",
+            "fieldPath": "ChapterName",
             "columnName": "ChapterName",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "ranobeName",
+            "fieldPath": "RanobeName",
             "columnName": "RanobeName",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "text",
+            "fieldPath": "Text",
             "columnName": "Text",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "index",
+            "fieldPath": "Index",
             "columnName": "Index",
             "affinity": "INTEGER",
             "notNull": true
@@ -286,7 +286,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"922a1905804f059b77204bac0f109049\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"f80bb9bc8912d3a5543f6ff6218026c2\")"
     ]
   }
 }

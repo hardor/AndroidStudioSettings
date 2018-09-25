@@ -60,7 +60,7 @@ class JsonRulateApi private constructor() : JsonBaseClass() {
     }
 
 
-    fun RemoveBookmark(book_id: Int, token: String): String {
+    fun RemoveBookmark(book_id: Int?, token: String): String {
         var request = String.format(ApiString, "removeBookmark")
         if (!token.isEmpty()) {
             request += "&token=$token"

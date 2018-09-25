@@ -89,7 +89,7 @@ object RanobeRfRepository {
         return or
     }
     private infix fun Ranobe.updateRanobeRfRanobe(book: RfBook) {
-        id = if (id == -1) book.id ?: id else id
+        id = if (id == null) book.id ?: id else id
         title = if (title.isBlank()) book.title ?: title else title
         url = if (url.isBlank()) Constants.RanobeSite.RanobeRf.url + book.url else url
         readyDate = readyDate ?: book.lastUpdatedBook?.times(1000)?.let { Date(it) }
@@ -110,7 +110,7 @@ object RanobeRfRepository {
         for ((index, rChapter) in book.parts.withIndex()) {
             val chapter = Chapter()
 
-            chapter.id = if (chapter.id == -1) rChapter.id ?: chapter.id else chapter.id
+            chapter.id = if (chapter.id == null) rChapter.id ?: chapter.id else chapter.id
             chapter.title = if (chapter.title.isBlank()) "${rChapter.partNumber} ${rChapter.title}" else chapter.title
             chapter.url = if (chapter.url.isBlank()) rChapter.url ?: chapter.url else chapter.url
             if (!chapter.url.contains(Constants.RanobeSite.RanobeRf.url)) {
@@ -158,7 +158,7 @@ object RanobeRfRepository {
 
     private infix fun Chapter.updateRanobeRfChapter(rChapter: RfChapter) {
 
-        id = if (id == -1) rChapter.id ?: id else id
+        id = if (id == null) rChapter.id ?: id else id
         title = if (title.isBlank()) String.format("%s %s", rChapter.partNumber
                 ?: "", rChapter.title)
         else

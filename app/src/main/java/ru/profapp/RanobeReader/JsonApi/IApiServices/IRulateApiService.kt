@@ -22,7 +22,7 @@ interface IRulateApiService  {
     fun GetFavoriteBooks(@Query("token") token: String): Single<ReadyGson>
 
     @GET("/api/chapter?key=fpoiKLUues81werht039")
-    fun GetChapterText(@Query("token") token: String, @Query("chapter_id") chapter_id: Int, @Query("book_id") book_id: Int): Single<ChapterTextGson>
+    fun GetChapterText(@Query("token") token: String, @Query("chapter_id") chapter_id: Int?, @Query("book_id") book_id: Int?): Single<ChapterTextGson>
 
     @GET("/api/addBookmark?key=fpoiKLUues81werht039")
     fun AddBookmark(@Query("token") token: String, @Query("book_id") book_id: Int): Single<BookmarkGson>
@@ -31,7 +31,7 @@ interface IRulateApiService  {
     fun RemoveBookmark(@Query("token") token: String,  @Query("book_id") book_id: Int): Single<BookmarkGson>
 
     @GET("/api/book?key=fpoiKLUues81werht039")
-    fun GetBookInfo(@Query("token") token: String="",  @Query("book_id") book_id: Int): Single<BookInfoGson>
+    fun GetBookInfo(@Query("token") token: String="",  @Query("book_id") book_id: Int?): Single<BookInfoGson>
 
     @GET("/api/auth?key=fpoiKLUues81werht039")
     fun Login(@Query("login") login: String,  @Query("pass") pass: String): Single<LoginGson>

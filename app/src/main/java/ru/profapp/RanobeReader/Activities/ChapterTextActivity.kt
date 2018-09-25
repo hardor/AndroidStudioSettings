@@ -404,7 +404,7 @@ class ChapterTextActivity : AppCompatActivity() {
 
         mCurrentChapter.isRead = true
         //  sPref!!.edit().putBoolean(ChapterUrl, true).commit()
-        lastIndexPref!!.edit().putInt(mCurrentChapter.ranobeUrl, mCurrentChapter.id).commit()
+        mCurrentChapter.id?.let { lastIndexPref!!.edit().putInt(mCurrentChapter.ranobeUrl, it).commit() }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

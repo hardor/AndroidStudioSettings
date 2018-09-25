@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 3,
-    "identityHash": "701785422e8a5c2dbfc4d37d0303d473",
+    "identityHash": "da2c89a2d386cb0ecd2d2abe819bfae9",
     "entities": [
       {
         "tableName": "ranobe",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`Url` TEXT NOT NULL, `id` INTEGER NOT NULL, `EngTitle` TEXT, `Title` TEXT NOT NULL, `Image` TEXT, `ReadyDate` INTEGER, `Lang` TEXT, `Description` TEXT, `AdditionalInfo` TEXT, `RanobeSite` TEXT NOT NULL, `ChapterCount` INTEGER, `LastReadChapter` INTEGER, `WasUpdated` INTEGER NOT NULL, `IsFavorite` INTEGER NOT NULL, `IsFavoriteInWeb` INTEGER NOT NULL, `Rating` TEXT, `Status` TEXT, PRIMARY KEY(`Url`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`Url` TEXT NOT NULL, `Id` INTEGER, `EngTitle` TEXT, `Title` TEXT NOT NULL, `Image` TEXT, `ReadyDate` INTEGER, `Lang` TEXT, `Description` TEXT, `AdditionalInfo` TEXT, `RanobeSite` TEXT NOT NULL, `ChapterCount` INTEGER, `LastReadChapter` INTEGER, `WasUpdated` INTEGER NOT NULL, `IsFavorite` INTEGER NOT NULL, `IsFavoriteInWeb` INTEGER NOT NULL, `Rating` TEXT, `Status` TEXT, PRIMARY KEY(`Url`))",
         "fields": [
           {
             "fieldPath": "url",
@@ -16,9 +16,9 @@
           },
           {
             "fieldPath": "id",
-            "columnName": "id",
+            "columnName": "Id",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "engTitle",
@@ -122,7 +122,7 @@
       },
       {
         "tableName": "chapter",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`Url` TEXT NOT NULL, `RanobeUrl` TEXT NOT NULL, `Title` TEXT NOT NULL, `Status` TEXT, `CanRead` INTEGER NOT NULL, `New` INTEGER NOT NULL, `Index` INTEGER NOT NULL, `Time` INTEGER, `RanobeId` INTEGER NOT NULL, `Downloaded` INTEGER NOT NULL, `IsRead` INTEGER NOT NULL, `RanobeName` TEXT NOT NULL, `id` INTEGER NOT NULL, PRIMARY KEY(`Url`), FOREIGN KEY(`RanobeUrl`) REFERENCES `ranobe`(`Url`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`Url` TEXT NOT NULL, `RanobeUrl` TEXT NOT NULL, `Title` TEXT NOT NULL, `Status` TEXT, `CanRead` INTEGER NOT NULL, `New` INTEGER NOT NULL, `Index` INTEGER NOT NULL, `Time` INTEGER, `RanobeId` INTEGER, `Downloaded` INTEGER NOT NULL, `IsRead` INTEGER NOT NULL, `RanobeName` TEXT NOT NULL, `Id` INTEGER, PRIMARY KEY(`Url`), FOREIGN KEY(`RanobeUrl`) REFERENCES `ranobe`(`Url`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "url",
@@ -176,7 +176,7 @@
             "fieldPath": "ranobeId",
             "columnName": "RanobeId",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "downloaded",
@@ -198,9 +198,9 @@
           },
           {
             "fieldPath": "id",
-            "columnName": "id",
+            "columnName": "Id",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -383,7 +383,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"701785422e8a5c2dbfc4d37d0303d473\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"da2c89a2d386cb0ecd2d2abe819bfae9\")"
     ]
   }
 }

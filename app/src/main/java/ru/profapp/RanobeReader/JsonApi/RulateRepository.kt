@@ -19,7 +19,7 @@ import java.util.*
 
 object RulateRepository {
 
-    fun getBookInfo(ranobe: Ranobe, token: String = "", book_id: Int): Single<Ranobe> {
+    fun getBookInfo(ranobe: Ranobe, token: String = "", book_id: Int?): Single<Ranobe> {
         return IRulateApiService.create().GetBookInfo(token, book_id)
                 .map {
                     if (it.status == "success") {
@@ -86,7 +86,7 @@ object RulateRepository {
 
         val mCalendar = Calendar.getInstance()
         val format = SimpleDateFormat("MM-dd HH:mm")
-        id = if (id == -1) book.bookId ?: book.id ?: id else id
+        id = if (id == null) book.bookId ?: book.id ?: id else id
 
         engTitle = engTitle ?: book.sTitle
 

@@ -240,7 +240,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                         val lastId = lastIndexPref?.getInt(it.url, -1)
                         if (lastId!! > 0) {
                             checked = true
-                            for (chapter in it.chapterList) chapter.isRead = chapter.id < lastId
+                            for (chapter in it.chapterList) chapter.isRead = chapter.id!! < lastId
 
                         }
                     }

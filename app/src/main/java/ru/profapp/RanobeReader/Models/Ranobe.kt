@@ -33,10 +33,10 @@ class Ranobe() {
     @NonNull
     @ColumnInfo(name = "Url")
     var url: String = ""
-    @ColumnInfo(name = "id")
-    var id: Int = -1
+    @ColumnInfo(name = "Id")
+    var id: Int? = null
         get() {
-            if (field != -1) {
+            if (field != null) {
                 return field
             } else if (url.isNotBlank()) {
                 return try {

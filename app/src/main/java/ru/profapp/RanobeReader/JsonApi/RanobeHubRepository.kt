@@ -81,7 +81,7 @@ object RanobeHubRepository {
                 }
     }
 
-    fun getChapters(ranobe_id: Int): Single<List<tChapter>> {
+    fun getChapters(ranobe_id: Int?): Single<List<tChapter>> {
         return IRanobeHubApiService.create().GetChapters(ranobe_id)
                 .map {
                     return@map it.data.map { c -> c.chapters }.flatten()
@@ -102,7 +102,7 @@ object RanobeHubRepository {
 
     private infix fun Ranobe.updateRanobeHubRanobe(book: RanobeHubBook) {
 
-        id = if (id == -1) book.id ?: id else id
+        id = if (id == null) book.id ?: id else id
 
         title = if (title.isBlank())  book.nameRus?:title else title
         engTitle = engTitle ?: book.nameEng

@@ -49,8 +49,20 @@ class Chapter() {
 
             return field
         }
+    @ColumnInfo(name = "Id")
+    var id: Int? = null
+        get() {
+            if (field == null) {
+                try {
+                    return Integer.parseInt(url.substring(url.lastIndexOf("/") + 1))
+                } catch (ignore: NumberFormatException) {
+                    return field
+                }
+            }
+            return field
+        }
     @ColumnInfo(name = "Title")
-    var title: String=""
+    var title: String = ""
     @ColumnInfo(name = "Status")
     var status: String? = null
     @ColumnInfo(name = "CanRead")
@@ -62,12 +74,13 @@ class Chapter() {
     @ColumnInfo(name = "Time")
     var time: Date? = null
     @ColumnInfo(name = "RanobeId")
-    var ranobeId: Int = -1
+    var ranobeId: Int? = null
         get() {
-            if (field == -1 && ranobeUrl.isNotBlank()) {
+            if (field == null && ranobeUrl.isNotBlank()) {
                 try {
                     return Integer.parseInt(ranobeUrl.substring(ranobeUrl.lastIndexOf("/") + 1))
                 } catch (ignore: NumberFormatException) {
+                    return field
                 }
 
             }
@@ -82,20 +95,9 @@ class Chapter() {
     var text: String? = null
 
     @ColumnInfo(name = "RanobeName")
-    var ranobeName: String=""
+    var ranobeName: String = ""
     @Ignore
     var isChecked: Boolean = false
-    @ColumnInfo(name = "id")
-    var id: Int = -1
-        get() {
-            if (field == -1) {
-                try {
-                    return Integer.parseInt(url.substring(url.lastIndexOf("/") + 1))
-                } catch (ignore: NumberFormatException) {
-                }
-            }
-            return field
-        }
 
 
     constructor(`object`: JSONObject, enumFrom: Constants.JsonObjectFrom) : this() {

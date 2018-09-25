@@ -294,7 +294,7 @@ class RanobeRecyclerFragment : Fragment() {
                                     checked = true
                                     val sizeList = ranobe.chapterList.size
                                     for (chapter in ranobe.chapterList.subList(0, Math.min(chaptersNum, sizeList))) {
-                                        if (chapter.id <= lastId) {
+                                        if (chapter.id!! <= lastId) {
                                             chapter.isRead = true
                                         }
                                     }

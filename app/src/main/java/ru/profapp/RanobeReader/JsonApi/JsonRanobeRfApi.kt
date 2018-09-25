@@ -213,7 +213,7 @@ class JsonRanobeRfApi private constructor() : JsonBaseClass() {
     }
 
 
-    fun AddBookmark(book_id: Int, part_id: Int, token: String): String {
+    fun AddBookmark(book_id: Int?, part_id: Int?, token: String): String {
         return if (!token.isEmpty()) {
             val request = RanobeRf.url + "/v1/bookmark/add/"
 
@@ -222,8 +222,8 @@ class JsonRanobeRfApi private constructor() : JsonBaseClass() {
             header["Authorization"] = "Bearer $token"
             header["Accept"] = "*/*"
             val data = HashMap<String, String>()
-            data["book_id"] = Integer.toString(book_id)
-            data["part_id"] = Integer.toString(part_id)
+            data["book_id"] = Integer.toString(book_id!!)
+            data["part_id"] = Integer.toString(part_id!!)
             getDocumentText(Cookies, data, header, request, Connection.Method.POST.name)
         } else {
             ""

@@ -28,7 +28,7 @@ interface IRanobeHubApiService {
     fun SearchBooks(@Path("name") name: String): Single<RanobeHubSearchGson>
 
     @GET("/api/ranobe/{ranobe_id}/contents")
-    fun GetChapters(@Path("ranobe_id") ranobe_id: Int): Single<ChaptersGson>
+    fun GetChapters(@Path("ranobe_id") ranobe_id: Int?): Single<ChaptersGson>
 
     @GET("/api/ranobe/chapter")
     fun GetChapterText(@Query("ranobe_id") ranobe_id: Int, @Query("volume_num") volume_num: Int, @Query("chapter_num") chapter_num: Int): Single<ChapterTextGson>
