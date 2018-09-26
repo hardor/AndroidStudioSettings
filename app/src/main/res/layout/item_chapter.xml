@@ -8,5 +8,5 @@
   android:paddingBottom="2dp"
   android:paddingStart="2dp"
   android:paddingEnd="2dp"
-  android:ellipsize="marquee"
-  android:singleLine="true"/>
+  android:ellipsize="end"
+  android:maxLines="1"/>

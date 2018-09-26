@@ -6,6 +6,7 @@ import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import ru.profapp.RanobeReader.DAO.DatabaseDao
+import ru.profapp.RanobeReader.Helpers.MyLog
 import ru.profapp.RanobeReader.Models.Ranobe
 
 
@@ -47,7 +48,7 @@ class MyApp : Application() {
                     database.execSQL("ALTER TABLE chapter2 RENAME TO chapter;")
                     database.execSQL("CREATE INDEX index_chapter_RanobeUrl ON chapter (RanobeUrl);")
                     database.execSQL("CREATE TABLE ranobeImage (RanobeUrl TEXT NOT NULL, Image TEXT, PRIMARY KEY(RanobeUrl));")
-                    database.execSQL( "CREATE INDEX index_ranobeImage_RanobeUrl ON ranobeImage (RanobeUrl);")
+                    database.execSQL("CREATE INDEX index_ranobeImage_RanobeUrl ON ranobeImage (RanobeUrl);")
                     database.execSQL("CREATE TABLE chapterHistory (ChapterUrl TEXT NOT NULL, ChapterName TEXT NOT NULL, RanobeName TEXT NOT NULL, [Index] INTEGER NOT NULL, ReadDate INTEGER NOT NULL, Progress REAL NOT NULL, PRIMARY KEY(ChapterUrl));")
                     database.execSQL("CREATE INDEX index_chapterHistory_ChapterUrl ON chapterHistory (ChapterUrl);")
                     database.execSQL("CREATE TABLE IF NOT EXISTS `textChapter2` (`ChapterUrl` TEXT NOT NULL, `ChapterName` TEXT NOT NULL, `RanobeName` TEXT NOT NULL, `Text` TEXT NOT NULL, `Index` INTEGER NOT NULL, PRIMARY KEY(`ChapterUrl`));")
@@ -56,7 +57,7 @@ class MyApp : Application() {
                     database.execSQL("ALTER TABLE textChapter2 RENAME TO textChapter;")
                     database.execSQL("CREATE INDEX index_textChapter_ChapterUrl ON textChapter (ChapterUrl);")
                 }catch (e:Exception ){
-                    e.printStackTrace()
+                    MyLog.SendError(MyLog.LogType.ERROR,"MIGRATION_2_3","MIGRATION_2_3 failed",e)
                 }
 
             }

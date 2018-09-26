@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView3"
         android:inputType="text"
-        android:singleLine="true"
+        android:maxLines="1"
         android:hint="@string/login"
         android:importantForAutofill="no" />
 

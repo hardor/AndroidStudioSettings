@@ -35,98 +35,7 @@ class JsonRanobeRfApi private constructor() : JsonBaseClass() {
     }
 
 
-    fun GetReadyBooks(page: Int): String {
-        val request = RanobeRf.url + "/v1/book/last/"
 
-        val data = HashMap<String, String>()
-        data["page"] = (page + 1).toString()
-        data["sequence"] = sequence
-
-        val header = HashMap<String, String>()
-        header["Content-Type"] = "application/x-www-form-urlencoded"
-        header["Accept"] = "*/*"
-
-        var response = getDocumentText(Cookies, data, header, request,
-                Connection.Method.POST.name)
-
-
-        for (i in 0..2) {
-            var jsonObject: JSONObject? = try {
-                JSONObject(response)
-            } catch (ignore: JSONException) {
-                null
-            }
-
-            if (jsonObject == null || jsonObject.optInt("status") == 422) {
-
-                var res: Connection.Response? = null
-                try {
-                    res = Jsoup
-                            .connect(RanobeRf.url)
-                            .cookies(Cookies)
-                            .method(Connection.Method.GET)
-                            .execute()
-                } catch (ignore: IOException) {
-
-                }
-
-                Cookies = if (res != null) res.cookies() else Cookies
-
-                response = getDocumentText(Cookies, data, header, request,
-                        Connection.Method.POST.name)
-
-            } else {
-                break
-            }
-
-        }
-        return response
-    }
-
-
-    fun GetAllBooks(): String {
-        val request = RanobeRf.url + "/v1/book/list/?country=&limit=500&offset=0&order=popular"
-
-        var response = getDocumentText(Cookies, request)
-
-        for (i in 0..2) {
-            var jsonObject: JSONObject? = try {
-                JSONObject(response)
-            } catch (ignore: JSONException) {
-                null
-            }
-
-            if (jsonObject == null || jsonObject.optInt("status") == 422) {
-
-                var res: Connection.Response? = null
-                try {
-                    res = Jsoup
-                            .connect(RanobeRf.url)
-                            .cookies(Cookies)
-                            .method(Connection.Method.GET)
-                            .execute()
-                } catch (ignore: IOException) {
-
-                }
-
-                Cookies = if (res != null) res.cookies() else Cookies
-
-                response = getDocumentText(Cookies, request)
-
-            } else {
-                break
-            }
-
-        }
-        return response
-    }
-
-
-    fun SearchBooks(search: String): String {
-        val request = RanobeRf.url + "/v1/book/GetReadyBooks/?q=" + search
-
-        return getUrlText(request)
-    }
 
 
     fun GetChapterText(chapter: Chapter): String {
@@ -145,12 +54,6 @@ class JsonRanobeRfApi private constructor() : JsonBaseClass() {
     }
 
 
-    fun GetBookInfo(ranobeName: String): String {
-
-        val request = RanobeRf.url + "/v1/book/get/?bookAlias=" + ranobeName
-
-        return getUrlText(request)
-    }
 
     fun RemoveBookmark(bookmark_id: Int, token: String): String {
 
@@ -230,21 +133,6 @@ class JsonRanobeRfApi private constructor() : JsonBaseClass() {
         }
     }
 
-
-
-    fun Login(name: String, password: String): String {
-        val request = RanobeRf.url + "/v1/auth/login/"
-
-        val data = HashMap<String, String>()
-        data["email"] = name
-        data["password"] = password
-
-        val header = HashMap<String, String>()
-        header["Content-Type"] = "application/x-www-form-urlencoded"
-        header["Accept"] = "*/*"
-
-        return getDocumentText(Cookies, data, header, request, Connection.Method.POST.name)
-    }
 
 
     fun GetFavoriteBooks(token: String): String {

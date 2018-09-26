@@ -24,11 +24,12 @@ import java.util.*
 class MigrationTest {
 
 
-    // Helper for creating Room databases and migrations
     @get:Rule
     val helper: MigrationTestHelper = MigrationTestHelper(InstrumentationRegistry.getInstrumentation(),
             Objects.requireNonNull(DatabaseDao::class.java.canonicalName),
             FrameworkSQLiteOpenHelperFactory())
+
+
 
     @Before
     fun setUp() {
@@ -54,11 +55,12 @@ class MigrationTest {
         db.close()
 
     }
+
     @Test
     fun migrateData() {
-        val database: DatabaseDao? = Room.databaseBuilder(InstrumentationRegistry.getTargetContext(), DatabaseDao::class.java, TEST_DB).addMigrations(MIGRATION_2_3).build()
-        val chapters = database?.chapterDao()?.getChaptersForRanobe("tl.rulate.ru/book/3693")?: arrayListOf()
-        val textChapters = database?.textDao()?.allText()?: Single.just(arrayListOf())
+        val chapters = database?.chapterDao()?.getChaptersForRanobe("tl.rulate.ru/book/3693")
+                ?: arrayListOf()
+        val textChapters = database?.textDao()?.allText() ?: Single.just(arrayListOf())
 
         Assert.assertTrue(chapters.any())
         Assert.assertTrue(textChapters.blockingGet().any())
@@ -66,11 +68,9 @@ class MigrationTest {
     }
 
 
-
-
     companion object {
         private val TEST_DB = "test-db"
-        private val RANOBE = Ranobe(Constants.RanobeSite.RanobeRf)
+        val database: DatabaseDao? = Room.databaseBuilder(InstrumentationRegistry.getTargetContext(), DatabaseDao::class.java, TEST_DB).addMigrations(MIGRATION_2_3).build()
     }
 
 }
