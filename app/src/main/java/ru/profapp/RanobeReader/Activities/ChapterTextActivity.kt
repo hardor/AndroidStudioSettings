@@ -19,7 +19,6 @@ import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import com.crashlytics.android.Crashlytics
-import com.google.gson.JsonParseException
 import io.fabric.sdk.android.Fabric
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -33,8 +32,8 @@ import ru.profapp.RanobeReader.Fragments.RepositoryProvider
 import ru.profapp.RanobeReader.Helpers.MyLog
 import ru.profapp.RanobeReader.Helpers.RanobeKeeper
 import ru.profapp.RanobeReader.Helpers.StringHelper
-import ru.profapp.RanobeReader.JsonApi.JsonRanobeRfApi
 import ru.profapp.RanobeReader.Models.Chapter
+import ru.profapp.RanobeReader.Models.ChapterHistory
 import ru.profapp.RanobeReader.Models.TextChapter
 import ru.profapp.RanobeReader.MyApp
 import ru.profapp.RanobeReader.R
@@ -46,7 +45,7 @@ class ChapterTextActivity : AppCompatActivity() {
     private lateinit var mWebView: WebView
     private var mContext: Context? = null
     private var mIndex: Int = 0
-    var mProgress: Float = 0.toFloat()
+    var mProgress: Float = -1f
     private var mChapterCount: Int? = null
     private var mChapterList: List<Chapter> = ArrayList()
     private var sPref: SharedPreferences? = null
@@ -56,7 +55,7 @@ class ChapterTextActivity : AppCompatActivity() {
     private lateinit var prevMenu: ImageButton
     private lateinit var bookmarkMenu: ImageButton
 
-    private var progressUrl: ProgressBar? = null
+    private lateinit var progressUrl: ProgressBar
 
     private fun set_web_colors() {
 
@@ -119,7 +118,7 @@ class ChapterTextActivity : AppCompatActivity() {
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 super.onPageStarted(view, url, favicon)
                 title = mCurrentChapter.title
-                progressUrl!!.visibility = View.VISIBLE
+                progressUrl.visibility = View.VISIBLE
             }
 
 
@@ -147,7 +146,7 @@ class ChapterTextActivity : AppCompatActivity() {
                     }
                 }, 300)
 
-                progressUrl!!.visibility = View.GONE
+                progressUrl.visibility = View.GONE
                 super.onPageFinished(view, url)
             }
 
@@ -188,6 +187,11 @@ class ChapterTextActivity : AppCompatActivity() {
 
         initWebView()
 
+        // the scroll listener:
+//        mWebView.setOnScrollChangedCallback { l, t, oldl, oldt ->
+//
+//        }
+
 
         prevMenu = findViewById(R.id.navigation_prev)
         nextMenu = findViewById(R.id.navigation_next)
@@ -213,10 +217,10 @@ class ChapterTextActivity : AppCompatActivity() {
                 + "; background-color: " + String.format("#%06X", 0xFFFFFF and color2)
                 + "\"")
 
+
         GetChapterText(false)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-
                 .subscribe({ result ->
                     if (!mCurrentChapter.isRead && result!!) {
                         putToReaded()
@@ -263,17 +267,13 @@ class ChapterTextActivity : AppCompatActivity() {
                 if (url.contains(Constants.RanobeSite.Rulate.url)) {
                     url = "$url/ready"
                 }
-                try {
-                    val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                    if (browserIntent.resolveActivity(this.packageManager) != null)
-                        startActivity(browserIntent)
-                    else
-                        Toast.makeText(this, R.string.browser_exist, Toast.LENGTH_SHORT).show()
 
+                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                if (browserIntent.resolveActivity(this.packageManager) != null)
+                    startActivity(browserIntent)
+                else
+                    Toast.makeText(this, R.string.browser_exist, Toast.LENGTH_SHORT).show()
 
-                } catch (ignored: Exception) {
-
-                }
 
             }
         }
@@ -296,35 +296,26 @@ class ChapterTextActivity : AppCompatActivity() {
 
     private fun GetChapterText(needSave: Boolean): Single<Boolean> {
 
-
-        var ch = MyApp.database?.textDao()!!.getTextByChapterUrl(mCurrentChapter.url)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .blockingGet(TextChapter("e", "e", "e", "e", 2))
-
-
         if (mCurrentChapter.text == null || mCurrentChapter.text!!.isEmpty()) {
 
-            return MyApp.database?.textDao()!!.getTextByChapterUrl(mCurrentChapter.url).flatMapSingle {
-                if (it != null) {
-                    mCurrentChapter.text = it.text
-                } else {
-                    val url = mCurrentChapter.ranobeUrl
-                    if (url.contains(Constants.RanobeSite.Rulate.url))
-                        return@flatMapSingle getRulateChapterText()
-                    return@flatMapSingle Single.just(false)
-                }
-                return@flatMapSingle Single.just(false)
+            return MyApp.database?.textDao()!!.getTextByChapterUrl(mCurrentChapter.url).map {
+                mCurrentChapter.text = it.text
+                return@map true
+            }.onErrorResumeNext {
+
+                val url = mCurrentChapter.ranobeUrl
+                if (url.contains(Constants.RanobeSite.Rulate.url))
+                    return@onErrorResumeNext getRulateChapterText()
+                else if (url.contains(Constants.RanobeSite.RanobeRf.url))
+                    return@onErrorResumeNext getRanobeRfChapterText()
+                return@onErrorResumeNext Single.just(false)
+
             }.map {
 
-                if ((RanobeKeeper.autoSaveText || needSave) && mCurrentChapter.text.isNullOrBlank()) {
+                if ((RanobeKeeper.autoSaveText || needSave) && !mCurrentChapter.text.isNullOrBlank()) {
                     Completable.fromAction {
-                        MyApp.database?.textDao()?.insert(
-                                TextChapter(mCurrentChapter))
-                    }
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe()
+                        MyApp.database?.textDao()?.insert(TextChapter(mCurrentChapter))
+                    }?.subscribe()
 
                 }
                 return@map it
@@ -337,9 +328,10 @@ class ChapterTextActivity : AppCompatActivity() {
 
     }
 
-    private fun getRanobeRfChapterText(): Boolean {
-        val response = JsonRanobeRfApi.getInstance()!!.GetChapterText(mCurrentChapter)
-        try {
+    private fun getRanobeRfChapterText(): Single<Boolean> {
+        return Single.just(false)
+//        val response = JsonRanobeRfApi.getInstance()!!.GetChapterText(mCurrentChapter)
+//        try {
 //            val readyGson = gson.fromJson(response, RfChapterTextGson::class.java)
 //            if (readyGson.status == 200) {
 //
@@ -353,21 +345,29 @@ class ChapterTextActivity : AppCompatActivity() {
 //                mCurrentChapter.text = readyGson.message
 //
 //            }
-        } catch (e: JsonParseException) {
-            MyLog.SendError(MyLog.LogType.WARN, ChapterTextActivity::class.java.toString(),
-                    mCurrentChapter.url, e)
-            return false
-        }
-
-        return false
+//        } catch (e: JsonParseException) {
+//            MyLog.SendError(MyLog.LogType.WARN, ChapterTextActivity::class.java.toString(),
+//                    mCurrentChapter.url, e)
+//            return false
+//        }
+//
+//        return false
     }
 
     private fun getRulateChapterText(): Single<Boolean> {
         val preferences = mContext!!.getSharedPreferences(StringResources.Rulate_Login_Pref, 0)
-        val token: String = preferences.getString(StringResources.KEY_Token, "")
+        val token: String = preferences.getString(StringResources.KEY_Token, "") ?: ""
         val repository = RepositoryProvider.provideRulateRepository()
         return repository.getChapterText(token, mCurrentChapter)
 
+
+    }
+
+    private fun saveProgressToDb(pr: Float? = null) {
+        val progress = pr ?: calculateProgression()
+        Completable.fromAction {
+            MyApp.database?.chapterHistoryDao()?.insert(ChapterHistory(mCurrentChapter.url, mCurrentChapter.title, mCurrentChapter.ranobeName, mCurrentChapter.index, progress))
+        }?.subscribe()
     }
 
     private fun OnClicked(i: Int) {
@@ -375,9 +375,9 @@ class ChapterTextActivity : AppCompatActivity() {
         mIndex += i
         if (mIndex >= 0 && mIndex <= mChapterCount!! - 1) {
             try {
+                saveProgressToDb()
                 mCurrentChapter = mChapterList[mIndex]
-                val loadResult = GetChapterText(false)
-                //initWebView(loadResult)
+                initWebView()
             } catch (e: ArrayIndexOutOfBoundsException) {
                 mIndex -= i
             }
@@ -395,16 +395,15 @@ class ChapterTextActivity : AppCompatActivity() {
     private fun putToReaded() {
 
         //Todo: add to history table
-//        if (sPref == null) {
-//            sPref = context!!.getSharedPreferences(StringResources.is_readed_Pref, Context.MODE_PRIVATE)
-//        }
         if (lastIndexPref == null) {
             lastIndexPref = mContext!!.getSharedPreferences(StringResources.last_chapter_id_Pref, Context.MODE_PRIVATE)
         }
-
         mCurrentChapter.isRead = true
-        //  sPref!!.edit().putBoolean(ChapterUrl, true).commit()
+
         mCurrentChapter.id?.let { lastIndexPref!!.edit().putInt(mCurrentChapter.ranobeUrl, it).commit() }
+
+        saveProgressToDb(0f)
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -442,4 +441,12 @@ class ChapterTextActivity : AppCompatActivity() {
         }
     }
 
+
+    override fun onPause() {
+        super.onPause()
+        saveProgressToDb()
+    }
+
 }
+
+

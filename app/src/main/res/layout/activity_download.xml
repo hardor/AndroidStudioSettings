@@ -16,7 +16,7 @@
 
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/chapter.list"
+            android:id="@+id/chapter_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="16dp"

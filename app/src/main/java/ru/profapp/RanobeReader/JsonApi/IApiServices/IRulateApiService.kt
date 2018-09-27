@@ -19,7 +19,7 @@ interface IRulateApiService  {
     fun SearchBooks(@Query("search") search: String): Single<ReadyGson>
 
     @GET("/api/bookmarks?key=fpoiKLUues81werht039")
-    fun GetFavoriteBooks(@Query("token") token: String): Single<ReadyGson>
+    fun GetFavoriteBooks(@Query("token") token: String): Single<FavoriteGson>
 
     @GET("/api/chapter?key=fpoiKLUues81werht039")
     fun GetChapterText(@Query("token") token: String, @Query("chapter_id") chapter_id: Int?, @Query("book_id") book_id: Int?): Single<ChapterTextGson>

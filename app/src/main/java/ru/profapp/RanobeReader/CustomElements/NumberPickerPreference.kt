@@ -72,9 +72,9 @@ class NumberPickerPreference : DialogPreference {
     companion object {
 
         // allowed range
-        private val MAX_VALUE = 30
-        private val MIN_VALUE = 6
+        private const val MAX_VALUE = 30
+        private const val MIN_VALUE = 6
         // enable or disable the 'circular behavior'
-        private val WRAP_SELECTOR_WHEEL = true
+        private const val WRAP_SELECTOR_WHEEL = true
     }
 }

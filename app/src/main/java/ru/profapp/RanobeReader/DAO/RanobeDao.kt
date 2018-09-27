@@ -1,6 +1,7 @@
 package ru.profapp.RanobeReader.DAO
 
 import androidx.room.*
+import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
 import ru.profapp.RanobeReader.Models.Ranobe

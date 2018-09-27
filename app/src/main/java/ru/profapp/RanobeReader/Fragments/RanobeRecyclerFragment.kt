@@ -17,6 +17,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import io.reactivex.exceptions.CompositeException
 import io.reactivex.schedulers.Schedulers
 import org.json.JSONException
 import org.json.JSONObject
@@ -37,150 +38,76 @@ import ru.profapp.RanobeReader.Models.Ranobe
 import ru.profapp.RanobeReader.MyApp
 import ru.profapp.RanobeReader.R
 import java.io.IOException
+import java.net.UnknownHostException
 import java.util.*
 import kotlin.collections.ArrayList
 
 class RanobeRecyclerFragment : Fragment() {
 
-    val ranobeList = arrayListOf<Ranobe>()
-    var progressDialog: ProgressDialog? = null
+    private val ranobeList = arrayListOf<Ranobe>()
+    private var progressDialog: ProgressDialog? = null
     private var mSwipeRefreshLayout: SwipeRefreshLayout? = null
 
     private var mListener: OnListFragmentInteractionListener? = null
     private lateinit var mRanobeRecyclerViewAdapter: RanobeRecyclerViewAdapter
-    var mContext: Context? = null
+    private var mContext: Context? = null
     private var fragmentType: Constants.FragmentType? = null
     private var page: Int = 0
-    var loadFromDatabase: Boolean = false
+    private var loadFromDatabase: Boolean = false
     private var oldListSize: Int = 0
     private var request: Disposable? = null
 
-    fun getRulateWebFavorite(): List<Ranobe> {
+    fun getRulateWebFavorite(): Single<List<Ranobe>> {
 
-        val resultList = ArrayList<Ranobe>()
-        val mPreferences = mContext!!.getSharedPreferences(
-                StringResources.Rulate_Login_Pref, 0)
 
-        val token = mPreferences.getString(StringResources.KEY_Token, "")?:""
-        if (token != "") {
-            try {
-                val response = JsonRulateApi.getInstance()!!.GetFavoriteBooks(token)
+        val mPreferences = mContext!!.getSharedPreferences(StringResources.Rulate_Login_Pref, 0)
 
-                val jsonObject = JSONObject(response)
-                if (jsonObject.get("status") == "success") {
-                    val jsonArray = jsonObject.getJSONArray("response")
-                    for (i in 0 until jsonArray.length()) {
+        val token = mPreferences.getString(StringResources.KEY_Token, "") ?: ""
+        return RepositoryProvider.provideRulateRepository().getFavoriteBooks(token).map {
 
-                        val value = jsonArray.getJSONObject(i)
-                        var ranobe = Ranobe()
-                        ranobe.UpdateRanobe(value,
-                                Constants.JsonObjectFrom.RulateFavorite)
-
-                        if (!loadFromDatabase) {
-                            ranobe.updateRanobe(mContext!!)
-                            ranobe.isFavoriteInWeb = true
-                            MyApp.database?.ranobeDao()?.insert(
-                                    ranobe)
-                            MyApp.database?.chapterDao()?.insertAll(*ranobe.chapterList.toTypedArray())
-                        } else {
-                            val dbRanobe = MyApp.database?.ranobeDao()?.getRanobeByUrl(
-                                    ranobe.url)
-                            if (dbRanobe != null) {
-                                ranobe = dbRanobe
-                            }
-                        }
-                        ranobe.isFavoriteInWeb = true
-                        resultList.add(ranobe)
-
+            for (ranobe in it) {
+                if (!loadFromDatabase) {
+                    ranobe.updateRanobe(mContext!!)
+                    ranobe.isFavoriteInWeb = true
+                    MyApp.database?.ranobeDao()?.insert(ranobe)
+                    MyApp.database?.chapterDao()?.insertAll(*ranobe.chapterList.toTypedArray())
+                } else {
+                    val dbRanobe = MyApp.database?.ranobeDao()?.getRanobeByUrl(ranobe.url)
+                    if (dbRanobe != null) {
+                        //TODO:  ranobe = dbRanobe
                     }
-
                 }
-            } catch (e: JSONException) {
-                MyLog.SendError(MyLog.LogType.WARN, "RanobeRecyclerFragment",
-                        "", e)
-
-                activity?.runOnUiThread { onItemsLoadFailed(e) }
-
-            } catch (e: NullPointerException) {
-                MyLog.SendError(MyLog.LogType.WARN, "RanobeRecyclerFragment", "", e)
-
-                activity?.runOnUiThread { onItemsLoadFailed(e) }
-
-            } catch (e: ErrorConnectionException) {
-                MyLog.SendError(MyLog.LogType.WARN,
-                        "RanobeRecyclerFragment", "", e)
-                Objects.requireNonNull<FragmentActivity>(activity).runOnUiThread { onItemsLoadFailed(e) }
             }
 
+            return@map it
         }
-        return resultList
     }
 
 
-    fun getRanobeRfWebFavorite(): List<Ranobe> {
+    fun getRanobeRfWebFavorite(): Single<List<Ranobe>> {
 
-        val resultList = ArrayList<Ranobe>()
-        val mPreferences = mContext!!.getSharedPreferences(
-                StringResources.Ranoberf_Login_Pref, 0)
+
+        val mPreferences = mContext!!.getSharedPreferences(StringResources.Ranoberf_Login_Pref, 0)
 
         val token = mPreferences.getString(StringResources.KEY_Token, "")
-        if (token != "") {
+        return RepositoryProvider.provideRanobeRfRepository().getFavoriteBooks(token).map {
 
-            try {
-                val response = JsonRanobeRfApi.getInstance()!!.GetFavoriteBooks(token!!)
-                val jsonObject = JSONObject(response)
-                if (jsonObject.getInt("status") == 200) {
-
-                    val jsonArray = jsonObject.getJSONArray("result")
-                    for (i in 0 until jsonArray.length()) {
-
-                        val value = jsonArray.getJSONObject(i)
-                        var ranobe = Ranobe()
-                        ranobe.url = value.getString("bookAlias")
-                        ranobe.title = value.getString("bookTitle")
-                        ranobe.bookmarkIdRf = value.getInt("id")
-                        ranobe.image = value.getString("bookImage")
-                        ranobe.ranobeSite = RanobeRf.url
-
-                        if (!loadFromDatabase) {
-                            ranobe.updateRanobe(mContext!!)
-                            ranobe.isFavoriteInWeb = true
-                            MyApp.database?.ranobeDao()?.insert(
-                                    ranobe)
-                            MyApp.database?.chapterDao()?.insertAll(
-                                    *ranobe.chapterList.toTypedArray())
-                        } else {
-                            val dbRanobe = MyApp.database?.ranobeDao()?.getRanobeByUrl(
-                                    ranobe.url)
-
-                            ranobe = dbRanobe!!
-
-                        }
-                        ranobe.isFavoriteInWeb = true
-                        resultList.add(ranobe)
-
+            for (ranobe in it) {
+                if (!loadFromDatabase) {
+                    ranobe.updateRanobe(mContext!!)
+                    ranobe.isFavoriteInWeb = true
+                    MyApp.database?.ranobeDao()?.insert(ranobe)
+                    MyApp.database?.chapterDao()?.insertAll(*ranobe.chapterList.toTypedArray())
+                } else {
+                    val dbRanobe = MyApp.database?.ranobeDao()?.getRanobeByUrl(ranobe.url)
+                    if (dbRanobe != null) {
+                        //TODO:  ranobe = dbRanobe
                     }
-
                 }
-            } catch (e: JSONException) {
-                MyLog.SendError(MyLog.LogType.WARN, "RanobeRecyclerFragment",
-                        "", e)
-
-                activity?.runOnUiThread { onItemsLoadFailed(e) }
-
-            } catch (e: NullPointerException) {
-                MyLog.SendError(MyLog.LogType.WARN, "RanobeRecyclerFragment", "", e)
-
-                activity?.runOnUiThread { onItemsLoadFailed(e) }
-
-            } catch (e: ErrorConnectionException) {
-                MyLog.SendError(MyLog.LogType.WARN,
-                        "RanobeRecyclerFragment", "", e)
-                Objects.requireNonNull<FragmentActivity>(activity).runOnUiThread { onItemsLoadFailed(e) }
             }
 
+            return@map it
         }
-        return resultList
     }
 
     init {
@@ -326,7 +253,6 @@ class RanobeRecyclerFragment : Fragment() {
                 }, { error ->
                     MyLog.SendError(MyLog.LogType.ERROR, "refreshItems", "", error.fillInStackTrace())
                     onItemsLoadFailed(error)
-
                 })
 
 
@@ -334,10 +260,24 @@ class RanobeRecyclerFragment : Fragment() {
 
 
     private fun onItemsLoadFailed(error: Throwable) {
-        if (error is IOException)
-            Toast.makeText(mContext, R.string.ErrorConnection, Toast.LENGTH_SHORT).show()
-        else
+
+        if (error is CompositeException) {
+            var errorConnection = false
+            for (err in error.exceptions) {
+                if (err is UnknownHostException) {
+                    Toast.makeText(mContext, R.string.ErrorConnection, Toast.LENGTH_SHORT).show()
+                    errorConnection = true
+                    break
+                }
+            }
+            if (!errorConnection)
+                Toast.makeText(mContext, R.string.Error, Toast.LENGTH_SHORT).show()
+        } else {
             Toast.makeText(mContext, R.string.Error, Toast.LENGTH_SHORT).show()
+        }
+
+
+
         mRanobeRecyclerViewAdapter.setLoaded()
 
         mSwipeRefreshLayout!!.isRefreshing = false
@@ -365,7 +305,7 @@ class RanobeRecyclerFragment : Fragment() {
 
         return MyApp.database?.ranobeDao()?.getFavoriteRanobes()?.map { it ->
             val newRanobeList = arrayListOf<Ranobe>()
-            if (it.filter { s -> s.ranobeSite == Rulate.url }.any()) {
+            if (it.asSequence().filter { s -> s.ranobeSite == Rulate.url }.any()) {
                 val titleRanobe = Ranobe()
                 titleRanobe.title = getString(R.string.tl_rulate_name)
                 titleRanobe.ranobeSite = Title.url
@@ -373,14 +313,14 @@ class RanobeRecyclerFragment : Fragment() {
                 newRanobeList.addAll(it.filter { s -> s.ranobeSite == Rulate.url })
             }
 
-            if (it.filter { s -> s.ranobeSite == RanobeRf.url }.any()) {
+            if (it.asSequence().filter { s -> s.ranobeSite == RanobeRf.url }.any()) {
                 val titleRanobe = Ranobe()
                 titleRanobe.title = getString(R.string.ranobe_rf)
                 titleRanobe.ranobeSite = Title.url
                 newRanobeList.add(titleRanobe)
                 newRanobeList.addAll(it.filter { s -> s.ranobeSite == RanobeRf.url })
             }
-            if (it.filter { s -> s.ranobeSite == RanobeHub.url }.any()) {
+            if (it.asSequence().filter { s -> s.ranobeSite == RanobeHub.url }.any()) {
                 val titleRanobe = Ranobe()
                 titleRanobe.title = getString(R.string.ranobe_hub)
                 titleRanobe.ranobeSite = Title.url

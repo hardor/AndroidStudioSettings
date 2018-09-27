@@ -51,7 +51,7 @@ class CommentsRecyclerViewAdapter(private val mValues: List<RulateComment>) : Re
                                 .fitCenter()
                 ).into(object : SimpleTarget<Drawable>(dp50, dp50) {
                     override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                        holder.bodyTextView.setCompoundDrawablesWithIntrinsicBounds(resource, null, null, null);
+                        holder.bodyTextView.setCompoundDrawablesWithIntrinsicBounds(resource, null, null, null)
                     }
                 })
     }

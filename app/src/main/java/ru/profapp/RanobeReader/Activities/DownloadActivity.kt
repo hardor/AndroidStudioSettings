@@ -95,10 +95,10 @@ class DownloadActivity : AppCompatActivity() {
                         if (!chapter.isChecked) {
 
                             MyApp.database?.textDao()?.delete(chapter.url)
-                            //                            Completable.fromAction {
+                            //
                             //                                MyApp.database?.personDao()?.insert(person)
-                            //                            }.subscribeOn(Schedulers.io())
-                            //                                    .observeOn(AndroidSchedulers.mainThread()).subscribe()
+                            //                            ?.subscribeOn(Schedulers.io())
+                            //                                    .subscribe()
                             //                            MyApp.database?.textDao()?.delete(chapter.getUrl());
                             chapter.text = ""
                             chapter.downloaded = false

@@ -42,6 +42,7 @@ class SearchFragment : Fragment() {
     lateinit var progressBar: ProgressBar
     private var request: Disposable? = null
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let { }
@@ -146,7 +147,7 @@ class SearchFragment : Fragment() {
 
         return RepositoryProvider.provideRulateRepository().searchBooks(searchString).map {
             val or: ArrayList<Ranobe> = ArrayList()
-            if (it.size > 0) {
+            if (it.isNotEmpty()) {
 
                 val ranobet: Ranobe = Ranobe()
                 ranobet.ranobeSite = Title.url
@@ -164,7 +165,7 @@ class SearchFragment : Fragment() {
         return RepositoryProvider.provideRanobeHubRepository()
                 .searchBooks(searchString).map {
                     val or: ArrayList<Ranobe> = ArrayList()
-                    if (it.size > 0) {
+                    if (it.isNotEmpty()) {
 
                         val ranobet = Ranobe()
                         ranobet.ranobeSite = Title.url

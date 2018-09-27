@@ -15,8 +15,12 @@
       },
       "oauth_client": [
         {
-          "client_id": "789465050624-2kim5soh4speopcb8r71oh8o1ib23ns6.apps.googleusercontent.com",
-          "client_type": 3
+          "client_id": "789465050624-t6p3k6lrpe6eb4tla1a9f832816hpqbs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ru.profapp.RanobeReader",
+            "certificate_hash": "85ffaaeca8854006d7893769c2bae22c12542507"
+          }
         },
         {
           "client_id": "789465050624-drcqnaln1020atvpom4h49k4smo15740.apps.googleusercontent.com",
@@ -27,16 +31,12 @@
           }
         },
         {
-          "client_id": "789465050624-t6p3k6lrpe6eb4tla1a9f832816hpqbs.apps.googleusercontent.com",
+          "client_id": "789465050624-6igvetr5d4c4acmi0vceaan8imuepd24.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "ru.profapp.RanobeReader",
-            "certificate_hash": "85ffaaeca8854006d7893769c2bae22c12542507"
+            "certificate_hash": "2aecd9426c6bbfa4137a2eb8c0d589838107c809"
           }
-        },
-        {
-          "client_id": "789465050624-arn9rnn7j682tc4jftn4o7k297cql3il.apps.googleusercontent.com",
-          "client_type": 3
         },
         {
           "client_id": "789465050624-2kim5soh4speopcb8r71oh8o1ib23ns6.apps.googleusercontent.com",
@@ -64,7 +64,8 @@
         "ads_service": {
           "status": 2
         }
-      }
+      },
+      "admob_app_id": "ca-app-pub-1483315001492731~8531946315"
     }
   ],
   "configuration_version": "1"

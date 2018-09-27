@@ -7,6 +7,8 @@ import io.reactivex.Single
 import ru.profapp.RanobeReader.Models.ChapterHistory
 import ru.profapp.RanobeReader.Models.TextChapter
 import androidx.room.Transaction
+import io.reactivex.Completable
+import ru.profapp.RanobeReader.Models.Ranobe
 
 
 /**
@@ -15,7 +17,10 @@ import androidx.room.Transaction
 @Dao
 interface ChapterHistoryDao {
 
-    @Query("SELECT * FROM chapterHistory order by ReadDate  Asc")
+    @Query("SELECT * FROM chapterHistory WHERE ChapterUrl=:UrlToChapter")
+    fun getChapterHistoryByUrl(UrlToChapter: String): Single<ChapterHistory>
+
+    @Query("SELECT * FROM chapterHistory order by ReadDate desc")
     fun allChapters(): Single<List<ChapterHistory>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -25,13 +30,13 @@ interface ChapterHistoryDao {
     fun delete(chapter: ChapterHistory)
 
 
-    @Query("DELETE FROM chapterHistory WHERE ChapterUrl IN (SELECT ChapterUrl FROM chapterHistory ORDER BY ReadDate ASC LIMIT 100)")
+    @Query("DELETE FROM chapterHistory WHERE ChapterUrl NOT IN (SELECT ChapterUrl FROM chapterHistory ORDER BY ReadDate DESC LIMIT 99)")
     fun deleteLast()
 
     @Transaction
     fun insertAndDeleteLast(chapter: ChapterHistory) {
-        insert(chapter)
         deleteLast()
+        insert(chapter)
     }
 
     @Query("DELETE FROM chapterHistory")

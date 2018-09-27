@@ -25,7 +25,8 @@
     <string name="login_to_summary">Авторизируйтесь для синхронизации закладок</string>
     <string name="rulate_authorization">Авторизация Rulate</string>
     <string name="search">Поиск</string>
-    <string name="update_time">Обновлено %1$d д. %2$d ч. %3$d м. назад</string>
+    <string name="Updated">Обновлено</string>
+    <string name="ago">назад</string>
     <string name="not_found">Не найдено</string>
 
     <string name="general">Общие</string>
@@ -72,7 +73,7 @@
     <string name="sort">Сортировка</string>
     <string name="task_finished">Загрузка завершена</string>
     <string name="add_to_favorite">Добавить в избранное</string>
-    <string name="app.email">admin@profapp.ru</string>
+    <string name="app_email">admin@profapp.ru</string>
     <string name="day_night">Day/Night</string>
     <string name="data">Данные</string>
     <string name="not_exist">Глава отсутствет</string>
@@ -80,4 +81,10 @@
     <string name="Load_from_Rulate">Загрузка закладок с сайта Rulate</string>
     <string name="Load_from_RanobeRf">Загрузка закладок с сайта Ранобэ.рф</string>
     <string name="Update_ranobe_info">Обновление информации о ранобэ</string>
+    <string name="history">История</string>
+    <string name="market_exist">PlayMarket не найден</string>
+    <string name="browser_exist">Браузер не найден</string>
+    <string name="Error">Ошибка</string>
+    <string name="ErrorConnection">Ошибка соединения</string>
+    <string name="date_format">dd/MM/yyyy HH:mm</string>
 </resources>

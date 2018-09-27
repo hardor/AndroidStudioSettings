@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="numberOfYears">
+        <item quantity="one">%d year</item>
+        <item quantity="few">%d years</item>
+        <item quantity="other">%d years</item>
+        <item quantity="many">%d years</item>
+        <item quantity="zero">%d years</item>
+    </plurals>
+    <plurals name="numberOfMonths">
+        <item quantity="one">%d month</item>
+        <item quantity="few">%d months</item>
+        <item quantity="other">%d months</item>
+        <item quantity="many">%d months</item>
+        <item quantity="zero">%d months</item>
+    </plurals>
+    <plurals name="numberOfWeeks">
+        <item quantity="one">%d week</item>
+        <item quantity="few">%d weeks</item>
+        <item quantity="other">%d weeks</item>
+        <item quantity="many">%d weeks</item>
+        <item quantity="zero">%d weeks</item>
+    </plurals>
+    <plurals name="numberOfDays">
+        <item quantity="one">%d day</item>
+        <item quantity="few">%d days</item>
+        <item quantity="other">%d days</item>
+        <item quantity="many">%d days</item>
+        <item quantity="zero">%d days</item>
+    </plurals>
+    <plurals name="numberOfHours">
+        <item quantity="one">%d hour</item>
+        <item quantity="few">%d hours</item>
+        <item quantity="other">%d hours</item>
+        <item quantity="many">%d hours</item>
+        <item quantity="zero">%d hours</item>
+    </plurals>
+    <plurals name="numberOfMinutes">
+        <item quantity="one">%d minute</item>
+        <item quantity="few">%d minutes</item>
+        <item quantity="other">%d minutes</item>
+        <item quantity="many">%d minutes</item>
+        <item quantity="zero">%d minutes</item>
+    </plurals>
+
+</resources>

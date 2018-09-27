@@ -2,17 +2,19 @@ package ru.profapp.RanobeReader.JsonApi
 
 import io.reactivex.Completable
 import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Helpers.MyLog
 import ru.profapp.RanobeReader.JsonApi.IApiServices.IRulateApiService
 import ru.profapp.RanobeReader.JsonApi.Rulate.ReadyGson
 import ru.profapp.RanobeReader.JsonApi.Rulate.RulateBook
+import ru.profapp.RanobeReader.JsonApi.Rulate.RulateChapter
+import ru.profapp.RanobeReader.JsonApi.Rulate.RulateText
 import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.Models.Ranobe
 import ru.profapp.RanobeReader.Models.RanobeImage
 import ru.profapp.RanobeReader.MyApp
+import java.net.UnknownHostException
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -23,7 +25,7 @@ object RulateRepository {
         return IRulateApiService.create().GetBookInfo(token, book_id)
                 .map {
                     if (it.status == "success") {
-                        it.response?.let { it1 -> ranobe.updateRulateRanobe(it1) }
+                        it.response?.let { it1 -> ranobe.updateRanobe(it1) }
                     }
                     return@map ranobe
                 }
@@ -36,6 +38,32 @@ object RulateRepository {
                 }
     }
 
+    fun getFavoriteBooks(token: String?): Single<List<Ranobe>> {
+        if (token.isNullOrBlank())
+            return Single.just(listOf())
+
+        return IRulateApiService.create().GetFavoriteBooks(token!!)
+                .map {
+                    val or: MutableList<Ranobe> = arrayListOf()
+
+                    if (it.status == "success") {
+                        for (response in it.response) {
+
+                            val ranobe = Ranobe(Constants.RanobeSite.Rulate)
+                            ranobe.isFavoriteInWeb = true
+                            ranobe.engTitle = response.sTitle
+                            ranobe.title = response.tTitle
+                            ranobe.lang = response.lang
+                            ranobe.chapterCount = response.nChapters
+                            ranobe.id = response.bookID
+                            ranobe.url = Constants.RanobeSite.Rulate.url + "/book/" + response.bookID
+                            or.add(ranobe)
+                        }
+                    }
+                    return@map or
+                }
+    }
+
     fun searchBooks(search: String): Single<List<Ranobe>> {
         return IRulateApiService.create().SearchBooks(search)
                 .map {
@@ -44,8 +72,8 @@ object RulateRepository {
     }
 
 
-    fun login(login: String,password: String): Single<Array<String>>{
-        return IRulateApiService.create().Login(login,password).map{
+    fun login(login: String, password: String): Single<Array<String>> {
+        return IRulateApiService.create().Login(login, password).map {
             if (it.status == "success") {
                 return@map arrayOf("true", it.msg, it.response.token)
             } else arrayOf("false", it.msg)
@@ -57,7 +85,7 @@ object RulateRepository {
                 .map {
                     if (it.status == "success") {
                         it.response?.let { it1 ->
-                            mCurrentChapter.UpdateChapter(it1)
+                            mCurrentChapter.updateChapter(it1)
                             return@map true
                         }
                         return@map false
@@ -66,6 +94,12 @@ object RulateRepository {
                         return@map false
                     }
 
+                }.onErrorReturn {
+                    it.printStackTrace()
+                    if (it is UnknownHostException)
+                        throw it
+
+                    return@onErrorReturn false
                 }
     }
 
@@ -75,14 +109,14 @@ object RulateRepository {
 
             for (book in it.books) {
                 val ranobe = Ranobe(Constants.RanobeSite.Rulate)
-                ranobe.updateRulateRanobe(book)
+                ranobe.updateRanobe(book)
                 or.add(ranobe)
             }
         }
         return or
     }
 
-    private infix fun Ranobe.updateRulateRanobe(book: RulateBook) {
+    private infix fun Ranobe.updateRanobe(book: RulateBook) {
 
         val mCalendar = Calendar.getInstance()
         val format = SimpleDateFormat("MM-dd HH:mm")
@@ -122,7 +156,8 @@ object RulateRepository {
         chapterList.clear()
         val size = book.chapters.size
         for ((i, chap) in book.chapters.withIndex()) {
-            val chapter = Chapter(chap)
+            val chapter = Chapter()
+            chapter.updateChapter(chap)
             chapter.ranobeId = id
             chapter.ranobeUrl = url
             chapter.url = url + "/" + chapter.id
@@ -149,10 +184,25 @@ object RulateRepository {
         if (!image.isNullOrBlank()) {
             Completable.fromAction {
                 MyApp.database?.ranobeImageDao()?.insert(RanobeImage(url, image!!))
-            }.subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread()).subscribe()
+            }
+                    ?.subscribeOn(Schedulers.io())
+                    ?.subscribe()
 
         }
     }
 
+    private infix fun Chapter.updateChapter (rChapter:RulateChapter ) {
+
+        id = rChapter.id!!
+        title = rChapter.title.toString()
+        status = rChapter.status
+        canRead = rChapter.canRead!!
+        isNew = rChapter.new!!
+    }
+    private infix fun Chapter.updateChapter(response: RulateText) {
+
+        title = response.title.toString()
+        text = response.text
+
+    }
 }

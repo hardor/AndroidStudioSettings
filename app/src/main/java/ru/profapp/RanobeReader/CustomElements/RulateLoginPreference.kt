@@ -83,7 +83,7 @@ class RulateLoginPreference(context: Context, attrs: AttributeSet) : DialogPrefe
 
         val alert = AlertDialog.Builder(context).create()
         // Check if username, password is filled
-        if (username.trim { it <= ' ' }.length > 0 && password.trim { it <= ' ' }.length > 0) {
+        if (username.isNotBlank() && password.isNotBlank()) {
             RulateRepository.login(username, password)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())

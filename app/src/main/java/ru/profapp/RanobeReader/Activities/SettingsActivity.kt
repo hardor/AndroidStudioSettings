@@ -12,6 +12,7 @@ import android.preference.PreferenceFragment
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.ActionBar
+import androidx.preference.PreferenceFragmentCompat
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
 import io.fabric.sdk.android.Fabric
@@ -29,14 +30,12 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         // Set up Crashlytics, disabled for debug builds
         val crashlyticsKit = Crashlytics.Builder()
                 .core(CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build())
                 .build()
 
         Fabric.with(this, crashlyticsKit)
-
         setupActionBar()
         title = resources.getText(R.string.action_settings)
 
@@ -70,7 +69,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
      * Make sure to deny any unknown fragments here.
      */
     override fun isValidFragment(fragmentName: String): Boolean {
-        return (PreferenceFragment::class.java.name == fragmentName
+        return (PreferenceFragmentCompat::class.java.name == fragmentName
                 || GeneralPreferenceFragment::class.java.name == fragmentName
                 || RulatePreferenceFragment::class.java.name == fragmentName
                 || RanobeRfPreferenceFragment::class.java.name == fragmentName
@@ -92,9 +91,8 @@ class SettingsActivity : AppCompatPreferenceActivity() {
      * activity is showing a two-pane settings UI.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    class GeneralPreferenceFragment : PreferenceFragment() {
-
-        override fun onCreate(savedInstanceState: Bundle?) {
+    class GeneralPreferenceFragment : PreferenceFragmentCompat() {
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             super.onCreate(savedInstanceState)
             addPreferencesFromResource(R.xml.pref_general)
             setHasOptionsMenu(true)
@@ -104,13 +102,13 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 
             findPreference(
                     getString(R.string.pref_general_app_theme)).onPreferenceChangeListener = sChangePreferenceListener
-
         }
+
 
         override fun onOptionsItemSelected(item: MenuItem): Boolean {
             val id = item.itemId
             if (id == android.R.id.home) {
-                activity.onBackPressed()
+                activity?.onBackPressed()
                 return true
             }
             return super.onOptionsItemSelected(item)
@@ -123,21 +121,21 @@ class SettingsActivity : AppCompatPreferenceActivity() {
      * activity is showing a two-pane settings UI.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    class RulatePreferenceFragment : PreferenceFragment() {
-        override fun onCreate(savedInstanceState: Bundle?) {
+    class RulatePreferenceFragment : PreferenceFragmentCompat() {
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 
             super.onCreate(savedInstanceState)
             addPreferencesFromResource(R.xml.pref_rulate)
             val prefLogin = findPreference(getString(R.string.rulate_authorization_pref))
-            val mPreferences = activity.getSharedPreferences(
+            val mPreferences = context?.getSharedPreferences(
                     StringResources.Rulate_Login_Pref, 0)
 
-            val token = mPreferences.getString(StringResources.KEY_Token, "")
+            val token = mPreferences?.getString(StringResources.KEY_Token, "") ?: ""
 
             if (token != "") {
-                prefLogin.summary = mPreferences.getString(StringResources.KEY_Login, "")
+                prefLogin.summary = mPreferences?.getString(StringResources.KEY_Login, "") ?: ""
             } else {
-                prefLogin.summary = activity.getString(R.string.login_to_summary)
+                prefLogin.summary = resources.getString(R.string.login_to_summary)
             }
             setHasOptionsMenu(true)
         }
@@ -145,7 +143,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
         override fun onOptionsItemSelected(item: MenuItem): Boolean {
             val id = item.itemId
             if (id == android.R.id.home) {
-                activity.onBackPressed()
+                activity?.onBackPressed()
                 return true
             }
             return super.onOptionsItemSelected(item)
@@ -154,21 +152,20 @@ class SettingsActivity : AppCompatPreferenceActivity() {
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    class RanobeRfPreferenceFragment : PreferenceFragment() {
-        override fun onCreate(savedInstanceState: Bundle) {
+    class RanobeRfPreferenceFragment : PreferenceFragmentCompat() {
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             super.onCreate(savedInstanceState)
             addPreferencesFromResource(R.xml.pref_ranoberf)
             val prefLogin = findPreference(getString(R.string.ranoberf_authorization_pref))
 
-            val mPreferences = activity.getSharedPreferences(
-                    StringResources.Ranoberf_Login_Pref, 0)
+            val mPreferences = context?.getSharedPreferences(StringResources.Ranoberf_Login_Pref, 0)
 
-            val token = mPreferences.getString(StringResources.KEY_Token, "")
+            val token = mPreferences?.getString(StringResources.KEY_Token, "") ?: ""
 
             if (token != "") {
-                prefLogin.summary = mPreferences.getString(StringResources.KEY_Login, "")
+                prefLogin.summary = mPreferences?.getString(StringResources.KEY_Login, "") ?: ""
             } else {
-                prefLogin.summary = activity.getString(R.string.login_to_summary)
+                prefLogin.summary = resources.getString(R.string.login_to_summary)
             }
             setHasOptionsMenu(true)
         }
@@ -176,7 +173,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
         override fun onOptionsItemSelected(item: MenuItem): Boolean {
             val id = item.itemId
             if (id == android.R.id.home) {
-                activity.onBackPressed()
+                activity?.onBackPressed()
                 return true
             }
             return super.onOptionsItemSelected(item)
@@ -185,50 +182,33 @@ class SettingsActivity : AppCompatPreferenceActivity() {
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    class DataPreferenceFragment : PreferenceFragment() {
-        override fun onCreate(savedInstanceState: Bundle?) {
+    class DataPreferenceFragment : PreferenceFragmentCompat() {
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             super.onCreate(savedInstanceState)
             addPreferencesFromResource(R.xml.pref_data)
 
             val cacheButton = findPreference(getString(R.string.CleanCacheButton))
-            cacheButton.setOnPreferenceClickListener { preference: Preference ->
-                val context = preference.context
-                //Todo: test
+
+            cacheButton.setOnPreferenceClickListener { preference ->
                 Completable.fromAction {
                     MyApp.database?.textDao()?.cleanTable()
-
-
-                }.concatWith {
-                    MyApp.database?.ranobeImageDao()?.cleanTable()
-                }
-
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({
-
-                            Toast.makeText(context, context.getText(R.string.cache_cleaned),
+                }?.andThen(Completable.fromAction { MyApp.database?.ranobeImageDao()?.cleanTable() })
+                        ?.subscribeOn(Schedulers.io())
+                        ?.subscribe({
+                            Toast.makeText(context, resources.getText(R.string.cache_cleaned),
                                     Toast.LENGTH_SHORT).show()
-                        }, {
-
-                        })
+                        }, {})
 
                 true
             }
 
             val favButton = findPreference(getString(R.string.CleanFavoriteButton))
-            favButton.setOnPreferenceClickListener { preference: Preference ->
-                val context = preference.context
-                Completable.fromAction {
-                    MyApp.database?.ranobeDao()?.cleanTable()
-                }.subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({
-                            Toast.makeText(context, context.getText(R.string.bookmarks_cleaned),
+            favButton.setOnPreferenceClickListener { preference ->
+                Completable.fromAction {  MyApp.database?.ranobeDao()?.cleanTable()}?.subscribeOn(Schedulers.io())
+                        ?.subscribe({
+                            Toast.makeText(context, resources.getText(R.string.bookmarks_cleaned),
                                     Toast.LENGTH_SHORT).show()
-                        }, {
-
-                        }
-                        )
+                        }, { })
 
 
                 true
@@ -236,18 +216,13 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 
             val prefButton = findPreference(getString(R.string.CleanHistoryButton))
             prefButton.setOnPreferenceClickListener { preference ->
-                val context = preference.context
-                AsyncTask.execute {
+                context!!.getSharedPreferences(
+                        StringResources.Last_readed_Pref,
+                        0).edit().clear().apply()
+                context!!.getSharedPreferences(StringResources.is_readed_Pref,
+                        0).edit().clear().apply()
 
-                    activity.getSharedPreferences(
-                            StringResources.Last_readed_Pref,
-                            0).edit().clear().apply()
-                    activity.getSharedPreferences(StringResources.is_readed_Pref,
-                            0).edit().clear().apply()
-
-                }
-                Toast.makeText(context, context.getText(R.string.cache_cleaned),
-                        Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, resources.getText(R.string.cache_cleaned), Toast.LENGTH_SHORT).show()
                 true
             }
 
@@ -257,7 +232,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 
     companion object {
 
-        private val sChangePreferenceListener = Preference.OnPreferenceChangeListener { preference, value ->
+        private val sChangePreferenceListener = androidx.preference.Preference.OnPreferenceChangeListener { preference, value ->
 
             when {
                 preference.key == preference.context.getString(

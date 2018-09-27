@@ -89,7 +89,7 @@ class RanoberfLoginPreference(context: Context, attrs: AttributeSet) : DialogPre
 
         val alert = AlertDialog.Builder(context).create()
         // Check if username, password is filled
-        if (username.trim { it <= ' ' }.length > 0 && password.trim { it <= ' ' }.length > 0) {
+        if (username.isNotBlank() && password.isNotBlank()) {
             val result = listOf<String>("false","dfdfg")
                     //session.createRanobeRfLoginSession(username, password)
             val resBool = java.lang.Boolean.valueOf(result[0])

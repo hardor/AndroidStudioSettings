@@ -114,38 +114,11 @@ class Chapter() {
 
     }
 
-    constructor(rChapter: RulateChapter) : this() {
-        id = rChapter.id!!
-        title = rChapter.title.toString()
-        status = rChapter.status
-        canRead = rChapter.canRead!!
-        isNew = rChapter.new!!
-    }
 
 
-    constructor(rChapter: tChapter) : this() {
-        id = rChapter.id
-        title = rChapter.name
-        url = "$ranobeUrl/ranobe/${rChapter.idRanobe}/${rChapter.numVolume}/${rChapter.num}"
-        ranobeId = ranobeId
-    }
 
 
-    fun UpdateChapter(response: RulateText) {
 
-        title = response.title.toString()
-        text = response.text
-
-    }
-
-    fun UpdateChapter(response: RfText) {
-
-        if (response.status == 200) {
-            title = response.part!!.title.toString()
-            text = response.part.content
-            url = response.part.url!!
-        }
-    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -162,5 +135,6 @@ class Chapter() {
         return url.hashCode()
     }
 
+    constructor(chapterUrl: String) : this()
 
 }

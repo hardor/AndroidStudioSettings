@@ -180,7 +180,12 @@ class Ranobe() {
 
                 .subscribe { result ->
                     for ((ind, res) in result.withIndex()) {
-                        val chapter = Chapter(res)
+
+                        val chapter = Chapter()
+                        chapter.id = res.id
+                        chapter.title = res.name
+                       // chapter.url = "${ranobeUrl}/ranobe/${res.idRanobe}/${res.numVolume}/${res.num}"
+                      //  chapter.ranobeId = res.ranobeId
                         chapter.ranobeUrl = url
                         chapter.ranobeName = title
                         chapter.index = ind
@@ -230,6 +235,8 @@ class Ranobe() {
     override fun hashCode(): Int {
         return url.hashCode()
     }
+
+    constructor(ranobeUrl: String) : this()
 
 
 }

@@ -29,6 +29,10 @@
             android:id="@+id/nav_chapters"
             android:icon="@android:drawable/ic_menu_recent_history"
             android:title="@string/saved_chapters" />
+        <item
+            android:id="@+id/nav_history"
+            android:icon="@android:drawable/ic_menu_recent_history"
+            android:title="@string/history" />
 
     </group>
 

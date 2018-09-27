@@ -4,10 +4,8 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class ReadyGson(
-
-        var status: String? = null,
-
-        var msg: String? = null,
+        var status: String,
+        var msg: String,
         @SerializedName("response")
         @Expose
         var books: List<RulateBook> = ArrayList()

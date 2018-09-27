@@ -8,6 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 import ru.profapp.RanobeReader.JsonApi.Ranoberf.*
 import ru.profapp.RanobeReader.JsonApi.Rulate.BookInfoGson
+import ru.profapp.RanobeReader.JsonApi.Rulate.FavoriteGson
 import ru.profapp.RanobeReader.JsonApi.Rulate.LoginGson
 
 
@@ -25,6 +26,10 @@ interface IRanobeRfApiService {
 
     @GET("/v1/book/get/")
     fun GetBookInfo(@Query("bookAlias") bookAlias: String = ""): Single<RfBookInfoGson>
+
+    @GET("/v1/bookmark/index/")
+    fun GetFavoriteBooks( @Header("Authorization") token: String): Single<RfFavoriteGson>
+
 
     @FormUrlEncoded
     @POST("/v1/auth/login/")

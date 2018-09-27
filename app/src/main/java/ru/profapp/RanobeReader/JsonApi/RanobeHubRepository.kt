@@ -3,6 +3,7 @@ package ru.profapp.RanobeReader.JsonApi
 import io.reactivex.Single
 import org.jsoup.Jsoup
 import ru.profapp.RanobeReader.Common.Constants
+import ru.profapp.RanobeReader.Common.ErrorConnectionException
 import ru.profapp.RanobeReader.Helpers.StringHelper
 import ru.profapp.RanobeReader.JsonApi.IApiServices.IRanobeHubApiService
 import ru.profapp.RanobeReader.JsonApi.RanobeHub.RanobeHubBook
@@ -10,6 +11,7 @@ import ru.profapp.RanobeReader.JsonApi.RanobeHub.RanobeHubReadyGson
 import ru.profapp.RanobeReader.JsonApi.RanobeHub.tChapter
 import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.Models.Ranobe
+import java.net.UnknownHostException
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -19,8 +21,6 @@ object RanobeHubRepository {
     fun getBookInfo(ranobe: Ranobe): Single<Ranobe> {
         return IRanobeHubApiService.create().GetChapters(ranobe.id)
                 .map {
-
-
                     ranobe.chapterList.clear()
                     var index = 0
                     for( volume in it.data ) {

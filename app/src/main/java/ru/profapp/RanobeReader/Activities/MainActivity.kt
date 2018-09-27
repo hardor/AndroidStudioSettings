@@ -28,13 +28,19 @@ import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Common.StringResources
 import ru.profapp.RanobeReader.Common.StringResources.KEY_Login
 import ru.profapp.RanobeReader.Common.ThemeUtils
+import ru.profapp.RanobeReader.Fragments.HistoryFragment
 import ru.profapp.RanobeReader.Fragments.RanobeRecyclerFragment
 import ru.profapp.RanobeReader.Fragments.SearchFragment
 import ru.profapp.RanobeReader.Helpers.MyLog
 import ru.profapp.RanobeReader.Helpers.RanobeKeeper
 import ru.profapp.RanobeReader.R
 
-class MainActivity : AppCompatActivity(), RanobeRecyclerFragment.OnListFragmentInteractionListener, SearchFragment.OnFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(),
+        RanobeRecyclerFragment.OnListFragmentInteractionListener,
+        SearchFragment.OnFragmentInteractionListener,
+        HistoryFragment.OnFragmentInteractionListener,
+        NavigationView.OnNavigationItemSelectedListener {
+
 
     private val ExceptionHandler = Thread.UncaughtExceptionHandler { th, ex ->
         MyLog.SendError(MyLog.LogType.WARN, "MainActivity",
@@ -98,13 +104,13 @@ class MainActivity : AppCompatActivity(), RanobeRecyclerFragment.OnListFragmentI
         floatingActionButton.setOnClickListener { view ->
             try {
                 val ranobeListview = findViewById<RecyclerView>(R.id.ranobeListView)
-        ranobeListview.scrollToPosition(0)
-    } catch (ignored: NullPointerException) {
+                ranobeListview.scrollToPosition(0)
+            } catch (ignored: NullPointerException) {
 
-    }
+            }
 
 
-}
+        }
 
         val toggle = ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open,
@@ -114,7 +120,30 @@ class MainActivity : AppCompatActivity(), RanobeRecyclerFragment.OnListFragmentI
 
         val navigationView = findViewById<NavigationView>(R.id.nav_view)
         navigationView.setNavigationItemSelectedListener(this)
+        handleIntent(intent)
+    }
 
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleIntent(intent)
+    }
+
+    private fun handleIntent(intent: Intent) {
+        val appLinkAction = intent.action
+        val appLinkData: Uri? = intent.data
+
+        // Todo: catch URLS
+        if (Intent.ACTION_VIEW == appLinkAction) {
+            appLinkData?.lastPathSegment?.also { recipeId ->
+                //                Uri.parse("content://com.recipe_app/recipe/")
+//                        .buildUpon()
+//                        .appendPath(recipeId)
+//                        .build().also { appData ->
+//                            //  showRecipe(appData)
+//                        }
+            }
+        }
     }
 
     private fun initSettingPreference() {
@@ -224,6 +253,13 @@ class MainActivity : AppCompatActivity(), RanobeRecyclerFragment.OnListFragmentI
                 fragment = RanobeRecyclerFragment.newInstance(Constants.FragmentType.Saved.name)
                 title = resources.getText(R.string.saved_chapters)
                 currentTitle = resources.getText(R.string.saved_chapters).toString()
+            }
+            R.id.nav_history -> {
+                currentFragment = Constants.FragmentType.History.name
+
+                fragment = HistoryFragment.newInstance()
+                title = resources.getText(R.string.history)
+                currentTitle = resources.getText(R.string.history).toString()
             }
             R.id.nav_send -> {
                 val appPackageName = packageName // getPackageName() from Context or Activity object

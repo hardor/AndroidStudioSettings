@@ -21,12 +21,13 @@ buildscript {
     }
 }
 
-apply plugin: 'com.google.gms.google-services'
+
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'io.fabric'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
@@ -114,6 +115,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation "androidx.preference:preference:1.0.0"
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
@@ -125,13 +127,10 @@ dependencies {
     implementation 'androidx.palette:palette:1.0.0'
     implementation 'androidx.annotation:annotation:1.0.0'
     implementation 'com.google.android.gms:play-services-ads:15.0.1'
-    implementation 'com.google.firebase:firebase-ads:15.0.1'
     implementation "androidx.paging:paging-runtime:2.0.0-rc01"
-    //implementation 'com.google.firebase:firebase-crash:16.0.1'
     implementation 'androidx.multidex:multidex:2.0.0'
 
-    implementation 'com.github.bumptech.glide:compiler:4.6.1'
-    implementation 'com.github.bumptech.glide:annotations:4.6.1'
+
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
@@ -144,12 +143,15 @@ dependencies {
     annotationProcessor "androidx.room:room-compiler:2.0.0-rc01"
     kapt "androidx.room:room-compiler:2.0.0-rc01"
 
-
-    //
+    //Glide
+    implementation 'com.github.bumptech.glide:compiler:4.6.1'
+    implementation 'com.github.bumptech.glide:annotations:4.6.1'
     implementation('com.github.bumptech.glide:glide:4.6.1') {
         exclude group: "com.android.support"
     }
     annotationProcessor 'com.github.bumptech.glide:compiler:4.6.1'
+
+
     implementation 'org.jsoup:jsoup:1.11.3'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.5'
     implementation 'com.google.code.gson:gson:2.8.2'
@@ -163,4 +165,12 @@ dependencies {
     // rxandroid
     implementation "io.reactivex.rxjava2:rxandroid:2.0.2"
     implementation 'io.reactivex.rxjava2:rxjava:2.1.10'
+
+    //firebase
+    implementation 'com.google.firebase:firebase-ads:15.0.1'
+    implementation 'com.google.firebase:firebase-appindexing:16.0.1'
+    implementation 'com.google.firebase:firebase-core:16.0.3'
+    //implementation 'com.google.firebase:firebase-crash:16.0.1'
 }
+
+apply plugin: 'com.google.gms.google-services'

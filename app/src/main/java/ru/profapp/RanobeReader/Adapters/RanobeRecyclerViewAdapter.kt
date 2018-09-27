@@ -107,8 +107,7 @@ class RanobeRecyclerViewAdapter(recyclerView: RecyclerView, private val mValues:
                     val hours = (diff / 60 - numOfDays * 24).toInt()
                     val minutes = (diff % 60).toInt()
 
-                    val updateTime = holder.context.getString(R.string.update_time, numOfDays, hours,
-                            minutes)
+                    val updateTime = "${holder.context.getString(R.string.Updated)} ${holder.context.resources.getQuantityString(R.plurals.numberOfDays, numOfDays, numOfDays)} ${holder.context.resources.getQuantityString(R.plurals.numberOfHours, hours,hours)} ${holder.context.resources.getQuantityString(R.plurals.numberOfMinutes, minutes,minutes)} ${holder.context.getString(R.string.ago)}"
 
                     holder.mUpdateTime.text = updateTime
                 } else {
@@ -117,7 +116,7 @@ class RanobeRecyclerViewAdapter(recyclerView: RecyclerView, private val mValues:
 
                 holder.mImageView.visibility = View.VISIBLE
                 Glide.with(holder.context)
-                        .load(mValues[position].image).apply(
+                        .load(/*mValues[position].image*/"").apply(
                                 RequestOptions()
                                         .placeholder(R.drawable.ic_adb_black_24dp)
                                         .error(R.drawable.ic_error_outline_black_24dp)

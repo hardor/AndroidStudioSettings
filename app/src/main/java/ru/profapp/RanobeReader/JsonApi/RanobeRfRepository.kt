@@ -6,13 +6,10 @@ import io.reactivex.Single
 import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Helpers.StringHelper
 import ru.profapp.RanobeReader.JsonApi.IApiServices.IRanobeRfApiService
-import ru.profapp.RanobeReader.JsonApi.Ranoberf.ResultBookInfo
-import ru.profapp.RanobeReader.JsonApi.Ranoberf.RfBook
-import ru.profapp.RanobeReader.JsonApi.Ranoberf.Sequence
+import ru.profapp.RanobeReader.JsonApi.Ranoberf.*
 import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.Models.Ranobe
 import java.util.*
-import ru.profapp.RanobeReader.JsonApi.Ranoberf.RfChapter
 
 
 object RanobeRfRepository {
@@ -28,7 +25,7 @@ object RanobeRfRepository {
         return IRanobeRfApiService.create().GetBookInfo(ranobeName)
                 .map {
                     if (it.status == 200) {
-                        it.result?.let { it1 -> ranobe.updateRanobeRfRanobe(it1) }
+                        it.result?.let { it1 -> ranobe.updateRanobe(it1) }
                     }
                     return@map ranobe
                 }
@@ -39,17 +36,14 @@ object RanobeRfRepository {
             sequence = ""
         return IRanobeRfApiService.create().GetReadyBooks(page, sequence)
                 .map {
-
-
                     this.sequence = gson.toJson(it.result?.sequence, listType)
                     return@map getRanobeList(it.result?.books)
                 }
     }
 
 
-
-    fun login(email: String,password: String): Single<Array<String>>{
-        return IRanobeRfApiService.create().Login(email,password).map{
+    fun login(email: String, password: String): Single<Array<String>> {
+        return IRanobeRfApiService.create().Login(email, password).map {
             if (it.status == 200) {
                 return@map arrayOf("true", it.message, it.result.token)
             } else arrayOf("false", it.message)
@@ -79,16 +73,40 @@ object RanobeRfRepository {
                 }
     }
 
+    fun getFavoriteBooks(token: String?): Single<List<Ranobe>> {
+        if (token.isNullOrBlank())
+            return Single.just(listOf())
+        return IRanobeRfApiService.create().GetFavoriteBooks("Bearer " + token!!)
+                .map {
+                    val or: MutableList<Ranobe> = arrayListOf()
+
+                    if (it.status == 200) {
+                        for (result in it.result) {
+                            val ranobe = Ranobe(Constants.RanobeSite.RanobeRf)
+                            ranobe.url = result.bookAlias
+                            ranobe.title = result.bookTitle
+                            ranobe.bookmarkIdRf = result.bookmarkId
+                            ranobe.image = result.bookImage
+                            ranobe.chapterCount = result.allPartsCount
+                            ranobe.isFavoriteInWeb = true
+                            or.add(ranobe)
+                        }
+                    }
+                    return@map or
+                }
+    }
+
     private fun getRanobeList(it: List<RfBook>?): List<Ranobe> {
         val or: MutableList<Ranobe> = arrayListOf()
         for (value in it.orEmpty()) {
             val ranobe = Ranobe(Constants.RanobeSite.RanobeRf)
-            ranobe.updateRanobeRfRanobe(value)
+            ranobe.updateRanobe(value)
             or.add(ranobe)
         }
         return or
     }
-    private infix fun Ranobe.updateRanobeRfRanobe(book: RfBook) {
+
+    private infix fun Ranobe.updateRanobe(book: RfBook) {
         id = if (id == null) book.id ?: id else id
         title = if (title.isBlank()) book.title ?: title else title
         url = if (url.isBlank()) Constants.RanobeSite.RanobeRf.url + book.url else url
@@ -102,7 +120,7 @@ object RanobeRfRepository {
 //        url = book.alias
         description = book.description?.let { StringHelper.removeTags(it) }
         additionalInfo = book.info?.let { StringHelper.cleanAdditionalInfo(it) }
-        rating = rating?:  "Likes: " + book.likes + ", Dislikes: " + book.dislikes
+        rating = rating ?: "Likes: " + book.likes + ", Dislikes: " + book.dislikes
 
 
 
@@ -117,7 +135,7 @@ object RanobeRfRepository {
                 chapter.url = Constants.RanobeSite.RanobeRf.url + chapter.url
             }
 
-            chapter.canRead = ( !rChapter.payment || rChapter.sponsor)
+            chapter.canRead = (!rChapter.payment || rChapter.sponsor)
             chapter.ranobeUrl = if (chapter.ranobeUrl.isBlank()) url else chapter.ranobeUrl
             chapter.ranobeName = title
             chapter.index = index
@@ -132,10 +150,10 @@ object RanobeRfRepository {
 
     }
 
-    private infix fun Ranobe.updateRanobeRfRanobe(result: ResultBookInfo) {
-        result.book?.let { this.updateRanobeRfRanobe(it) }
+    private infix fun Ranobe.updateRanobe(result: ResultBookInfo) {
+        result.book?.let { this.updateRanobe(it) }
 
-       // genres = result.genres.map { genre -> genre.title }.toString()
+        // genres = result.genres.map { genre -> genre.title }.toString()
         genres = result.genres.toString()
 
         chapterList.clear()
@@ -143,7 +161,7 @@ object RanobeRfRepository {
         val allChapters = result.donateParts.plus(result.parts)
         for ((i, ch) in allChapters.withIndex()) {
             val chapter = Chapter()
-            chapter.updateRanobeRfChapter(ch)
+            chapter.updateChapter(ch)
             chapter.ranobeUrl = url
             chapter.ranobeName = title
             chapter.index = i
@@ -156,7 +174,15 @@ object RanobeRfRepository {
 
     }
 
-    private infix fun Chapter.updateRanobeRfChapter(rChapter: RfChapter) {
+    private infix fun Chapter.updateChapter(response: RfText) {
+
+        if (response.status == 200) {
+            title = response.part!!.title.toString()
+            text = response.part.content
+            url = response.part.url!!
+        }
+    }
+    private infix fun Chapter.updateChapter(rChapter: RfChapter) {
 
         id = if (id == null) rChapter.id ?: id else id
         title = if (title.isBlank()) String.format("%s %s", rChapter.partNumber
@@ -169,7 +195,7 @@ object RanobeRfRepository {
         if (!url.contains(Constants.RanobeSite.RanobeRf.url)) {
             url = Constants.RanobeSite.RanobeRf.url + url
         }
-        canRead = !rChapter.partDonate &&( !rChapter.payment || rChapter.sponsor)
+        canRead = !rChapter.partDonate && (!rChapter.payment || rChapter.sponsor)
     }
 
 }

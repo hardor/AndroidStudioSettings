@@ -66,7 +66,7 @@ class ChapterRecyclerViewAdapter(private val mValues: List<Chapter>, private val
                         ranobe.url = mChapterItem.ranobeUrl
                         if (RanobeKeeper.fragmentType != null && RanobeKeeper.fragmentType != Constants.FragmentType.Saved) {
                             try {
-                                ranobe.updateRanobe(mContext)
+                                ranobe=   ranobe.updateRanobe(mContext).blockingGet()
                             } catch (ignored: Exception) {
                                 ranobe = mRanobe
                             }
@@ -79,7 +79,7 @@ class ChapterRecyclerViewAdapter(private val mValues: List<Chapter>, private val
                     }
                     if (MyApp.ranobe != null) {
                         val intent = Intent(context, ChapterTextActivity::class.java)
-                        intent.putExtra("ChapterIndex", adapterPosition)
+                        intent.putExtra("ChapterIndex", mChapterItem.index)
                         context.startActivity(intent)
                     }
                 }
