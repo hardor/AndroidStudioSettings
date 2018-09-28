@@ -28,10 +28,13 @@ import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Common.StringResources
 import ru.profapp.RanobeReader.Common.StringResources.Chapter_Url
 import ru.profapp.RanobeReader.Common.ThemeUtils
-import ru.profapp.RanobeReader.Fragments.RepositoryProvider
+
 import ru.profapp.RanobeReader.Helpers.MyLog
 import ru.profapp.RanobeReader.Helpers.RanobeKeeper
 import ru.profapp.RanobeReader.Helpers.StringHelper
+import ru.profapp.RanobeReader.JsonApi.RanobeHubRepository
+import ru.profapp.RanobeReader.JsonApi.RanobeRfRepository
+import ru.profapp.RanobeReader.JsonApi.RulateRepository
 import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.Models.ChapterHistory
 import ru.profapp.RanobeReader.Models.TextChapter
@@ -304,18 +307,19 @@ class ChapterTextActivity : AppCompatActivity() {
             }.onErrorResumeNext {
 
                 val url = mCurrentChapter.ranobeUrl
-                if (url.contains(Constants.RanobeSite.Rulate.url))
-                    return@onErrorResumeNext getRulateChapterText()
-                else if (url.contains(Constants.RanobeSite.RanobeRf.url))
-                    return@onErrorResumeNext getRanobeRfChapterText()
-                return@onErrorResumeNext Single.just(false)
+                when {
+                    url.contains(Constants.RanobeSite.Rulate.url) -> return@onErrorResumeNext getRulateChapterText()
+                    url.contains(Constants.RanobeSite.RanobeRf.url) -> return@onErrorResumeNext getRanobeRfChapterText()
+                    url.contains(Constants.RanobeSite.RanobeHub.url) -> return@onErrorResumeNext getRanobeHubChapterText()
+                    else -> return@onErrorResumeNext Single.just(false)
+                }
 
             }.map {
 
                 if ((RanobeKeeper.autoSaveText || needSave) && !mCurrentChapter.text.isNullOrBlank()) {
                     Completable.fromAction {
                         MyApp.database?.textDao()?.insert(TextChapter(mCurrentChapter))
-                    }?.subscribe()
+                    }?.subscribeOn(Schedulers.io())?.subscribe()
 
                 }
                 return@map it
@@ -328,46 +332,28 @@ class ChapterTextActivity : AppCompatActivity() {
 
     }
 
-    private fun getRanobeRfChapterText(): Single<Boolean> {
-        return Single.just(false)
-//        val response = JsonRanobeRfApi.getInstance()!!.GetChapterText(mCurrentChapter)
-//        try {
-//            val readyGson = gson.fromJson(response, RfChapterTextGson::class.java)
-//            if (readyGson.status == 200) {
-//
-//                mCurrentChapter.UpdateChapter(readyGson.result!!)
-//                if (readyGson.result.part!!.payment!! && mCurrentChapter.text == "") {
-//                    mCurrentChapter.text = "Даннная страница находится на платной подписке"
-//                    return false
-//                }
-//                return true
-//            } else {
-//                mCurrentChapter.text = readyGson.message
-//
-//            }
-//        } catch (e: JsonParseException) {
-//            MyLog.SendError(MyLog.LogType.WARN, ChapterTextActivity::class.java.toString(),
-//                    mCurrentChapter.url, e)
-//            return false
-//        }
-//
-//        return false
-    }
-
     private fun getRulateChapterText(): Single<Boolean> {
         val preferences = mContext!!.getSharedPreferences(StringResources.Rulate_Login_Pref, 0)
         val token: String = preferences.getString(StringResources.KEY_Token, "") ?: ""
-        val repository = RepositoryProvider.provideRulateRepository()
-        return repository.getChapterText(token, mCurrentChapter)
+
+        return RulateRepository.getChapterText(token, mCurrentChapter)
 
 
+    }
+
+    private fun getRanobeRfChapterText(): Single<Boolean> {
+        return RanobeRfRepository.getChapterText(mCurrentChapter)
+    }
+
+    private fun getRanobeHubChapterText(): Single<Boolean> {
+        return RanobeHubRepository.getChapterText(mCurrentChapter)
     }
 
     private fun saveProgressToDb(pr: Float? = null) {
         val progress = pr ?: calculateProgression()
         Completable.fromAction {
             MyApp.database?.chapterHistoryDao()?.insert(ChapterHistory(mCurrentChapter.url, mCurrentChapter.title, mCurrentChapter.ranobeName, mCurrentChapter.index, progress))
-        }?.subscribe()
+        }?.subscribeOn(Schedulers.io())?.subscribe()
     }
 
     private fun OnClicked(i: Int) {

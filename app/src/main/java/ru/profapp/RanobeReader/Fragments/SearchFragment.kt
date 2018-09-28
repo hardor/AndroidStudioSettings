@@ -20,6 +20,9 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReader.Adapters.RanobeRecyclerViewAdapter
 import ru.profapp.RanobeReader.Common.Constants.RanobeSite.Title
+import ru.profapp.RanobeReader.JsonApi.RanobeHubRepository
+import ru.profapp.RanobeReader.JsonApi.RanobeRfRepository
+import ru.profapp.RanobeReader.JsonApi.RulateRepository
 import ru.profapp.RanobeReader.Models.Ranobe
 import ru.profapp.RanobeReader.MyApp
 import ru.profapp.RanobeReader.R
@@ -145,7 +148,7 @@ class SearchFragment : Fragment() {
 
     private fun findRulateRanobe(searchString: String): Single<ArrayList<Ranobe>> {
 
-        return RepositoryProvider.provideRulateRepository().searchBooks(searchString).map {
+        return RulateRepository.searchBooks(searchString).map {
             val or: ArrayList<Ranobe> = ArrayList()
             if (it.isNotEmpty()) {
 
@@ -162,7 +165,7 @@ class SearchFragment : Fragment() {
 
     private fun findRanobeHubRanobe(searchString: String): Single<ArrayList<Ranobe>> {
 
-        return RepositoryProvider.provideRanobeHubRepository()
+        return RanobeHubRepository
                 .searchBooks(searchString).map {
                     val or: ArrayList<Ranobe> = ArrayList()
                     if (it.isNotEmpty()) {
@@ -180,7 +183,7 @@ class SearchFragment : Fragment() {
 
     private fun findRanobeRfRanobe(searchString: String): Single<ArrayList<Ranobe>> {
 
-        return RepositoryProvider.provideRanobeRfRepository()
+        return RanobeRfRepository
                 .searchBooks(searchString).map {
                     val or: ArrayList<Ranobe> = ArrayList()
                     if (it.size > 0) {

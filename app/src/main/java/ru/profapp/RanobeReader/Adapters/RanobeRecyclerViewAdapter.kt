@@ -2,6 +2,7 @@ package ru.profapp.RanobeReader.Adapters
 
 import android.content.Context
 import android.content.Intent
+import android.opengl.Visibility
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -66,7 +67,7 @@ class RanobeRecyclerViewAdapter(recyclerView: RecyclerView, private val mValues:
     }
 
     override fun getItemViewType(position: Int): Int {
-        return  if (mValues[position].ranobeSite == Constants.RanobeSite.Title.url) {
+        return if (mValues[position].ranobeSite == Constants.RanobeSite.Title.url) {
             VIEW_TYPE_GROUP_TITLE
         } else {
             VIEW_TYPE_ITEM
@@ -97,37 +98,35 @@ class RanobeRecyclerViewAdapter(recyclerView: RecyclerView, private val mValues:
         when (holder) {
             is RanobeViewHolder -> {
                 holder.mItem = mValues[position]
-                holder.mTitleView.text = mValues[position].title
+                holder.titleView.text = mValues[position].title
 
                 if (mValues[position].readyDate != null) {
                     val diff = ((Date().time - mValues[position].readyDate!!.time)
                             / 1000 / 60)
-
                     val numOfDays = (diff / (60 * 24)).toInt()
                     val hours = (diff / 60 - numOfDays * 24).toInt()
                     val minutes = (diff % 60).toInt()
 
-                    val updateTime = "${holder.context.getString(R.string.Updated)} ${holder.context.resources.getQuantityString(R.plurals.numberOfDays, numOfDays, numOfDays)} ${holder.context.resources.getQuantityString(R.plurals.numberOfHours, hours,hours)} ${holder.context.resources.getQuantityString(R.plurals.numberOfMinutes, minutes,minutes)} ${holder.context.getString(R.string.ago)}"
+                    val updateTime = "${holder.context.getString(R.string.Updated)} ${holder.context.resources.getQuantityString(R.plurals.numberOfDays, numOfDays, numOfDays)} ${holder.context.resources.getQuantityString(R.plurals.numberOfHours, hours, hours)} ${holder.context.resources.getQuantityString(R.plurals.numberOfMinutes, minutes, minutes)} ${holder.context.getString(R.string.ago)}"
 
-                    holder.mUpdateTime.text = updateTime
-                } else {
-                    holder.mUpdateTime.visibility = View.INVISIBLE
+                    holder.updateTime.text = updateTime
+                    holder.updateTime.visibility = View.VISIBLE
                 }
 
-                holder.mImageView.visibility = View.VISIBLE
+                holder.imageView.visibility = View.VISIBLE
                 Glide.with(holder.context)
                         .load(/*mValues[position].image*/"").apply(
                                 RequestOptions()
                                         .placeholder(R.drawable.ic_adb_black_24dp)
                                         .error(R.drawable.ic_error_outline_black_24dp)
                                         .fitCenter()
-                        ).into(holder.mImageView)
+                        ).into(holder.imageView)
 
                 holder.mView.setOnClickListener { v ->
 
                     val intent = Intent(holder.context, RanobeInfoActivity::class.java)
 
-                    MyApp.ranobe =  holder.mItem
+                    MyApp.ranobe = holder.mItem
 
                     if (MyApp.ranobe != null) {
                         holder.mView.context.startActivity(intent)
@@ -136,15 +135,23 @@ class RanobeRecyclerViewAdapter(recyclerView: RecyclerView, private val mValues:
                 }
 
                 val chapterList = holder.mItem.chapterList
+                if (chapterList.isNotEmpty()) {
+                    val adapter = ChapterRecyclerViewAdapter(
+                            ArrayList(chapterList.subList(0, Math.min(Constants.chaptersNum, chapterList.size))),
+                            holder.mItem)
 
-                val adapter = ChapterRecyclerViewAdapter(
-                        ArrayList(chapterList.subList(0, Math.min(Constants.chaptersNum, chapterList.size))),
-                        holder.mItem)
+                    val itemDecorator = DividerItemDecoration(holder.context, DividerItemDecoration.VERTICAL)
+                    itemDecorator.setDrawable(holder.context.resources.getDrawable(R.drawable.divider))
+                    holder.chaptersListView.addItemDecoration(itemDecorator)
+                    holder.chaptersListView.adapter = adapter
+                    holder.chaptersListView.visibility = View.VISIBLE
+                } else {
+                    if (!holder.mItem.description.isNullOrBlank()) {
+                        holder.description.text = holder.mItem.description
+                        holder.description.visibility = View.VISIBLE
+                    }
+                }
 
-                val itemDecorator = DividerItemDecoration(holder.context,DividerItemDecoration.VERTICAL)
-                itemDecorator.setDrawable(holder.context.resources.getDrawable(R.drawable.divider))
-                holder.mChaptersListView.addItemDecoration(itemDecorator)
-                holder.mChaptersListView.adapter = adapter
 
             }
             is LoadingViewHolder -> holder.progressBar.isIndeterminate = true
@@ -175,15 +182,16 @@ class RanobeRecyclerViewAdapter(recyclerView: RecyclerView, private val mValues:
 
     inner class RanobeViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
         val context: Context = mView.context
-        val mImageView: ImageView = mView.findViewById(R.id.imageView)
-        val mChaptersListView: RecyclerView = mView.findViewById(R.id.list_chapter_list)
-        val mTitleView: TextView = mView.findViewById(R.id.ranobeTitle)
-        val mUpdateTime: TextView = mView.findViewById(R.id.ranobeUpdateTime)
+        val imageView: ImageView = mView.findViewById(R.id.imageView)
+        val chaptersListView: RecyclerView = mView.findViewById(R.id.list_chapter_list)
+        val titleView: TextView = mView.findViewById(R.id.ranobeTitle)
+        val updateTime: TextView = mView.findViewById(R.id.ranobeUpdateTime)
+        val description: TextView = mView.findViewById(R.id.ranobe_description)
         lateinit var mItem: Ranobe
 
         init {
-            mChaptersListView.setHasFixedSize(true)
-            mChaptersListView.layoutManager = LinearLayoutManager(context)
+            chaptersListView.setHasFixedSize(true)
+            chaptersListView.layoutManager = LinearLayoutManager(context)
         }
 
     }

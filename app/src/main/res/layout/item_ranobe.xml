@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
-        android:textSize="@dimen/title.text.size"/>
+        android:textSize="@dimen/title_text_size"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -34,8 +34,13 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:context="ru.profapp.RanobeReader.ChapterRecyclerFragment"
             tools:listitem="@layout/item_chapter"
-
+android:visibility="gone"
         />
+        <TextView
+            android:id="@+id/ranobe_description"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
     </LinearLayout>
 
     <TextView
@@ -45,7 +50,8 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:textAlignment="textStart"
-        android:textSize="@dimen/last.updated.text.size"/>
+        android:textSize="@dimen/last_updated_text_size"
+        android:visibility="gone"/>
 
     <View
         android:layout_width="match_parent"

@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="textStart"
-        android:textSize="@dimen/title.text.size"
+        android:textSize="@dimen/title_text_size"
         tools:text="tewtwetwt wet wtet wt tw" />
 
     <TextView
@@ -22,7 +22,7 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:textAlignment="textStart"
-        android:textSize="@dimen/last.updated.text.size" />
+        android:textSize="@dimen/last_updated_text_size" />
 
     <View
         android:layout_width="match_parent"

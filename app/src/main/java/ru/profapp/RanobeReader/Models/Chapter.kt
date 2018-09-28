@@ -100,26 +100,6 @@ class Chapter() {
     var isChecked: Boolean = false
 
 
-    constructor(`object`: JSONObject, enumFrom: Constants.JsonObjectFrom) : this() {
-        when (enumFrom) {
-            Constants.JsonObjectFrom.RanobeRfGetReady -> {
-                title = `object`.optString("number") + ": " + `object`.optString("title")
-                url = `object`.optString("alias")
-            }
-            Constants.JsonObjectFrom.RanobeRfSearch -> {
-                title = `object`.optString("title")
-                url = `object`.optString("link")
-            }
-        }
-
-    }
-
-
-
-
-
-
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

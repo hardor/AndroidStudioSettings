@@ -96,6 +96,34 @@ object RanobeRfRepository {
                 }
     }
 
+    fun getChapterText(mCurrentChapter: Chapter): Single<Boolean> {
+
+        val parts = mCurrentChapter.url.split("/")
+
+        return IRanobeRfApiService.create().GetChapterText(parts[3], parts[4])
+                .map {
+
+                    if (it.status == 200) {
+                        val response = it.result
+                        if (response?.status == 200) {
+                            mCurrentChapter.title = response.part!!.title.toString()
+                            mCurrentChapter.text = response.part.content
+                            mCurrentChapter.url = response.part.url!!
+                        }
+
+                        if (it.result!!.part!!.payment!! && mCurrentChapter.text.isNullOrBlank()) {
+                            mCurrentChapter.text = "Даннная страница находится на платной подписке"
+                            return@map false
+                        }
+                        return@map true
+                    } else {
+                        mCurrentChapter.text = it.message
+                        return@map false
+                    }
+
+                }
+    }
+
     private fun getRanobeList(it: List<RfBook>?): List<Ranobe> {
         val or: MutableList<Ranobe> = arrayListOf()
         for (value in it.orEmpty()) {
@@ -112,17 +140,14 @@ object RanobeRfRepository {
         url = if (url.isBlank()) Constants.RanobeSite.RanobeRf.url + book.url else url
         readyDate = readyDate ?: book.lastUpdatedBook?.times(1000)?.let { Date(it) }
         image = image ?: book.image?.desktop?.image
-        rating = rating ?: "Likes: ${book.likes} Dislikes:${book.dislikes}"
+        rating = rating ?: "Likes: ${book.likes}, dislikes:${book.dislikes}"
 
 
 
         engTitle = book.fullTitle?.replace("$title / ", "")
-//        url = book.alias
+//      url = book.alias
         description = book.description?.let { StringHelper.removeTags(it) }
-        additionalInfo = book.info?.let { StringHelper.cleanAdditionalInfo(it) }
-        rating = rating ?: "Likes: " + book.likes + ", Dislikes: " + book.dislikes
-
-
+        additionalInfo = book.info?.let { StringHelper.removeTags(it) }
 
         chapterList.clear()
         for ((index, rChapter) in book.parts.withIndex()) {
@@ -154,7 +179,7 @@ object RanobeRfRepository {
         result.book?.let { this.updateRanobe(it) }
 
         // genres = result.genres.map { genre -> genre.title }.toString()
-        genres = result.genres.toString()
+        genres = result.genres.map { it -> it.title }.joinToString()
 
         chapterList.clear()
 
@@ -182,6 +207,7 @@ object RanobeRfRepository {
             url = response.part.url!!
         }
     }
+
     private infix fun Chapter.updateChapter(rChapter: RfChapter) {
 
         id = if (id == null) rChapter.id ?: id else id

@@ -11,7 +11,6 @@ import ru.profapp.RanobeReader.JsonApi.RanobeHub.RanobeHubReadyGson
 import ru.profapp.RanobeReader.JsonApi.RanobeHub.tChapter
 import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.Models.Ranobe
-import java.net.UnknownHostException
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -24,7 +23,7 @@ object RanobeHubRepository {
                     ranobe.chapterList.clear()
                     var index = 0
                     for( volume in it.data ) {
-                        for ( rChapter in volume.chapters) {
+                        for ( rChapter in volume.chapters.reversed()) {
                             val chapter = Chapter()
 
                             chapter.title = if (chapter.title.isBlank()) rChapter.name else chapter.title
@@ -81,10 +80,36 @@ object RanobeHubRepository {
                 }
     }
 
-    fun getChapters(ranobe_id: Int?): Single<List<tChapter>> {
-        return IRanobeHubApiService.create().GetChapters(ranobe_id)
+
+    fun getChapterText(mCurrentChapter: Chapter): Single<Boolean> {
+
+        val parts = mCurrentChapter.url.split("/")
+
+        return IRanobeHubApiService.create().GetChapterText(parts[4].toInt(), parts[5].toInt(),parts[6].toInt())
                 .map {
-                    return@map it.data.map { c -> c.chapters }.flatten()
+
+
+                    val a = it
+                    return@map true
+
+//                    if (it.status == 200) {
+//                        val response = it.result
+//                        if (response?.status == 200) {
+//                            mCurrentChapter.title = response.part!!.title.toString()
+//                            mCurrentChapter.text = response.part.content
+//                            mCurrentChapter.url = response.part.url!!
+//                        }
+//
+//                        if (it.result!!.part!!.payment!! && mCurrentChapter.text.isNullOrBlank()) {
+//                            mCurrentChapter.text = "Даннная страница находится на платной подписке"
+//                            return@map false
+//                        }
+//                        return@map true
+//                    } else {
+//                        mCurrentChapter.text = it.message
+//                        return@map false
+//                    }
+
                 }
     }
 

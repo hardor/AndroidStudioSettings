@@ -26,14 +26,6 @@ class JsonRanobeRfApi private constructor() : JsonBaseClass() {
 
     private var sequence = ""
 
-    fun setSequence(sequence: List<Sequence>) {
-        val gson = Gson()
-        val listType = object : TypeToken<List<Sequence>>() {
-
-        }.type
-        this.sequence = gson.toJson(sequence, listType)
-    }
-
 
 
 

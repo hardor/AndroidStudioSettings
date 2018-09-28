@@ -14,7 +14,6 @@ import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.Models.Ranobe
 import ru.profapp.RanobeReader.Models.RanobeImage
 import ru.profapp.RanobeReader.MyApp
-import java.net.UnknownHostException
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -93,13 +92,6 @@ object RulateRepository {
                         mCurrentChapter.text = it.msg
                         return@map false
                     }
-
-                }.onErrorReturn {
-                    it.printStackTrace()
-                    if (it is UnknownHostException)
-                        throw it
-
-                    return@onErrorReturn false
                 }
     }
 

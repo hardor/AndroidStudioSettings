@@ -7,16 +7,13 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
-import org.json.JSONException
-import org.json.JSONObject
 import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Common.Constants.RanobeSite.*
 import ru.profapp.RanobeReader.Common.StringResources
-import ru.profapp.RanobeReader.Fragments.RepositoryProvider
-import ru.profapp.RanobeReader.Helpers.MyLog
+import ru.profapp.RanobeReader.JsonApi.RanobeHubRepository
+import ru.profapp.RanobeReader.JsonApi.RanobeRfRepository
 import ru.profapp.RanobeReader.JsonApi.Rulate.RulateComment
+import ru.profapp.RanobeReader.JsonApi.RulateRepository
 import java.util.*
 
 /**
@@ -55,7 +52,7 @@ class Ranobe() {
     @ColumnInfo(name = "EngTitle")
     var engTitle: String? = null
     @ColumnInfo(name = "Title")
-    var title: String=""
+    var title: String = ""
     @ColumnInfo(name = "Image")
     var image: String? = null
     @ColumnInfo(name = "ReadyDate")
@@ -106,113 +103,20 @@ class Ranobe() {
     @Ignore
     var bookmarkIdRf: Int = 0
 
-
-
-    fun UpdateRanobe(`object`: JSONObject, enumFrom: Constants.JsonObjectFrom) {
-
-        when (enumFrom) {
-
-            Constants.JsonObjectFrom.RanobeRfGetReady -> fromRanobeRfGetReady(`object`, enumFrom)
-            Constants.JsonObjectFrom.RulateFavorite -> fromRulateFavorite(`object`, enumFrom)
-            else -> {
-            }
-        }//  throw isNew NullPointerException();
-    }
-
-    private fun fromRulateFavorite(`object`: JSONObject, enumFrom: Constants.JsonObjectFrom) {
-        ranobeSite = Rulate.url
-        isFavoriteInWeb = true
-        try {
-            engTitle = `object`.getString("s_title")
-            title = `object`.getString("t_title")
-            lang = `object`.optString("lang")
-            chapterCount = `object`.optInt("n_chapters")
-            id = `object`.getInt("book_id")
-            url = Rulate.url + "/book/" + id
-        } catch (e: JSONException) {
-            MyLog.SendError(MyLog.LogType.WARN, Ranobe::class.java.toString(), "", e)
-
-        }
-
-    }
-
-    private fun fromRanobeRfGetReady(`object`: JSONObject, enumFrom: Constants.JsonObjectFrom) {
-        ranobeSite = RanobeRf.url
-        try {
-
-            title = `object`.getString("name")
-            readyDate = java.util.Date(`object`.getLong("last_updated_book") * 1000)
-
-            url = `object`.getString("alias")
-            if (`object`.has("images")) {
-                val jsonArray = `object`.optJSONArray("images")
-                image = RanobeRf.url + jsonArray.getString(0)
-            }
-
-            if (`object`.has("parts")) {
-                val jsonArray = `object`.optJSONArray("parts")
-                for (i in 0 until jsonArray.length()) {
-
-                    val value = jsonArray.optJSONObject(i)
-                    val chapter = Chapter(value, enumFrom)
-                    chapter.ranobeUrl = url
-                    chapter.ranobeName = title
-                    chapter.index = i
-                    chapterList.add(chapter)
-
-                }
-            }
-
-        } catch (e: JSONException) {
-            MyLog.SendError(MyLog.LogType.WARN, Ranobe::class.java.toString(), "", e)
-
-        }
-
-    }
-
-
-
-    private fun updateRanobeHubRanobe() {
-
-        val repository = RepositoryProvider.provideRanobeHubRepository()
-        repository.getChapters(id).observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-
-                .subscribe { result ->
-                    for ((ind, res) in result.withIndex()) {
-
-                        val chapter = Chapter()
-                        chapter.id = res.id
-                        chapter.title = res.name
-                       // chapter.url = "${ranobeUrl}/ranobe/${res.idRanobe}/${res.numVolume}/${res.num}"
-                      //  chapter.ranobeId = res.ranobeId
-                        chapter.ranobeUrl = url
-                        chapter.ranobeName = title
-                        chapter.index = ind
-                        chapterList.add(chapter)
-                    }
-
-                }
-
-    }
-
     fun updateRanobe(mContext: Context): Single<Ranobe> {
 
         if (!wasUpdated) {
             if (ranobeSite == Rulate.url || url.contains(Rulate.url)) {
                 val mPreferences = mContext.getSharedPreferences(
                         StringResources.Rulate_Login_Pref, 0)
-                val token = mPreferences.getString(StringResources.KEY_Token, "")?:""
-                return RepositoryProvider.provideRulateRepository().getBookInfo(this, token, id)
+                val token = mPreferences.getString(StringResources.KEY_Token, "") ?: ""
+                return RulateRepository.getBookInfo(this, token, id)
+            } else if (ranobeSite == RanobeRf.url || url.contains(RanobeRf.url)) {
 
-            } else if (ranobeSite == RanobeRf.url || url.contains(                      RanobeRf.url)) {
-                // updateRanobeRfRanobe()
-                return RepositoryProvider.provideRanobeRfRepository().getBookInfo(this)
-            } else if (ranobeSite == RanobeHub.url || url.contains(
-                            RanobeHub.url)) {
-                //updateRanobeHubRanobe()
-                return RepositoryProvider.provideRanobeHubRepository().getBookInfo(this)
+                return RanobeRfRepository.getBookInfo(this)
+            } else if (ranobeSite == RanobeHub.url || url.contains(RanobeHub.url)) {
 
+                return RanobeHubRepository.getBookInfo(this)
             } else if (ranobeSite != Title.url) {
                 throw NullPointerException()
             }

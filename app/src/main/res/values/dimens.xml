@@ -10,7 +10,7 @@
     <dimen name="fab_margin_bot">60dp</dimen>
 
 
-    <dimen name="title.text.size">18sp</dimen>
-    <dimen name="last.updated.text.size">12sp</dimen>
+    <dimen name="title_text_size">18sp</dimen>
+    <dimen name="last_updated_text_size">12sp</dimen>
     <dimen name="card_view_margin">4dp</dimen>
 </resources>

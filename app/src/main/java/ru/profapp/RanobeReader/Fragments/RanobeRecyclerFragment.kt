@@ -63,7 +63,7 @@ class RanobeRecyclerFragment : Fragment() {
         val mPreferences = mContext!!.getSharedPreferences(StringResources.Rulate_Login_Pref, 0)
 
         val token = mPreferences.getString(StringResources.KEY_Token, "") ?: ""
-        return RepositoryProvider.provideRulateRepository().getFavoriteBooks(token).map {
+        return RulateRepository.getFavoriteBooks(token).map {
 
             for (ranobe in it) {
                 if (!loadFromDatabase) {
@@ -90,7 +90,7 @@ class RanobeRecyclerFragment : Fragment() {
         val mPreferences = mContext!!.getSharedPreferences(StringResources.Ranoberf_Login_Pref, 0)
 
         val token = mPreferences.getString(StringResources.KEY_Token, "")
-        return RepositoryProvider.provideRanobeRfRepository().getFavoriteBooks(token).map {
+        return RanobeRfRepository.getFavoriteBooks(token).map {
 
             for (ranobe in it) {
                 if (!loadFromDatabase) {
@@ -529,18 +529,18 @@ class RanobeRecyclerFragment : Fragment() {
     }
 
     private fun rulateLoadRanobe(): Single<List<Ranobe>> {
-        return RepositoryProvider.provideRulateRepository().getReadyBooks(page + 1)
+        return RulateRepository.getReadyBooks(page + 1)
     }
 
     private fun ranobeRfLoadRanobe(): Single<List<Ranobe>> {
 
-        return RepositoryProvider.provideRanobeRfRepository().getReadyBooks(page + 1)
+        return RanobeRfRepository.getReadyBooks(page + 1)
 
     }
 
     private fun ranobeHubLoadRanobe(): Single<List<Ranobe>> {
 
-        return RepositoryProvider.provideRanobeHubRepository().getReadyBooks(page + 1)
+        return RanobeHubRepository.getReadyBooks(page + 1)
 
     }
 
@@ -580,17 +580,4 @@ class RanobeRecyclerFragment : Fragment() {
 
 }
 
-object RepositoryProvider {
-    fun provideRulateRepository(): RulateRepository {
-        return RulateRepository
-    }
-
-    fun provideRanobeHubRepository(): RanobeHubRepository {
-        return RanobeHubRepository
-    }
-
-    fun provideRanobeRfRepository(): RanobeRfRepository {
-        return RanobeRfRepository
-    }
-}
 

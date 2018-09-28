@@ -87,7 +87,7 @@ class RanobeInfoActivity : AppCompatActivity() {
         Fabric.with(this, crashlyticsKit)
         setContentView(R.layout.activity_ranobe_info)
 
-        loadAds()
+        initAds()
 
         mContext = this@RanobeInfoActivity
         mCurrentRanobe = MyApp.ranobe!!
@@ -209,7 +209,7 @@ class RanobeInfoActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadAds() {
+    private fun initAds() {
         MobileAds.initialize(this, getString(R.string.app_admob_id))
         val adView = findViewById<AdView>(R.id.adView)
         val adRequest = AdRequest.Builder()
@@ -238,8 +238,8 @@ class RanobeInfoActivity : AppCompatActivity() {
                 .apply(myOptions)
                 .into(imageView)
 
-        var aboutText = String.format("%s / %s \n\nРейтинг: %s\n%s", mCurrentRanobe.title,
-                mCurrentRanobe.engTitle, mCurrentRanobe.rating, mCurrentRanobe.description)
+        var aboutText = String.format("%s / %s \n\n%s\n\nРейтинг: %s", mCurrentRanobe.title,
+                mCurrentRanobe.engTitle, mCurrentRanobe.description, mCurrentRanobe.rating)
 
         if (mCurrentRanobe.genres != null) {
             aboutText = aboutText + "\n\n" + mCurrentRanobe.genres

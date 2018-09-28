@@ -1,6 +1,8 @@
 package ru.profapp.RanobeReader.Helpers
 
+import android.text.Html
 import org.jsoup.Jsoup
+import org.jsoup.safety.Whitelist
 
 /**
  * Created by Ruslan on 08.02.2018.
@@ -13,12 +15,9 @@ class StringHelper {
         }
         @JvmStatic
         fun removeTags(string: String): String {
-            return Jsoup.parse(string).text()
+            return  Html.fromHtml(string).toString().replace("\n\n","\n")
         }
-        @JvmStatic
-        fun cleanAdditionalInfo(string: String): String {
-            return Jsoup.parse(string).text()
-        }
+
         @JvmStatic
         fun CleanString(ranobeUrl: String): String {
             return ranobeUrl.replace("[^a-zA-Z0-9]".toRegex(), "")
