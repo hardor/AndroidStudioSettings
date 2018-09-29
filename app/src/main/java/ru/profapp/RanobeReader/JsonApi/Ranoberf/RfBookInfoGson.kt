@@ -1,13 +1,13 @@
 package ru.profapp.RanobeReader.JsonApi.Ranoberf
 
 
-data class RfBookInfoGson (
+data class RfBookInfoGson(
         val status: Int? = null,
         val result: ResultBookInfo? = null,
         val message: String? = null
 )
 
-data class ResultBookInfo (
+data class ResultBookInfo(
         val book: RfBook? = null,
         val parts: List<RfChapter> = ArrayList(),
         val donateParts: List<RfChapter> = ArrayList(),
@@ -16,7 +16,7 @@ data class ResultBookInfo (
         val readPart: String? = null
 )
 
-data class RfBook (
+data class RfBook(
         val id: Int? = null,
         val url: String? = null,
         val fullTitle: String? = null,
@@ -32,36 +32,36 @@ data class RfBook (
         val likes: Int = 0,
         val dislikes: Int = 0,
         val publishedAt: Long? = null,
-      //  val user: User? = null,
+        //  val user: User? = null,
         val country: Country? = null,
         val view: Int? = null,
         val lastUpdatedBook: Long? = null,
-    //    val activeUsers: Int? = null,
+        //    val activeUsers: Int? = null,
         val parts: List<RfChapter> = ArrayList()
 )
 
-data class Country (
+data class Country(
         val title: String? = null,
         val alias: String? = null,
         val image: String? = null
 )
 
-data class Image (
+data class Image(
         val desktop: Desktop? = null,
         val mobile: Desktop? = null
 )
 
-data class Desktop (
+data class Desktop(
         val image: String? = null,
         val svg: String? = null
 )
 
-data class User (
+data class User(
         val like: Int? = null,
         val dislike: Int? = null
 )
 
-data class RfChapter (
+data class RfChapter(
         val id: Int? = null,
         val title: String? = null,
         val url: String? = null,
@@ -74,10 +74,10 @@ data class RfChapter (
         val view: Int? = null
 )
 
-data class Genre (
+data class Genre(
         val title: String? = null
 )
 
-data class TimerPart (
+data class TimerPart(
         val publishedAt: Int? = null
 )

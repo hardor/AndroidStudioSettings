@@ -1,23 +1,23 @@
 <preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- These settings headers are only used on tablets. -->
+  <!-- These settings headers are only used on tablets. -->
 
-    <header
-        android:fragment="ru.profapp.RanobeReader.Activities.SettingsActivity$GeneralPreferenceFragment"
-        android:title="@string/pref_header_general" />
+  <header
+    android:fragment="ru.profapp.RanobeReader.Activities.SettingsActivity$GeneralPreferenceFragment"
+    android:title="@string/pref_header_general"/>
 
-    <header
-        android:fragment="ru.profapp.RanobeReader.Activities.SettingsActivity$RulatePreferenceFragment"
-        android:title="@string/tl.rulate_name" />
-    <header
-        android:fragment="ru.profapp.RanobeReader.Activities.SettingsActivity$RanobeRfPreferenceFragment"
-        android:title="@string/ranobe_rf" />
-    <header
-        android:fragment="ru.profapp.RanobeReader.Activities.SettingsActivity$DataPreferenceFragment"
-        android:title="@string/data" />
-    <!--<header-->
-        <!--android:fragment="ru.profapp.RanobeReader.Activities.SettingsActivity$ExportPreferenceFragment"-->
-        <!--android:title="@string/export_import" />-->
+  <header
+    android:fragment="ru.profapp.RanobeReader.Activities.SettingsActivity$RulatePreferenceFragment"
+    android:title="@string/tl.rulate_name"/>
+  <header
+    android:fragment="ru.profapp.RanobeReader.Activities.SettingsActivity$RanobeRfPreferenceFragment"
+    android:title="@string/ranobe_rf"/>
+  <header
+    android:fragment="ru.profapp.RanobeReader.Activities.SettingsActivity$DataPreferenceFragment"
+    android:title="@string/data"/>
+  <!--<header-->
+  <!--android:fragment="ru.profapp.RanobeReader.Activities.SettingsActivity$ExportPreferenceFragment"-->
+  <!--android:title="@string/export_import" />-->
 
 
 </preference-headers>

@@ -1,13 +1,13 @@
 package ru.profapp.RanobeReader.JsonApi.Ranoberf
 
 
-data class RfChapterTextGson (
+data class RfChapterTextGson(
         val status: Int? = null,
         val result: RfText? = null,
         val message: String? = null
 )
 
-data class RfText (
+data class RfText(
         val status: Int? = null,
         val checkers: List<Checker> = ArrayList(),
         val part: TextPart? = null,
@@ -16,7 +16,7 @@ data class RfText (
         val previewPart: ChapterPart? = null
 )
 
-data class Book (
+data class Book(
         val id: Int? = null,
         val image: ChapterImage? = null,
         val priceDonatePart: Int? = null,
@@ -24,15 +24,15 @@ data class Book (
         val url: String? = null
 )
 
-data class ChapterImage (
+data class ChapterImage(
         val mobile: Mobile? = null
 )
 
-data class Mobile (
+data class Mobile(
         val image: String? = null
 )
 
-data class Checker (
+data class Checker(
         val id: Int? = null,
         val bookID: Int? = null,
         val partID: Int? = null,
@@ -46,12 +46,12 @@ data class Checker (
         val updatedAt: Int? = null
 )
 
-data class ChapterPart (
+data class ChapterPart(
         val title: String? = null,
         val url: String? = null
 )
 
-data class TextPart (
+data class TextPart(
         val id: Int? = null,
         val url: String? = null,
         val title: String? = null,

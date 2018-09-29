@@ -3,14 +3,8 @@ package ru.profapp.RanobeReader.Models
 import androidx.annotation.NonNull
 import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
-import org.json.JSONObject
-import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Common.Constants.RanobeSite.RanobeRf
 import ru.profapp.RanobeReader.Common.Constants.RanobeSite.Rulate
-import ru.profapp.RanobeReader.JsonApi.RanobeHub.tChapter
-import ru.profapp.RanobeReader.JsonApi.Ranoberf.RfText
-import ru.profapp.RanobeReader.JsonApi.Rulate.RulateChapter
-import ru.profapp.RanobeReader.JsonApi.Rulate.RulateText
 import java.util.*
 
 /**

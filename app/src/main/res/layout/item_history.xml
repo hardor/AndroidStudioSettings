@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:layout_margin="5dp"
+  android:orientation="vertical">
+
+  <TextView
+    android:id="@+id/chapterTitle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp"
-    android:orientation="vertical">
+    android:textAlignment="textStart"
+    android:textSize="@dimen/title_text_size"
+    tools:text="@tools:sample/full_names"/>
 
-    <TextView
-        android:id="@+id/chapterTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAlignment="textStart"
-        android:textSize="@dimen/title_text_size"
-        tools:text="tewtwetwt wet wtet wt tw" />
+  <TextView
+    android:id="@+id/ranobeTitleWithTime"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:ellipsize="end"
+    android:maxLines="1"
+    android:textAlignment="textStart"
+    android:textSize="@dimen/last_updated_text_size"
+    tools:text="@tools:sample/date/ddmmyy"/>
 
-    <TextView
-        android:id="@+id/ranobeTitleWithTime"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:textAlignment="textStart"
-        android:textSize="@dimen/last_updated_text_size" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/colorPrimaryDark" />
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:background="@color/colorPrimaryDark"/>
 
 </LinearLayout>

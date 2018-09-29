@@ -1,52 +1,52 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:paddingBottom="20dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-                android:paddingTop="10dp">
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_width="fill_parent"
+  android:layout_height="wrap_content"
+  android:paddingTop="10dp"
+  android:paddingBottom="20dp"
+  android:paddingLeft="20dp"
+  android:paddingRight="20dp">
 
-    <!-- Email Label -->
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/login_email" />
+  <!-- Email Label -->
+  <TextView
+    android:id="@+id/textView3"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/login_email"/>
 
-    <!-- Email input text -->
-    <EditText
-        android:id="@+id/login_login"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView3"
-        android:inputType="text"
-        android:maxLines="1"
-        android:hint="@string/login"
-        android:importantForAutofill="no" />
+  <!-- Email input text -->
+  <EditText
+    android:id="@+id/login_login"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/textView3"
+    android:hint="@string/login"
+    android:importantForAutofill="no"
+    android:inputType="text"
+    android:maxLines="1"/>
 
-    <!-- Password Label -->
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/login_login"
-        android:text="@string/password"
+  <!-- Password Label -->
+  <TextView
+    android:id="@+id/textView2"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/login_login"
+    android:text="@string/password"
     />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView2"
-        app:passwordToggleContentDescription="@string/description"
-        app:passwordToggleEnabled="true">
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/login_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/password"
-            android:inputType="textPassword"/>
-    </com.google.android.material.textfield.TextInputLayout>
+  <com.google.android.material.textfield.TextInputLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/textView2"
+    app:passwordToggleContentDescription="@string/description"
+    app:passwordToggleEnabled="true">
+    <com.google.android.material.textfield.TextInputEditText
+      android:id="@+id/login_password"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:hint="@string/password"
+      android:inputType="textPassword"/>
+  </com.google.android.material.textfield.TextInputLayout>
 
 
 </RelativeLayout>

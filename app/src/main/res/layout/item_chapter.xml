@@ -1,12 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-  android:id="@+id/id"
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:paddingTop="2dp"
-  android:paddingBottom="2dp"
-  android:paddingStart="2dp"
-  android:paddingEnd="2dp"
-  android:ellipsize="end"
-  android:maxLines="1"/>
+  android:orientation="vertical">
+
+  <TextView
+    android:id="@+id/id"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="4dp"
+    android:ellipsize="end"
+    android:maxLines="1"
+    tools:text="@tools:sample/lorem/random"
+    />
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:background="@color/colorPrimaryDark"/>
+</LinearLayout>

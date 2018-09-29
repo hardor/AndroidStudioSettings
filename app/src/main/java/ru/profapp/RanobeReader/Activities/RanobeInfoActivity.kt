@@ -60,7 +60,7 @@ class RanobeInfoActivity : AppCompatActivity() {
     var mContext: Context? = null
     private var borderImage: Drawable? = null
     private var fillImage: Drawable? = null
-    lateinit var tabHost:TabHost
+    lateinit var tabHost: TabHost
     private var adapterExpandable: ExpandableChapterRecyclerViewAdapter? = null
     private var sPref: SharedPreferences? = null
     private var lastIndexPref: SharedPreferences? = null
@@ -304,7 +304,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                                 mCurrentRanobe.comments)
                         commentRecycleView.adapter = commentsAdapter
 
-                        val tabSpec: TabHost.TabSpec  = tabHost.newTabSpec("comments")
+                        val tabSpec: TabHost.TabSpec = tabHost.newTabSpec("comments")
                         tabSpec.setContent(R.id.linearLayout2)
                         tabSpec.setIndicator(resources.getString(R.string.comments))
                         tabHost.addTab(tabSpec)
@@ -539,7 +539,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                 }
 
                 try {
-                    val browserIntent = Intent(Intent.ACTION_VIEW,                            Uri.parse(url))
+                    val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                     if (browserIntent.resolveActivity(this.packageManager) != null)
                         startActivity(browserIntent)
                     else

@@ -7,7 +7,7 @@ import java.util.*
  * Created by Ruslan on 09.02.2018.
  */
 
-class  DateConverter {
+class DateConverter {
 
     @TypeConverter
     fun toDate(value: Long?): Date? {

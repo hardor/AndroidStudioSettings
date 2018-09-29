@@ -1,15 +1,11 @@
 package ru.profapp.RanobeReader.JsonApi.IApiServices
 
-import io.reactivex.Observable
 import io.reactivex.Single
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 import ru.profapp.RanobeReader.JsonApi.Ranoberf.*
-import ru.profapp.RanobeReader.JsonApi.Rulate.BookInfoGson
-import ru.profapp.RanobeReader.JsonApi.Rulate.FavoriteGson
-import ru.profapp.RanobeReader.JsonApi.Rulate.LoginGson
 
 
 interface IRanobeRfApiService {
@@ -28,7 +24,7 @@ interface IRanobeRfApiService {
     fun GetBookInfo(@Query("bookAlias") bookAlias: String = ""): Single<RfBookInfoGson>
 
     @GET("/v1/bookmark/index/")
-    fun GetFavoriteBooks( @Header("Authorization") token: String): Single<RfFavoriteGson>
+    fun GetFavoriteBooks(@Header("Authorization") token: String): Single<RfFavoriteGson>
 
 
     @FormUrlEncoded

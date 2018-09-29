@@ -2,7 +2,6 @@ package ru.profapp.RanobeReader.Adapters
 
 import android.content.Context
 import android.content.Intent
-import android.opengl.Visibility
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,8 +14,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import ru.profapp.RanobeReader.Activities.RanobeInfoActivity
-import ru.profapp.RanobeReader.Common.OnLoadMoreListener
 import ru.profapp.RanobeReader.Common.Constants
+import ru.profapp.RanobeReader.Common.OnLoadMoreListener
 import ru.profapp.RanobeReader.Fragments.RanobeRecyclerFragment.OnListFragmentInteractionListener
 import ru.profapp.RanobeReader.Models.Ranobe
 import ru.profapp.RanobeReader.MyApp

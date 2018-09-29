@@ -1,12 +1,11 @@
 package ru.profapp.RanobeReader.Adapters
 
 import android.content.Context
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
-
+import androidx.recyclerview.widget.RecyclerView
 import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.R
 

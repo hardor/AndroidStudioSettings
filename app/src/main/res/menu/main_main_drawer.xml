@@ -1,53 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:showIn="navigation_view">
+  xmlns:tools="http://schemas.android.com/tools"
+  tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_favorite"
-            android:icon="@drawable/ic_favorite_black_24dp"
-            android:title="@string/favorite" />
-        <item
-            android:id="@+id/nav_rulate"
-            android:icon="@drawable/ic_book_black_24dp"
-            android:title="@string/tl.rulate_name"
-        />
-        <item
-            android:id="@+id/nav_ranoberf"
-            android:icon="@mipmap/ic_action_ranoberf"
-            android:title="@string/ranobe_rf" />
-        <item
-            android:id="@+id/nav_ranobehub"
-            android:icon="@mipmap/ic_ranobehub"
-            android:title="@string/ranobe_hub" />
-        <item
-            android:id="@+id/nav_search"
-            android:icon="@android:drawable/ic_menu_search"
-            android:title="@string/search" />
-        <item
-            android:id="@+id/nav_chapters"
-            android:icon="@android:drawable/ic_menu_recent_history"
-            android:title="@string/saved_chapters" />
-        <item
-            android:id="@+id/nav_history"
-            android:icon="@android:drawable/ic_menu_recent_history"
-            android:title="@string/history" />
+  <group android:checkableBehavior="single">
+    <item
+      android:id="@+id/nav_favorite"
+      android:icon="@drawable/ic_favorite_black_24dp"
+      android:title="@string/favorite"/>
+    <item
+      android:id="@+id/nav_rulate"
+      android:icon="@drawable/ic_book_black_24dp"
+      android:title="@string/tl.rulate_name"
+      />
+    <item
+      android:id="@+id/nav_ranoberf"
+      android:icon="@mipmap/ic_action_ranoberf"
+      android:title="@string/ranobe_rf"/>
+    <item
+      android:id="@+id/nav_ranobehub"
+      android:icon="@mipmap/ic_ranobehub"
+      android:title="@string/ranobe_hub"/>
+    <item
+      android:id="@+id/nav_search"
+      android:icon="@android:drawable/ic_menu_search"
+      android:title="@string/search"/>
+    <item
+      android:id="@+id/nav_chapters"
+      android:icon="@android:drawable/ic_menu_recent_history"
+      android:title="@string/saved_chapters"/>
+    <item
+      android:id="@+id/nav_history"
+      android:icon="@android:drawable/ic_menu_recent_history"
+      android:title="@string/history"/>
 
-    </group>
+  </group>
 
-    <item android:title="@string/general">
-        <menu>
-            <item
-                android:id="@+id/nav_manage"
-                android:icon="@drawable/ic_menu_manage"
-                android:title="@string/settings" />
+  <item android:title="@string/general">
+    <menu>
+      <item
+        android:id="@+id/nav_manage"
+        android:icon="@drawable/ic_menu_manage"
+        android:title="@string/settings"/>
 
-            <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_send_black_24dp"
-                android:title="@string/feedback" />
-        </menu>
-    </item>
+      <item
+        android:id="@+id/nav_send"
+        android:icon="@drawable/ic_send_black_24dp"
+        android:title="@string/feedback"/>
+    </menu>
+  </item>
 
 </menu>

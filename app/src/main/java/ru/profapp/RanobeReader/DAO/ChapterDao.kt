@@ -1,7 +1,6 @@
 package ru.profapp.RanobeReader.DAO
 
 import androidx.room.*
-import io.reactivex.Completable
 import ru.profapp.RanobeReader.Models.Chapter
 
 /**
@@ -13,7 +12,7 @@ interface ChapterDao {
 
 
     @Query("SELECT * FROM chapter")
-    fun  allChapters(): List<Chapter>
+    fun allChapters(): List<Chapter>
 
     //Todo: change replace to ignore
     @Insert(onConflict = OnConflictStrategy.REPLACE)

@@ -9,7 +9,7 @@ import androidx.room.PrimaryKey
 /**
  * Created by Ruslan on 21.02.2018.
  */
-@Entity(tableName = "textChapter",indices = [Index(value = ["ChapterUrl"])])
+@Entity(tableName = "textChapter", indices = [Index(value = ["ChapterUrl"])])
 class TextChapter {
 
     @PrimaryKey
@@ -34,7 +34,7 @@ class TextChapter {
         this.index = index
     }
 
-    constructor(chapter: Chapter){
+    constructor(chapter: Chapter) {
         this.chapterUrl = chapter.url
         this.text = chapter.text.toString()
         this.chapterName = chapter.title

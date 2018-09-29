@@ -1,134 +1,134 @@
 <resources>
-    <string name="app_name">RanobeReader</string>
+  <string name="app_name">RanobeReader</string>
 
-    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
-    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
+  <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+  <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
 
-    <string name="action_settings">Settings</string>
+  <string name="action_settings">Settings</string>
 
 
-    <string name="title_activity_settings">Settings</string>
+  <string name="title_activity_settings">Settings</string>
 
-    <!-- Strings related to Settings -->
+  <!-- Strings related to Settings -->
 
-    <!-- Example General settings -->
-    <string name="pref_header_general">General</string>
+  <!-- Example General settings -->
+  <string name="pref_header_general">General</string>
 
-    <!-- Example settings for Notifications -->
+  <!-- Example settings for Notifications -->
 
-    <string name="show_all_chapter">Show all chapters</string>
-    <string name="show_only_readable">Show only readable chapters</string>
-    <string name="hide_unavailable_chapters">Hide unavailable (paid) chapters</string>
-    <string name="tl.rulate_name" translatable="false">Rulate</string>
-    <string name="tl.rulate_web" translatable="false">Rulate Web</string>
-    <string name="ranoberf_web" translatable="false">Ранобэ.рф Web</string>
-    <string name="text_size">Text size</string>
-    <string name="select_text_size">Select size for chapter\'s text</string>
-    <string name="login">Login</string>
-    <string name="login_email">Login/E-mail</string>
-    <string name="password">Password</string>
-    <string name="login_to_summary">Log in to get favorite Ranobe from your profile</string>
-    <string name="rulate_authorization">Rulate authorization</string>
-    <string name="ranoberf_authorization">Ранобэ.рф authorization</string>
-    <string name="pref_general_hide_chapter" translatable="false">
+  <string name="show_all_chapter">Show all chapters</string>
+  <string name="show_only_readable">Show only readable chapters</string>
+  <string name="hide_unavailable_chapters">Hide unavailable (paid) chapters</string>
+  <string name="tl.rulate_name" translatable="false">Rulate</string>
+  <string name="tl.rulate_web" translatable="false">Rulate Web</string>
+  <string name="ranoberf_web" translatable="false">Ранобэ.рф Web</string>
+  <string name="text_size">Text size</string>
+  <string name="select_text_size">Select size for chapter\'s text</string>
+  <string name="login">Login</string>
+  <string name="login_email">Login/E-mail</string>
+  <string name="password">Password</string>
+  <string name="login_to_summary">Log in to get favorite Ranobe from your profile</string>
+  <string name="rulate_authorization">Rulate authorization</string>
+  <string name="ranoberf_authorization">Ранобэ.рф authorization</string>
+  <string name="pref_general_hide_chapter" translatable="false">
         preference_hide_unavailable_chapters
     </string>
-    <string name="pref_general_text_size" translatable="false">preference_text_size</string>
-    <string name="favorite">Favorite</string>
+  <string name="pref_general_text_size" translatable="false">preference_text_size</string>
+  <string name="favorite">Favorite</string>
 
 
-    <string name="pref_general_app_theme" translatable="false">pref_general_app_theme</string>
-    <string name="ranobe_rf" translatable="false">Ранобэ.рф</string>
-    <string name="ranobe_hub" translatable="false">RanobeHub</string>
+  <string name="pref_general_app_theme" translatable="false">pref_general_app_theme</string>
+  <string name="ranobe_rf" translatable="false">Ранобэ.рф</string>
+  <string name="ranobe_hub" translatable="false">RanobeHub</string>
 
 
-    <string name="title_activity_ranobe_info" translatable="false">RanobeInfo</string>
-    <string name="chapters">Chapters</string>
-    <string name="description">Description</string>
-    <string name="additional_information">Additional Information</string>
-    <string name="title_activity_chapter_text" translatable="false">ChapterText</string>
-    <string name="previous">Previous</string>
-    <string name="next">Next</string>
-    <string name="logo" translatable="false">Logo</string>
-    <string name="Delete_downloaded_chapters">Delete the downloaded chapters</string>
-    <string name="сlean_cache">Clean cache</string>
-    <string name="cache_cleaned">Cache cleaned</string>
-    <string name="CleanCacheButton" translatable="false">CleanCacheButton</string>
-    <string name="clean_history">Clean history</string>
-    <string name="clean_history_full">Clean information about readed chapters</string>
-    <string name="CleanHistoryButton" translatable="false">CleanPreferencesButton</string>
-    <string name="search">Search</string>
-    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-1483315001492731/3353494026
+  <string name="title_activity_ranobe_info" translatable="false">RanobeInfo</string>
+  <string name="chapters">Chapters</string>
+  <string name="description">Description</string>
+  <string name="additional_information">Additional Information</string>
+  <string name="title_activity_chapter_text" translatable="false">ChapterText</string>
+  <string name="previous">Previous</string>
+  <string name="next">Next</string>
+  <string name="logo" translatable="false">Logo</string>
+  <string name="Delete_downloaded_chapters">Delete the downloaded chapters</string>
+  <string name="сlean_cache">Clean cache</string>
+  <string name="cache_cleaned">Cache cleaned</string>
+  <string name="CleanCacheButton" translatable="false">CleanCacheButton</string>
+  <string name="clean_history">Clean history</string>
+  <string name="clean_history_full">Clean information about readed chapters</string>
+  <string name="CleanHistoryButton" translatable="false">CleanPreferencesButton</string>
+  <string name="search">Search</string>
+  <string name="banner_ad_unit_id" translatable="false">ca-app-pub-1483315001492731/3353494026
     </string>
-    <string name="Updated">Updated</string>
-    <string name="ago">ago</string>
+  <string name="Updated">Updated</string>
+  <string name="ago">ago</string>
 
-    <string name="load_ranobes">Loading favorite ranobe</string>
-    <string name="load_please_wait">Please wait for the load to complete</string>
-    <string name="load_all">Load all</string>
+  <string name="load_ranobes">Loading favorite ranobe</string>
+  <string name="load_please_wait">Please wait for the load to complete</string>
+  <string name="load_all">Load all</string>
 
-    <string name="settings">Settings</string>
-    <string name="general">General</string>
-    <string name="not_found">Not found</string>
-    <string name="login_failed">Login failed..</string>
-    <string name="enter_user_pass">Please enter username and password</string>
-    <string name="banner_ad_unit_main" translatable="false">ca-app-pub-1483315001492731/3861883619
+  <string name="settings">Settings</string>
+  <string name="general">General</string>
+  <string name="not_found">Not found</string>
+  <string name="login_failed">Login failed..</string>
+  <string name="enter_user_pass">Please enter username and password</string>
+  <string name="banner_ad_unit_main" translatable="false">ca-app-pub-1483315001492731/3861883619
     </string>
-    <string name="app_admob_id" translatable="false">ca-app-pub-1483315001492731~8531946315</string>
+  <string name="app_admob_id" translatable="false">ca-app-pub-1483315001492731~8531946315</string>
 
-    <string name="added_to_local">was added to local bookmarks.</string>
-    <string name="added_to_web">was added to web bookmarks.</string>
-    <string name="rulate_authorization_pref" translatable="false">rulate_authorization_pref</string>
-    <string name="ranoberf_authorization_pref" translatable="false">ranoberf_authorization_pref
+  <string name="added_to_local">was added to local bookmarks.</string>
+  <string name="added_to_web">was added to web bookmarks.</string>
+  <string name="rulate_authorization_pref" translatable="false">rulate_authorization_pref</string>
+  <string name="ranoberf_authorization_pref" translatable="false">ranoberf_authorization_pref
     </string>
 
-    <string name="comments">Comments</string>
-    <string name="сlean_favorite">Clean local bookmarks</string>
-    <string name="CleanFavoriteButton" translatable="false">CleanFavoriteButton</string>
-    <string name="Delete_favorited_ranobes">Clean all local favorited ranobes
+  <string name="comments">Comments</string>
+  <string name="сlean_favorite">Clean local bookmarks</string>
+  <string name="CleanFavoriteButton" translatable="false">CleanFavoriteButton</string>
+  <string name="Delete_favorited_ranobes">Clean all local favorited ranobes
     </string>
-    <string name="bookmarks_cleaned">Local bookmarks were cleaned</string>
-    <string name="saved_chapters">Saved chapters</string>
-    <string name="pref_general_auto_save" translatable="false">pref_general_auto_save</string>
-    <string name="auto_save_text">Automatically save text</string>
-    <string name="auto_save_text_on">Save text when opening chapter</string>
-    <string name="auto_save_text_off">Save text only manually</string>
-    <string name="search_here">Search Here</string>
-    <string name="feedback">Feedback</string>
-    <string name="action_bookmark">Bookmark</string>
-    <string name="bookmark_saved">Bookmark saved</string>
-    <string name="app_theme">Dark theme</string>
-    <string name="Turn_off_dark_theme">Turn off dark theme</string>
-    <string name="Turn_on_dark_theme">Turn on dark theme</string>
-    <string name="email" translatable="false">e-mail</string>
-    <string name="auth_error">Error authorization</string>
-    <string name="auth_succes">Authorization success</string>
-    <string name="update_to_remove">Please update favorites to remove this bookmark</string>
-    <string name="add_to_favorite">Add to favorite</string>
-    <string name="download">Download</string>
-    <string name="title_activity_download">Download</string>
-    <string name="sort">Sort</string>
-    <string name="select_all">Select all</string>
-    <string name="select_none">Select none</string>
-    <string name="readyToDownload">Are you sure you want to download the marked chapters and delete
+  <string name="bookmarks_cleaned">Local bookmarks were cleaned</string>
+  <string name="saved_chapters">Saved chapters</string>
+  <string name="pref_general_auto_save" translatable="false">pref_general_auto_save</string>
+  <string name="auto_save_text">Automatically save text</string>
+  <string name="auto_save_text_on">Save text when opening chapter</string>
+  <string name="auto_save_text_off">Save text only manually</string>
+  <string name="search_here">Search Here</string>
+  <string name="feedback">Feedback</string>
+  <string name="action_bookmark">Bookmark</string>
+  <string name="bookmark_saved">Bookmark saved</string>
+  <string name="app_theme">Dark theme</string>
+  <string name="Turn_off_dark_theme">Turn off dark theme</string>
+  <string name="Turn_on_dark_theme">Turn on dark theme</string>
+  <string name="email" translatable="false">e-mail</string>
+  <string name="auth_error">Error authorization</string>
+  <string name="auth_succes">Authorization success</string>
+  <string name="update_to_remove">Please update favorites to remove this bookmark</string>
+  <string name="add_to_favorite">Add to favorite</string>
+  <string name="download">Download</string>
+  <string name="title_activity_download">Download</string>
+  <string name="sort">Sort</string>
+  <string name="select_all">Select all</string>
+  <string name="select_none">Select none</string>
+  <string name="readyToDownload">Are you sure you want to download the marked chapters and delete
         not marked?
     </string>
-    <string name="task_finished">Task finished</string>
-    <string name="app_email" translatable="false">admin@profapp.ru</string>
-    <string name="data">Data</string>
-    <string name="day_night">Day/Night</string>
-    <string name="not_exist">Not exist</string>
-    <string name="Load_local_bookmarks">Load local bookmarks</string>
-    <string name="Load_from_Rulate">Load bookmarks from Rulate site</string>
-    <string name="Load_from_RanobeRf">Load bookmarks from Ранобэ.рф site</string>
-    <string name="Update_ranobe_info">Update ranobes information</string>
-    <string name="open_in_browser" translatable="false">Open in browser</string>
-    <string name="finish" translatable="false">Finish</string>
-    <string name="ErrorConnection">Error Connection</string>
-    <string name="Error">Error</string>
-    <string name="browser_exist">No browsers found</string>
-    <string name="market_exist">No PlayMarket was found</string>
-    <string name="history">History</string>
-    <string name="date_format">MM/dd/yyyy HH:mm</string>
+  <string name="task_finished">Task finished</string>
+  <string name="app_email" translatable="false">admin@profapp.ru</string>
+  <string name="data">Data</string>
+  <string name="day_night">Day/Night</string>
+  <string name="not_exist">Not exist</string>
+  <string name="Load_local_bookmarks">Load local bookmarks</string>
+  <string name="Load_from_Rulate">Load bookmarks from Rulate site</string>
+  <string name="Load_from_RanobeRf">Load bookmarks from Ранобэ.рф site</string>
+  <string name="Update_ranobe_info">Update ranobes information</string>
+  <string name="open_in_browser" translatable="false">Open in browser</string>
+  <string name="finish" translatable="false">Finish</string>
+  <string name="ErrorConnection">Error Connection</string>
+  <string name="Error">Error</string>
+  <string name="browser_exist">No browsers found</string>
+  <string name="market_exist">No PlayMarket was found</string>
+  <string name="history">History</string>
+  <string name="date_format">MM/dd/yyyy HH:mm</string>
 
 </resources>

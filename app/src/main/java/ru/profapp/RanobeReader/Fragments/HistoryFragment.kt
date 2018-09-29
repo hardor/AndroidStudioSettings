@@ -1,15 +1,13 @@
 package ru.profapp.RanobeReader.Fragments
 
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
@@ -17,7 +15,6 @@ import ru.profapp.RanobeReader.Adapters.HistoryRecyclerViewAdapter
 import ru.profapp.RanobeReader.Helpers.MyLog
 import ru.profapp.RanobeReader.Models.ChapterHistory
 import ru.profapp.RanobeReader.MyApp
-
 import ru.profapp.RanobeReader.R
 
 /**

@@ -1,70 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/container"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  tools:context="ru.profapp.RanobeReader.Activities.ChapterTextActivity">
+
+
+  <WebView
+    android:id="@+id/textWebview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ru.profapp.RanobeReader.Activities.ChapterTextActivity">
-
-
-    <WebView
-        android:id="@+id/textWebview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/button_layout"
-        android:hardwareAccelerated="true"
+    android:layout_above="@id/button_layout"
+    android:hardwareAccelerated="true"
     />
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                  xmlns:tools="http://schemas.android.com/tools"
-                  android:id="@+id/button_layout"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:layout_alignParentBottom="true"
-                  android:gravity="center|bottom"
-                  android:orientation="horizontal">
+  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/button_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:gravity="center|bottom"
+    android:orientation="horizontal">
 
-        <ImageButton
-            android:id="@+id/navigation_prev"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp"
-            android:background="?attr/selectableItemBackground"
-            android:contentDescription="@string/previous"
-            app:srcCompat="@drawable/ic_skip_previous_black_24dp"/>
-        <ImageButton
-            android:id="@+id/navigation_bookmark"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="?attr/selectableItemBackground"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp"
-            android:contentDescription="@string/action_bookmark"
-            app:srcCompat="@drawable/ic_bookmark_border_black_24dp"/>
-        <ImageButton
-            android:id="@+id/navigation_next"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="?attr/selectableItemBackground"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp"
-            android:contentDescription="@string/next"
-            app:srcCompat="@drawable/ic_skip_next_black_24dp"/>
+    <ImageButton
+      android:id="@+id/navigation_prev"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:paddingTop="5dp"
+      android:paddingBottom="5dp"
+      android:background="?attr/selectableItemBackground"
+      android:contentDescription="@string/previous"
+      app:srcCompat="@drawable/ic_skip_previous_black_24dp"/>
+    <ImageButton
+      android:id="@+id/navigation_bookmark"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:paddingTop="5dp"
+      android:paddingBottom="5dp"
+      android:background="?attr/selectableItemBackground"
+      android:contentDescription="@string/action_bookmark"
+      app:srcCompat="@drawable/ic_bookmark_border_black_24dp"/>
+    <ImageButton
+      android:id="@+id/navigation_next"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:paddingTop="5dp"
+      android:paddingBottom="5dp"
+      android:background="?attr/selectableItemBackground"
+      android:contentDescription="@string/next"
+      app:srcCompat="@drawable/ic_skip_next_black_24dp"/>
 
-    </LinearLayout>
+  </LinearLayout>
 
-    <ProgressBar
-        android:id="@+id/progressBar2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
+  <ProgressBar
+    android:id="@+id/progressBar2"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerHorizontal="true"
+    android:layout_centerVertical="true"
     />
 
 

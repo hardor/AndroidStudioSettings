@@ -5,13 +5,12 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.preference.DialogPreference
-import androidx.appcompat.app.AlertDialog
 import android.util.AttributeSet
 import android.view.View
 import android.widget.EditText
+import androidx.appcompat.app.AlertDialog
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-
 import ru.profapp.RanobeReader.Common.StringResources
 import ru.profapp.RanobeReader.JsonApi.RulateRepository
 import ru.profapp.RanobeReader.R

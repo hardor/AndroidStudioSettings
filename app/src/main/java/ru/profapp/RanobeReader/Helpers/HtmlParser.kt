@@ -1,13 +1,11 @@
 package ru.profapp.RanobeReader.Helpers
 
 import android.os.AsyncTask
-
 import org.jsoup.Connection
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-
 import java.io.IOException
-import java.util.HashMap
+import java.util.*
 
 /**
  * Created by Ruslan on 08.02.2018.
@@ -30,7 +28,7 @@ class HtmlParser : AsyncTask<String, Void, Document> {
         Data = data
     }
 
-    constructor(cookies: Map<String, String>, data: Map<String, String>,         header: Map<String, String>) {
+    constructor(cookies: Map<String, String>, data: Map<String, String>, header: Map<String, String>) {
         Cookies = cookies
         Data = data
         Header = header

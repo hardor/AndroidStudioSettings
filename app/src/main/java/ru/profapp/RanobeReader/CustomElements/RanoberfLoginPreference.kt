@@ -5,13 +5,12 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.preference.DialogPreference
-import androidx.appcompat.app.AlertDialog
 import android.text.InputType
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.EditText
-
+import androidx.appcompat.app.AlertDialog
 import ru.profapp.RanobeReader.Common.StringResources
 import ru.profapp.RanobeReader.Helpers.RanobeKeeper
 import ru.profapp.RanobeReader.R
@@ -90,8 +89,8 @@ class RanoberfLoginPreference(context: Context, attrs: AttributeSet) : DialogPre
         val alert = AlertDialog.Builder(context).create()
         // Check if username, password is filled
         if (username.isNotBlank() && password.isNotBlank()) {
-            val result = listOf<String>("false","dfdfg")
-                    //session.createRanobeRfLoginSession(username, password)
+            val result = listOf<String>("false", "dfdfg")
+            //session.createRanobeRfLoginSession(username, password)
             val resBool = java.lang.Boolean.valueOf(result[0])
             if (resBool) {
                 sharedPref!!.edit().putString(StringResources.KEY_Token, result[2]).commit()

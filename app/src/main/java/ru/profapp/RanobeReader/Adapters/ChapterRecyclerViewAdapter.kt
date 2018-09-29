@@ -66,7 +66,7 @@ class ChapterRecyclerViewAdapter(private val mValues: List<Chapter>, private val
                         ranobe.url = mChapterItem.ranobeUrl
                         if (RanobeKeeper.fragmentType != null && RanobeKeeper.fragmentType != Constants.FragmentType.Saved) {
                             try {
-                                ranobe=   ranobe.updateRanobe(mContext).blockingGet()
+                                ranobe = ranobe.updateRanobe(mContext).blockingGet()
                             } catch (ignored: Exception) {
                                 ranobe = mRanobe
                             }

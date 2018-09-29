@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.profapp.RanobeReader.Models.ChapterHistory
 import ru.profapp.RanobeReader.R
 import java.text.SimpleDateFormat
-import java.util.*
 
 class HistoryRecyclerViewAdapter(private val mValues: List<ChapterHistory>) : RecyclerView.Adapter<HistoryRecyclerViewAdapter.MyViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {

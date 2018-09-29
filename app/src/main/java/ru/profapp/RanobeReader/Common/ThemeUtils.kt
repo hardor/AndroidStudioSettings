@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatDelegate
 
 object ThemeUtils {
 
-     private var sTheme = AppCompatDelegate.MODE_NIGHT_NO
+    private var sTheme = AppCompatDelegate.MODE_NIGHT_NO
 
     fun change(activity: AppCompatActivity) {
         activity.recreate()

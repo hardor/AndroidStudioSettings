@@ -34,7 +34,7 @@ class MyApp : Application() {
                             " RanobeName TEXT NOT NULL DEFAULT ''," +
                             " Id INTEGER, " +
                             " PRIMARY KEY(Url) );"
-                            )
+                    )
 
                     database.execSQL("INSERT INTO chapter_temp ( Url, RanobeUrl, Title, Status, CanRead, New, [Index], Time, RanobeId, Downloaded, IsRead, RanobeName, Id) SELECT Url, RanobeUrl, Title, Status, CanRead, New, [Index], Time, RanobeId, Downloaded, Readed, RanobeName,Id FROM chapter;")
                     database.execSQL("CREATE TABLE ranobe2 (Url TEXT NOT NULL, Id INTEGER, EngTitle TEXT, Title TEXT NOT NULL, Image TEXT, ReadyDate INTEGER, Lang TEXT, Description TEXT, AdditionalInfo TEXT, RanobeSite TEXT NOT NULL, ChapterCount INTEGER, LastReadChapter INTEGER, WasUpdated INTEGER NOT NULL, IsFavorite INTEGER NOT NULL, IsFavoriteInWeb INTEGER NOT NULL, Rating TEXT, Status TEXT, PRIMARY KEY(Url));")
@@ -56,8 +56,8 @@ class MyApp : Application() {
                     database.execSQL("DROP TABLE textChapter;")
                     database.execSQL("ALTER TABLE textChapter2 RENAME TO textChapter;")
                     database.execSQL("CREATE INDEX index_textChapter_ChapterUrl ON textChapter (ChapterUrl);")
-                }catch (e:Exception ){
-                    MyLog.SendError(MyLog.LogType.ERROR,"MIGRATION_2_3","MIGRATION_2_3 failed",e)
+                } catch (e: Exception) {
+                    MyLog.SendError(MyLog.LogType.ERROR, "MIGRATION_2_3", "MIGRATION_2_3 failed", e)
                 }
 
             }

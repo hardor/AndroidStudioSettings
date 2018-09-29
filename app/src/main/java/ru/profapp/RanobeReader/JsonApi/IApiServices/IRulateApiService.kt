@@ -1,6 +1,5 @@
 package ru.profapp.RanobeReader.JsonApi.IApiServices
 
-import io.reactivex.Observable
 import io.reactivex.Single
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -10,7 +9,7 @@ import retrofit2.http.Query
 import ru.profapp.RanobeReader.JsonApi.Rulate.*
 
 
-interface IRulateApiService  {
+interface IRulateApiService {
 
     @GET("/api/getReady?key=fpoiKLUues81werht039")
     fun GetReadyBooks(@Query("page") page: Int): Single<ReadyGson>
@@ -28,13 +27,13 @@ interface IRulateApiService  {
     fun AddBookmark(@Query("token") token: String, @Query("book_id") book_id: Int): Single<BookmarkGson>
 
     @GET("/api/removeBookmark?key=fpoiKLUues81werht039")
-    fun RemoveBookmark(@Query("token") token: String,  @Query("book_id") book_id: Int): Single<BookmarkGson>
+    fun RemoveBookmark(@Query("token") token: String, @Query("book_id") book_id: Int): Single<BookmarkGson>
 
     @GET("/api/book?key=fpoiKLUues81werht039")
-    fun GetBookInfo(@Query("token") token: String="",  @Query("book_id") book_id: Int?): Single<BookInfoGson>
+    fun GetBookInfo(@Query("token") token: String = "", @Query("book_id") book_id: Int?): Single<BookInfoGson>
 
     @GET("/api/auth?key=fpoiKLUues81werht039")
-    fun Login(@Query("login") login: String,  @Query("pass") pass: String): Single<LoginGson>
+    fun Login(@Query("login") login: String, @Query("pass") pass: String): Single<LoginGson>
 
     companion object Factory {
 

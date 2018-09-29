@@ -25,7 +25,7 @@ class DownloadActivity : AppCompatActivity() {
     private var recyclerView: RecyclerView? = null
     private var adapter: DownloadRecyclerViewAdapter? = null
     private var context: Context? = null
-    private val onNavigationItemSelectedListener =  BottomNavigationView.OnNavigationItemSelectedListener{ item ->
+    private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
 
         when (item.itemId) {
 

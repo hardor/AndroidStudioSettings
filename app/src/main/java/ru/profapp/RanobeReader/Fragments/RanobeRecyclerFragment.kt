@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -19,28 +18,24 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.exceptions.CompositeException
 import io.reactivex.schedulers.Schedulers
-import org.json.JSONException
-import org.json.JSONObject
 import ru.profapp.RanobeReader.Adapters.RanobeRecyclerViewAdapter
-import ru.profapp.RanobeReader.Common.ErrorConnectionException
-import ru.profapp.RanobeReader.Common.OnLoadMoreListener
 import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Common.Constants.RanobeSite.*
 import ru.profapp.RanobeReader.Common.Constants.chaptersNum
 import ru.profapp.RanobeReader.Common.Constants.fragmentBundle
+import ru.profapp.RanobeReader.Common.OnLoadMoreListener
 import ru.profapp.RanobeReader.Common.StringResources
 import ru.profapp.RanobeReader.Common.StringResources.is_readed_Pref
 import ru.profapp.RanobeReader.Helpers.MyLog
 import ru.profapp.RanobeReader.Helpers.RanobeKeeper
-import ru.profapp.RanobeReader.JsonApi.*
+import ru.profapp.RanobeReader.JsonApi.RanobeHubRepository
+import ru.profapp.RanobeReader.JsonApi.RanobeRfRepository
+import ru.profapp.RanobeReader.JsonApi.RulateRepository
 import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.Models.Ranobe
 import ru.profapp.RanobeReader.MyApp
 import ru.profapp.RanobeReader.R
-import java.io.IOException
 import java.net.UnknownHostException
-import java.util.*
-import kotlin.collections.ArrayList
 
 class RanobeRecyclerFragment : Fragment() {
 

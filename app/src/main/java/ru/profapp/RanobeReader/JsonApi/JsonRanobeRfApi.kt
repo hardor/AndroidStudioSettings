@@ -1,16 +1,9 @@
 package ru.profapp.RanobeReader.JsonApi
 
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import org.json.JSONException
-import org.json.JSONObject
 import org.jsoup.Connection
-import org.jsoup.Jsoup
 import ru.profapp.RanobeReader.Common.Constants.RanobeSite.RanobeRf
-import ru.profapp.RanobeReader.JsonApi.Ranoberf.Sequence
 import ru.profapp.RanobeReader.Models.Chapter
 import java.io.BufferedReader
-import java.io.IOException
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
@@ -27,9 +20,6 @@ class JsonRanobeRfApi private constructor() : JsonBaseClass() {
     private var sequence = ""
 
 
-
-
-
     fun GetChapterText(chapter: Chapter): String {
 
         var ranobeName = chapter.ranobeUrl.replace(RanobeRf.url, "")
@@ -44,7 +34,6 @@ class JsonRanobeRfApi private constructor() : JsonBaseClass() {
         return getUrlText(request)
 
     }
-
 
 
     fun RemoveBookmark(bookmark_id: Int, token: String): String {
@@ -124,7 +113,6 @@ class JsonRanobeRfApi private constructor() : JsonBaseClass() {
             ""
         }
     }
-
 
 
     fun GetFavoriteBooks(token: String): String {

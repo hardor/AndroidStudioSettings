@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <plurals name="numberOfYears">
-        <item quantity="one">%d год</item>
-        <item quantity="few">%d года</item>
-        <item quantity="other">%d лет</item>
-        <item quantity="many">%d лет</item>
-    </plurals>
-    <plurals name="numberOfMonths">
-        <item quantity="one">%d месяц</item>
-        <item quantity="few">%d месяца</item>
-        <item quantity="other">%d месяцев</item>
-        <item quantity="many">%d месяцев</item>
-    </plurals>
-    <plurals name="numberOfWeeks">
-        <item quantity="one">%d неделя</item>
-        <item quantity="few">%d недели</item>
-        <item quantity="other">%d недель</item>
-        <item quantity="many">%d недель</item>
-    </plurals>
-    <plurals name="numberOfDays">
-        <item quantity="one">%d день</item>
-        <item quantity="few">%d дня</item>
-        <item quantity="other">%d дней</item>
-        <item quantity="many">%d дней</item>
-    </plurals>
-    <plurals name="numberOfHours">
-        <item quantity="one">%d час</item>
-        <item quantity="few">%d часа</item>
-        <item quantity="other">%d часов</item>
-        <item quantity="many">%d часов</item>
-    </plurals>
-    <plurals name="numberOfMinutes">
-        <item quantity="one">%d минута</item>
-        <item quantity="few">%d минуты</item>
-        <item quantity="other">%d минут</item>
-        <item quantity="many">%d минут</item>
-    </plurals>
+  <plurals name="numberOfYears">
+    <item quantity="one">%d год</item>
+    <item quantity="few">%d года</item>
+    <item quantity="other">%d лет</item>
+    <item quantity="many">%d лет</item>
+  </plurals>
+  <plurals name="numberOfMonths">
+    <item quantity="one">%d месяц</item>
+    <item quantity="few">%d месяца</item>
+    <item quantity="other">%d месяцев</item>
+    <item quantity="many">%d месяцев</item>
+  </plurals>
+  <plurals name="numberOfWeeks">
+    <item quantity="one">%d неделя</item>
+    <item quantity="few">%d недели</item>
+    <item quantity="other">%d недель</item>
+    <item quantity="many">%d недель</item>
+  </plurals>
+  <plurals name="numberOfDays">
+    <item quantity="one">%d день</item>
+    <item quantity="few">%d дня</item>
+    <item quantity="other">%d дней</item>
+    <item quantity="many">%d дней</item>
+  </plurals>
+  <plurals name="numberOfHours">
+    <item quantity="one">%d час</item>
+    <item quantity="few">%d часа</item>
+    <item quantity="other">%d часов</item>
+    <item quantity="many">%d часов</item>
+  </plurals>
+  <plurals name="numberOfMinutes">
+    <item quantity="one">%d минута</item>
+    <item quantity="few">%d минуты</item>
+    <item quantity="other">%d минут</item>
+    <item quantity="many">%d минут</item>
+  </plurals>
 </resources>

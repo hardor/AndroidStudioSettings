@@ -1,22 +1,22 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory android:title="@string/data"/>
+  <PreferenceCategory android:title="@string/data"/>
 
 
-    <Preference android:title="@string/сlean_cache"
-                android:key="@string/CleanCacheButton"
-                android:summary="@string/Delete_downloaded_chapters"/>
+  <Preference
+    android:key="@string/CleanCacheButton"
+    android:summary="@string/Delete_downloaded_chapters"
+    android:title="@string/сlean_cache"/>
 
-    <Preference android:title="@string/clean_history"
-                android:key="@string/CleanHistoryButton"
-                android:summary="@string/clean_history_full"/>
+  <Preference
+    android:key="@string/CleanHistoryButton"
+    android:summary="@string/clean_history_full"
+    android:title="@string/clean_history"/>
 
-    <Preference android:title="@string/сlean_favorite"
-                android:key="@string/CleanFavoriteButton"
-                android:summary="@string/Delete_favorited_ranobes"/>
-
-
-
+  <Preference
+    android:key="@string/CleanFavoriteButton"
+    android:summary="@string/Delete_favorited_ranobes"
+    android:title="@string/сlean_favorite"/>
 
 
 </PreferenceScreen>

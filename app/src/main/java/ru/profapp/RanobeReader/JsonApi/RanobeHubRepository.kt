@@ -3,12 +3,10 @@ package ru.profapp.RanobeReader.JsonApi
 import io.reactivex.Single
 import org.jsoup.Jsoup
 import ru.profapp.RanobeReader.Common.Constants
-import ru.profapp.RanobeReader.Common.ErrorConnectionException
 import ru.profapp.RanobeReader.Helpers.StringHelper
 import ru.profapp.RanobeReader.JsonApi.IApiServices.IRanobeHubApiService
 import ru.profapp.RanobeReader.JsonApi.RanobeHub.RanobeHubBook
 import ru.profapp.RanobeReader.JsonApi.RanobeHub.RanobeHubReadyGson
-import ru.profapp.RanobeReader.JsonApi.RanobeHub.tChapter
 import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.Models.Ranobe
 import java.text.ParseException
@@ -22,8 +20,8 @@ object RanobeHubRepository {
                 .map {
                     ranobe.chapterList.clear()
                     var index = 0
-                    for( volume in it.data ) {
-                        for ( rChapter in volume.chapters.reversed()) {
+                    for (volume in it.data) {
+                        for (rChapter in volume.chapters.reversed()) {
                             val chapter = Chapter()
 
                             chapter.title = if (chapter.title.isBlank()) rChapter.name else chapter.title
@@ -56,12 +54,12 @@ object RanobeHubRepository {
 
         if (it.content.isNotBlank()) {
 
-           val items = Jsoup.parse(it.content).select("div.grid_item")
-            for(item in items){
+            val items = Jsoup.parse(it.content).select("div.grid_item")
+            for (item in items) {
                 val ranobe = Ranobe(Constants.RanobeSite.RanobeHub)
                 ranobe.url = item.selectFirst("a.image").attr("href")
-                ranobe.id =  ranobe.url.replace("${Constants.RanobeSite.RanobeHub.url}/ranobe/","").toInt()
-                ranobe.image =  Constants.RanobeSite.RanobeHub.url + item.selectFirst("img").attr("data-src")
+                ranobe.id = ranobe.url.replace("${Constants.RanobeSite.RanobeHub.url}/ranobe/", "").toInt()
+                ranobe.image = Constants.RanobeSite.RanobeHub.url + item.selectFirst("img").attr("data-src")
                 ranobe.description = item.selectFirst("div.description").ownText()
                 ranobe.title = item.selectFirst("div.grid_item_header").selectFirst("a").text()
                 ranobe.engTitle = item.selectFirst("div.grid_item_header").selectFirst("h5").text()
@@ -85,7 +83,7 @@ object RanobeHubRepository {
 
         val parts = mCurrentChapter.url.split("/")
 
-        return IRanobeHubApiService.create().GetChapterText(parts[4].toInt(), parts[5].toInt(),parts[6].toInt())
+        return IRanobeHubApiService.create().GetChapterText(parts[4].toInt(), parts[5].toInt(), parts[6].toInt())
                 .map {
 
 
@@ -129,7 +127,7 @@ object RanobeHubRepository {
 
         id = if (id == null) book.id ?: id else id
 
-        title = if (title.isBlank())  book.nameRus?:title else title
+        title = if (title.isBlank()) book.nameRus ?: title else title
         engTitle = engTitle ?: book.nameEng
 
         url = Constants.RanobeSite.RanobeHub.url + "/ranobe/" + id

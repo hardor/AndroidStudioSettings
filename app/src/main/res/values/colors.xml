@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#2196f3</color>
-    <color name="colorPrimaryDark">#1976d2</color>
-    <color name="colorAccent">#ff4081</color>
+  <color name="colorPrimary">#2196f3</color>
+  <color name="colorPrimaryDark">#1976d2</color>
+  <color name="colorAccent">#ff4081</color>
 
-    <color name="webViewText">#000000</color>
-    <color name="webViewBackground">#ffffff</color>
+  <color name="webViewText">#000000</color>
+  <color name="webViewBackground">#ffffff</color>
 </resources>

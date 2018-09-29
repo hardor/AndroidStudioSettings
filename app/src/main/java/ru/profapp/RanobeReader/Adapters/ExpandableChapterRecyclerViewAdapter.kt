@@ -126,7 +126,7 @@ class ExpandableChapterRecyclerViewAdapter(private val mRanobe: Ranobe) : Recycl
                 textView.setPadding(2, 4, 2, 4)
                 textView.textSize = 14.0F
                 textView.ellipsize = android.text.TextUtils.TruncateAt.END
-                textView.maxLines=1
+                textView.maxLines = 1
                 val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
                 linearLayout_childItems.addView(textView, layoutParams)
             }

@@ -30,7 +30,7 @@ class ChapterHistory {
     var progress: Float = 0F
 
 
-    constructor(chapterUrl: String, chapterName: String, ranobeName: String, index: Int,  progress: Float) {
+    constructor(chapterUrl: String, chapterName: String, ranobeName: String, index: Int, progress: Float) {
         this.chapterUrl = chapterUrl
         this.chapterName = chapterName
         this.ranobeName = ranobeName

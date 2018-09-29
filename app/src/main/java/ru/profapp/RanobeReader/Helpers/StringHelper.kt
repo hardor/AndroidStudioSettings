@@ -1,8 +1,6 @@
 package ru.profapp.RanobeReader.Helpers
 
 import android.text.Html
-import org.jsoup.Jsoup
-import org.jsoup.safety.Whitelist
 
 /**
  * Created by Ruslan on 08.02.2018.
@@ -13,9 +11,10 @@ class StringHelper {
         fun cleanJson(string: String): String {
             return string.substring(0, string.lastIndexOf("}") + 1)
         }
+
         @JvmStatic
         fun removeTags(string: String): String {
-            return  Html.fromHtml(string).toString().replace("\n\n","\n")
+            return Html.fromHtml(string).toString().replace("\n\n", "\n")
         }
 
         @JvmStatic

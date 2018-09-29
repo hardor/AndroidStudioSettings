@@ -183,7 +183,7 @@ object RulateRepository {
         }
     }
 
-    private infix fun Chapter.updateChapter (rChapter:RulateChapter ) {
+    private infix fun Chapter.updateChapter(rChapter: RulateChapter) {
 
         id = rChapter.id!!
         title = rChapter.title.toString()
@@ -191,6 +191,7 @@ object RulateRepository {
         canRead = rChapter.canRead!!
         isNew = rChapter.new!!
     }
+
     private infix fun Chapter.updateChapter(response: RulateText) {
 
         title = response.title.toString()

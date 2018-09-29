@@ -23,8 +23,9 @@ class MyLog {
 
             }
         }
+
         @JvmStatic
-        fun SendError(type: LogType, Tag: String, Message: String="",
+        fun SendError(type: LogType, Tag: String, Message: String = "",
                       exception: Throwable) {
             if (showLog) {
                 when (type) {
@@ -38,11 +39,10 @@ class MyLog {
 
             }
             Crashlytics.logException(exception)
-            if ( Message.isNotEmpty()) {
+            if (Message.isNotEmpty()) {
                 Crashlytics.log(Message)
             }
         }
-
 
 
     }

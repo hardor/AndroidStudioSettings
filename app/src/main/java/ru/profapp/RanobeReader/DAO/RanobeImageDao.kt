@@ -1,9 +1,7 @@
 package ru.profapp.RanobeReader.DAO
 
 import androidx.room.*
-import io.reactivex.Completable
 import io.reactivex.Maybe
-
 import ru.profapp.RanobeReader.Models.RanobeImage
 
 /**
@@ -17,6 +15,7 @@ interface RanobeImageDao {
 
     @Query("DELETE FROM ranobeImage  WHERE RanobeUrl=:UrlToRanobe")
     fun delete(UrlToRanobe: String)
+
     @Delete
     fun delete(image: RanobeImage)
 

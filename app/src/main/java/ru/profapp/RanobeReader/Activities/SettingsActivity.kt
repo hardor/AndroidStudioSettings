@@ -3,12 +3,9 @@ package ru.profapp.RanobeReader.Activities
 import android.annotation.TargetApi
 import android.content.Context
 import android.content.res.Configuration
-import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
-import android.preference.Preference
 import android.preference.PreferenceActivity
-import android.preference.PreferenceFragment
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.ActionBar
@@ -17,7 +14,6 @@ import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
 import io.fabric.sdk.android.Fabric
 import io.reactivex.Completable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReader.BuildConfig
 import ru.profapp.RanobeReader.Common.StringResources
@@ -204,7 +200,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 
             val favButton = findPreference(getString(R.string.CleanFavoriteButton))
             favButton.setOnPreferenceClickListener { preference ->
-                Completable.fromAction {  MyApp.database?.ranobeDao()?.cleanTable()}?.subscribeOn(Schedulers.io())
+                Completable.fromAction { MyApp.database?.ranobeDao()?.cleanTable() }?.subscribeOn(Schedulers.io())
                         ?.subscribe({
                             Toast.makeText(context, resources.getText(R.string.bookmarks_cleaned),
                                     Toast.LENGTH_SHORT).show()
