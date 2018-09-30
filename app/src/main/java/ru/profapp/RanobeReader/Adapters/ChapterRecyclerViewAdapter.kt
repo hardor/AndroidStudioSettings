@@ -18,20 +18,56 @@ import ru.profapp.RanobeReader.Models.Ranobe
 import ru.profapp.RanobeReader.MyApp
 import ru.profapp.RanobeReader.R
 
-class ChapterRecyclerViewAdapter(private val mValues: List<Chapter>, private val mRanobe: Ranobe) : RecyclerView.Adapter<ChapterRecyclerViewAdapter.ViewHolder>() {
+class ChapterRecyclerViewAdapter(private val context: Context, private val mValues: List<Chapter>, private val mRanobe: Ranobe) : RecyclerView.Adapter<ChapterRecyclerViewAdapter.ViewHolder>() {
+
+    private val inflater: LayoutInflater = LayoutInflater.from(context)
+
+    private val clickListener = object : OnItemClickListener {
+        override fun onItemClick(item: Chapter) {
+            if (item.canRead) {
+                if (MyApp.ranobe == null || item.ranobeUrl != MyApp.ranobe!!.url) {
+
+                    var ranobe = Ranobe()
+                    ranobe.url = item.ranobeUrl
+                    if (RanobeKeeper.fragmentType != null && RanobeKeeper.fragmentType != Constants.FragmentType.Saved) {
+                        try {
+                            ranobe = ranobe.updateRanobe(context).blockingGet()
+                        } catch (ignored: Exception) {
+                            ranobe = mRanobe
+                        }
+
+                    } else {
+                        ranobe = mRanobe
+                    }
+
+                    MyApp.ranobe = ranobe
+                }
+                if (MyApp.ranobe != null) {
+                    val intent = Intent(context, ChapterTextActivity::class.java)
+                    intent.putExtra("ChapterIndex", item.index)
+                    context.startActivity(intent)
+                }
+            }
+
+        }
+
+    }
+
+    interface OnItemClickListener {
+        fun onItemClick(item: Chapter)
+    }
 
 
     @NonNull
     override fun onCreateViewHolder(@NonNull parent: ViewGroup, viewType: Int): ChapterRecyclerViewAdapter.ViewHolder {
 
-        val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_chapter, parent, false)
+        val view = inflater.inflate(R.layout.item_chapter, parent, false)
         return ViewHolder(view)
 
     }
 
-    override fun onBindViewHolder(@NonNull holder: ChapterRecyclerViewAdapter.ViewHolder, position: Int) {
 
+    override fun onBindViewHolder(@NonNull holder: ChapterRecyclerViewAdapter.ViewHolder, position: Int) {
 
         holder.mChapterItem = mValues[position]
         holder.mTextView.text = mValues[position].title
@@ -41,7 +77,7 @@ class ChapterRecyclerViewAdapter(private val mValues: List<Chapter>, private val
         }
 
         if (holder.mChapterItem.isRead) {
-            holder.mView.setBackgroundColor(ContextCompat.getColor(holder.context, R.color.colorPrimaryDark))
+            holder.mView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimaryDark))
         }
 
 
@@ -52,36 +88,14 @@ class ChapterRecyclerViewAdapter(private val mValues: List<Chapter>, private val
     }
 
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
-        val context: Context = mView.context
         val mTextView: TextView = mView.findViewById(R.id.id)
-        private val mContext: Context = mView.context
         lateinit var mChapterItem: Chapter
 
         init {
-            mView.setOnClickListener { v ->
-                if (mChapterItem.canRead) {
-                    if (MyApp.ranobe == null || mChapterItem.ranobeUrl != MyApp.ranobe!!.url) {
 
-                        var ranobe = Ranobe()
-                        ranobe.url = mChapterItem.ranobeUrl
-                        if (RanobeKeeper.fragmentType != null && RanobeKeeper.fragmentType != Constants.FragmentType.Saved) {
-                            try {
-                                ranobe = ranobe.updateRanobe(mContext).blockingGet()
-                            } catch (ignored: Exception) {
-                                ranobe = mRanobe
-                            }
-
-                        } else {
-                            ranobe = mRanobe
-                        }
-
-                        MyApp.ranobe = ranobe
-                    }
-                    if (MyApp.ranobe != null) {
-                        val intent = Intent(context, ChapterTextActivity::class.java)
-                        intent.putExtra("ChapterIndex", mChapterItem.index)
-                        context.startActivity(intent)
-                    }
+            itemView.setOnClickListener {
+                if (adapterPosition != RecyclerView.NO_POSITION) {
+                    clickListener.onItemClick(mChapterItem)
                 }
             }
 

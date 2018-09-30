@@ -9,11 +9,13 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.R
 
-class DownloadRecyclerViewAdapter(private val values: List<Chapter>) : RecyclerView.Adapter<DownloadRecyclerViewAdapter.ViewHolder>() {
+class DownloadRecyclerViewAdapter(private val context: Context, private val values: List<Chapter>) : RecyclerView.Adapter<DownloadRecyclerViewAdapter.ViewHolder>() {
+
+
+    private val inflater: LayoutInflater = LayoutInflater.from(context)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DownloadRecyclerViewAdapter.ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.chapter_item_download, parent, false)
+        val view = inflater.inflate(R.layout.item_chapter_download, parent, false)
         return ViewHolder(view)
     }
 
@@ -26,9 +28,9 @@ class DownloadRecyclerViewAdapter(private val values: List<Chapter>) : RecyclerV
 
             holder.checkBox.isChecked = holder.chapterItem.isChecked
             if (holder.chapterItem.downloaded) {
-                holder.checkBox.setTextColor(holder.context.resources.getColor(R.color.colorAccent))
+                holder.checkBox.setTextColor(context.resources.getColor(R.color.colorAccent))
             } else {
-                holder.checkBox.setTextColor(holder.context.resources.getColor(R.color.webViewText))
+                holder.checkBox.setTextColor(context.resources.getColor(R.color.webViewText))
             }
 
             holder.checkBox.setOnClickListener { v ->
@@ -49,7 +51,6 @@ class DownloadRecyclerViewAdapter(private val values: List<Chapter>) : RecyclerV
 
     inner class ViewHolder(mView: View) : RecyclerView.ViewHolder(mView) {
         val checkBox: CheckBox = mView.findViewById(R.id.checkBox)
-        val context: Context = mView.context
         lateinit var chapterItem: Chapter
 
     }

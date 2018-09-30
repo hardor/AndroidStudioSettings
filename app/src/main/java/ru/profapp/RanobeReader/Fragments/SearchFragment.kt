@@ -80,7 +80,7 @@ class SearchFragment : Fragment() {
 
         recyclerView.layoutManager = LinearLayoutManager(mContext)
 
-        mRanobeRecyclerViewAdapter = RanobeRecyclerViewAdapter(recyclerView, mRanobeList)
+        mRanobeRecyclerViewAdapter = RanobeRecyclerViewAdapter(mContext!!, recyclerView, mRanobeList)
         recyclerView.adapter = mRanobeRecyclerViewAdapter
         return view
     }

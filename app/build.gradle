@@ -155,7 +155,7 @@ dependencies {
     implementation 'org.jsoup:jsoup:1.11.3'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.5'
     implementation 'com.google.code.gson:gson:2.8.2'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.2.61"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.2.71"
 
 // retrofit
     implementation "com.squareup.retrofit2:retrofit:2.4.0"
@@ -171,6 +171,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-appindexing:16.0.1'
     implementation 'com.google.firebase:firebase-core:16.0.3'
     //implementation 'com.google.firebase:firebase-crash:16.0.1'
+
+    // common
+
 }
 
 apply plugin: 'com.google.gms.google-services'

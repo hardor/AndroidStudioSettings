@@ -12,6 +12,7 @@ import com.crashlytics.android.Crashlytics
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.fabric.sdk.android.Fabric
 import ru.profapp.RanobeReader.Adapters.DownloadRecyclerViewAdapter
+import ru.profapp.RanobeReader.Adapters.ExpandableDownloadRecyclerViewAdapter
 import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.MyApp
 import ru.profapp.RanobeReader.R
@@ -21,9 +22,9 @@ class DownloadActivity : AppCompatActivity() {
     private var running = true
     @Volatile
     private var progressDialog: ProgressDialog? = null
-    private var chapterList: List<Chapter> = arrayListOf()
+    private var chapterList: List<Chapter> = listOf()
     private var recyclerView: RecyclerView? = null
-    private var adapter: DownloadRecyclerViewAdapter? = null
+    private var adapter: ExpandableDownloadRecyclerViewAdapter? = null
     private var context: Context? = null
     private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
 
@@ -163,7 +164,7 @@ class DownloadActivity : AppCompatActivity() {
                         chapter.isChecked = true
                     }
                 }
-                adapter = DownloadRecyclerViewAdapter(chapterList)
+                adapter = ExpandableDownloadRecyclerViewAdapter(this@DownloadActivity, chapterList)
                 runOnUiThread {
                     recyclerView!!.adapter = adapter
                     pDialog.dismiss()

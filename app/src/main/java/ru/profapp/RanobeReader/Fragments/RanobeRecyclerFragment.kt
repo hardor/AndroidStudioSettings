@@ -132,7 +132,7 @@ class RanobeRecyclerFragment : Fragment() {
 
             recyclerView.layoutManager = LinearLayoutManager(mContext)
 
-            mRanobeRecyclerViewAdapter = RanobeRecyclerViewAdapter(recyclerView, ranobeList)
+            mRanobeRecyclerViewAdapter = RanobeRecyclerViewAdapter(mContext!!, recyclerView, ranobeList)
 
             recyclerView.adapter = mRanobeRecyclerViewAdapter
 

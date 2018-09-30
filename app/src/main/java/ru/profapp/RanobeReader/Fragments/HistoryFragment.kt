@@ -50,7 +50,7 @@ class HistoryFragment : Fragment() {
 
         MyApp.database?.chapterHistoryDao()?.allChapters()?.subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())?.subscribe({
-                    chapterHistoryViewAdapter = HistoryRecyclerViewAdapter(it)
+                    chapterHistoryViewAdapter = HistoryRecyclerViewAdapter(mContext!!, it)
                     recyclerView.adapter = chapterHistoryViewAdapter
                 }, { error ->
                     MyLog.SendError(MyLog.LogType.ERROR, "HistoryFragment", "", error)

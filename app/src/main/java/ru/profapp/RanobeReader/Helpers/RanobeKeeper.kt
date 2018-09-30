@@ -15,7 +15,7 @@ class RanobeKeeper {
 
         var chapterTextSize: Int? = null
 
-        var autoSaveText: Boolean = false
+        var autoSaveText: Boolean = true
 
         var fragmentType: Constants.FragmentType? = null
 

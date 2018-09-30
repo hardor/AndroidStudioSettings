@@ -1,26 +1,19 @@
 package ru.profapp.RanobeReader.Adapters
 
 import android.content.Context
-import android.content.Intent
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.NonNull
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import ru.profapp.RanobeReader.Activities.ChapterTextActivity
-import ru.profapp.RanobeReader.Common.Constants
-import ru.profapp.RanobeReader.Helpers.RanobeKeeper
 import ru.profapp.RanobeReader.Models.Chapter
-import ru.profapp.RanobeReader.Models.Ranobe
-import ru.profapp.RanobeReader.MyApp
 import ru.profapp.RanobeReader.R
 
 
-class ExpandableChapterRecyclerViewAdapter(private val context: Context, private val mRanobe: Ranobe) : RecyclerView.Adapter<ExpandableChapterRecyclerViewAdapter.GroupViewHolder>() {
+class ExpandableDownloadRecyclerViewAdapter(private val context: Context) : RecyclerView.Adapter<ExpandableDownloadRecyclerViewAdapter.GroupViewHolder>() {
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
 
@@ -29,7 +22,7 @@ class ExpandableChapterRecyclerViewAdapter(private val context: Context, private
     }
 
 
-    constructor(context: Context, mChapters: ArrayList<Chapter>, mRanobe: Ranobe) : this(context, mRanobe) {
+    constructor(context: Context, mChapters: List<Chapter>) : this(context) {
 
         val numInGroup = 100
         val num = mChapters.size / numInGroup
@@ -45,48 +38,12 @@ class ExpandableChapterRecyclerViewAdapter(private val context: Context, private
 
     private val parentDataItems: ArrayList<ParentDataItem> = ArrayList()
 
-    interface OnItemClickListener {
-        fun onItemClick(item: Chapter)
-    }
-
-
-    private val clickListener = object : OnItemClickListener {
-        override fun onItemClick(item: Chapter) {
-
-            if (MyApp.ranobe == null || item.ranobeUrl != MyApp.ranobe!!.url) {
-
-                var ranobe = Ranobe()
-                ranobe.url = item.ranobeUrl
-                if (RanobeKeeper.fragmentType != null && RanobeKeeper.fragmentType != Constants.FragmentType.Saved) {
-                    try {
-                        ranobe.updateRanobe(context)
-                    } catch (ignored: Exception) {
-                        ranobe = mRanobe
-                    }
-
-                } else {
-                    ranobe = mRanobe
-                }
-
-                MyApp.ranobe = ranobe
-            }
-            if (MyApp.ranobe != null) {
-                val intent = Intent(context, ChapterTextActivity::class.java)
-                intent.putExtra("ChapterIndex", item.index)
-
-                context.startActivity(intent)
-            }
-
-        }
-
-    }
-
-    override fun onCreateViewHolder(@NonNull parent: ViewGroup, viewType: Int): ExpandableChapterRecyclerViewAdapter.GroupViewHolder {
-        val view = inflater.inflate(R.layout.item_parent_child_listing, parent, false)
+    override fun onCreateViewHolder(@NonNull parent: ViewGroup, viewType: Int): ExpandableDownloadRecyclerViewAdapter.GroupViewHolder {
+        val view = inflater.inflate(R.layout.item_parent_child_checkbox, parent, false)
         return GroupViewHolder(view)
     }
 
-    override fun onBindViewHolder(@NonNull holder: ExpandableChapterRecyclerViewAdapter.GroupViewHolder, position: Int) {
+    override fun onBindViewHolder(@NonNull holder: ExpandableDownloadRecyclerViewAdapter.GroupViewHolder, position: Int) {
 
         val parentDataItem = parentDataItems[position]
         holder.textView_parentName.text = parentDataItem.parentName
@@ -99,17 +56,32 @@ class ExpandableChapterRecyclerViewAdapter(private val context: Context, private
                 currentTextView.visibility = View.GONE
             }
         }
-        for ((textViewIndex, childItem) in noOfChild.withIndex()) {
-            val currentTextView = holder.linearLayout_childItems.getChildAt(textViewIndex) as TextView
-            currentTextView.text = childItem.title
-            if (!childItem.canRead) {
-                currentTextView.setBackgroundColor(Color.GRAY)
+        for ((checkBox, childItem) in noOfChild.withIndex()) {
+            val currentCheckBox = holder.linearLayout_childItems.getChildAt(checkBox) as CheckBox
+            currentCheckBox.text = childItem.title
+            currentCheckBox.id= childItem.index
+            if (childItem.canRead) {
+                currentCheckBox.isEnabled = true
+
+                currentCheckBox.isChecked = childItem.isChecked
+                if (childItem.downloaded) {
+                    currentCheckBox.setTextColor(context.resources.getColor(R.color.colorAccent))
+                } else {
+                    currentCheckBox.setTextColor(context.resources.getColor(R.color.webViewText))
+                }
+
+                currentCheckBox.setOnClickListener {
+
+                    currentCheckBox.isChecked = !childItem.isChecked
+                    childItem.isChecked = !childItem.isChecked
+
+                }
             } else {
-                currentTextView.setOnClickListener { clickListener }
+                currentCheckBox.isEnabled = false
             }
 
             if (childItem.isRead) {
-                currentTextView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimaryDark))
+                currentCheckBox.setBackgroundColor(context.resources.getColor(R.color.colorPrimaryDark))
             }
 
 
@@ -121,11 +93,12 @@ class ExpandableChapterRecyclerViewAdapter(private val context: Context, private
         return parentDataItems.size
     }
 
-//todo: move onclick to Oncreate
 
     inner class GroupViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
+
         val textView_parentName: TextView = itemView.findViewById(R.id.tv_parent_name)
+        val checkBox_parentName: CheckBox = itemView.findViewById(R.id.cb_parent_name)
         val linearLayout_childItems: LinearLayout = itemView.findViewById(R.id.ll_child_items)
 
         init {
@@ -136,16 +109,21 @@ class ExpandableChapterRecyclerViewAdapter(private val context: Context, private
                 if (intMaxSizeTemp > intMaxNoOfChild) intMaxNoOfChild = intMaxSizeTemp
             }
             for (indexView in 0 until intMaxNoOfChild) {
-                val textView = TextView(context)
-                textView.id = indexView
-                textView.setPadding(pxToDp(2), pxToDp(6), pxToDp(2), pxToDp(6))
-                textView.textSize = 14.0F
-                textView.ellipsize = android.text.TextUtils.TruncateAt.END
-                textView.maxLines = 1
+                val checkBox = CheckBox(context)
+                checkBox.id = indexView
                 val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-                linearLayout_childItems.addView(textView, layoutParams)
+                linearLayout_childItems.addView(checkBox, layoutParams)
             }
             textView_parentName.setOnClickListener(this)
+            checkBox_parentName.setOnCheckedChangeListener {buttonView, isChecked ->
+                buttonView.isChecked = isChecked
+                for (i in 0 until linearLayout_childItems.childCount) {
+                    val item = linearLayout_childItems.getChildAt(i) as CheckBox
+                    if(item.isEnabled)
+                        item.isChecked = isChecked
+                }
+                parentDataItems[adapterPosition].childDataItems.forEach{it.isChecked = isChecked}
+            }
         }
 
         override fun onClick(view: View) {

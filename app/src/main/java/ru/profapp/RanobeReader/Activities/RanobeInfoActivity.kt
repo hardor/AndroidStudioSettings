@@ -73,7 +73,7 @@ class RanobeInfoActivity : AppCompatActivity() {
     private lateinit var infoCard: CardView
     private lateinit var descriptionCard: CardView
     lateinit var imageView: ImageView
-    private lateinit var myOptions: RequestOptions
+    private val imageOptions: RequestOptions = RequestOptions().placeholder(R.drawable.ic_adb_black_24dp).error(R.drawable.ic_error_outline_black_24dp).fitCenter()
     lateinit var progressBar: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -137,12 +137,9 @@ class RanobeInfoActivity : AppCompatActivity() {
         descriptionCard = findViewById<CardView>(R.id.ranobe_description_card)
 
         imageView = findViewById<ImageView>(R.id.main_logoimage)
-        myOptions = RequestOptions()
-                .placeholder(R.drawable.ic_adb_black_24dp)
-                .error(R.drawable.ic_error_outline_black_24dp)
-                .fitCenter()
-        Glide.with(mContext!!).load(mCurrentRanobe.image)
-                .apply(myOptions)
+
+        Glide.with(this).load(mCurrentRanobe.image)
+                .apply(imageOptions)
                 .into(imageView)
 
         supportActionBar?.title = mCurrentRanobe.title
@@ -235,7 +232,7 @@ class RanobeInfoActivity : AppCompatActivity() {
 
 
         Glide.with(mContext!!).load(mCurrentRanobe.image)
-                .apply(myOptions)
+                .apply(imageOptions)
                 .into(imageView)
 
         var aboutText = String.format("%s / %s \n\n%s\n\nРейтинг: %s", mCurrentRanobe.title,
@@ -285,7 +282,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                     loadData()
                     result.wasUpdated = true
                     recycleChapterList.addAll(result?.chapterList!!)
-                    adapterExpandable = ExpandableChapterRecyclerViewAdapter(recycleChapterList, mCurrentRanobe)
+                    adapterExpandable = ExpandableChapterRecyclerViewAdapter(mContext!!, recycleChapterList, mCurrentRanobe)
                     recyclerView.adapter = adapterExpandable
 
                     if (mCurrentRanobe.comments.isNotEmpty()) {
@@ -300,8 +297,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                             }
                         }
 
-                        val commentsAdapter = CommentsRecyclerViewAdapter(
-                                mCurrentRanobe.comments)
+                        val commentsAdapter = CommentsRecyclerViewAdapter(mContext!!,                                mCurrentRanobe.comments)
                         commentRecycleView.adapter = commentsAdapter
 
                         val tabSpec: TabHost.TabSpec = tabHost.newTabSpec("comments")
