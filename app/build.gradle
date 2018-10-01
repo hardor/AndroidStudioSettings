@@ -72,8 +72,7 @@ android {
         release {
             minifyEnabled false
             buildConfigField "boolean", "USE_LOG", "false"
-            proguardFiles getDefaultProguardFile('proguard-android.txt'),
-                    'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.config
             android.applicationVariants.all { variant ->
                 variant.outputs.all {

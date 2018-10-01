@@ -11,6 +11,7 @@ import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ImageButton
@@ -26,7 +27,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Common.StringResources
-import ru.profapp.RanobeReader.Common.StringResources.Chapter_Url
 import ru.profapp.RanobeReader.Common.ThemeUtils
 
 import ru.profapp.RanobeReader.Helpers.LogHelper
@@ -50,36 +50,28 @@ class ChapterTextActivity : AppCompatActivity() {
     var mProgress: Float = -1f
     private var mChapterCount: Int? = null
     private var mChapterList: List<Chapter> = ArrayList()
-    private var sPref: SharedPreferences? = null
+
     private var lastIndexPref: SharedPreferences? = null
-    private var sChapterPref: SharedPreferences? = null
     private lateinit var nextMenu: ImageButton
     private lateinit var prevMenu: ImageButton
-    private lateinit var bookmarkMenu: ImageButton
 
-    private lateinit var progressUrl: ProgressBar
+    @ColorInt
+    private val color = resources.getColor(R.color.webViewText)
+    @ColorInt
+    private val color2 = resources.getColor(R.color.webViewBackground)
+
+    private lateinit var progressBar: ProgressBar
 
     private fun set_web_colors() {
 
         val settingPref = PreferenceManager.getDefaultSharedPreferences(
                 applicationContext)
-        val oldColor = settingPref.getBoolean(
-                resources.getString(R.string.pref_general_app_theme), false)
+        val oldColor = settingPref.getBoolean(resources.getString(R.string.pref_general_app_theme), false)
         settingPref.edit().putBoolean(resources.getString(R.string.pref_general_app_theme), !oldColor).commit()
         ThemeUtils.setTheme(!oldColor)
         ThemeUtils.onActivityCreateSetTheme()
         this.recreate()
 
-    }
-
-    private fun set_bookmark() {
-
-        sChapterPref = mContext!!.getSharedPreferences(StringHelper.CleanString(mCurrentChapter.ranobeUrl),
-                Context.MODE_PRIVATE)
-
-        sChapterPref!!.edit().putFloat(StringResources.Chapter_Position, this.calculateProgression()).commit()
-        sChapterPref!!.edit().putString(Chapter_Url, mCurrentChapter.url).commit()
-        Toast.makeText(mContext, getString(R.string.bookmark_saved), Toast.LENGTH_SHORT).show()
     }
 
     private fun calculateProgression(): Float {
@@ -111,8 +103,7 @@ class ChapterTextActivity : AppCompatActivity() {
         mCurrentChapter = mChapterList[mIndex]
         mChapterCount = mChapterList.size
 
-
-        progressUrl = findViewById(R.id.progressBar2)
+        progressBar = findViewById(R.id.progressBar2)
 
         mWebView = findViewById(R.id.textWebview)
         mWebView.webViewClient = object : WebViewClient() {
@@ -120,7 +111,6 @@ class ChapterTextActivity : AppCompatActivity() {
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 super.onPageStarted(view, url, favicon)
                 title = mCurrentChapter.title
-                progressUrl.visibility = View.VISIBLE
             }
 
 
@@ -148,57 +138,30 @@ class ChapterTextActivity : AppCompatActivity() {
                     }
                 }, 300)
 
-                progressUrl.visibility = View.GONE
+                progressBar.visibility = View.GONE
                 super.onPageFinished(view, url)
             }
 
         }
         mWebView.setLayerType(View.LAYER_TYPE_HARDWARE, null)
 
-        if (intent.getBooleanExtra("Bookmark", false)) {
-            sChapterPref = mContext!!.getSharedPreferences(
-                    StringHelper.CleanString(mCurrentChapter.ranobeUrl),
-                    Context.MODE_PRIVATE)
-            if (sChapterPref != null) {
-
-                for ((key1, result) in sChapterPref!!.all) {
-                    if (key1 == StringResources.Chapter_Position) {
-
-                        if (result is Int) {
-                            mProgress = result.toFloat()
-                        } else if (result is Float) {
-                            mProgress = result
-                        }
-
-                        break
-                    }
-                }
-
-            } else {
-                mProgress = -1f
-            }
-        }
 
         // mWebView.getSettings().setBuiltInZoomControls(true);
-        // mWebView.getSettings().setDisplayZoomControls(false);
-
+        // TODO: check zooming
+        mWebView.settings.displayZoomControls = true
+        mWebView.setInitialScale(1)
+        mWebView.settings.loadWithOverviewMode = true
+        mWebView.settings.useWideViewPort = true
 
         mWebView.setBackgroundColor(resources.getColor(R.color.webViewBackground))
 
-        sPref = getSharedPreferences(StringResources.is_readed_Pref, Context.MODE_PRIVATE)
         lastIndexPref = getSharedPreferences(StringResources.last_chapter_id_Pref, Context.MODE_PRIVATE)
 
         initWebView()
 
-        // the scroll listener:
-//        mWebView.setOnScrollChangedCallback { l, t, oldl, oldt ->
-//
-//        }
-
-
         prevMenu = findViewById(R.id.navigation_prev)
         nextMenu = findViewById(R.id.navigation_next)
-        bookmarkMenu = findViewById(R.id.navigation_bookmark)
+
 
         prevMenu.visibility = if (mIndex < mChapterCount!! - 1) View.VISIBLE else View.INVISIBLE
         nextMenu.visibility = if (mIndex > 0) View.VISIBLE else View.INVISIBLE
@@ -206,14 +169,14 @@ class ChapterTextActivity : AppCompatActivity() {
         nextMenu.setOnClickListener { OnClicked(-1) }
 
         prevMenu.setOnClickListener { OnClicked(+1) }
-        bookmarkMenu.setOnClickListener { set_bookmark() }
 
 
     }
 
     private fun initWebView() {
-        @ColorInt val color = resources.getColor(R.color.webViewText)
-        @ColorInt val color2 = resources.getColor(R.color.webViewBackground)
+
+        progressBar.visibility = View.VISIBLE
+
         val style = ("style = \"text-align: justify; text-indent: 20px;font-size: "
                 + MyApp.chapterTextSize!!.toString() + "px;"
                 + "color: " + String.format("#%06X", 0xFFFFFF and color)
@@ -293,13 +256,16 @@ class ChapterTextActivity : AppCompatActivity() {
     fun GetChapterText(chapter: Chapter, context: Context): Boolean {
         mContext = context
         mCurrentChapter = chapter
-        return true
-        //return GetChapterText(true)
+
+        return GetChapterText(true)
+                .subscribeOn(Schedulers.io())
+                .blockingGet()
+
     }
 
     private fun GetChapterText(needSave: Boolean): Single<Boolean> {
 
-        if (mCurrentChapter.text == null || mCurrentChapter.text!!.isEmpty()) {
+        return if (mCurrentChapter.text.isNullOrBlank()) {
 
             return MyApp.database?.textDao()!!.getTextByChapterUrl(mCurrentChapter.url).map {
                 mCurrentChapter.text = it.text
@@ -314,20 +280,21 @@ class ChapterTextActivity : AppCompatActivity() {
                     else -> return@onErrorResumeNext Single.just(false)
                 }
 
-            }.map {
-
-                if ((MyApp.autoSaveText || needSave) && !mCurrentChapter.text.isNullOrBlank()) {
-                    Completable.fromAction {
-                        MyApp.database?.textDao()?.insert(TextChapter(mCurrentChapter))
-                    }?.subscribeOn(Schedulers.io())?.subscribe()
-
-                }
-                return@map it
             }
 
 
+        } else {
+            Single.just(true)
+        }.map {
+
+            if ((MyApp.autoSaveText || needSave) && !mCurrentChapter.text.isNullOrBlank() && it) {
+                Completable.fromAction {
+                    MyApp.database?.textDao()?.insert(TextChapter(mCurrentChapter))
+                }?.subscribeOn(Schedulers.io())?.subscribe()
+
+            }
+            return@map it
         }
-        return Single.just(false)
 
 
     }

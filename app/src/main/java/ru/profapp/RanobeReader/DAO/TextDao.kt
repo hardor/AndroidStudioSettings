@@ -13,10 +13,10 @@ interface TextDao {
     @Query("SELECT * FROM textChapter order by RanobeName Asc, `Index` ASC")
     fun allText(): Single<List<TextChapter>>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(text: TextChapter)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(vararg texts: TextChapter)
 
     @Update

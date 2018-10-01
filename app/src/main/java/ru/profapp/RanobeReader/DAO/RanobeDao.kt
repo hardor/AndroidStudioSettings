@@ -15,16 +15,16 @@ interface RanobeDao {
     @Query("SELECT * FROM ranobe")
     fun allRanobe(): Flowable<List<Ranobe>>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(ranobe: Ranobe)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(vararg ranobes: Ranobe)
 
-    @Update(onConflict = OnConflictStrategy.IGNORE)
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     fun updateAll(vararg ranobes: Ranobe)
 
-    @Update(onConflict = OnConflictStrategy.IGNORE)
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     fun update(ranobe: Ranobe)
 
     @Query("DELETE FROM ranobe  WHERE url=:UrlToRanobe AND IsFavoriteInWeb != 1")

@@ -36,16 +36,7 @@
       android:background="?attr/selectableItemBackground"
       android:contentDescription="@string/previous"
       app:srcCompat="@drawable/ic_skip_previous_black_24dp"/>
-    <ImageButton
-      android:id="@+id/navigation_bookmark"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:layout_weight="1"
-      android:paddingTop="5dp"
-      android:paddingBottom="5dp"
-      android:background="?attr/selectableItemBackground"
-      android:contentDescription="@string/action_bookmark"
-      app:srcCompat="@drawable/ic_bookmark_border_black_24dp"/>
+
     <ImageButton
       android:id="@+id/navigation_next"
       android:layout_width="0dp"

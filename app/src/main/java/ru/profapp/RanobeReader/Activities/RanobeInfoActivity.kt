@@ -119,7 +119,6 @@ class RanobeInfoActivity : AppCompatActivity() {
                 }
             }
             intent.putExtra("ChapterIndex", tempIndex)
-            intent.putExtra("Bookmark", true)
 
             mContext!!.startActivity(intent)
 
@@ -526,15 +525,13 @@ class RanobeInfoActivity : AppCompatActivity() {
                     url = "https://$url"
                 }
 
-                try {
-                    val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                    if (browserIntent.resolveActivity(this.packageManager) != null)
-                        startActivity(browserIntent)
-                    else
-                        Toast.makeText(this, R.string.browser_exist, Toast.LENGTH_SHORT).show()
-                } catch (ignored: Exception) {
 
-                }
+                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                if (browserIntent.resolveActivity(this.packageManager) != null)
+                    startActivity(browserIntent)
+                else
+                    Toast.makeText(this, R.string.browser_exist, Toast.LENGTH_SHORT).show()
+
 
             }
         }
