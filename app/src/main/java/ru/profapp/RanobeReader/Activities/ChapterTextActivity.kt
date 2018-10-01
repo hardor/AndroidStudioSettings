@@ -29,8 +29,7 @@ import ru.profapp.RanobeReader.Common.StringResources
 import ru.profapp.RanobeReader.Common.StringResources.Chapter_Url
 import ru.profapp.RanobeReader.Common.ThemeUtils
 
-import ru.profapp.RanobeReader.Helpers.MyLog
-import ru.profapp.RanobeReader.Helpers.RanobeKeeper
+import ru.profapp.RanobeReader.Helpers.LogHelper
 import ru.profapp.RanobeReader.Helpers.StringHelper
 import ru.profapp.RanobeReader.JsonApi.RanobeHubRepository
 import ru.profapp.RanobeReader.JsonApi.RanobeRfRepository
@@ -183,6 +182,7 @@ class ChapterTextActivity : AppCompatActivity() {
         // mWebView.getSettings().setBuiltInZoomControls(true);
         // mWebView.getSettings().setDisplayZoomControls(false);
 
+
         mWebView.setBackgroundColor(resources.getColor(R.color.webViewBackground))
 
         sPref = getSharedPreferences(StringResources.is_readed_Pref, Context.MODE_PRIVATE)
@@ -215,7 +215,7 @@ class ChapterTextActivity : AppCompatActivity() {
         @ColorInt val color = resources.getColor(R.color.webViewText)
         @ColorInt val color2 = resources.getColor(R.color.webViewBackground)
         val style = ("style = \"text-align: justify; text-indent: 20px;font-size: "
-                + RanobeKeeper.chapterTextSize!!.toString() + "px;"
+                + MyApp.chapterTextSize!!.toString() + "px;"
                 + "color: " + String.format("#%06X", 0xFFFFFF and color)
                 + "; background-color: " + String.format("#%06X", 0xFFFFFF and color2)
                 + "\"")
@@ -237,7 +237,7 @@ class ChapterTextActivity : AppCompatActivity() {
                             "text/html", "UTF-8", null)
 
                 }, { error ->
-                    MyLog.SendError(MyLog.LogType.ERROR, "GetChapterText", "", error.fillInStackTrace())
+                    LogHelper.SendError(LogHelper.LogType.ERROR, "GetChapterText", "", error.fillInStackTrace())
                     val summary = ("<html><style>img{display: inline;height: auto;max-width: 90%;}</style><body "
                             + style + ">" + "<b>" + mCurrentChapter.title + "</b>" + "</br>"
                             + mCurrentChapter.text + "</body></html>")
@@ -316,7 +316,7 @@ class ChapterTextActivity : AppCompatActivity() {
 
             }.map {
 
-                if ((RanobeKeeper.autoSaveText || needSave) && !mCurrentChapter.text.isNullOrBlank()) {
+                if ((MyApp.autoSaveText || needSave) && !mCurrentChapter.text.isNullOrBlank()) {
                     Completable.fromAction {
                         MyApp.database?.textDao()?.insert(TextChapter(mCurrentChapter))
                     }?.subscribeOn(Schedulers.io())?.subscribe()

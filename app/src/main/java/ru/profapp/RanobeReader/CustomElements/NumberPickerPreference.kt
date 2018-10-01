@@ -9,8 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.NumberPicker
-
-import ru.profapp.RanobeReader.Helpers.RanobeKeeper
+import ru.profapp.RanobeReader.MyApp
 
 /**
  * A [android.preference.Preference] that displays a number picker as a dialog.
@@ -56,7 +55,7 @@ class NumberPickerPreference : DialogPreference {
             val newValue = picker!!.value
             if (callChangeListener(newValue)) {
                 value = newValue
-                RanobeKeeper.chapterTextSize = newValue
+                MyApp.chapterTextSize = newValue
             }
         }
     }

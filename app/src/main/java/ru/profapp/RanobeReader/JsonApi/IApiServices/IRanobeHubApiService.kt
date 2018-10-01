@@ -19,7 +19,7 @@ interface IRanobeHubApiService {
     fun GetReadyBooks(@Query("page") page: Int,
                       @Field("country") country: Int? = null,
                       @Field("sort") sort: String? = null,
-                      @Field("tags") tags: ArrayList<String>? = null,
+                      @Field("tags") tags: List<String>? = null,
                       @Field("years") years: String? = null): Single<RanobeHubReadyGson>
 
     @Headers("X-Requested-With: XMLHttpRequest")

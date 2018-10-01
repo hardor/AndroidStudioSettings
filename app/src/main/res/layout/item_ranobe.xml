@@ -26,6 +26,7 @@
       android:layout_height="@dimen/image_size"
       android:contentDescription="@string/logo"
       tools:src="@tools:sample/avatars"/>
+
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/list_chapter_list"
       android:layout_width="match_parent"

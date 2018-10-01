@@ -9,9 +9,9 @@ data class RfBookInfoGson(
 
 data class ResultBookInfo(
         val book: RfBook? = null,
-        val parts: List<RfChapter> = ArrayList(),
-        val donateParts: List<RfChapter> = ArrayList(),
-        val genres: List<Genre> = ArrayList(),
+        val parts: List<RfChapter> = listOf(),
+        val donateParts: List<RfChapter> = listOf(),
+        val genres: List<Genre> = listOf(),
         val timerPart: TimerPart? = null,
         val readPart: String? = null
 )
@@ -37,7 +37,7 @@ data class RfBook(
         val view: Int? = null,
         val lastUpdatedBook: Long? = null,
         //    val activeUsers: Int? = null,
-        val parts: List<RfChapter> = ArrayList()
+        val parts: List<RfChapter> = listOf()
 )
 
 data class Country(

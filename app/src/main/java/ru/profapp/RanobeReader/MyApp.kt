@@ -5,8 +5,9 @@ import androidx.annotation.VisibleForTesting
 import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.DAO.DatabaseDao
-import ru.profapp.RanobeReader.Helpers.MyLog
+import ru.profapp.RanobeReader.Helpers.LogHelper
 import ru.profapp.RanobeReader.Models.Ranobe
 
 
@@ -14,6 +15,15 @@ class MyApp : Application() {
 
 
     companion object {
+
+        var ranobeRfToken: String? = null
+
+        var chapterTextSize: Int? = null
+
+        var autoSaveText: Boolean = true
+
+        var fragmentType: Constants.FragmentType? = null
+
         const val DB_NAME = "DatabaseDao.db"
         @VisibleForTesting
         val MIGRATION_2_3: Migration = object : Migration(2, 3) {
@@ -57,7 +67,7 @@ class MyApp : Application() {
                     database.execSQL("ALTER TABLE textChapter2 RENAME TO textChapter;")
                     database.execSQL("CREATE INDEX index_textChapter_ChapterUrl ON textChapter (ChapterUrl);")
                 } catch (e: Exception) {
-                    MyLog.SendError(MyLog.LogType.ERROR, "MIGRATION_2_3", "MIGRATION_2_3 failed", e)
+                    LogHelper.SendError(LogHelper.LogType.ERROR, "MIGRATION_2_3", "MIGRATION_2_3 failed", e)
                 }
 
             }

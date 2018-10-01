@@ -40,10 +40,8 @@ import ru.profapp.RanobeReader.Adapters.ExpandableChapterRecyclerViewAdapter
 import ru.profapp.RanobeReader.BuildConfig
 import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Common.StringResources
-import ru.profapp.RanobeReader.Helpers.MyLog
+import ru.profapp.RanobeReader.Helpers.LogHelper
 import ru.profapp.RanobeReader.Helpers.StringHelper
-import ru.profapp.RanobeReader.JsonApi.JsonRanobeRfApi
-import ru.profapp.RanobeReader.JsonApi.JsonRulateApi
 import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.Models.Ranobe
 import ru.profapp.RanobeReader.MyApp
@@ -297,7 +295,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                             }
                         }
 
-                        val commentsAdapter = CommentsRecyclerViewAdapter(mContext!!,                                mCurrentRanobe.comments)
+                        val commentsAdapter = CommentsRecyclerViewAdapter(mContext!!, mCurrentRanobe.comments)
                         commentRecycleView.adapter = commentsAdapter
 
                         val tabSpec: TabHost.TabSpec = tabHost.newTabSpec("comments")
@@ -307,7 +305,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                     }
 
                 }, { error ->
-                    MyLog.SendError(MyLog.LogType.ERROR, "loadChapters", "", error.fillInStackTrace())
+                    LogHelper.SendError(LogHelper.LogType.ERROR, "loadChapters", "", error.fillInStackTrace())
 
                     mCurrentRanobe.wasUpdated = false
                     progressBar.visibility = View.GONE
@@ -354,8 +352,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                                 StringResources.KEY_Token, "")
                         if (token != "") {
                             try {
-                                val response = JsonRulateApi.getInstance()!!.AddBookmark(
-                                        mCurrentRanobe.id, token)
+                                val response = ""//JsonRulateApi.getInstance()!!.AddBookmark(mCurrentRanobe.id, token)
 
                                 val jsonObject = JSONObject(response)
                                 if (jsonObject.getString("status") == "success") {
@@ -370,7 +367,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                                     }
                                 }
                             } catch (e: JSONException) {
-                                MyLog.SendError(MyLog.LogType.WARN,
+                                LogHelper.SendError(LogHelper.LogType.WARN,
                                         RanobeInfoActivity::class.java.toString(), "", e)
 
                             }
@@ -383,10 +380,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                                 StringResources.KEY_Token, "")
                         if (token != "") {
                             try {
-                                val response = JsonRanobeRfApi.getInstance()!!.AddBookmark(
-                                        mCurrentRanobe.id,
-                                        mCurrentRanobe.chapterList[0].id,
-                                        token)
+                                val response = ""//JsonRanobeRfApi.getInstance()!!.AddBookmark(   mCurrentRanobe.id,   mCurrentRanobe.chapterList[0].id,                                        token)
 
                                 val jsonObject = JSONObject(response)
                                 if (jsonObject.getInt("status") == 200) {
@@ -401,7 +395,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                                     }
                                 }
                             } catch (e: JSONException) {
-                                MyLog.SendError(MyLog.LogType.WARN,
+                                LogHelper.SendError(LogHelper.LogType.WARN,
                                         RanobeInfoActivity::class.java.toString(), "", e)
 
                             }
@@ -439,8 +433,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                     val token = preferences!!.getString(StringResources.KEY_Token, "") ?: ""
                     if (token != "") {
                         try {
-                            val response = JsonRulateApi.getInstance()!!.RemoveBookmark(
-                                    mCurrentRanobe.id, token)
+                            val response = ""// JsonRulateApi.getInstance()!!.RemoveBookmark(                                    mCurrentRanobe.id, token)
 
                             val jsonObject = JSONObject(response)
                             if (jsonObject.getString("status") == "success") {
@@ -452,7 +445,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                                 item.setImageDrawable(borderImage)
                             }
                         } catch (e: JSONException) {
-                            MyLog.SendError(MyLog.LogType.WARN,
+                            LogHelper.SendError(LogHelper.LogType.WARN,
                                     RanobeInfoActivity::class.java.toString(), "", e)
 
                         }
@@ -466,8 +459,7 @@ class RanobeInfoActivity : AppCompatActivity() {
 
                         val thread = Thread {
                             try {
-                                val response = JsonRanobeRfApi.getInstance()!!.RemoveBookmark(
-                                        mCurrentRanobe.bookmarkIdRf, token)
+                                val response = ""//JsonRanobeRfApi.getInstance()!!.RemoveBookmark(                                        mCurrentRanobe.bookmarkIdRf, token)
 
                                 val jsonObject = JSONObject(response)
                                 if (jsonObject.getInt("status") == 200) {

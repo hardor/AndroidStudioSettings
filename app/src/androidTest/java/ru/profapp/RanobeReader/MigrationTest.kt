@@ -59,8 +59,8 @@ class MigrationTest {
     @Test
     fun migrateData() {
         val chapters = database?.chapterDao()?.getChaptersForRanobe("tl.rulate.ru/book/3693")
-                ?: arrayListOf()
-        val textChapters = database?.textDao()?.allText() ?: Single.just(arrayListOf())
+                ?: mutableListOf()
+        val textChapters = database?.textDao()?.allText() ?: Single.just(mutableListOf())
 
         Assert.assertTrue(chapters.any())
         Assert.assertTrue(textChapters.blockingGet().any())

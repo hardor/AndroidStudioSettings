@@ -17,7 +17,7 @@ data class Volumes(
         val createdAt: String,
         val updatedAt: String,
         val statusName: Status,
-        val chapters: List<tChapter> = ArrayList()
+        val chapters: List<tChapter> = listOf()
 )
 
 data class tChapter(

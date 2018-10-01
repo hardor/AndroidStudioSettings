@@ -12,7 +12,7 @@ import android.view.View
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import ru.profapp.RanobeReader.Common.StringResources
-import ru.profapp.RanobeReader.Helpers.RanobeKeeper
+import ru.profapp.RanobeReader.MyApp
 import ru.profapp.RanobeReader.R
 
 class RanoberfLoginPreference(context: Context, attrs: AttributeSet) : DialogPreference(context, attrs), DialogInterface.OnClickListener {
@@ -33,9 +33,6 @@ class RanoberfLoginPreference(context: Context, attrs: AttributeSet) : DialogPre
 
     override fun onCreateDialogView(): View {
 
-        // Inflate layout
-        val inflater = context.getSystemService(
-                Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view = View.inflate(context, R.layout.activity_login, null)
 
         val context = this.context
@@ -95,7 +92,7 @@ class RanoberfLoginPreference(context: Context, attrs: AttributeSet) : DialogPre
             if (resBool) {
                 sharedPref!!.edit().putString(StringResources.KEY_Token, result[2]).commit()
                 summary = username
-                RanobeKeeper.ranobeRfToken = result[2]
+                MyApp.ranobeRfToken = result[2]
                 alert.setMessage(context.getString(R.string.auth_succes))
             } else {
                 sharedPref!!.edit().putString(StringResources.KEY_Token, "").commit()

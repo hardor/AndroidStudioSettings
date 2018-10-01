@@ -4,12 +4,9 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReader.Common.Constants
-import ru.profapp.RanobeReader.Helpers.MyLog
+import ru.profapp.RanobeReader.Helpers.LogHelper
 import ru.profapp.RanobeReader.JsonApi.IApiServices.IRulateApiService
-import ru.profapp.RanobeReader.JsonApi.Rulate.ReadyGson
-import ru.profapp.RanobeReader.JsonApi.Rulate.RulateBook
-import ru.profapp.RanobeReader.JsonApi.Rulate.RulateChapter
-import ru.profapp.RanobeReader.JsonApi.Rulate.RulateText
+import ru.profapp.RanobeReader.JsonApi.Rulate.*
 import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.Models.Ranobe
 import ru.profapp.RanobeReader.Models.RanobeImage
@@ -43,7 +40,8 @@ object RulateRepository {
 
         return IRulateApiService.create().GetFavoriteBooks(token!!)
                 .map {
-                    val or: MutableList<Ranobe> = arrayListOf()
+                    val or: MutableList<Ranobe> = mutableListOf()
+
 
                     if (it.status == "success") {
                         for (response in it.response) {
@@ -70,7 +68,6 @@ object RulateRepository {
                 }
     }
 
-
     fun login(login: String, password: String): Single<Array<String>> {
         return IRulateApiService.create().Login(login, password).map {
             if (it.status == "success") {
@@ -95,8 +92,32 @@ object RulateRepository {
                 }
     }
 
+    fun addBookmark(token: String, book_id: Int): Single<Pair<Boolean, String>> {
+        return IRulateApiService.create().AddBookmark(token, book_id)
+                .map {
+
+                    if (it.status == "success")
+                        return@map Pair(true, it.msg.toString())
+                    else
+                        return@map Pair(false, it.msg.toString())
+                }
+    }
+
+
+    fun removeBookmark(token: String, book_id: Int): Single<Pair<Boolean, String>> {
+        return IRulateApiService.create().RemoveBookmark(token, book_id)
+                .map {
+
+                    if (it.status == "success")
+                        return@map Pair(true, it.msg.toString())
+                    else
+                        return@map Pair(false, it.msg.toString())
+                }
+    }
+
+
     private fun getRanobeList(it: ReadyGson): List<Ranobe> {
-        val or: MutableList<Ranobe> = arrayListOf()
+        val or: MutableList<Ranobe> = mutableListOf()
         if (it.status == "success") {
 
             for (book in it.books) {
@@ -132,7 +153,7 @@ object RulateRepository {
             }
 
         } catch (e: ParseException) {
-            MyLog.SendError(MyLog.LogType.WARN, Ranobe::class.java.toString(), "", e)
+            LogHelper.SendError(LogHelper.LogType.WARN, Ranobe::class.java.toString(), "", e)
         }
 
         readyDate = readyDate ?: (if (book.lastActivity != null) Date(book.lastActivity!! * 1000) else readyDate)

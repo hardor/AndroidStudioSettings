@@ -7,9 +7,9 @@ data class RfGetReadyGson(
 )
 
 data class RfResult(
-        val sequence: List<Sequence> = ArrayList(),
+        val sequence: List<Sequence> = listOf(),
         val hasMore: Boolean? = null,
-        val books: List<RfBook> = ArrayList()
+        val books: List<RfBook> = listOf()
 )
 
 

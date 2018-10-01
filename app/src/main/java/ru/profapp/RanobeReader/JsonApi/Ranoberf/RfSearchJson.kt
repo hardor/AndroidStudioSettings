@@ -3,7 +3,7 @@ package ru.profapp.RanobeReader.JsonApi.Ranoberf
 data class RfSearchJson(
 
         val status: Int? = null,
-        val result: List<SearchResult> = ArrayList(),
+        val result: List<SearchResult> = listOf(),
         val message: String? = null
 )
 

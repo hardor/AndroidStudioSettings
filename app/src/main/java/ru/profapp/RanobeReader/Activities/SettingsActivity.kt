@@ -19,7 +19,6 @@ import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReader.BuildConfig
 import ru.profapp.RanobeReader.Common.StringResources
 import ru.profapp.RanobeReader.Common.ThemeUtils
-import ru.profapp.RanobeReader.Helpers.RanobeKeeper
 import ru.profapp.RanobeReader.MyApp
 import ru.profapp.RanobeReader.R
 
@@ -234,7 +233,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 
             when {
                 preference.key == preference.context.getString(
-                        R.string.pref_general_auto_save) -> RanobeKeeper.autoSaveText = java.lang.Boolean.valueOf(value.toString())
+                        R.string.pref_general_auto_save) -> MyApp.autoSaveText = java.lang.Boolean.valueOf(value.toString())
                 preference.key == preference.context.getString(
                         R.string.pref_general_app_theme) -> {
 

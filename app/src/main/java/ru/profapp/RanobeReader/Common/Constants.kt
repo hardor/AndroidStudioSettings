@@ -31,12 +31,12 @@ object Constants {
         RulateFavorite
     }
 
-    enum class RanobeSite(val url: String) {
-        None(""),
-        Title("Title"),
-        Rulate("tl.rulate.ru"),
-        RanobeRf("https://xn--80ac9aeh6f.xn--p1ai"),
-        RanobeHub("https://ranobehub.org")
+    enum class RanobeSite(val url: String, val title:String) {
+        None("",""),
+        Title("Title","Title"),
+        Rulate("tl.rulate.ru","Rulate"),
+        RanobeRf("https://xn--80ac9aeh6f.xn--p1ai","Ранобэ.рф"),
+        RanobeHub("https://ranobehub.org","RanobeHub")
     }
 }
 

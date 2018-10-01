@@ -50,7 +50,7 @@ object RanobeHubRepository {
 
 
     private fun getRanobeReadyList(it: RanobeHubReadyGson): List<Ranobe> {
-        val or: MutableList<Ranobe> = arrayListOf()
+        val or: MutableList<Ranobe> = mutableListOf()
 
         if (it.content.isNotBlank()) {
 
@@ -112,7 +112,7 @@ object RanobeHubRepository {
     }
 
     private fun getRanobeList(it: List<RanobeHubBook>): List<Ranobe> {
-        val or: MutableList<Ranobe> = arrayListOf()
+        val or: MutableList<Ranobe> = mutableListOf()
 
         for (value in it) {
             val ranobe = Ranobe(Constants.RanobeSite.RanobeHub)

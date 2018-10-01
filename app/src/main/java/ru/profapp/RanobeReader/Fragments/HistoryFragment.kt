@@ -12,7 +12,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReader.Adapters.HistoryRecyclerViewAdapter
-import ru.profapp.RanobeReader.Helpers.MyLog
+import ru.profapp.RanobeReader.Helpers.LogHelper
 import ru.profapp.RanobeReader.Models.ChapterHistory
 import ru.profapp.RanobeReader.MyApp
 import ru.profapp.RanobeReader.R
@@ -53,7 +53,7 @@ class HistoryFragment : Fragment() {
                     chapterHistoryViewAdapter = HistoryRecyclerViewAdapter(mContext!!, it)
                     recyclerView.adapter = chapterHistoryViewAdapter
                 }, { error ->
-                    MyLog.SendError(MyLog.LogType.ERROR, "HistoryFragment", "", error)
+                    LogHelper.SendError(LogHelper.LogType.ERROR, "HistoryFragment", "", error)
                 })
 
         return view

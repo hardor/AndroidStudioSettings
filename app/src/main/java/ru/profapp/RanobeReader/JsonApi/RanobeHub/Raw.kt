@@ -10,7 +10,7 @@ class Raw {
     var currentPage: Int? = null
     @SerializedName("data")
     @Expose
-    var data: List<RanobeHubBook> = ArrayList()
+    var data: List<RanobeHubBook> = listOf()
     @SerializedName("first_page_url")
     @Expose
     var firstPageUrl: String? = null

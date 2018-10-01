@@ -9,7 +9,7 @@ data class RfChapterTextGson(
 
 data class RfText(
         val status: Int? = null,
-        val checkers: List<Checker> = ArrayList(),
+        val checkers: List<Checker> = listOf(),
         val part: TextPart? = null,
         val book: Book? = null,
         val nextPart: ChapterPart? = null,

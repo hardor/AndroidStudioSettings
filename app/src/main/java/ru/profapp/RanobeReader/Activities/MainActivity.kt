@@ -31,8 +31,8 @@ import ru.profapp.RanobeReader.Common.ThemeUtils
 import ru.profapp.RanobeReader.Fragments.HistoryFragment
 import ru.profapp.RanobeReader.Fragments.RanobeRecyclerFragment
 import ru.profapp.RanobeReader.Fragments.SearchFragment
-import ru.profapp.RanobeReader.Helpers.MyLog
-import ru.profapp.RanobeReader.Helpers.RanobeKeeper
+import ru.profapp.RanobeReader.Helpers.LogHelper
+import ru.profapp.RanobeReader.MyApp
 import ru.profapp.RanobeReader.R
 
 class MainActivity : AppCompatActivity(),
@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity(),
 
 
     private val ExceptionHandler = Thread.UncaughtExceptionHandler { th, ex ->
-        MyLog.SendError(MyLog.LogType.WARN, "MainActivity",
+        LogHelper.SendError(LogHelper.LogType.WARN, "MainActivity",
                 "Uncaught exception", ex)
     }
     private var adView: AdView? = null
@@ -150,17 +150,17 @@ class MainActivity : AppCompatActivity(),
         PreferenceManager.setDefaultValues(this, R.xml.pref_general, false)
         val settingPref = PreferenceManager.getDefaultSharedPreferences(
                 applicationContext)
-        RanobeKeeper.chapterTextSize = settingPref.getInt(
+        MyApp.chapterTextSize = settingPref.getInt(
                 applicationContext.getString(R.string.pref_general_text_size), 13)
 
-        RanobeKeeper.autoSaveText = settingPref.getBoolean(
+        MyApp.autoSaveText = settingPref.getBoolean(
                 applicationContext.getString(R.string.pref_general_auto_save),
                 false)
 
         val rfPref = applicationContext.getSharedPreferences(
                 StringResources.Ranoberf_Login_Pref, Context.MODE_PRIVATE)
         if (rfPref != null) {
-            RanobeKeeper.ranobeRfToken = rfPref.getString(
+            MyApp.ranobeRfToken = rfPref.getString(
                     KEY_Login, "")
         }
 

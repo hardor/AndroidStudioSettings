@@ -4,7 +4,7 @@ import android.util.Log
 import com.crashlytics.android.Crashlytics
 import ru.profapp.RanobeReader.BuildConfig
 
-class MyLog {
+class LogHelper {
 
     companion object {
 

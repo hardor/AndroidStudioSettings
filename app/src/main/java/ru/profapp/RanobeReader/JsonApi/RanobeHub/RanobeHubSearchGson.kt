@@ -9,6 +9,6 @@ data class Categories(
 )
 
 data class RanobeHub(
-        val items: List<RanobeHubBook> = ArrayList(),
+        val items: List<RanobeHubBook> = listOf(),
         val name: String? = null
 )

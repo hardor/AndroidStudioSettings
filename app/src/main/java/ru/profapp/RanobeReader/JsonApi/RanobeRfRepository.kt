@@ -6,6 +6,7 @@ import io.reactivex.Single
 import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Helpers.StringHelper
 import ru.profapp.RanobeReader.JsonApi.IApiServices.IRanobeRfApiService
+import ru.profapp.RanobeReader.JsonApi.IApiServices.IRulateApiService
 import ru.profapp.RanobeReader.JsonApi.Ranoberf.*
 import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.Models.Ranobe
@@ -51,10 +52,10 @@ object RanobeRfRepository {
     }
 
 
-    fun searchBooks(search: String): Single<ArrayList<Ranobe>> {
+    fun searchBooks(search: String): Single<MutableList<Ranobe>> {
         return IRanobeRfApiService.create().SearchBooks(search)
                 .map {
-                    val or: ArrayList<Ranobe> = ArrayList()
+                    val or: MutableList<Ranobe> = mutableListOf()
 
                     if (it.status == 200) {
 
@@ -73,12 +74,12 @@ object RanobeRfRepository {
                 }
     }
 
-    fun getFavoriteBooks(token: String?): Single<List<Ranobe>> {
+    fun getFavoriteBooks(token: String?): Single<MutableList<Ranobe>> {
         if (token.isNullOrBlank())
-            return Single.just(listOf())
-        return IRanobeRfApiService.create().GetFavoriteBooks("Bearer " + token!!)
+            return Single.just(mutableListOf())
+        return IRanobeRfApiService.create().GetFavoriteBooks("Bearer $token")
                 .map {
-                    val or: MutableList<Ranobe> = arrayListOf()
+                    val or: MutableList<Ranobe> = mutableListOf()
 
                     if (it.status == 200) {
                         for (result in it.result) {
@@ -124,8 +125,37 @@ object RanobeRfRepository {
                 }
     }
 
+
+    fun addBookmark(token: String?, book_id: Int, part_id: Int): Single<Pair<Boolean, String>> {
+        if (token.isNullOrBlank())
+            return Single.just(Pair(false, "No token found"))
+        return IRanobeRfApiService.create().AddBookmark("Bearer $token", book_id, part_id)
+                .map {
+
+                    if (it.status == 200)
+                        return@map Pair(true, it.message.toString())
+                    else
+                        return@map Pair(false, it.message.toString())
+                }
+    }
+
+
+    fun removeBookmark(token: String, bookmark_id: Int): Single<Pair<Boolean, String>> {
+        if (token.isNullOrBlank())
+            return Single.just(Pair(false, "No token found"))
+
+        return IRanobeRfApiService.create().RemoveBookmark("Bearer $token", bookmark_id)
+                .map {
+
+                    if (it.status == 200)
+                        return@map Pair(true, it.message.toString())
+                    else
+                        return@map Pair(false, it.message.toString())
+                }
+    }
+
     private fun getRanobeList(it: List<RfBook>?): List<Ranobe> {
-        val or: MutableList<Ranobe> = arrayListOf()
+        val or: MutableList<Ranobe> = mutableListOf()
         for (value in it.orEmpty()) {
             val ranobe = Ranobe(Constants.RanobeSite.RanobeRf)
             ranobe.updateRanobe(value)

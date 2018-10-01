@@ -8,7 +8,7 @@ data class ReadyGson(
         var msg: String,
         @SerializedName("response")
         @Expose
-        var books: List<RulateBook> = ArrayList()
+        var books: List<RulateBook> = listOf()
 )
 
 data class RulateBook(
@@ -60,9 +60,9 @@ data class RulateBook(
 
         var team: String? = null,
 
-        var chapters: List<RulateChapter> = ArrayList(),
+        var chapters: List<RulateChapter> = listOf(),
 
-        var comments: List<RulateComment> = ArrayList(),
+        var comments: List<RulateComment> = listOf(),
 
         var bookmark: Int? = null
 
@@ -101,7 +101,7 @@ data class RulateText(
 
         var text: String? = null,
 
-        var comments: List<RulateComment> = ArrayList()
+        var comments: List<RulateComment> = listOf()
 
 )
 

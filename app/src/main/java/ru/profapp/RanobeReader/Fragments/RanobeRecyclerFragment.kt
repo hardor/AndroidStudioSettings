@@ -26,8 +26,7 @@ import ru.profapp.RanobeReader.Common.Constants.fragmentBundle
 import ru.profapp.RanobeReader.Common.OnLoadMoreListener
 import ru.profapp.RanobeReader.Common.StringResources
 import ru.profapp.RanobeReader.Common.StringResources.is_readed_Pref
-import ru.profapp.RanobeReader.Helpers.MyLog
-import ru.profapp.RanobeReader.Helpers.RanobeKeeper
+import ru.profapp.RanobeReader.Helpers.LogHelper
 import ru.profapp.RanobeReader.JsonApi.RanobeHubRepository
 import ru.profapp.RanobeReader.JsonApi.RanobeRfRepository
 import ru.profapp.RanobeReader.JsonApi.RulateRepository
@@ -39,7 +38,7 @@ import java.net.UnknownHostException
 
 class RanobeRecyclerFragment : Fragment() {
 
-    private val ranobeList = arrayListOf<Ranobe>()
+    private val ranobeList = mutableListOf<Ranobe>()
     private var progressDialog: ProgressDialog? = null
     private var mSwipeRefreshLayout: SwipeRefreshLayout? = null
 
@@ -184,7 +183,9 @@ class RanobeRecyclerFragment : Fragment() {
             Constants.FragmentType.Rulate -> rulateLoadRanobe()
             Constants.FragmentType.Ranoberf -> ranobeRfLoadRanobe()
             Constants.FragmentType.RanobeHub -> ranobeHubLoadRanobe()
-            Constants.FragmentType.Favorite -> favoriteLoadRanobe()
+            Constants.FragmentType.Favorite -> {
+                favoriteLoadRanobe()
+            }
             Constants.FragmentType.Saved -> savedLoadRanobe()
             else -> throw NullPointerException()
         }
@@ -246,7 +247,7 @@ class RanobeRecyclerFragment : Fragment() {
                     mSwipeRefreshLayout!!.isRefreshing = false
 
                 }, { error ->
-                    MyLog.SendError(MyLog.LogType.ERROR, "refreshItems", "", error.fillInStackTrace())
+                    LogHelper.SendError(LogHelper.LogType.ERROR, "refreshItems", "", error.fillInStackTrace())
                     onItemsLoadFailed(error)
                 })
 
@@ -274,20 +275,20 @@ class RanobeRecyclerFragment : Fragment() {
 
 
         mRanobeRecyclerViewAdapter.setLoaded()
-
         mSwipeRefreshLayout!!.isRefreshing = false
+        progressDialog?.dismiss()
     }
 
     private fun favoriteLoadRanobe(): Single<List<Ranobe>> {
 
-//        progressDialog = ProgressDialog(context)
-//        progressDialog!!.setMessage(resources.getString(R.string.load_please_wait))
-//        progressDialog!!.setTitle(resources.getString(R.string.load_ranobes))
-//        progressDialog!!.setCancelable(true)
-//        progressDialog!!.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
-//        mSwipeRefreshLayout!!.isRefreshing = false
-//        progressDialog!!.show()
-//
+        progressDialog = ProgressDialog(context)
+        progressDialog!!.setMessage(resources.getString(R.string.load_please_wait))
+        progressDialog!!.setTitle(resources.getString(R.string.load_ranobes))
+        progressDialog!!.setCancelable(true)
+        progressDialog!!.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
+        mSwipeRefreshLayout!!.isRefreshing = false
+        progressDialog!!.show()
+
 //
 //        var step = 0
 //
@@ -299,28 +300,14 @@ class RanobeRecyclerFragment : Fragment() {
 //        }
 
         return MyApp.database?.ranobeDao()?.getFavoriteRanobes()?.map { it ->
-            val newRanobeList = arrayListOf<Ranobe>()
-            if (it.asSequence().filter { s -> s.ranobeSite == Rulate.url }.any()) {
-                val titleRanobe = Ranobe()
-                titleRanobe.title = getString(R.string.tl_rulate_name)
-                titleRanobe.ranobeSite = Title.url
-                newRanobeList.add(titleRanobe)
-                newRanobeList.addAll(it.filter { s -> s.ranobeSite == Rulate.url })
-            }
+            val newRanobeList = mutableListOf<Ranobe>()
 
-            if (it.asSequence().filter { s -> s.ranobeSite == RanobeRf.url }.any()) {
-                val titleRanobe = Ranobe()
-                titleRanobe.title = getString(R.string.ranobe_rf)
-                titleRanobe.ranobeSite = Title.url
+            val groupList = it.groupBy { it.ranobeSite }
+            for (group in groupList ){
+                val titleRanobe = Ranobe(Title)
+                titleRanobe.title =  Constants.RanobeSite.valueOf(group.key).title
                 newRanobeList.add(titleRanobe)
-                newRanobeList.addAll(it.filter { s -> s.ranobeSite == RanobeRf.url })
-            }
-            if (it.asSequence().filter { s -> s.ranobeSite == RanobeHub.url }.any()) {
-                val titleRanobe = Ranobe()
-                titleRanobe.title = getString(R.string.ranobe_hub)
-                titleRanobe.ranobeSite = Title.url
-                newRanobeList.add(titleRanobe)
-                newRanobeList.addAll(it.filter { s -> s.ranobeSite == RanobeHub.url })
+                newRanobeList.addAll(group.value)
             }
 
             return@map newRanobeList.toList()
@@ -447,11 +434,11 @@ class RanobeRecyclerFragment : Fragment() {
 
 
         return MyApp.database?.textDao()?.allText()?.map { mChapterTexts ->
-            val newRanobeList = arrayListOf<Ranobe>()
+            val newRanobeList = mutableListOf<Ranobe>()
             var prevRanobeName = ""
             var newRanobe = Ranobe()
-            val historyList = arrayListOf<Ranobe>()
-            var chapterList = arrayListOf<Chapter>()
+            val historyList = mutableListOf<Ranobe>()
+            var chapterList = mutableListOf<Chapter>()
 
             for (mChapterText in mChapterTexts) {
 
@@ -459,7 +446,7 @@ class RanobeRecyclerFragment : Fragment() {
 
                     prevRanobeName = mChapterText.ranobeName
                     newRanobe = Ranobe()
-                    chapterList = arrayListOf<Chapter>()
+                    chapterList = mutableListOf<Chapter>()
                     newRanobe.title = mChapterText.ranobeName
                     newRanobe.chapterList = chapterList
                     newRanobeList.add(newRanobe)
@@ -477,9 +464,9 @@ class RanobeRecyclerFragment : Fragment() {
             }
 
 
-            val rulateList = arrayListOf<Ranobe>()
-            val ranobeRfList = arrayListOf<Ranobe>()
-            val ranobeHubList = arrayListOf<Ranobe>()
+            val rulateList = mutableListOf<Ranobe>()
+            val ranobeRfList = mutableListOf<Ranobe>()
+            val ranobeHubList = mutableListOf<Ranobe>()
             for (ranobe in newRanobeList) {
                 when {
                     ranobe.ranobeSite == RanobeRf.url -> ranobeRfList.add(ranobe)
@@ -567,7 +554,7 @@ class RanobeRecyclerFragment : Fragment() {
             val fragment = RanobeRecyclerFragment()
             val args = Bundle()
             args.putString(fragmentBundle, fragmentType)
-            RanobeKeeper.fragmentType = Constants.FragmentType.valueOf(fragmentType)
+            MyApp.fragmentType = Constants.FragmentType.valueOf(fragmentType)
             fragment.arguments = args
             return fragment
         }
