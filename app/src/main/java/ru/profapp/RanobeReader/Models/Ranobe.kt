@@ -9,7 +9,6 @@ import androidx.room.PrimaryKey
 import io.reactivex.Single
 import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Common.Constants.RanobeSite.*
-import ru.profapp.RanobeReader.Common.StringResources
 import ru.profapp.RanobeReader.JsonApi.RanobeHubRepository
 import ru.profapp.RanobeReader.JsonApi.RanobeRfRepository
 import ru.profapp.RanobeReader.JsonApi.Rulate.RulateComment
@@ -107,8 +106,8 @@ class Ranobe() {
 
         if (!wasUpdated) {
             if (ranobeSite == Rulate.url || url.contains(Rulate.url)) {
-                val mPreferences = mContext.getSharedPreferences(  StringResources.Rulate_Login_Pref, 0)
-                val token = mPreferences.getString(StringResources.KEY_Token, "") ?: ""
+                val mPreferences = mContext.getSharedPreferences(  Constants.Rulate_Login_Pref, 0)
+                val token = mPreferences.getString(Constants.KEY_Token, "") ?: ""
                 return RulateRepository.getBookInfo(this, token, id)
             } else if (ranobeSite == RanobeRf.url || url.contains(RanobeRf.url)) {
 

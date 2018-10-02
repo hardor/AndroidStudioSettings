@@ -17,7 +17,7 @@ import io.fabric.sdk.android.Fabric
 import io.reactivex.Completable
 import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReader.BuildConfig
-import ru.profapp.RanobeReader.Common.StringResources
+import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Common.ThemeUtils
 import ru.profapp.RanobeReader.MyApp
 import ru.profapp.RanobeReader.R
@@ -125,12 +125,12 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             addPreferencesFromResource(R.xml.pref_rulate)
             val prefLogin = findPreference(getString(R.string.rulate_authorization_pref))
             val mPreferences = activity?.getSharedPreferences(
-                    StringResources.Rulate_Login_Pref, 0)
+                    Constants.Rulate_Login_Pref, 0)
 
-            val token = mPreferences?.getString(StringResources.KEY_Token, "") ?: ""
+            val token = mPreferences?.getString(Constants.KEY_Token, "") ?: ""
 
             if (token != "") {
-                prefLogin.summary = mPreferences?.getString(StringResources.KEY_Login, "") ?: ""
+                prefLogin.summary = mPreferences?.getString(Constants.KEY_Login, "") ?: ""
             } else {
                 prefLogin.summary = resources.getString(R.string.login_to_summary)
             }
@@ -155,12 +155,12 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             addPreferencesFromResource(R.xml.pref_ranoberf)
             val prefLogin = findPreference(getString(R.string.ranoberf_authorization_pref))
 
-            val mPreferences = activity.getSharedPreferences(StringResources.Ranoberf_Login_Pref, 0)
+            val mPreferences = activity.getSharedPreferences(Constants.Ranoberf_Login_Pref, 0)
 
-            val token = mPreferences?.getString(StringResources.KEY_Token, "") ?: ""
+            val token = mPreferences?.getString(Constants.KEY_Token, "") ?: ""
 
             if (token != "") {
-                prefLogin.summary = mPreferences?.getString(StringResources.KEY_Login, "") ?: ""
+                prefLogin.summary = mPreferences?.getString(Constants.KEY_Login, "") ?: ""
             } else {
                 prefLogin.summary = resources.getString(R.string.login_to_summary)
             }
@@ -213,10 +213,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 
             val prefButton = findPreference(getString(R.string.CleanHistoryButton))
             prefButton.setOnPreferenceClickListener { preference ->
-                activity!!.getSharedPreferences(
-                        StringResources.Last_readed_Pref,
-                        0).edit().clear().apply()
-                activity!!.getSharedPreferences(StringResources.is_readed_Pref,
+                activity!!.getSharedPreferences(Constants.is_readed_Pref,
                         0).edit().clear().apply()
 
                 Toast.makeText(activity, resources.getText(R.string.cache_cleaned), Toast.LENGTH_SHORT).show()

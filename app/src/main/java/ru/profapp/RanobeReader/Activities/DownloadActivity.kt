@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.crashlytics.android.Crashlytics
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.fabric.sdk.android.Fabric
-import ru.profapp.RanobeReader.Adapters.DownloadRecyclerViewAdapter
 import ru.profapp.RanobeReader.Adapters.ExpandableDownloadRecyclerViewAdapter
 import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.MyApp

@@ -11,7 +11,6 @@ import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ImageButton
@@ -26,11 +25,8 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReader.Common.Constants
-import ru.profapp.RanobeReader.Common.StringResources
 import ru.profapp.RanobeReader.Common.ThemeUtils
-
 import ru.profapp.RanobeReader.Helpers.LogHelper
-import ru.profapp.RanobeReader.Helpers.StringHelper
 import ru.profapp.RanobeReader.JsonApi.RanobeHubRepository
 import ru.profapp.RanobeReader.JsonApi.RanobeRfRepository
 import ru.profapp.RanobeReader.JsonApi.RulateRepository
@@ -155,7 +151,7 @@ class ChapterTextActivity : AppCompatActivity() {
 
         mWebView.setBackgroundColor(resources.getColor(R.color.webViewBackground))
 
-        lastIndexPref = getSharedPreferences(StringResources.last_chapter_id_Pref, Context.MODE_PRIVATE)
+        lastIndexPref = getSharedPreferences(Constants.last_chapter_id_Pref, Context.MODE_PRIVATE)
 
         initWebView()
 
@@ -300,8 +296,8 @@ class ChapterTextActivity : AppCompatActivity() {
     }
 
     private fun getRulateChapterText(): Single<Boolean> {
-        val preferences = mContext!!.getSharedPreferences(StringResources.Rulate_Login_Pref, 0)
-        val token: String = preferences.getString(StringResources.KEY_Token, "") ?: ""
+        val preferences = mContext!!.getSharedPreferences(Constants.Rulate_Login_Pref, 0)
+        val token: String = preferences.getString(Constants.KEY_Token, "") ?: ""
 
         return RulateRepository.getChapterText(token, mCurrentChapter)
 
@@ -349,7 +345,7 @@ class ChapterTextActivity : AppCompatActivity() {
 
         //Todo: add to history table
         if (lastIndexPref == null) {
-            lastIndexPref = mContext!!.getSharedPreferences(StringResources.last_chapter_id_Pref, Context.MODE_PRIVATE)
+            lastIndexPref = mContext!!.getSharedPreferences(Constants.last_chapter_id_Pref, Context.MODE_PRIVATE)
         }
         mCurrentChapter.isRead = true
 

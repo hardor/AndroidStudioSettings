@@ -11,7 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
-import ru.profapp.RanobeReader.Common.StringResources
+import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.MyApp
 import ru.profapp.RanobeReader.R
 
@@ -36,11 +36,11 @@ class RanoberfLoginPreference(context: Context, attrs: AttributeSet) : DialogPre
         val view = View.inflate(context, R.layout.activity_login, null)
 
         val context = this.context
-        sharedPref = context.getSharedPreferences(StringResources.Ranoberf_Login_Pref,
+        sharedPref = context.getSharedPreferences(Constants.Ranoberf_Login_Pref,
                 Context.MODE_PRIVATE)
 
 
-        val value = sharedPref!!.getString(StringResources.KEY_Login, "")
+        val value = sharedPref!!.getString(Constants.KEY_Login, "")
 
         // Setup SeekBar
 
@@ -81,7 +81,7 @@ class RanoberfLoginPreference(context: Context, attrs: AttributeSet) : DialogPre
         val username = mLoginEditor!!.text.toString()
         val password = mPasswordEditor!!.text.toString()
 
-        sharedPref!!.edit().putString(StringResources.KEY_Login, username).commit()
+        sharedPref!!.edit().putString(Constants.KEY_Login, username).commit()
 
         val alert = AlertDialog.Builder(context).create()
         // Check if username, password is filled
@@ -90,12 +90,12 @@ class RanoberfLoginPreference(context: Context, attrs: AttributeSet) : DialogPre
             //session.createRanobeRfLoginSession(username, password)
             val resBool = java.lang.Boolean.valueOf(result[0])
             if (resBool) {
-                sharedPref!!.edit().putString(StringResources.KEY_Token, result[2]).commit()
+                sharedPref!!.edit().putString(Constants.KEY_Token, result[2]).commit()
                 summary = username
                 MyApp.ranobeRfToken = result[2]
                 alert.setMessage(context.getString(R.string.auth_succes))
             } else {
-                sharedPref!!.edit().putString(StringResources.KEY_Token, "").commit()
+                sharedPref!!.edit().putString(Constants.KEY_Token, "").commit()
                 summary = context.getString(R.string.login_to_summary)
 
                 alert.setMessage(context.getString(R.string.auth_error))
@@ -111,7 +111,7 @@ class RanoberfLoginPreference(context: Context, attrs: AttributeSet) : DialogPre
             alert.setTitle(context.getString(R.string.login_failed))
             alert.setMessage(context.getString(R.string.enter_user_pass))
             alert.setButton(Dialog.BUTTON_POSITIVE, "OK") { dialog, which ->
-                sharedPref!!.edit().putString(StringResources.KEY_Token, "").commit()
+                sharedPref!!.edit().putString(Constants.KEY_Token, "").commit()
 
                 summary = context.getString(R.string.login_to_summary)
             }

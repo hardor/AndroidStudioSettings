@@ -1,5 +1,6 @@
 package ru.profapp.RanobeReader.Fragments
 
+import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
@@ -24,8 +25,6 @@ import ru.profapp.RanobeReader.Common.Constants.RanobeSite.*
 import ru.profapp.RanobeReader.Common.Constants.chaptersNum
 import ru.profapp.RanobeReader.Common.Constants.fragmentBundle
 import ru.profapp.RanobeReader.Common.OnLoadMoreListener
-import ru.profapp.RanobeReader.Common.StringResources
-import ru.profapp.RanobeReader.Common.StringResources.is_readed_Pref
 import ru.profapp.RanobeReader.Helpers.LogHelper
 import ru.profapp.RanobeReader.JsonApi.RanobeHubRepository
 import ru.profapp.RanobeReader.JsonApi.RanobeRfRepository
@@ -36,11 +35,11 @@ import ru.profapp.RanobeReader.MyApp
 import ru.profapp.RanobeReader.R
 import java.net.UnknownHostException
 
-class RanobeRecyclerFragment : Fragment() {
+class RanobeListFragment : Fragment() {
 
     private val ranobeList = mutableListOf<Ranobe>()
     private var progressDialog: ProgressDialog? = null
-    private var mSwipeRefreshLayout: SwipeRefreshLayout? = null
+    private lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
 
     private var mListener: OnListFragmentInteractionListener? = null
     private lateinit var mRanobeRecyclerViewAdapter: RanobeRecyclerViewAdapter
@@ -51,57 +50,24 @@ class RanobeRecyclerFragment : Fragment() {
     private var oldListSize: Int = 0
     private var request: Disposable? = null
 
-    fun getRulateWebFavorite(): Single<List<Ranobe>> {
-
-
-        val mPreferences = mContext!!.getSharedPreferences(StringResources.Rulate_Login_Pref, 0)
-
-        val token = mPreferences.getString(StringResources.KEY_Token, "") ?: ""
-        return RulateRepository.getFavoriteBooks(token).map {
-
-            for (ranobe in it) {
-                if (!loadFromDatabase) {
-                    ranobe.updateRanobe(mContext!!)
-                    ranobe.isFavoriteInWeb = true
-                    MyApp.database?.ranobeDao()?.insert(ranobe)
-                    MyApp.database?.chapterDao()?.insertAll(*ranobe.chapterList.toTypedArray())
-                } else {
-                    val dbRanobe = MyApp.database?.ranobeDao()?.getRanobeByUrl(ranobe.url)
-                    if (dbRanobe != null) {
-                        //TODO:  ranobe = dbRanobe
-                    }
-                }
-            }
-
-            return@map it
-        }
+    private fun getRulateWebFavorite(): Single<List<Ranobe>> {
+        val mPreferences = mContext!!.getSharedPreferences(Constants.Rulate_Login_Pref, 0)
+        val token = mPreferences.getString(Constants.KEY_Token, "") ?: ""
+        return RulateRepository.getFavoriteBooks(token)
     }
 
 
-    fun getRanobeRfWebFavorite(): Single<List<Ranobe>> {
+    private fun getRanobeRfWebFavorite(): Single<List<Ranobe>> {
+
+        val mPreferences = mContext!!.getSharedPreferences(Constants.Ranoberf_Login_Pref, 0)
+
+        val token = mPreferences.getString(Constants.KEY_Token, "")
+        return RanobeRfRepository.getFavoriteBooks(token)
+    }
 
 
-        val mPreferences = mContext!!.getSharedPreferences(StringResources.Ranoberf_Login_Pref, 0)
-
-        val token = mPreferences.getString(StringResources.KEY_Token, "")
-        return RanobeRfRepository.getFavoriteBooks(token).map {
-
-            for (ranobe in it) {
-                if (!loadFromDatabase) {
-                    ranobe.updateRanobe(mContext!!)
-                    ranobe.isFavoriteInWeb = true
-                    MyApp.database?.ranobeDao()?.insert(ranobe)
-                    MyApp.database?.chapterDao()?.insertAll(*ranobe.chapterList.toTypedArray())
-                } else {
-                    val dbRanobe = MyApp.database?.ranobeDao()?.getRanobeByUrl(ranobe.url)
-                    if (dbRanobe != null) {
-                        //TODO:  ranobe = dbRanobe
-                    }
-                }
-            }
-
-            return@map it
-        }
+    private fun getRanobeHubWebFavorite(): Single<List<Ranobe>> {
+        return Single.just(listOf())
     }
 
     init {
@@ -123,50 +89,42 @@ class RanobeRecyclerFragment : Fragment() {
                               savedInstanceState: Bundle?): View {
         val view = inflater.inflate(R.layout.fragment_ranobe_list, container, false)
 
-        // Set the adapterExpandable
-        if (view is SwipeRefreshLayout) {
+        mContext = view.context
+        val recyclerView = view.findViewById<RecyclerView>(R.id.ranobeListView)
 
-            mContext = view.getContext()
-            val recyclerView = view.findViewById<RecyclerView>(R.id.ranobeListView)
+        recyclerView.layoutManager = LinearLayoutManager(mContext)
 
-            recyclerView.layoutManager = LinearLayoutManager(mContext)
+        mRanobeRecyclerViewAdapter = RanobeRecyclerViewAdapter(mContext!!, recyclerView, ranobeList)
 
-            mRanobeRecyclerViewAdapter = RanobeRecyclerViewAdapter(mContext!!, recyclerView, ranobeList)
+        recyclerView.adapter = mRanobeRecyclerViewAdapter
 
-            recyclerView.adapter = mRanobeRecyclerViewAdapter
+        //set load more listener for the RecyclerView adapterExpandable
+        if (fragmentType != Constants.FragmentType.Favorite
+                && fragmentType != Constants.FragmentType.Search
+                && fragmentType != Constants.FragmentType.Saved) {
 
-            //set load more listener for the RecyclerView adapterExpandable
-            if (fragmentType != Constants.FragmentType.Favorite
-                    && fragmentType != Constants.FragmentType.Search
-                    && fragmentType != Constants.FragmentType.Saved) {
-
-                mRanobeRecyclerViewAdapter.onLoadMoreListener = object : OnLoadMoreListener {
-                    override fun onLoadMore() {
-                        refreshItems(false)
-                    }
-
-
+            mRanobeRecyclerViewAdapter.onLoadMoreListener = object : OnLoadMoreListener {
+                override fun onLoadMore() {
+                    refreshItems(false)
                 }
-
-
             }
-            mSwipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
-            mSwipeRefreshLayout!!.setOnRefreshListener {
-                mSwipeRefreshLayout!!.isRefreshing = false
-                page = 0
-                refreshItems(true)
-            }
-            mSwipeRefreshLayout!!.isRefreshing = true
-
+        }
+        mSwipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
+        mSwipeRefreshLayout.setOnRefreshListener {
+            mSwipeRefreshLayout.isRefreshing = false
+            page = 0
             refreshItems(true)
         }
+        mSwipeRefreshLayout.isRefreshing = true
+
+        refreshItems(true)
 
         return view
     }
 
     private fun refreshItems(remove: Boolean) {
 
-        mSwipeRefreshLayout!!.isRefreshing = true
+        mSwipeRefreshLayout.isRefreshing = true
         oldListSize = ranobeList.size
         if (remove) {
             page = 0
@@ -176,8 +134,8 @@ class RanobeRecyclerFragment : Fragment() {
             oldListSize = 0
         }
         //Todo: remove sPref. Move to lastIndexPref
-        val sPref = mContext!!.getSharedPreferences(is_readed_Pref, MODE_PRIVATE)
-        val lastIndexPref = mContext!!.getSharedPreferences(is_readed_Pref, MODE_PRIVATE)
+        val sPref = mContext!!.getSharedPreferences(Constants.is_readed_Pref, MODE_PRIVATE)
+        val lastIndexPref = mContext!!.getSharedPreferences(Constants.last_chapter_id_Pref, MODE_PRIVATE)
 
         val loader: Single<List<Ranobe>> = when (fragmentType) {
             Constants.FragmentType.Rulate -> rulateLoadRanobe()
@@ -241,41 +199,41 @@ class RanobeRecyclerFragment : Fragment() {
                 }.subscribe({ result ->
                     ranobeList.addAll(result)
                     mRanobeRecyclerViewAdapter.notifyItemRangeInserted(oldListSize, ranobeList.size)
-                    mRanobeRecyclerViewAdapter.setLoaded()
+
                     page++
-                    progressDialog?.dismiss()
-                    mSwipeRefreshLayout!!.isRefreshing = false
+                    onItemsLoadFinished()
 
                 }, { error ->
                     LogHelper.SendError(LogHelper.LogType.ERROR, "refreshItems", "", error.fillInStackTrace())
-                    onItemsLoadFailed(error)
+                    onItemsLoadFinished(error)
                 })
 
 
     }
 
 
-    private fun onItemsLoadFailed(error: Throwable) {
+    private fun onItemsLoadFinished(error: Throwable? = null) {
 
-        if (error is CompositeException) {
-            var errorConnection = false
-            for (err in error.exceptions) {
-                if (err is UnknownHostException) {
-                    Toast.makeText(mContext, R.string.ErrorConnection, Toast.LENGTH_SHORT).show()
-                    errorConnection = true
-                    break
+        if (error != null) {
+            if (error is CompositeException) {
+                var errorConnection = false
+                for (err in error.exceptions) {
+                    if (err is UnknownHostException) {
+                        Toast.makeText(mContext, R.string.ErrorConnection, Toast.LENGTH_SHORT).show()
+                        errorConnection = true
+                        break
+                    }
                 }
-            }
-            if (!errorConnection)
+                if (!errorConnection)
+                    Toast.makeText(mContext, R.string.Error, Toast.LENGTH_SHORT).show()
+            } else {
                 Toast.makeText(mContext, R.string.Error, Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(mContext, R.string.Error, Toast.LENGTH_SHORT).show()
+            }
+
         }
 
-
-
         mRanobeRecyclerViewAdapter.setLoaded()
-        mSwipeRefreshLayout!!.isRefreshing = false
+        mSwipeRefreshLayout.isRefreshing = false
         progressDialog?.dismiss()
     }
 
@@ -283,37 +241,71 @@ class RanobeRecyclerFragment : Fragment() {
 
         progressDialog = ProgressDialog(context)
         progressDialog!!.setMessage(resources.getString(R.string.load_please_wait))
-        progressDialog!!.setTitle(resources.getString(R.string.load_ranobes))
-        progressDialog!!.setCancelable(true)
+
+        progressDialog!!.setCancelable(false)
         progressDialog!!.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
-        mSwipeRefreshLayout!!.isRefreshing = false
-        progressDialog!!.show()
+        mSwipeRefreshLayout.isRefreshing = false
+        progressDialog!!.setButton(Dialog.BUTTON_NEGATIVE, "Cancel") { dialog, which ->
 
-//
-//        var step = 0
-//
-//        val newRanobeList = ArrayList<Ranobe>()
-//
-//        activity?.runOnUiThread {
-//            progressDialog!!.setTitle(
-//                    context!!.getString(R.string.Load_local_bookmarks))
-//        }
+            request?.dispose()
+            dialog.dismiss()
+        }
 
-        return MyApp.database?.ranobeDao()?.getFavoriteRanobes()?.map { it ->
-            val newRanobeList = mutableListOf<Ranobe>()
 
-            val groupList = it.groupBy { it.ranobeSite }
-            for (group in groupList ){
-                val titleRanobe = Ranobe(Title)
-                titleRanobe.title =  Constants.RanobeSite.valueOf(group.key).title
-                newRanobeList.add(titleRanobe)
-                newRanobeList.addAll(group.value)
+        if (loadFromDatabase) {
+
+            progressDialog!!.setTitle(resources.getString(R.string.load_ranobes_from_db))
+            progressDialog!!.show()
+            return (MyApp.database?.ranobeDao()?.getFavoriteRanobes()
+                    ?.map { it ->
+                        val newRanobeList = mutableListOf<Ranobe>()
+
+                        val groupList = it.groupBy { g -> g.ranobe.ranobeSite }
+                        for (siteGroup in groupList) {
+                            val webGroupList = siteGroup.value.groupBy { g -> g.ranobe.isFavoriteInWeb }
+
+                            for (webGroup in webGroupList) {
+                                val titleRanobe = Ranobe(Title)
+                                titleRanobe.title = (Constants.RanobeSite.fromUrl(siteGroup.key)?.title
+                                        ?: None.title).plus(if (webGroup.key) "Web" else "Local")
+                                newRanobeList.add(titleRanobe)
+                                newRanobeList.addAll(siteGroup.value.map { gr ->
+                                    gr.ranobe.chapterList = gr.chapterList
+                                    return@map gr.ranobe
+                                })
+                            }
+
+                        }
+
+                        return@map newRanobeList.toList()
+                    } ?: Single.just(listOf())).doOnSuccess {
+                loadFromDatabase = false
             }
 
-            return@map newRanobeList.toList()
-        } ?: Single.just(listOf())
+        } else {
+            progressDialog!!.setTitle(resources.getString(R.string.Load_from_Rulate))
+            progressDialog!!.show()
+            return Single.fromObservable(
+                    getRulateWebFavorite().doFinally { progressDialog!!.setTitle(context!!.getString(R.string.Load_from_RanobeRf)) }
+                            .concatWith(getRanobeRfWebFavorite().doFinally { progressDialog!!.setTitle(context!!.getString(R.string.Load_from_RanobeRf)) })
+                            .concatWith(getRanobeHubWebFavorite().doFinally { progressDialog!!.setTitle(context!!.getString(R.string.Load_from_RanobeRf)) })
+
+                            .map { ranobeList ->
+                                for (ranobe in ranobeList) {
+                                    ranobe.updateRanobe(mContext!!)
+                                    ranobe.isFavoriteInWeb = true
+                                    ranobe.isFavorite = true
+                                    MyApp.database?.ranobeDao()?.insert(ranobe)
+                                    MyApp.database?.chapterDao()?.insertAll(*ranobe.chapterList.toTypedArray())
+                                }
+                                return@map ranobeList
+                            }.toObservable()
+
+            )
 
 
+
+        }
 //
 //        var favRanobeList = MyApp.database?.ranobeDao()?.getFavoriteBySite(Rulate.url)                ?: ArrayList()
 //        if (favRanobeList.isNotEmpty()) {
@@ -550,8 +542,8 @@ class RanobeRecyclerFragment : Fragment() {
 
     companion object {
 
-        fun newInstance(fragmentType: String): RanobeRecyclerFragment {
-            val fragment = RanobeRecyclerFragment()
+        fun newInstance(fragmentType: String): RanobeListFragment {
+            val fragment = RanobeListFragment()
             val args = Bundle()
             args.putString(fragmentBundle, fragmentType)
             MyApp.fragmentType = Constants.FragmentType.valueOf(fragmentType)

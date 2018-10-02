@@ -25,18 +25,16 @@ import com.google.android.material.navigation.NavigationView
 import io.fabric.sdk.android.Fabric
 import ru.profapp.RanobeReader.BuildConfig
 import ru.profapp.RanobeReader.Common.Constants
-import ru.profapp.RanobeReader.Common.StringResources
-import ru.profapp.RanobeReader.Common.StringResources.KEY_Login
 import ru.profapp.RanobeReader.Common.ThemeUtils
 import ru.profapp.RanobeReader.Fragments.HistoryFragment
-import ru.profapp.RanobeReader.Fragments.RanobeRecyclerFragment
+import ru.profapp.RanobeReader.Fragments.RanobeListFragment
 import ru.profapp.RanobeReader.Fragments.SearchFragment
 import ru.profapp.RanobeReader.Helpers.LogHelper
 import ru.profapp.RanobeReader.MyApp
 import ru.profapp.RanobeReader.R
 
 class MainActivity : AppCompatActivity(),
-        RanobeRecyclerFragment.OnListFragmentInteractionListener,
+        RanobeListFragment.OnListFragmentInteractionListener,
         SearchFragment.OnFragmentInteractionListener,
         HistoryFragment.OnFragmentInteractionListener,
         NavigationView.OnNavigationItemSelectedListener {
@@ -94,7 +92,7 @@ class MainActivity : AppCompatActivity(),
         if (currentFragment == Constants.FragmentType.Search.name) {
             ft.replace(R.id.mainFrame, SearchFragment.newInstance())
         } else {
-            ft.replace(R.id.mainFrame, RanobeRecyclerFragment.newInstance(currentFragment!!))
+            ft.replace(R.id.mainFrame, RanobeListFragment.newInstance(currentFragment!!))
         }
 
         ft.commit()
@@ -158,10 +156,10 @@ class MainActivity : AppCompatActivity(),
                 false)
 
         val rfPref = applicationContext.getSharedPreferences(
-                StringResources.Ranoberf_Login_Pref, Context.MODE_PRIVATE)
+                Constants.Ranoberf_Login_Pref, Context.MODE_PRIVATE)
         if (rfPref != null) {
             MyApp.ranobeRfToken = rfPref.getString(
-                    KEY_Login, "")
+                    Constants.KEY_Login, "")
         }
 
         ThemeUtils.setTheme(settingPref.getBoolean(
@@ -211,28 +209,28 @@ class MainActivity : AppCompatActivity(),
         when (id) {
             R.id.nav_favorite -> {
                 currentFragment = Constants.FragmentType.Favorite.name
-                fragment = RanobeRecyclerFragment.newInstance(
+                fragment = RanobeListFragment.newInstance(
                         Constants.FragmentType.Favorite.name)
                 title = resources.getText(R.string.favorite)
                 currentTitle = resources.getText(R.string.favorite).toString()
             }
             R.id.nav_rulate -> {
                 currentFragment = Constants.FragmentType.Rulate.name
-                fragment = RanobeRecyclerFragment.newInstance(
+                fragment = RanobeListFragment.newInstance(
                         Constants.FragmentType.Rulate.name)
                 title = resources.getText(R.string.tl_rulate_name)
                 currentTitle = resources.getText(R.string.tl_rulate_name).toString()
             }
             R.id.nav_ranoberf -> {
                 currentFragment = Constants.FragmentType.Ranoberf.name
-                fragment = RanobeRecyclerFragment.newInstance(
+                fragment = RanobeListFragment.newInstance(
                         Constants.FragmentType.Ranoberf.name)
                 title = resources.getText(R.string.ranobe_rf)
                 currentTitle = resources.getText(R.string.ranobe_rf).toString()
             }
             R.id.nav_ranobehub -> {
                 currentFragment = Constants.FragmentType.RanobeHub.name
-                fragment = RanobeRecyclerFragment.newInstance(
+                fragment = RanobeListFragment.newInstance(
                         Constants.FragmentType.RanobeHub.name)
                 title = resources.getText(R.string.ranobe_hub)
                 currentTitle = resources.getText(R.string.ranobe_hub).toString()
@@ -250,7 +248,7 @@ class MainActivity : AppCompatActivity(),
             R.id.nav_chapters -> {
                 currentFragment = Constants.FragmentType.Saved.name
 
-                fragment = RanobeRecyclerFragment.newInstance(Constants.FragmentType.Saved.name)
+                fragment = RanobeListFragment.newInstance(Constants.FragmentType.Saved.name)
                 title = resources.getText(R.string.saved_chapters)
                 currentTitle = resources.getText(R.string.saved_chapters).toString()
             }

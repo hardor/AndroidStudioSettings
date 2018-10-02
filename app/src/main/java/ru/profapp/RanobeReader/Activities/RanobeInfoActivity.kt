@@ -17,8 +17,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
-import androidx.core.widget.NestedScrollView
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -39,7 +37,7 @@ import ru.profapp.RanobeReader.Adapters.CommentsRecyclerViewAdapter
 import ru.profapp.RanobeReader.Adapters.ExpandableChapterRecyclerViewAdapter
 import ru.profapp.RanobeReader.BuildConfig
 import ru.profapp.RanobeReader.Common.Constants
-import ru.profapp.RanobeReader.Common.StringResources
+import ru.profapp.RanobeReader.Common.Constants.last_chapter_id_Pref
 import ru.profapp.RanobeReader.Helpers.LogHelper
 import ru.profapp.RanobeReader.Helpers.StringHelper
 import ru.profapp.RanobeReader.Models.Chapter
@@ -51,13 +49,13 @@ import java.util.*
 class RanobeInfoActivity : AppCompatActivity() {
 
     private val recycleChapterList = ArrayList<Chapter>()
-    lateinit var recyclerView: RecyclerView
+    lateinit var chapterRecyclerView: RecyclerView
     var preferences: SharedPreferences? = null
     var rfpreferences: SharedPreferences? = null
-    lateinit var mCurrentRanobe: Ranobe
+    lateinit var currentRanobe: Ranobe
     var mContext: Context? = null
-    private var borderImage: Drawable? = null
-    private var fillImage: Drawable? = null
+    private var notFavImage: Drawable? = null
+    private var favImage: Drawable? = null
     lateinit var tabHost: TabHost
     private var adapterExpandable: ExpandableChapterRecyclerViewAdapter? = null
     private var sPref: SharedPreferences? = null
@@ -88,12 +86,11 @@ class RanobeInfoActivity : AppCompatActivity() {
         initAds()
 
         mContext = this@RanobeInfoActivity
-        mCurrentRanobe = MyApp.ranobe!!
+        currentRanobe = MyApp.ranobe!!
 
-        borderImage = mContext!!.resources.getDrawable(R.drawable.ic_favorite_border_black_24dp)
-        fillImage = mContext!!.resources.getDrawable(R.drawable.ic_favorite_black_24dp)
+        notFavImage = mContext!!.resources.getDrawable(R.drawable.ic_favorite_border_black_24dp)
+        favImage = mContext!!.resources.getDrawable(R.drawable.ic_favorite_black_24dp)
 
-        val nestedScrollView = findViewById<NestedScrollView>(R.id.ranobe_info_NestedScrollView)
 
         val fab = findViewById<FloatingActionButton>(R.id.fav_button)
         fab.setOnClickListener { SetToFavorite(fab) }
@@ -102,13 +99,14 @@ class RanobeInfoActivity : AppCompatActivity() {
         bookmarkFab.setOnClickListener { view ->
 
             val sChapterPref = mContext!!.getSharedPreferences(
-                    StringHelper.CleanString(mCurrentRanobe.url), Context.MODE_PRIVATE)
+                    StringHelper.CleanString(currentRanobe.url), Context.MODE_PRIVATE)
 
-            val url = sChapterPref.getString(StringResources.Chapter_Url, null)
+            // TODO get from db
+            val url:String? = null //sChapterPref.getString(Constants.Chapter_Url, null)
             val intent = Intent(mContext, ChapterTextActivity::class.java)
-            var tempIndex = mCurrentRanobe.chapterList.size - 1
+            var tempIndex = currentRanobe.chapterList.size - 1
             if (url != null) {
-                val tempList = mCurrentRanobe.chapterList
+                val tempList = currentRanobe.chapterList
                 for (i in tempList.indices) {
                     val chapter = tempList[i]
                     if (chapter.url == url) {
@@ -135,34 +133,32 @@ class RanobeInfoActivity : AppCompatActivity() {
 
         imageView = findViewById<ImageView>(R.id.main_logoimage)
 
-        Glide.with(this).load(mCurrentRanobe.image)
+        Glide.with(this).load(currentRanobe.image)
                 .apply(imageOptions)
                 .into(imageView)
 
-        supportActionBar?.title = mCurrentRanobe.title
+        supportActionBar?.title = currentRanobe.title
 
-        preferences = mContext!!.getSharedPreferences(StringResources.Rulate_Login_Pref, 0)
+        preferences = mContext!!.getSharedPreferences(Constants.Rulate_Login_Pref, 0)
 
-        rfpreferences = mContext!!.getSharedPreferences(StringResources.Ranoberf_Login_Pref, 0)
+        rfpreferences = mContext!!.getSharedPreferences(Constants.Ranoberf_Login_Pref, 0)
 
-
-
-        recyclerView = findViewById(R.id.chapter_list)
+        chapterRecyclerView = findViewById(R.id.chapter_list)
 
         mChapterLayoutManager = LinearLayoutManager(mContext)
-        recyclerView.layoutManager = mChapterLayoutManager
-        recyclerView.onFlingListener = object : RecyclerView.OnFlingListener() {
+        chapterRecyclerView.layoutManager = mChapterLayoutManager
+        chapterRecyclerView.onFlingListener = object : RecyclerView.OnFlingListener() {
             @RequiresApi(Build.VERSION_CODES.KITKAT)
             override fun onFling(velocityX: Int, velocityY: Int): Boolean {
-                recyclerView.dispatchNestedFling(velocityX.toFloat(), velocityY.toFloat(), false)
+                chapterRecyclerView.dispatchNestedFling(velocityX.toFloat(), velocityY.toFloat(), false)
                 return false
             }
         }
 
-        recyclerView.setHasFixedSize(true)
-        val itemDecorator = DividerItemDecoration(mContext!!, DividerItemDecoration.VERTICAL)
-        itemDecorator.setDrawable(mContext!!.resources.getDrawable(R.drawable.divider))
-        recyclerView.addItemDecoration(itemDecorator)
+        chapterRecyclerView.setHasFixedSize(true)
+//        val itemDecorator = DividerItemDecoration(mContext!!, DividerItemDecoration.VERTICAL)
+//        itemDecorator.setDrawable(mContext!!.resources.getDrawable(R.drawable.divider))
+//        chapterRecyclerView.addItemDecoration(itemDecorator)
 
         progressBar = findViewById(R.id.progressBar)
         progressBar.visibility = View.VISIBLE
@@ -216,41 +212,41 @@ class RanobeInfoActivity : AppCompatActivity() {
     }
 
     private fun loadData() {
-        if (!mCurrentRanobe.description.isNullOrEmpty()) {
+        if (!currentRanobe.description.isNullOrEmpty()) {
             descriptionCard.visibility = View.VISIBLE
         } else {
             descriptionCard.visibility = View.GONE
         }
-        if (!mCurrentRanobe.additionalInfo.isNullOrEmpty()) {
+        if (!currentRanobe.additionalInfo.isNullOrEmpty()) {
             infoCard.visibility = View.VISIBLE
         } else {
             infoCard.visibility = View.GONE
         }
 
 
-        Glide.with(mContext!!).load(mCurrentRanobe.image)
+        Glide.with(mContext!!).load(currentRanobe.image)
                 .apply(imageOptions)
                 .into(imageView)
 
-        var aboutText = String.format("%s / %s \n\n%s\n\nРейтинг: %s", mCurrentRanobe.title,
-                mCurrentRanobe.engTitle, mCurrentRanobe.description, mCurrentRanobe.rating)
+        var aboutText = String.format("%s / %s \n\n%s\n\nРейтинг: %s", currentRanobe.title,
+                currentRanobe.engTitle, currentRanobe.description, currentRanobe.rating)
 
-        if (mCurrentRanobe.genres != null) {
-            aboutText = aboutText + "\n\n" + mCurrentRanobe.genres
+        if (currentRanobe.genres != null) {
+            aboutText = aboutText + "\n\n" + currentRanobe.genres
         }
 
         aboutTextView.text = aboutText
-        additionalInfoTextView.text = mCurrentRanobe.additionalInfo
+        additionalInfoTextView.text = currentRanobe.additionalInfo
     }
 
     private fun loadChapters() {
         recycleChapterList.clear()
         sPref = mContext!!.getSharedPreferences(
-                StringResources.is_readed_Pref,
+                last_chapter_id_Pref,
                 Context.MODE_PRIVATE)
-        lastIndexPref = mContext!!.getSharedPreferences(StringResources.is_readed_Pref, Context.MODE_PRIVATE)
+        lastIndexPref = mContext!!.getSharedPreferences(last_chapter_id_Pref, Context.MODE_PRIVATE)
 
-        request = mCurrentRanobe.updateRanobe(mContext!!)
+        request = currentRanobe.updateRanobe(mContext!!)
                 .map {
                     var checked = false
                     if (lastIndexPref != null) {
@@ -274,15 +270,15 @@ class RanobeInfoActivity : AppCompatActivity() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ result ->
-                    mCurrentRanobe = result
+                    currentRanobe = result
                     progressBar.visibility = View.GONE
                     loadData()
                     result.wasUpdated = true
                     recycleChapterList.addAll(result?.chapterList!!)
-                    adapterExpandable = ExpandableChapterRecyclerViewAdapter(mContext!!, recycleChapterList, mCurrentRanobe)
-                    recyclerView.adapter = adapterExpandable
+                    adapterExpandable = ExpandableChapterRecyclerViewAdapter(mContext!!, recycleChapterList, currentRanobe)
+                    chapterRecyclerView.adapter = adapterExpandable
 
-                    if (mCurrentRanobe.comments.isNotEmpty()) {
+                    if (currentRanobe.comments.isNotEmpty()) {
                         val commentRecycleView = findViewById<RecyclerView>(R.id.comment_list)
                         commentRecycleView.layoutManager = LinearLayoutManager(mContext)
                         commentRecycleView.setHasFixedSize(true)
@@ -294,7 +290,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                             }
                         }
 
-                        val commentsAdapter = CommentsRecyclerViewAdapter(mContext!!, mCurrentRanobe.comments)
+                        val commentsAdapter = CommentsRecyclerViewAdapter(mContext!!, currentRanobe.comments)
                         commentRecycleView.adapter = commentsAdapter
 
                         val tabSpec: TabHost.TabSpec = tabHost.newTabSpec("comments")
@@ -306,7 +302,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                 }, { error ->
                     LogHelper.SendError(LogHelper.LogType.ERROR, "loadChapters", "", error.fillInStackTrace())
 
-                    mCurrentRanobe.wasUpdated = false
+                    currentRanobe.wasUpdated = false
                     progressBar.visibility = View.GONE
                 })
 
@@ -314,12 +310,21 @@ class RanobeInfoActivity : AppCompatActivity() {
     }
 
     private fun getFavoriteIcon(item: MenuItem) {
-        AsyncTask.execute {
-            if (mCurrentRanobe.isFavorite || mCurrentRanobe.isFavoriteInWeb) {
-                runOnUiThread { item.icon = fillImage }
-            } else {
-                runOnUiThread { item.icon = borderImage }
-            }//  || DatabaseDao.Companion.getInstance(                    context).ranobeDao().IsRanobeFavorite(                    mCurrentRanobe.getUrl())                    != null
+        if (currentRanobe.isFavorite || currentRanobe.isFavoriteInWeb) {
+           item.icon = favImage
+        } else {
+            MyApp.database?.ranobeDao()?.isRanobeFavorite(currentRanobe.url)?.
+                    observeOn(AndroidSchedulers.mainThread())?.
+                    subscribeOn(Schedulers.io())?.
+                    subscribe({
+                if (it!=null) {
+                    currentRanobe.isFavorite = it.isFavorite
+                    currentRanobe.isFavoriteInWeb = it.isFavoriteInWeb
+                }
+                item.icon = favImage
+            }, {
+                item.icon = notFavImage
+            })
         }
     }
 
@@ -339,27 +344,27 @@ class RanobeInfoActivity : AppCompatActivity() {
 
     private fun SetToFavorite(item: FloatingActionButton) {
 
-        if (!mCurrentRanobe.isFavorite && !mCurrentRanobe.isFavoriteInWeb) {
-            item.setImageDrawable(fillImage)
+        if (!currentRanobe.isFavorite && !currentRanobe.isFavoriteInWeb) {
+            item.setImageDrawable(favImage)
 
             object : Thread() {
                 override fun run() {
                     var wasadded = false
-                    if (mCurrentRanobe.ranobeSite == Constants.RanobeSite.Rulate.url) {
+                    if (currentRanobe.ranobeSite == Constants.RanobeSite.Rulate.url) {
 
                         val token = preferences!!.getString(
-                                StringResources.KEY_Token, "")
+                                Constants.KEY_Token, "")
                         if (token != "") {
                             try {
-                                val response = ""//JsonRulateApi.getInstance()!!.AddBookmark(mCurrentRanobe.id, token)
+                                val response = ""//JsonRulateApi.getInstance()!!.AddBookmark(currentRanobe.id, token)
 
                                 val jsonObject = JSONObject(response)
                                 if (jsonObject.getString("status") == "success") {
                                     wasadded = true
-                                    mCurrentRanobe.isFavoriteInWeb = true
+                                    currentRanobe.isFavoriteInWeb = true
                                     runOnUiThread {
                                         Toast.makeText(mContext,
-                                                mCurrentRanobe.title + " "
+                                                currentRanobe.title + " "
                                                         + mContext!!.getString(
                                                         R.string.added_to_web),
                                                 Toast.LENGTH_SHORT).show()
@@ -373,21 +378,21 @@ class RanobeInfoActivity : AppCompatActivity() {
 
                         }
 
-                    } else if (mCurrentRanobe.ranobeSite == Constants.RanobeSite.RanobeRf.url) {
+                    } else if (currentRanobe.ranobeSite == Constants.RanobeSite.RanobeRf.url) {
 
                         val token = rfpreferences!!.getString(
-                                StringResources.KEY_Token, "")
+                                Constants.KEY_Token, "")
                         if (token != "") {
                             try {
-                                val response = ""//JsonRanobeRfApi.getInstance()!!.AddBookmark(   mCurrentRanobe.id,   mCurrentRanobe.chapterList[0].id,                                        token)
+                                val response = ""//JsonRanobeRfApi.getInstance()!!.AddBookmark(   currentRanobe.id,   currentRanobe.chapterList[0].id,                                        token)
 
                                 val jsonObject = JSONObject(response)
                                 if (jsonObject.getInt("status") == 200) {
                                     wasadded = true
-                                    mCurrentRanobe.isFavoriteInWeb = true
+                                    currentRanobe.isFavoriteInWeb = true
                                     runOnUiThread {
                                         Toast.makeText(mContext,
-                                                mCurrentRanobe.title + " "
+                                                currentRanobe.title + " "
                                                         + mContext!!.getString(
                                                         R.string.added_to_web),
                                                 Toast.LENGTH_SHORT).show()
@@ -404,18 +409,18 @@ class RanobeInfoActivity : AppCompatActivity() {
                     }
 
                     if (!wasadded) {
-                        mCurrentRanobe.isFavorite = true
+                        currentRanobe.isFavorite = true
                         AsyncTask.execute {
                             MyApp.database?.ranobeDao()?.insert(
-                                    mCurrentRanobe)
+                                    currentRanobe)
                             MyApp.database?.chapterDao()?.insertAll(
-                                    *mCurrentRanobe.chapterList.toTypedArray())
+                                    *currentRanobe.chapterList.toTypedArray())
 
                         }
 
                         runOnUiThread {
                             Toast.makeText(mContext,
-                                    mCurrentRanobe.title + " " + mContext!!.getString(
+                                    currentRanobe.title + " " + mContext!!.getString(
                                             R.string.added_to_local), Toast.LENGTH_SHORT).show()
                         }
 
@@ -425,23 +430,23 @@ class RanobeInfoActivity : AppCompatActivity() {
 
         } else {
 
-            if (mCurrentRanobe.isFavoriteInWeb) {
+            if (currentRanobe.isFavoriteInWeb) {
 
-                if (mCurrentRanobe.ranobeSite.contains(
+                if (currentRanobe.ranobeSite.contains(
                                 Constants.RanobeSite.Rulate.url)) {
-                    val token = preferences!!.getString(StringResources.KEY_Token, "") ?: ""
+                    val token = preferences!!.getString(Constants.KEY_Token, "") ?: ""
                     if (token != "") {
                         try {
-                            val response = ""// JsonRulateApi.getInstance()!!.RemoveBookmark(                                    mCurrentRanobe.id, token)
+                            val response = ""// JsonRulateApi.getInstance()!!.RemoveBookmark(                                    currentRanobe.id, token)
 
                             val jsonObject = JSONObject(response)
                             if (jsonObject.getString("status") == "success") {
-                                mCurrentRanobe.isFavoriteInWeb = false
+                                currentRanobe.isFavoriteInWeb = false
                                 AsyncTask.execute {
                                     MyApp.database?.ranobeDao()?.deleteWeb(
-                                            mCurrentRanobe.url)
+                                            currentRanobe.url)
                                 }
-                                item.setImageDrawable(borderImage)
+                                item.setImageDrawable(notFavImage)
                             }
                         } catch (e: JSONException) {
                             LogHelper.SendError(LogHelper.LogType.WARN,
@@ -451,24 +456,24 @@ class RanobeInfoActivity : AppCompatActivity() {
 
                     }
 
-                } else if (mCurrentRanobe.ranobeSite.contains(
+                } else if (currentRanobe.ranobeSite.contains(
                                 Constants.RanobeSite.RanobeRf.url)) {
-                    val token = rfpreferences!!.getString(StringResources.KEY_Token, "") ?: ""
+                    val token = rfpreferences!!.getString(Constants.KEY_Token, "") ?: ""
                     if (token != "") {
 
                         val thread = Thread {
                             try {
-                                val response = ""//JsonRanobeRfApi.getInstance()!!.RemoveBookmark(                                        mCurrentRanobe.bookmarkIdRf, token)
+                                val response = ""//JsonRanobeRfApi.getInstance()!!.RemoveBookmark(                                        currentRanobe.bookmarkIdRf, token)
 
                                 val jsonObject = JSONObject(response)
                                 if (jsonObject.getInt("status") == 200) {
-                                    mCurrentRanobe.isFavoriteInWeb = false
+                                    currentRanobe.isFavoriteInWeb = false
                                     AsyncTask.execute {
                                         MyApp.database?.ranobeDao()?.deleteWeb(
-                                                mCurrentRanobe.url)
+                                                currentRanobe.url)
                                     }
                                     runOnUiThread {
-                                        item.setImageDrawable(borderImage)
+                                        item.setImageDrawable(notFavImage)
                                     }
 
                                 }
@@ -493,10 +498,10 @@ class RanobeInfoActivity : AppCompatActivity() {
             } else {
                 AsyncTask.execute {
                     MyApp.database?.ranobeDao()?.delete(
-                            mCurrentRanobe.url)
+                            currentRanobe.url)
                 }
-                mCurrentRanobe.isFavorite = false
-                item.setImageDrawable(borderImage)
+                currentRanobe.isFavorite = false
+                item.setImageDrawable(notFavImage)
             }
 
         }
@@ -519,7 +524,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                 }
             }
             R.id.navigation_open_in_browser -> {
-                var url = mCurrentRanobe.url
+                var url = currentRanobe.url
 
                 if (!url.startsWith("http://") && !url.startsWith("https://")) {
                     url = "https://$url"

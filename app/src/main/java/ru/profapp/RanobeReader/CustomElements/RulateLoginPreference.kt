@@ -11,7 +11,7 @@ import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import ru.profapp.RanobeReader.Common.StringResources
+import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.JsonApi.RulateRepository
 import ru.profapp.RanobeReader.R
 
@@ -37,10 +37,10 @@ class RulateLoginPreference(context: Context, attrs: AttributeSet) : DialogPrefe
         val view = View.inflate(context, R.layout.activity_login, null)
 
         val context = this.context
-        sharedPref = context.getSharedPreferences(StringResources.Rulate_Login_Pref, Context.MODE_PRIVATE)
+        sharedPref = context.getSharedPreferences(Constants.Rulate_Login_Pref, Context.MODE_PRIVATE)
 
 
-        val value = sharedPref.getString(StringResources.KEY_Login, "")
+        val value = sharedPref.getString(Constants.KEY_Login, "")
         // Setup SeekBar
         mLoginEditor = view.findViewById(R.id.login_login)
         mLoginEditor.setText(value)
@@ -77,7 +77,7 @@ class RulateLoginPreference(context: Context, attrs: AttributeSet) : DialogPrefe
         val username = mLoginEditor.text.toString()
         val password = mPasswordEditor.text.toString()
 
-        sharedPref.edit().putString(StringResources.KEY_Login, username).commit()
+        sharedPref.edit().putString(Constants.KEY_Login, username).commit()
 
 
         val alert = AlertDialog.Builder(context).create()
@@ -89,10 +89,10 @@ class RulateLoginPreference(context: Context, attrs: AttributeSet) : DialogPrefe
                     .subscribe({ result ->
                         val resBool = java.lang.Boolean.valueOf(result[0])
                         if (resBool) {
-                            sharedPref.edit().putString(StringResources.KEY_Token, result[2]).commit()
+                            sharedPref.edit().putString(Constants.KEY_Token, result[2]).commit()
                             summary = username
                         } else {
-                            sharedPref.edit().putString(StringResources.KEY_Token, "").commit()
+                            sharedPref.edit().putString(Constants.KEY_Token, "").commit()
 
                             summary = context.getString(R.string.login_to_summary)
                         }
@@ -102,7 +102,7 @@ class RulateLoginPreference(context: Context, attrs: AttributeSet) : DialogPrefe
                         alert.setButton(Dialog.BUTTON_POSITIVE, "OK") { dialog, which -> }
                         alert.show()
                     }, {
-                        sharedPref.edit().putString(StringResources.KEY_Token, "").commit()
+                        sharedPref.edit().putString(Constants.KEY_Token, "").commit()
 
                         summary = context.getString(R.string.login_to_summary)
 
@@ -121,7 +121,7 @@ class RulateLoginPreference(context: Context, attrs: AttributeSet) : DialogPrefe
             alert.setTitle(context.getString(R.string.login_failed))
             alert.setMessage(context.getString(R.string.enter_user_pass))
             alert.setButton(Dialog.BUTTON_POSITIVE, "OK") { dialog, which ->
-                sharedPref.edit().putString(StringResources.KEY_Token, "").commit()
+                sharedPref.edit().putString(Constants.KEY_Token, "").commit()
                 summary = context.getString(R.string.login_to_summary)
             }
             alert.setButton(Dialog.BUTTON_NEUTRAL, "Cancel") { dialog, which ->

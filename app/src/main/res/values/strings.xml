@@ -130,5 +130,6 @@
   <string name="market_exist">No PlayMarket was found</string>
   <string name="history">History</string>
   <string name="date_format">MM/dd/yyyy HH:mm</string>
+  <string name="load_ranobes_from_db">Loading favorite ranobe from database</string>
 
 </resources>

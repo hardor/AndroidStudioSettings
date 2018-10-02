@@ -4,6 +4,7 @@ import androidx.room.*
 import io.reactivex.Flowable
 import io.reactivex.Single
 import ru.profapp.RanobeReader.Models.Ranobe
+import ru.profapp.RanobeReader.Models.RanobeWithChapters
 
 /**
  * Created by Ruslan on 09.02.2018.
@@ -39,11 +40,16 @@ interface RanobeDao {
     @Query("SELECT * FROM ranobe WHERE url=:UrlToRanobe")
     fun getRanobeByUrl(UrlToRanobe: String): Ranobe
 
+    @Transaction
+    @Query("SELECT * FROM ranobe WHERE url=:UrlToRanobe")
+    fun getRanobeWithChaptersByUrl(UrlToRanobe: String): RanobeWithChapters
+
+    @Transaction
     @Query("SELECT * FROM ranobe WHERE IsFavorite = 1")
-    fun getFavoriteRanobes(): Single<List<Ranobe>>
+    fun getFavoriteRanobes(): Single<List<RanobeWithChapters>>
 
     @Query("SELECT * FROM ranobe WHERE IsFavorite = 1 AND url=:UrlToRanobe LIMIT 1")
-    fun isRanobeFavorite(UrlToRanobe: String): Ranobe
+    fun isRanobeFavorite(UrlToRanobe: String): Single<Ranobe>
 
     @Query("DELETE FROM ranobe")
     fun cleanTable()

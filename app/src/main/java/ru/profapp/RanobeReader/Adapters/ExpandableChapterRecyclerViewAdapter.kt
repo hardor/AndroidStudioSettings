@@ -120,7 +120,6 @@ class ExpandableChapterRecyclerViewAdapter(private val context: Context, private
         return parentDataItems.size
     }
 
-//todo: move onclick to Oncreate
 
     inner class GroupViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 

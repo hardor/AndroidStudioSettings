@@ -6,7 +6,6 @@ import io.reactivex.Single
 import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Helpers.StringHelper
 import ru.profapp.RanobeReader.JsonApi.IApiServices.IRanobeRfApiService
-import ru.profapp.RanobeReader.JsonApi.IApiServices.IRulateApiService
 import ru.profapp.RanobeReader.JsonApi.Ranoberf.*
 import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.Models.Ranobe
@@ -52,7 +51,7 @@ object RanobeRfRepository {
     }
 
 
-    fun searchBooks(search: String): Single<MutableList<Ranobe>> {
+    fun searchBooks(search: String): Single<List<Ranobe>> {
         return IRanobeRfApiService.create().SearchBooks(search)
                 .map {
                     val or: MutableList<Ranobe> = mutableListOf()
@@ -74,7 +73,7 @@ object RanobeRfRepository {
                 }
     }
 
-    fun getFavoriteBooks(token: String?): Single<MutableList<Ranobe>> {
+    fun getFavoriteBooks(token: String?): Single<List<Ranobe>> {
         if (token.isNullOrBlank())
             return Single.just(mutableListOf())
         return IRanobeRfApiService.create().GetFavoriteBooks("Bearer $token")
@@ -140,7 +139,7 @@ object RanobeRfRepository {
     }
 
 
-    fun removeBookmark(token: String, bookmark_id: Int): Single<Pair<Boolean, String>> {
+    fun removeBookmark(token: String?, bookmark_id: Int): Single<Pair<Boolean, String>> {
         if (token.isNullOrBlank())
             return Single.just(Pair(false, "No token found"))
 

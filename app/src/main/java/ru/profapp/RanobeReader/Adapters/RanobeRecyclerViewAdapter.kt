@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -17,7 +16,7 @@ import com.bumptech.glide.request.RequestOptions
 import ru.profapp.RanobeReader.Activities.RanobeInfoActivity
 import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Common.OnLoadMoreListener
-import ru.profapp.RanobeReader.Fragments.RanobeRecyclerFragment.OnListFragmentInteractionListener
+import ru.profapp.RanobeReader.Fragments.RanobeListFragment.OnListFragmentInteractionListener
 import ru.profapp.RanobeReader.Models.Ranobe
 import ru.profapp.RanobeReader.MyApp
 import ru.profapp.RanobeReader.R
@@ -35,7 +34,7 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
     var onLoadMoreListener: OnLoadMoreListener? = null
 
     var isLoading: Boolean = false
-    var pastVisiblesItems: Int = 0
+    var pastVisibleItems: Int = 0
     var lastVisibleItem: Int = 0
     var totalItemCount: Int = 0
     private val inflater: LayoutInflater = LayoutInflater.from(context)
@@ -50,10 +49,10 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
                 if (dy > 0) {
                     lastVisibleItem = linearLayoutManager.childCount
                     totalItemCount = linearLayoutManager.itemCount
-                    pastVisiblesItems = linearLayoutManager.findFirstVisibleItemPosition()
+                    pastVisibleItems = linearLayoutManager.findFirstVisibleItemPosition()
 
                     if (!isLoading) {
-                        if (lastVisibleItem + pastVisiblesItems >= totalItemCount) {
+                        if (lastVisibleItem + pastVisibleItems >= totalItemCount) {
 
                             if (onLoadMoreListener != null) {
                                 isLoading = true
@@ -121,17 +120,6 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
                         imageOptions
                 ).into(holder.imageView)
 
-                holder.mView.setOnClickListener { v ->
-
-                    val intent = Intent(context, RanobeInfoActivity::class.java)
-
-                    MyApp.ranobe = holder.mItem
-
-                    if (MyApp.ranobe != null) {
-                        holder.mView.context.startActivity(intent)
-                    }
-
-                }
 
                 val chapterList = holder.mItem.chapterList
                 if (chapterList.isNotEmpty()) {
@@ -139,9 +127,9 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
                             ArrayList(chapterList.subList(0, Math.min(Constants.chaptersNum, chapterList.size))),
                             holder.mItem)
 
-                    val itemDecorator = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
-                    itemDecorator.setDrawable(context.resources.getDrawable(R.drawable.divider))
-                    holder.chaptersListView.addItemDecoration(itemDecorator)
+//                    val itemDecorator = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
+//                    itemDecorator.setDrawable(context.resources.getDrawable(R.drawable.divider))
+//                    holder.chaptersListView.addItemDecoration(itemDecorator)
                     holder.chaptersListView.adapter = adapter
                     holder.chaptersListView.visibility = View.VISIBLE
                 } else {
@@ -179,7 +167,7 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
 
     }
 
-    inner class RanobeViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
+    inner class RanobeViewHolder(mView: View) : RecyclerView.ViewHolder(mView), View.OnClickListener {
 
         val imageView: ImageView = mView.findViewById(R.id.imageView)
         val chaptersListView: RecyclerView = mView.findViewById(R.id.list_chapter_list)
@@ -191,7 +179,21 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
         init {
             chaptersListView.setHasFixedSize(true)
             chaptersListView.layoutManager = LinearLayoutManager(context)
+            mView.setOnClickListener(this)
         }
+
+        override fun onClick(v: View) {
+            if (adapterPosition != RecyclerView.NO_POSITION) {
+
+                val intent = Intent(context, RanobeInfoActivity::class.java)
+                MyApp.ranobe = mItem
+                if (MyApp.ranobe != null) {
+                    context.startActivity(intent)
+                }
+
+            }
+        }
+
 
     }
 
