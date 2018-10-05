@@ -12,7 +12,7 @@
     android:layout_height="match_parent"
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
-    android:name="ru.profapp.ranobereader.FavoriteFragment"
+    android:name="ru.profapp.RanobeReader.FavoriteFragment"
     android:scrollbars="vertical"
     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
     tools:context="ru.profapp.RanobeReader.Fragments.RanobeListFragment"

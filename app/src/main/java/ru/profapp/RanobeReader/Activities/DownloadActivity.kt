@@ -151,14 +151,14 @@ class DownloadActivity : AppCompatActivity() {
 
                         val textChapter = MyApp.database?.textDao()?.getTextByChapterUrl(chapter.url)
                         //Todo
-//                        if (textChapter?.text != null
-//                                && textChapter.text != "") {
-//                            chapter.downloaded = true
-//                            chapter.isChecked = true
-//                        } else {
-//                            chapter.downloaded = false
-//                            chapter.isChecked = false
-//                        }
+                        //                        if (textChapter?.text != null
+                        //                                && textChapter.text != "") {
+                        //                            chapter.downloaded = true
+                        //                            chapter.isChecked = true
+                        //                        } else {
+                        //                            chapter.downloaded = false
+                        //                            chapter.isChecked = false
+                        //                        }
                     } else {
                         chapter.isChecked = true
                     }
@@ -171,7 +171,6 @@ class DownloadActivity : AppCompatActivity() {
 
             }
         }.start()
-
 
     }
 

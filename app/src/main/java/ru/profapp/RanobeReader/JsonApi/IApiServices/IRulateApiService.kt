@@ -8,7 +8,6 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 import ru.profapp.RanobeReader.JsonApi.Rulate.*
 
-
 interface IRulateApiService {
 
     @GET("/api/getReady?key=fpoiKLUues81werht039")

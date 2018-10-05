@@ -18,7 +18,6 @@ import ru.profapp.RanobeReader.Models.Ranobe
 import ru.profapp.RanobeReader.MyApp
 import ru.profapp.RanobeReader.R
 
-
 class ExpandableChapterRecyclerViewAdapter(private val context: Context, private val mRanobe: Ranobe) : RecyclerView.Adapter<ExpandableChapterRecyclerViewAdapter.GroupViewHolder>() {
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
@@ -27,58 +26,18 @@ class ExpandableChapterRecyclerViewAdapter(private val context: Context, private
         return (context.resources.displayMetrics.density * 6 + 0.5f).toInt()
     }
 
-
     constructor(context: Context, mChapters: ArrayList<Chapter>, mRanobe: Ranobe) : this(context, mRanobe) {
 
         val numInGroup = 100
         val num = mChapters.size / numInGroup
         for (i in 0..num) {
-            val parentDataItem = ParentDataItem(
-                    "${mChapters[minOf((i + 1) * numInGroup, mChapters.size - 1)].title} - ${mChapters[minOf(i * numInGroup, mChapters.size - 1)].title}",
-                    (mChapters.subList(i * numInGroup, minOf((i + 1) * numInGroup, mChapters.size))))
+            val parentDataItem = ParentDataItem("${mChapters[minOf((i + 1) * numInGroup, mChapters.size - 1)].title} - ${mChapters[minOf(i * numInGroup, mChapters.size - 1)].title}", (mChapters.subList(i * numInGroup, minOf((i + 1) * numInGroup, mChapters.size))))
             parentDataItems.add(parentDataItem)
         }
 
     }
 
-
     private val parentDataItems: ArrayList<ParentDataItem> = ArrayList()
-
-    interface OnItemClickListener {
-        fun onItemClick(item: Chapter)
-    }
-
-
-    private val clickListener = object : OnItemClickListener {
-        override fun onItemClick(item: Chapter) {
-
-            if (MyApp.ranobe == null || item.ranobeUrl != MyApp.ranobe!!.url) {
-
-                var ranobe = Ranobe()
-                ranobe.url = item.ranobeUrl
-                if (MyApp.fragmentType != null && MyApp.fragmentType != Constants.FragmentType.Saved) {
-                    try {
-                        ranobe.updateRanobe(context)
-                    } catch (ignored: Exception) {
-                        ranobe = mRanobe
-                    }
-
-                } else {
-                    ranobe = mRanobe
-                }
-
-                MyApp.ranobe = ranobe
-            }
-            if (MyApp.ranobe != null) {
-                val intent = Intent(context, ChapterTextActivity::class.java)
-                intent.putExtra("ChapterIndex", item.index)
-
-                context.startActivity(intent)
-            }
-
-        }
-
-    }
 
     override fun onCreateViewHolder(@NonNull parent: ViewGroup, viewType: Int): ExpandableChapterRecyclerViewAdapter.GroupViewHolder {
         val view = inflater.inflate(R.layout.item_parent_child_listing, parent, false)
@@ -104,13 +63,37 @@ class ExpandableChapterRecyclerViewAdapter(private val context: Context, private
             if (!childItem.canRead) {
                 currentTextView.setBackgroundColor(Color.GRAY)
             } else {
-                currentTextView.setOnClickListener { clickListener }
+                // Todo
+                currentTextView.setOnClickListener {
+                    if (MyApp.ranobe == null || childItem.ranobeUrl != MyApp.ranobe!!.url) {
+
+                        var ranobe = Ranobe()
+                        ranobe.url = childItem.ranobeUrl
+                        if (MyApp.fragmentType != null && MyApp.fragmentType != Constants.FragmentType.Saved) {
+                            try {
+                                ranobe.updateRanobe(context)
+                            } catch (ignored: Exception) {
+                                ranobe = mRanobe
+                            }
+
+                        } else {
+                            ranobe = mRanobe
+                        }
+
+                        MyApp.ranobe = ranobe
+                    }
+                    if (MyApp.ranobe != null) {
+                        val intent = Intent(context, ChapterTextActivity::class.java)
+                        intent.putExtra("ChapterIndex", childItem.index)
+
+                        context.startActivity(intent)
+                    }
+                }
             }
 
             if (childItem.isRead) {
                 currentTextView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimaryDark))
             }
-
 
         }
 
@@ -119,7 +102,6 @@ class ExpandableChapterRecyclerViewAdapter(private val context: Context, private
     override fun getItemCount(): Int {
         return parentDataItems.size
     }
-
 
     inner class GroupViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
@@ -157,7 +139,6 @@ class ExpandableChapterRecyclerViewAdapter(private val context: Context, private
 
         }
     }
-
 
 }
 

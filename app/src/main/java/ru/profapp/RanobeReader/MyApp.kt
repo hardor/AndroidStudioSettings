@@ -10,9 +10,7 @@ import ru.profapp.RanobeReader.DAO.DatabaseDao
 import ru.profapp.RanobeReader.Helpers.LogHelper
 import ru.profapp.RanobeReader.Models.Ranobe
 
-
 class MyApp : Application() {
-
 
     companion object {
 
@@ -61,6 +59,8 @@ class MyApp : Application() {
                     database.execSQL("CREATE INDEX index_ranobeImage_RanobeUrl ON ranobeImage (RanobeUrl);")
                     database.execSQL("CREATE TABLE chapterHistory (ChapterUrl TEXT NOT NULL, ChapterName TEXT NOT NULL, RanobeName TEXT NOT NULL, [Index] INTEGER NOT NULL, ReadDate INTEGER NOT NULL, Progress REAL NOT NULL, PRIMARY KEY(ChapterUrl));")
                     database.execSQL("CREATE INDEX index_chapterHistory_ChapterUrl ON chapterHistory (ChapterUrl);")
+                    database.execSQL("CREATE TABLE ranobeHistory (RanobeUrl TEXT NOT NULL, RanobeName TEXT NOT NULL, Description TEXT, ReadDate INTEGER NOT NULL, PRIMARY KEY(RanobeUrl))")
+                    database.execSQL("CREATE INDEX index_ranobeHistory_RanobeUrl ON ranobeHistory (RanobeUrl)")
                     database.execSQL("CREATE TABLE IF NOT EXISTS `textChapter2` (`ChapterUrl` TEXT NOT NULL, `ChapterName` TEXT NOT NULL, `RanobeName` TEXT NOT NULL, `Text` TEXT NOT NULL, `Index` INTEGER NOT NULL, PRIMARY KEY(`ChapterUrl`));")
                     database.execSQL("INSERT INTO textChapter2 SELECT * FROM textChapter;")
                     database.execSQL("DROP TABLE textChapter;")

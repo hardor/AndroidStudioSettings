@@ -10,7 +10,6 @@ import ru.profapp.RanobeReader.JsonApi.RanobeHub.ChaptersGson
 import ru.profapp.RanobeReader.JsonApi.RanobeHub.RanobeHubReadyGson
 import ru.profapp.RanobeReader.JsonApi.RanobeHub.RanobeHubSearchGson
 
-
 interface IRanobeHubApiService {
 
     @FormUrlEncoded

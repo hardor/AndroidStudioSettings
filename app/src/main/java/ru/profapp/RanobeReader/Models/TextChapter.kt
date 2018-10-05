@@ -25,7 +25,6 @@ class TextChapter {
     @ColumnInfo(name = "Index")
     var index: Int = 0
 
-
     constructor(@NonNull chapterUrl: String, text: String, chapterName: String, ranobeName: String, index: Int) {
         this.chapterUrl = chapterUrl
         this.text = text
@@ -56,6 +55,5 @@ class TextChapter {
     override fun hashCode(): Int {
         return chapterUrl.hashCode()
     }
-
 
 }

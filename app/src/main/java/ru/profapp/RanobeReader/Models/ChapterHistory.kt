@@ -29,7 +29,6 @@ class ChapterHistory {
     @ColumnInfo(name = "Progress")
     var progress: Float = 0F
 
-
     constructor(chapterUrl: String, chapterName: String, ranobeName: String, index: Int, progress: Float) {
         this.chapterUrl = chapterUrl
         this.chapterName = chapterName
@@ -52,7 +51,6 @@ class ChapterHistory {
     override fun hashCode(): Int {
         return chapterUrl.hashCode()
     }
-
 
 }
 

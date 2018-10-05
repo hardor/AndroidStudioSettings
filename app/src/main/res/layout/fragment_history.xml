@@ -6,14 +6,58 @@
   android:layout_height="match_parent"
   tools:context=".Fragments.HistoryFragment">
 
-  <androidx.recyclerview.widget.RecyclerView
-    android:id="@+id/ranobeListView"
+  <TabHost
+    android:id="@+id/tabHost"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
-    android:scrollbars="vertical"
-    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-    tools:listitem="@layout/item_history"/>
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical">
+
+      <TabWidget
+        android:id="@android:id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+      <FrameLayout
+        android:id="@android:id/tabcontent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.cardview.widget.CardView
+          android:id="@+id/linearLayout"
+          style="@style/CardViewStyle">
+          <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/ranobeListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:scrollbars="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_ranobe"/>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+          android:id="@+id/linearLayout2"
+          style="@style/CardViewStyle">
+          <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/chapterListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:scrollbars="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_history"/>
+
+        </androidx.cardview.widget.CardView>
+
+      </FrameLayout>
+    </LinearLayout>
+  </TabHost>
+
 
 </FrameLayout>

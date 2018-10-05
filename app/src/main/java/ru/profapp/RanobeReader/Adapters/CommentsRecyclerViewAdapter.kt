@@ -19,17 +19,15 @@ import ru.profapp.RanobeReader.JsonApi.Rulate.RulateComment
 import ru.profapp.RanobeReader.R
 import java.util.*
 
-
 class CommentsRecyclerViewAdapter(private val context: Context, private val mValues: List<RulateComment>) : RecyclerView.Adapter<CommentsRecyclerViewAdapter.MyViewHolder>() {
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
-    private val  glide: RequestManager = Glide.with(context)
+    private val glide: RequestManager = Glide.with(context)
     private val imageOptions: RequestOptions = RequestOptions().placeholder(R.drawable.ic_adb_black_24dp).error(R.drawable.ic_error_outline_black_24dp).fitCenter()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentsRecyclerViewAdapter.MyViewHolder {
         val view = inflater.inflate(R.layout.item_comment, parent, false)
         return MyViewHolder(view)
     }
-
 
     override fun onBindViewHolder(@NonNull holder: CommentsRecyclerViewAdapter.MyViewHolder, position: Int) {
         holder.item = mValues[position]
@@ -38,13 +36,11 @@ class CommentsRecyclerViewAdapter(private val context: Context, private val mVal
             holder.dateView.text = String.format("%s %s", holder.item.author, DateFormat.getDateFormat(context).format(Date(holder.item.time!!.times(1000))))
 
         val dp50 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50f, context.resources.displayMetrics).toInt()
-        glide.load(mValues[position].avatar).apply(
-                        imageOptions
-                ).into(object : SimpleTarget<Drawable>(dp50, dp50) {
-                    override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                        holder.bodyTextView.setCompoundDrawablesWithIntrinsicBounds(resource, null, null, null)
-                    }
-                })
+        glide.load(mValues[position].avatar).apply(imageOptions).into(object : SimpleTarget<Drawable>(dp50, dp50) {
+            override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                holder.bodyTextView.setCompoundDrawablesWithIntrinsicBounds(resource, null, null, null)
+            }
+        })
     }
 
     override fun getItemCount(): Int {

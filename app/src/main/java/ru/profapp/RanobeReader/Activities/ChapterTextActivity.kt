@@ -30,14 +30,11 @@ import ru.profapp.RanobeReader.Helpers.LogHelper
 import ru.profapp.RanobeReader.JsonApi.RanobeHubRepository
 import ru.profapp.RanobeReader.JsonApi.RanobeRfRepository
 import ru.profapp.RanobeReader.JsonApi.RulateRepository
-import ru.profapp.RanobeReader.Models.Chapter
-import ru.profapp.RanobeReader.Models.ChapterHistory
-import ru.profapp.RanobeReader.Models.TextChapter
+import ru.profapp.RanobeReader.Models.*
 import ru.profapp.RanobeReader.MyApp
 import ru.profapp.RanobeReader.R
 
 class ChapterTextActivity : AppCompatActivity() {
-
 
     lateinit var mCurrentChapter: Chapter
     private lateinit var mWebView: WebView
@@ -51,17 +48,15 @@ class ChapterTextActivity : AppCompatActivity() {
     private lateinit var nextMenu: ImageButton
     private lateinit var prevMenu: ImageButton
 
-    @ColorInt
-    private val color = resources.getColor(R.color.webViewText)
-    @ColorInt
-    private val color2 = resources.getColor(R.color.webViewBackground)
+    var currentRanobe: Ranobe? = null
+
+
 
     private lateinit var progressBar: ProgressBar
 
     private fun set_web_colors() {
 
-        val settingPref = PreferenceManager.getDefaultSharedPreferences(
-                applicationContext)
+        val settingPref = PreferenceManager.getDefaultSharedPreferences(applicationContext)
         val oldColor = settingPref.getBoolean(resources.getString(R.string.pref_general_app_theme), false)
         settingPref.edit().putBoolean(resources.getString(R.string.pref_general_app_theme), !oldColor).commit()
         ThemeUtils.setTheme(!oldColor)
@@ -93,7 +88,7 @@ class ChapterTextActivity : AppCompatActivity() {
 
         mContext = this@ChapterTextActivity
 
-        val currentRanobe = MyApp.ranobe
+        currentRanobe = MyApp.ranobe
         mChapterList = currentRanobe?.chapterList ?: mChapterList
 
         mCurrentChapter = mChapterList[mIndex]
@@ -108,7 +103,6 @@ class ChapterTextActivity : AppCompatActivity() {
                 super.onPageStarted(view, url, favicon)
                 title = mCurrentChapter.title
             }
-
 
             override fun onPageFinished(view: WebView, url: String) {
 
@@ -141,7 +135,6 @@ class ChapterTextActivity : AppCompatActivity() {
         }
         mWebView.setLayerType(View.LAYER_TYPE_HARDWARE, null)
 
-
         // mWebView.getSettings().setBuiltInZoomControls(true);
         // TODO: check zooming
         mWebView.settings.displayZoomControls = true
@@ -155,6 +148,12 @@ class ChapterTextActivity : AppCompatActivity() {
 
         initWebView()
 
+        Completable.fromAction {
+            MyApp.database?.ranobeHistoryDao()?.insertNewRanobe(
+                    RanobeHistory(currentRanobe?.url!!, currentRanobe?.title!!, currentRanobe?.description)
+            )
+        }?.subscribeOn(Schedulers.io())?.subscribe()
+
         prevMenu = findViewById(R.id.navigation_prev)
         nextMenu = findViewById(R.id.navigation_next)
 
@@ -166,10 +165,14 @@ class ChapterTextActivity : AppCompatActivity() {
 
         prevMenu.setOnClickListener { OnClicked(+1) }
 
-
     }
 
     private fun initWebView() {
+
+        @ColorInt
+         val color = resources.getColor(R.color.webViewText)
+        @ColorInt
+         val color2 = resources.getColor(R.color.webViewBackground)
 
         progressBar.visibility = View.VISIBLE
 
@@ -192,8 +195,7 @@ class ChapterTextActivity : AppCompatActivity() {
                             + style + ">" + "<b>" + mCurrentChapter.title + "</b>" + "</br>"
                             + mCurrentChapter.text + "</body></html>")
 
-                    mWebView.loadDataWithBaseURL("https:\\\\" + mCurrentChapter.url + "/", summary,
-                            "text/html", "UTF-8", null)
+                    mWebView.loadDataWithBaseURL("https:\\\\" + mCurrentChapter.url + "/", summary, "text/html", "UTF-8", null)
 
                 }, { error ->
                     LogHelper.SendError(LogHelper.LogType.ERROR, "GetChapterText", "", error.fillInStackTrace())
@@ -201,11 +203,9 @@ class ChapterTextActivity : AppCompatActivity() {
                             + style + ">" + "<b>" + mCurrentChapter.title + "</b>" + "</br>"
                             + mCurrentChapter.text + "</body></html>")
 
-                    mWebView.loadDataWithBaseURL("https:\\\\" + mCurrentChapter.url + "/", summary,
-                            "text/html", "UTF-8", null)
+                    mWebView.loadDataWithBaseURL("https:\\\\" + mCurrentChapter.url + "/", summary, "text/html", "UTF-8", null)
 
                 })
-
 
     }
 
@@ -235,7 +235,6 @@ class ChapterTextActivity : AppCompatActivity() {
                     startActivity(browserIntent)
                 else
                     Toast.makeText(this, R.string.browser_exist, Toast.LENGTH_SHORT).show()
-
 
             }
         }
@@ -278,7 +277,6 @@ class ChapterTextActivity : AppCompatActivity() {
 
             }
 
-
         } else {
             Single.just(true)
         }.map {
@@ -292,7 +290,6 @@ class ChapterTextActivity : AppCompatActivity() {
             return@map it
         }
 
-
     }
 
     private fun getRulateChapterText(): Single<Boolean> {
@@ -300,7 +297,6 @@ class ChapterTextActivity : AppCompatActivity() {
         val token: String = preferences.getString(Constants.KEY_Token, "") ?: ""
 
         return RulateRepository.getChapterText(token, mCurrentChapter)
-
 
     }
 
@@ -315,7 +311,9 @@ class ChapterTextActivity : AppCompatActivity() {
     private fun saveProgressToDb(pr: Float? = null) {
         val progress = pr ?: calculateProgression()
         Completable.fromAction {
-            MyApp.database?.chapterHistoryDao()?.insert(ChapterHistory(mCurrentChapter.url, mCurrentChapter.title, mCurrentChapter.ranobeName, mCurrentChapter.index, progress))
+            MyApp.database?.ranobeHistoryDao()?.insertNewChapter(
+                    ChapterHistory(mCurrentChapter.url, mCurrentChapter.title, mCurrentChapter.ranobeName, mCurrentChapter.index, progress)
+            )
         }?.subscribeOn(Schedulers.io())?.subscribe()
     }
 
@@ -389,7 +387,6 @@ class ChapterTextActivity : AppCompatActivity() {
             else -> super.dispatchKeyEvent(event)
         }
     }
-
 
     override fun onPause() {
         super.onPause()

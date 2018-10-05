@@ -39,10 +39,8 @@ class MainActivity : AppCompatActivity(),
         HistoryFragment.OnFragmentInteractionListener,
         NavigationView.OnNavigationItemSelectedListener {
 
-
     private val ExceptionHandler = Thread.UncaughtExceptionHandler { th, ex ->
-        LogHelper.SendError(LogHelper.LogType.WARN, "MainActivity",
-                "Uncaught exception", ex)
+        LogHelper.SendError(LogHelper.LogType.WARN, "MainActivity", "Uncaught exception", ex)
     }
     private var adView: AdView? = null
 
@@ -84,10 +82,8 @@ class MainActivity : AppCompatActivity(),
         currentFragment = Constants.FragmentType.Favorite.name
         currentTitle = resources.getText(R.string.favorite).toString()
         if (savedInstanceState != null) {
-            currentFragment = savedInstanceState.getString("Fragment",
-                    Constants.FragmentType.Favorite.name)
-            currentTitle = savedInstanceState.getString("Title",
-                    resources.getText(R.string.favorite).toString())
+            currentFragment = savedInstanceState.getString("Fragment", Constants.FragmentType.Favorite.name)
+            currentTitle = savedInstanceState.getString("Title", resources.getText(R.string.favorite).toString())
         }
         if (currentFragment == Constants.FragmentType.Search.name) {
             ft.replace(R.id.mainFrame, SearchFragment.newInstance())
@@ -107,12 +103,9 @@ class MainActivity : AppCompatActivity(),
 
             }
 
-
         }
 
-        val toggle = ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open,
-                R.string.navigation_drawer_close)
+        val toggle = ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer.addDrawerListener(toggle)
         toggle.syncState()
 
@@ -120,7 +113,6 @@ class MainActivity : AppCompatActivity(),
         navigationView.setNavigationItemSelectedListener(this)
         handleIntent(intent)
     }
-
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
@@ -135,35 +127,28 @@ class MainActivity : AppCompatActivity(),
         if (Intent.ACTION_VIEW == appLinkAction) {
             appLinkData?.lastPathSegment?.also { recipeId ->
                 //                Uri.parse("content://com.recipe_app/recipe/")
-//                        .buildUpon()
-//                        .appendPath(recipeId)
-//                        .build().also { appData ->
-//                            //  showRecipe(appData)
-//                        }
+                //                        .buildUpon()
+                //                        .appendPath(recipeId)
+                //                        .build().also { appData ->
+                //                            //  showRecipe(appData)
+                //                        }
             }
         }
     }
 
     private fun initSettingPreference() {
         PreferenceManager.setDefaultValues(this, R.xml.pref_general, false)
-        val settingPref = PreferenceManager.getDefaultSharedPreferences(
-                applicationContext)
-        MyApp.chapterTextSize = settingPref.getInt(
-                applicationContext.getString(R.string.pref_general_text_size), 13)
+        val settingPref = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        MyApp.chapterTextSize = settingPref.getInt(applicationContext.getString(R.string.pref_general_text_size), 13)
 
-        MyApp.autoSaveText = settingPref.getBoolean(
-                applicationContext.getString(R.string.pref_general_auto_save),
-                false)
+        MyApp.autoSaveText = settingPref.getBoolean(applicationContext.getString(R.string.pref_general_auto_save), false)
 
-        val rfPref = applicationContext.getSharedPreferences(
-                Constants.Ranoberf_Login_Pref, Context.MODE_PRIVATE)
+        val rfPref = applicationContext.getSharedPreferences(Constants.Ranoberf_Login_Pref, Context.MODE_PRIVATE)
         if (rfPref != null) {
-            MyApp.ranobeRfToken = rfPref.getString(
-                    Constants.KEY_Login, "")
+            MyApp.ranobeRfToken = rfPref.getString(Constants.KEY_Login, "")
         }
 
-        ThemeUtils.setTheme(settingPref.getBoolean(
-                applicationContext.getString(R.string.pref_general_app_theme), false))
+        ThemeUtils.setTheme(settingPref.getBoolean(applicationContext.getString(R.string.pref_general_app_theme), false))
         ThemeUtils.onActivityCreateSetTheme()
     }
 
@@ -209,29 +194,25 @@ class MainActivity : AppCompatActivity(),
         when (id) {
             R.id.nav_favorite -> {
                 currentFragment = Constants.FragmentType.Favorite.name
-                fragment = RanobeListFragment.newInstance(
-                        Constants.FragmentType.Favorite.name)
+                fragment = RanobeListFragment.newInstance(Constants.FragmentType.Favorite.name)
                 title = resources.getText(R.string.favorite)
                 currentTitle = resources.getText(R.string.favorite).toString()
             }
             R.id.nav_rulate -> {
                 currentFragment = Constants.FragmentType.Rulate.name
-                fragment = RanobeListFragment.newInstance(
-                        Constants.FragmentType.Rulate.name)
+                fragment = RanobeListFragment.newInstance(Constants.FragmentType.Rulate.name)
                 title = resources.getText(R.string.tl_rulate_name)
                 currentTitle = resources.getText(R.string.tl_rulate_name).toString()
             }
             R.id.nav_ranoberf -> {
                 currentFragment = Constants.FragmentType.Ranoberf.name
-                fragment = RanobeListFragment.newInstance(
-                        Constants.FragmentType.Ranoberf.name)
+                fragment = RanobeListFragment.newInstance(Constants.FragmentType.Ranoberf.name)
                 title = resources.getText(R.string.ranobe_rf)
                 currentTitle = resources.getText(R.string.ranobe_rf).toString()
             }
             R.id.nav_ranobehub -> {
                 currentFragment = Constants.FragmentType.RanobeHub.name
-                fragment = RanobeListFragment.newInstance(
-                        Constants.FragmentType.RanobeHub.name)
+                fragment = RanobeListFragment.newInstance(Constants.FragmentType.RanobeHub.name)
                 title = resources.getText(R.string.ranobe_hub)
                 currentTitle = resources.getText(R.string.ranobe_hub).toString()
             }
@@ -247,31 +228,20 @@ class MainActivity : AppCompatActivity(),
             }
             R.id.nav_chapters -> {
                 currentFragment = Constants.FragmentType.Saved.name
-
                 fragment = RanobeListFragment.newInstance(Constants.FragmentType.Saved.name)
                 title = resources.getText(R.string.saved_chapters)
                 currentTitle = resources.getText(R.string.saved_chapters).toString()
             }
             R.id.nav_history -> {
                 currentFragment = Constants.FragmentType.History.name
-
                 fragment = HistoryFragment.newInstance()
                 title = resources.getText(R.string.history)
                 currentTitle = resources.getText(R.string.history).toString()
             }
             R.id.nav_send -> {
-                val appPackageName = packageName // getPackageName() from Context or Activity object
-                try {
-                    val marketIntent = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$appPackageName"))
-                    if (marketIntent.resolveActivity(this.packageManager) != null)
-                        startActivity(marketIntent)
-                    else
-                        Toast.makeText(this, R.string.market_exist, Toast.LENGTH_SHORT).show()
-
-                } catch (ignored: android.content.ActivityNotFoundException) {
-
-                }
-
+                val marketIntent = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName"))
+                if (marketIntent.resolveActivity(this.packageManager) != null) startActivity(marketIntent)
+                else Toast.makeText(this, R.string.market_exist, Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -298,6 +268,5 @@ class MainActivity : AppCompatActivity(),
         outState.putString("Title", currentTitle)
 
     }
-
 
 }

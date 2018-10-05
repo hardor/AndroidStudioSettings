@@ -6,7 +6,10 @@ import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Helpers.LogHelper
 import ru.profapp.RanobeReader.JsonApi.IApiServices.IRulateApiService
-import ru.profapp.RanobeReader.JsonApi.Rulate.*
+import ru.profapp.RanobeReader.JsonApi.Rulate.ReadyGson
+import ru.profapp.RanobeReader.JsonApi.Rulate.RulateBook
+import ru.profapp.RanobeReader.JsonApi.Rulate.RulateChapter
+import ru.profapp.RanobeReader.JsonApi.Rulate.RulateText
 import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.Models.Ranobe
 import ru.profapp.RanobeReader.Models.RanobeImage
@@ -18,54 +21,49 @@ import java.util.*
 object RulateRepository {
 
     fun getBookInfo(ranobe: Ranobe, token: String = "", book_id: Int?): Single<Ranobe> {
-        return IRulateApiService.create().GetBookInfo(token, book_id)
-                .map {
-                    if (it.status == "success") {
-                        it.response?.let { it1 -> ranobe.updateRanobe(it1) }
-                    }
-                    return@map ranobe
-                }
+        return IRulateApiService.create().GetBookInfo(token, book_id).map {
+            if (it.status == "success") {
+                it.response?.let { it1 -> ranobe.updateRanobe(it1) }
+            }
+            return@map ranobe
+        }
     }
 
     fun getReadyBooks(page: Int): Single<List<Ranobe>> {
-        return IRulateApiService.create().GetReadyBooks(page)
-                .map {
-                    return@map getRanobeList(it)
-                }
+        return IRulateApiService.create().GetReadyBooks(page).map {
+            return@map getRanobeList(it)
+        }
     }
 
     fun getFavoriteBooks(token: String?): Single<List<Ranobe>> {
-        if (token.isNullOrBlank())
-            return Single.just(listOf())
+        if (token.isNullOrBlank()) return Single.just(listOf())
 
-        return IRulateApiService.create().GetFavoriteBooks(token!!)
-                .map {
-                    val or: MutableList<Ranobe> = mutableListOf()
+        return IRulateApiService.create().GetFavoriteBooks(token!!).map {
+            val or: MutableList<Ranobe> = mutableListOf()
 
 
-                    if (it.status == "success") {
-                        for (response in it.response) {
+            if (it.status == "success") {
+                for (response in it.response) {
 
-                            val ranobe = Ranobe(Constants.RanobeSite.Rulate)
-                            ranobe.isFavoriteInWeb = true
-                            ranobe.engTitle = response.sTitle
-                            ranobe.title = response.tTitle
-                            ranobe.lang = response.lang
-                            ranobe.chapterCount = response.nChapters
-                            ranobe.id = response.bookID
-                            ranobe.url = Constants.RanobeSite.Rulate.url + "/book/" + response.bookID
-                            or.add(ranobe)
-                        }
-                    }
-                    return@map or
+                    val ranobe = Ranobe(Constants.RanobeSite.Rulate)
+                    ranobe.isFavoriteInWeb = true
+                    ranobe.engTitle = response.sTitle
+                    ranobe.title = response.tTitle
+                    ranobe.lang = response.lang
+                    ranobe.chapterCount = response.nChapters
+                    ranobe.id = response.bookID
+                    ranobe.url = Constants.RanobeSite.Rulate.url + "/book/" + response.bookID
+                    or.add(ranobe)
                 }
+            }
+            return@map or
+        }
     }
 
     fun searchBooks(search: String): Single<List<Ranobe>> {
-        return IRulateApiService.create().SearchBooks(search)
-                .map {
-                    return@map getRanobeList(it)
-                }
+        return IRulateApiService.create().SearchBooks(search).map {
+            return@map getRanobeList(it)
+        }
     }
 
     fun login(login: String, password: String): Single<Array<String>> {
@@ -77,44 +75,35 @@ object RulateRepository {
     }
 
     fun getChapterText(token: String, mCurrentChapter: Chapter): Single<Boolean> {
-        return IRulateApiService.create().GetChapterText(token, mCurrentChapter.id, mCurrentChapter.ranobeId)
-                .map {
-                    if (it.status == "success") {
-                        it.response?.let { it1 ->
-                            mCurrentChapter.updateChapter(it1)
-                            return@map true
-                        }
-                        return@map false
-                    } else {
-                        mCurrentChapter.text = it.msg
-                        return@map false
-                    }
+        return IRulateApiService.create().GetChapterText(token, mCurrentChapter.id, mCurrentChapter.ranobeId).map {
+            if (it.status == "success") {
+                it.response?.let { it1 ->
+                    mCurrentChapter.updateChapter(it1)
+                    return@map true
                 }
+                return@map false
+            } else {
+                mCurrentChapter.text = it.msg
+                return@map false
+            }
+        }
     }
 
     fun addBookmark(token: String, book_id: Int): Single<Pair<Boolean, String>> {
-        return IRulateApiService.create().AddBookmark(token, book_id)
-                .map {
+        return IRulateApiService.create().AddBookmark(token, book_id).map {
 
-                    if (it.status == "success")
-                        return@map Pair(true, it.msg.toString())
-                    else
-                        return@map Pair(false, it.msg.toString())
-                }
+            if (it.status == "success") return@map Pair(true, it.msg.toString())
+            else return@map Pair(false, it.msg.toString())
+        }
     }
-
 
     fun removeBookmark(token: String, book_id: Int): Single<Pair<Boolean, String>> {
-        return IRulateApiService.create().RemoveBookmark(token, book_id)
-                .map {
+        return IRulateApiService.create().RemoveBookmark(token, book_id).map {
 
-                    if (it.status == "success")
-                        return@map Pair(true, it.msg.toString())
-                    else
-                        return@map Pair(false, it.msg.toString())
-                }
+            if (it.status == "success") return@map Pair(true, it.msg.toString())
+            else return@map Pair(false, it.msg.toString())
+        }
     }
-
 
     private fun getRanobeList(it: ReadyGson): List<Ranobe> {
         val or: MutableList<Ranobe> = mutableListOf()
@@ -197,9 +186,7 @@ object RulateRepository {
         if (!image.isNullOrBlank()) {
             Completable.fromAction {
                 MyApp.database?.ranobeImageDao()?.insert(RanobeImage(url, image!!))
-            }
-                    ?.subscribeOn(Schedulers.io())
-                    ?.subscribe()
+            }?.subscribeOn(Schedulers.io())?.subscribe()
 
         }
     }

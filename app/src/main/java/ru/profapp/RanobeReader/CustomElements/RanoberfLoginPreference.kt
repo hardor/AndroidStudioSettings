@@ -7,7 +7,6 @@ import android.content.SharedPreferences
 import android.preference.DialogPreference
 import android.text.InputType
 import android.util.AttributeSet
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
@@ -16,7 +15,6 @@ import ru.profapp.RanobeReader.MyApp
 import ru.profapp.RanobeReader.R
 
 class RanoberfLoginPreference(context: Context, attrs: AttributeSet) : DialogPreference(context, attrs), DialogInterface.OnClickListener {
-
 
     private var sharedPref: SharedPreferences? = null
     // Current value
@@ -36,9 +34,7 @@ class RanoberfLoginPreference(context: Context, attrs: AttributeSet) : DialogPre
         val view = View.inflate(context, R.layout.activity_login, null)
 
         val context = this.context
-        sharedPref = context.getSharedPreferences(Constants.Ranoberf_Login_Pref,
-                Context.MODE_PRIVATE)
-
+        sharedPref = context.getSharedPreferences(Constants.Ranoberf_Login_Pref, Context.MODE_PRIVATE)
 
         val value = sharedPref!!.getString(Constants.KEY_Login, "")
 
@@ -96,7 +92,7 @@ class RanoberfLoginPreference(context: Context, attrs: AttributeSet) : DialogPre
                 alert.setMessage(context.getString(R.string.auth_succes))
             } else {
                 sharedPref!!.edit().putString(Constants.KEY_Token, "").commit()
-                summary = context.getString(R.string.login_to_summary)
+                summary = context.getString(R.string.summary_login)
 
                 alert.setMessage(context.getString(R.string.auth_error))
             }
@@ -113,7 +109,7 @@ class RanoberfLoginPreference(context: Context, attrs: AttributeSet) : DialogPre
             alert.setButton(Dialog.BUTTON_POSITIVE, "OK") { dialog, which ->
                 sharedPref!!.edit().putString(Constants.KEY_Token, "").commit()
 
-                summary = context.getString(R.string.login_to_summary)
+                summary = context.getString(R.string.summary_login)
             }
             alert.setButton(Dialog.BUTTON_NEUTRAL, "Cancel") { dialog, which ->
 

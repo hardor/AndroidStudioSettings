@@ -79,13 +79,11 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         when (viewType) {
             VIEW_TYPE_ITEM -> {
-                val view = inflater.inflate(R.layout.item_ranobe,
-                        parent, false)
+                val view = inflater.inflate(R.layout.item_ranobe, parent, false)
                 return RanobeViewHolder(view)
             }
             VIEW_TYPE_GROUP_TITLE -> {
-                val view = inflater.inflate(R.layout.item_title,
-                        parent, false)
+                val view = inflater.inflate(R.layout.item_title, parent, false)
                 return TitleViewHolder(view)
             }
             else -> {
@@ -103,8 +101,7 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
                 holder.titleView.text = mValues[position].title
 
                 if (mValues[position].readyDate != null) {
-                    val diff = ((Date().time - mValues[position].readyDate!!.time)
-                            / 1000 / 60)
+                    val diff = ((Date().time - mValues[position].readyDate!!.time) / 1000 / 60)
                     val numOfDays = (diff / (60 * 24)).toInt()
                     val hours = (diff / 60 - numOfDays * 24).toInt()
                     val minutes = (diff % 60).toInt()
@@ -116,20 +113,15 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
                 }
 
                 holder.imageView.visibility = View.VISIBLE
-                glide.load(/*mValues[position].image*/"").apply(
-                        imageOptions
-                ).into(holder.imageView)
-
+                glide.load(/*mValues[position].image*/"").apply(imageOptions).into(holder.imageView)
 
                 val chapterList = holder.mItem.chapterList
                 if (chapterList.isNotEmpty()) {
-                    val adapter = ChapterRecyclerViewAdapter(context,
-                            ArrayList(chapterList.subList(0, Math.min(Constants.chaptersNum, chapterList.size))),
-                            holder.mItem)
+                    val adapter = ChapterRecyclerViewAdapter(context, ArrayList(chapterList.subList(0, Math.min(Constants.chaptersNum, chapterList.size))), holder.mItem)
 
-//                    val itemDecorator = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
-//                    itemDecorator.setDrawable(context.resources.getDrawable(R.drawable.divider))
-//                    holder.chaptersListView.addItemDecoration(itemDecorator)
+                    //                    val itemDecorator = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
+                    //                    itemDecorator.setDrawable(context.resources.getDrawable(R.drawable.divider))
+                    //                    holder.chaptersListView.addItemDecoration(itemDecorator)
                     holder.chaptersListView.adapter = adapter
                     holder.chaptersListView.visibility = View.VISIBLE
                 } else {
@@ -138,7 +130,6 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
                         holder.description.visibility = View.VISIBLE
                     }
                 }
-
 
             }
             is LoadingViewHolder -> holder.progressBar.isIndeterminate = true
@@ -153,7 +144,6 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
     fun setLoaded() {
         isLoading = false
     }
-
 
     inner class LoadingViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
@@ -193,7 +183,6 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
 
             }
         }
-
 
     }
 

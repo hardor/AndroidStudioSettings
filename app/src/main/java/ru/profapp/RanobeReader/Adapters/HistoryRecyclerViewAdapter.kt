@@ -33,6 +33,5 @@ class HistoryRecyclerViewAdapter(private val context: Context, private val mValu
         val rTextView: TextView = itemView.findViewById(R.id.ranobeTitleWithTime)
         lateinit var item: ChapterHistory
 
-
     }
 }

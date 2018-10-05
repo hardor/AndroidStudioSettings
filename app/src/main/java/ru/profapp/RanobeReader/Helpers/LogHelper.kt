@@ -25,8 +25,7 @@ class LogHelper {
         }
 
         @JvmStatic
-        fun SendError(type: LogType, Tag: String, Message: String = "",
-                      exception: Throwable) {
+        fun SendError(type: LogType, Tag: String, Message: String = "", exception: Throwable) {
             if (showLog) {
                 when (type) {
                     LogType.INFO -> Log.i(Tag, Message, exception)
@@ -43,7 +42,6 @@ class LogHelper {
                 Crashlytics.log(Message)
             }
         }
-
 
     }
 

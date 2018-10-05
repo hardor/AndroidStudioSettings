@@ -27,7 +27,7 @@
   <string name="login">Login</string>
   <string name="login_email">Login/E-mail</string>
   <string name="password">Password</string>
-  <string name="login_to_summary">Log in to get favorite Ranobe from your profile</string>
+  <string name="summary_login">Log in to get favorite Ranobe from your profile</string>
   <string name="rulate_authorization">Rulate authorization</string>
   <string name="ranoberf_authorization">Ранобэ.рф authorization</string>
   <string name="pref_general_hide_chapter" translatable="false">
@@ -91,15 +91,15 @@
   <string name="saved_chapters">Saved chapters</string>
   <string name="pref_general_auto_save" translatable="false">pref_general_auto_save</string>
   <string name="auto_save_text">Automatically save text</string>
-  <string name="auto_save_text_on">Save text when opening chapter</string>
-  <string name="auto_save_text_off">Save text only manually</string>
+  <string name="summary_save_text_on">Save text when opening chapter</string>
+  <string name="summary_save_text_off">Save text only manually</string>
   <string name="search_here">Search Here</string>
   <string name="feedback">Feedback</string>
   <string name="action_bookmark">Bookmark</string>
   <string name="bookmark_saved">Bookmark saved</string>
   <string name="app_theme">Dark theme</string>
-  <string name="Turn_off_dark_theme">Turn off dark theme</string>
-  <string name="Turn_on_dark_theme">Turn on dark theme</string>
+  <string name="summary_dark_theme_off">Turn off dark theme</string>
+  <string name="summary_dark_theme_on">Turn on dark theme</string>
   <string name="email" translatable="false">e-mail</string>
   <string name="auth_error">Error authorization</string>
   <string name="auth_succes">Authorization success</string>
@@ -131,5 +131,10 @@
   <string name="history">History</string>
   <string name="date_format">MM/dd/yyyy HH:mm</string>
   <string name="load_ranobes_from_db">Loading favorite ranobe from database</string>
+  <string name="pref_general_send_reports"/>
+  <string name="send_crash_reports">Send crash reports</string>
+  <string name="summary_send_reports_off">summary_send_reports_on</string>
+  <string name="summary_send_reports_on">summary_send_reports_on</string>
+  <string name="ranobes">Ranobes</string>
 
 </resources>

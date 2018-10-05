@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.R
 
-
 class ExpandableDownloadRecyclerViewAdapter(private val context: Context) : RecyclerView.Adapter<ExpandableDownloadRecyclerViewAdapter.GroupViewHolder>() {
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
@@ -21,20 +20,16 @@ class ExpandableDownloadRecyclerViewAdapter(private val context: Context) : Recy
         return (context.resources.displayMetrics.density * 6 + 0.5f).toInt()
     }
 
-
     constructor(context: Context, mChapters: List<Chapter>) : this(context) {
 
         val numInGroup = 100
         val num = mChapters.size / numInGroup
         for (i in 0..num) {
-            val parentDataItem = ParentDataItem(
-                    "${mChapters[minOf((i + 1) * numInGroup, mChapters.size - 1)].title} - ${mChapters[minOf(i * numInGroup, mChapters.size - 1)].title}",
-                    (mChapters.subList(i * numInGroup, minOf((i + 1) * numInGroup, mChapters.size))))
+            val parentDataItem = ParentDataItem("${mChapters[minOf((i + 1) * numInGroup, mChapters.size - 1)].title} - ${mChapters[minOf(i * numInGroup, mChapters.size - 1)].title}", (mChapters.subList(i * numInGroup, minOf((i + 1) * numInGroup, mChapters.size))))
             parentDataItems.add(parentDataItem)
         }
 
     }
-
 
     private val parentDataItems: ArrayList<ParentDataItem> = ArrayList()
 
@@ -59,7 +54,7 @@ class ExpandableDownloadRecyclerViewAdapter(private val context: Context) : Recy
         for ((checkBox, childItem) in noOfChild.withIndex()) {
             val currentCheckBox = holder.linearLayout_childItems.getChildAt(checkBox) as CheckBox
             currentCheckBox.text = childItem.title
-            currentCheckBox.id= childItem.index
+            currentCheckBox.id = childItem.index
             if (childItem.canRead) {
                 currentCheckBox.isEnabled = true
 
@@ -84,7 +79,6 @@ class ExpandableDownloadRecyclerViewAdapter(private val context: Context) : Recy
                 currentCheckBox.setBackgroundColor(context.resources.getColor(R.color.colorPrimaryDark))
             }
 
-
         }
 
     }
@@ -93,9 +87,7 @@ class ExpandableDownloadRecyclerViewAdapter(private val context: Context) : Recy
         return parentDataItems.size
     }
 
-
     inner class GroupViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-
 
         val textView_parentName: TextView = itemView.findViewById(R.id.tv_parent_name)
         val checkBox_parentName: CheckBox = itemView.findViewById(R.id.cb_parent_name)
@@ -115,14 +107,13 @@ class ExpandableDownloadRecyclerViewAdapter(private val context: Context) : Recy
                 linearLayout_childItems.addView(checkBox, layoutParams)
             }
             textView_parentName.setOnClickListener(this)
-            checkBox_parentName.setOnCheckedChangeListener {buttonView, isChecked ->
+            checkBox_parentName.setOnCheckedChangeListener { buttonView, isChecked ->
                 buttonView.isChecked = isChecked
                 for (i in 0 until linearLayout_childItems.childCount) {
                     val item = linearLayout_childItems.getChildAt(i) as CheckBox
-                    if(item.isEnabled)
-                        item.isChecked = isChecked
+                    if (item.isEnabled) item.isChecked = isChecked
                 }
-                parentDataItems[adapterPosition].childDataItems.forEach{it.isChecked = isChecked}
+                parentDataItems[adapterPosition].childDataItems.forEach { it.isChecked = isChecked }
             }
         }
 
@@ -137,7 +128,6 @@ class ExpandableDownloadRecyclerViewAdapter(private val context: Context) : Recy
 
         }
     }
-
 
 }
 

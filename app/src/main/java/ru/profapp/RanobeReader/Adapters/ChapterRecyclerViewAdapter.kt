@@ -56,7 +56,6 @@ class ChapterRecyclerViewAdapter(private val context: Context, private val mValu
         fun onItemClick(item: Chapter)
     }
 
-
     @NonNull
     override fun onCreateViewHolder(@NonNull parent: ViewGroup, viewType: Int): ChapterRecyclerViewAdapter.ViewHolder {
 
@@ -64,7 +63,6 @@ class ChapterRecyclerViewAdapter(private val context: Context, private val mValu
         return ViewHolder(view)
 
     }
-
 
     override fun onBindViewHolder(@NonNull holder: ChapterRecyclerViewAdapter.ViewHolder, position: Int) {
 
@@ -78,7 +76,6 @@ class ChapterRecyclerViewAdapter(private val context: Context, private val mValu
         if (holder.mChapterItem.isRead) {
             holder.mView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimaryDark))
         }
-
 
     }
 

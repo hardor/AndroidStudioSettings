@@ -94,13 +94,10 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             addPreferencesFromResource(R.xml.pref_general)
             setHasOptionsMenu(true)
 
-            findPreference(
-                    getString(R.string.pref_general_auto_save)).onPreferenceChangeListener = sChangePreferenceListener
+            findPreference(getString(R.string.pref_general_auto_save)).onPreferenceChangeListener = sChangePreferenceListener
 
-            findPreference(
-                    getString(R.string.pref_general_app_theme)).onPreferenceChangeListener = sChangePreferenceListener
+            findPreference(getString(R.string.pref_general_app_theme)).onPreferenceChangeListener = sChangePreferenceListener
         }
-
 
         override fun onOptionsItemSelected(item: MenuItem): Boolean {
             val id = item.itemId
@@ -124,15 +121,14 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             super.onCreate(savedInstanceState)
             addPreferencesFromResource(R.xml.pref_rulate)
             val prefLogin = findPreference(getString(R.string.rulate_authorization_pref))
-            val mPreferences = activity?.getSharedPreferences(
-                    Constants.Rulate_Login_Pref, 0)
+            val mPreferences = activity?.getSharedPreferences(Constants.Rulate_Login_Pref, 0)
 
             val token = mPreferences?.getString(Constants.KEY_Token, "") ?: ""
 
             if (token != "") {
                 prefLogin.summary = mPreferences?.getString(Constants.KEY_Login, "") ?: ""
             } else {
-                prefLogin.summary = resources.getString(R.string.login_to_summary)
+                prefLogin.summary = resources.getString(R.string.summary_login)
             }
             setHasOptionsMenu(true)
         }
@@ -162,7 +158,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             if (token != "") {
                 prefLogin.summary = mPreferences?.getString(Constants.KEY_Login, "") ?: ""
             } else {
-                prefLogin.summary = resources.getString(R.string.login_to_summary)
+                prefLogin.summary = resources.getString(R.string.summary_login)
             }
             setHasOptionsMenu(true)
         }
@@ -205,7 +201,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
                         ?.subscribe({
                             Toast.makeText(activity, resources.getText(R.string.bookmarks_cleaned),
                                     Toast.LENGTH_SHORT).show()
-                        }, { })
+                }, { })
 
 
                 true
@@ -213,8 +209,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 
             val prefButton = findPreference(getString(R.string.CleanHistoryButton))
             prefButton.setOnPreferenceClickListener { preference ->
-                activity!!.getSharedPreferences(Constants.is_readed_Pref,
-                        0).edit().clear().apply()
+                activity!!.getSharedPreferences(Constants.is_readed_Pref, 0).edit().clear().apply()
 
                 Toast.makeText(activity, resources.getText(R.string.cache_cleaned), Toast.LENGTH_SHORT).show()
                 true
@@ -229,10 +224,8 @@ class SettingsActivity : AppCompatPreferenceActivity() {
         private val sChangePreferenceListener = Preference.OnPreferenceChangeListener { preference, value ->
 
             when {
-                preference.key == preference.context.getString(
-                        R.string.pref_general_auto_save) -> MyApp.autoSaveText = java.lang.Boolean.valueOf(value.toString())
-                preference.key == preference.context.getString(
-                        R.string.pref_general_app_theme) -> {
+                preference.key == preference.context.getString(R.string.pref_general_auto_save) -> MyApp.autoSaveText = java.lang.Boolean.valueOf(value.toString())
+                preference.key == preference.context.getString(R.string.pref_general_app_theme) -> {
 
                     ThemeUtils.setTheme(java.lang.Boolean.valueOf(value.toString()))
                     ThemeUtils.onActivityCreateSetTheme()

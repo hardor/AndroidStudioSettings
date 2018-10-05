@@ -4,9 +4,7 @@
     android:icon="@mipmap/ic_action_ranoberf"
     android:key="@string/ranoberf_authorization_pref"
     android:persistent="true"
-    android:summary="@string/login_to_summary"
+    android:summary="@string/summary_login"
     android:title="@string/ranoberf_authorization"
     />
-
-
 </PreferenceScreen>

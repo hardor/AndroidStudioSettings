@@ -4,7 +4,6 @@ import androidx.room.Embedded
 import androidx.room.Relation
 import java.util.*
 
-
 /**
  * Created by Ruslan on 09.02.2018.
  */

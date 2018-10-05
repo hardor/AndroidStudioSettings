@@ -22,6 +22,5 @@ class StringHelper {
             return ranobeUrl.replace("[^a-zA-Z0-9]".toRegex(), "")
         }
 
-
     }
 }

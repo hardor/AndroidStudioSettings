@@ -1,141 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="ru.profapp.RanobeReader">
+  package="ru.profapp.RanobeReader">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+  <uses-permission android:name="android.permission.INTERNET"/>
+  <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+  <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
 
-    <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> -->
-    <application
-        android:name=".MyApp"
-        android:allowBackup="true"
-        android:fullBackupContent="@xml/backup_descriptor"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity
-            android:name=".Activities.MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+  <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> -->
+  <application
+    android:allowBackup="true"
+    android:fullBackupContent="@xml/backup_descriptor"
+    android:icon="@mipmap/ic_launcher"
+    android:label="@string/app_name"
+    android:name=".MyApp"
+    android:roundIcon="@mipmap/ic_launcher"
+    android:supportsRtl="true"
+    android:theme="@style/AppTheme">
+    <activity
+      android:label="@string/app_name"
+      android:name=".Activities.MainActivity"
+      android:theme="@style/AppTheme.NoActionBar">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.LAUNCHER"/>
+      </intent-filter>
+      <intent-filter android:autoVerify="true">
+        <action android:name="android.intent.action.VIEW"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
 
-                <data
-                    android:host="tl.rulate.ru"
-                    android:scheme="https" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+        <data
+          android:host="tl.rulate.ru"
+          android:scheme="https"/>
+      </intent-filter>
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
 
-                <data
-                    android:host="tl.rulate.ru"
-                    android:scheme="http" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+        <data
+          android:host="tl.rulate.ru"
+          android:scheme="http"/>
+      </intent-filter>
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
 
-                <data
-                    android:host="ранобэ.рф"
-                    android:scheme="https" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+        <data
+          android:host="ранобэ.рф"
+          android:scheme="https"/>
+      </intent-filter>
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
 
-                <data
-                    android:host="ранобэ.рф"
-                    android:scheme="http" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+        <data
+          android:host="ранобэ.рф"
+          android:scheme="http"/>
+      </intent-filter>
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
 
-                <data
-                    android:scheme="http"
-                    android:host="ranobehub.org" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+        <data
+          android:host="ranobehub.org"
+          android:scheme="http"/>
+      </intent-filter>
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
 
-                <data
-                    android:scheme="https"
-                    android:host="ranobehub.org" />
-            </intent-filter>
+        <data
+          android:host="ranobehub.org"
+          android:scheme="https"/>
+      </intent-filter>
 
-        </activity>
-        <activity
-            android:name=".Activities.SettingsActivity"
-            android:label="@string/title_activity_settings" />
-        <activity
-            android:name=".Activities.RanobeInfoActivity"
-            android:label="@string/title_activity_ranobe_info"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+    </activity>
+    <activity
+      android:label="@string/title_activity_settings"
+      android:name=".Activities.SettingsActivity"/>
+    <activity
+      android:label="@string/title_activity_ranobe_info"
+      android:name=".Activities.RanobeInfoActivity"
+      android:theme="@style/AppTheme.NoActionBar">
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
 
-                <data
-                    android:scheme="http"
-                    android:host="tl.rulate.ru"
-                    android:pathPattern="/book/.*" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+        <data
+          android:host="tl.rulate.ru"
+          android:pathPattern="/book/.*"
+          android:scheme="http"/>
+      </intent-filter>
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
 
-                <data
-                    android:scheme="https"
-                    android:host="tl.rulate.ru"
-                    android:pathPattern="/book/.*" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".Activities.ChapterTextActivity"
-            android:configChanges="orientation"
-            android:label="@string/title_activity_chapter_text" />
+        <data
+          android:host="tl.rulate.ru"
+          android:pathPattern="/book/.*"
+          android:scheme="https"/>
+      </intent-filter>
+    </activity>
+    <activity
+      android:configChanges="orientation"
+      android:label="@string/title_activity_chapter_text"
+      android:name=".Activities.ChapterTextActivity"/>
 
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="cac79ff615d7eefe4a0287318c94853a3858ee47" />
+    <meta-data
+      android:name="io.fabric.ApiKey"
+      android:value="cac79ff615d7eefe4a0287318c94853a3858ee47"/>
 
-        <activity
-            android:name=".Activities.DownloadActivity"
-            android:label="@string/title_activity_download" />
+    <activity
+      android:label="@string/title_activity_download"
+      android:name=".Activities.DownloadActivity"/>
 
-        <meta-data
-            android:name="com.google.android.backup.api_key"
-            android:value="AEdPqrEAAAAIcORPcg1t8lO1zc5q5si6PVokDoSqx9zWn1G_MA" />
+    <meta-data
+      android:name="com.google.android.backup.api_key"
+      android:value="AEdPqrEAAAAIcORPcg1t8lO1zc5q5si6PVokDoSqx9zWn1G_MA"/>
 
 
-    </application>
+  </application>
 
 </manifest>

@@ -1,6 +1,5 @@
 package ru.profapp.RanobeReader
 
-
 import androidx.room.Room
 import androidx.room.testing.MigrationTestHelper
 import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
@@ -12,24 +11,18 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.DAO.DatabaseDao
-import ru.profapp.RanobeReader.Models.Ranobe
 import ru.profapp.RanobeReader.MyApp.Companion.MIGRATION_2_3
 import java.io.IOException
 import java.util.*
 
-
 @RunWith(AndroidJUnit4::class)
 class MigrationTest {
-
 
     @get:Rule
     val helper: MigrationTestHelper = MigrationTestHelper(InstrumentationRegistry.getInstrumentation(),
             Objects.requireNonNull(DatabaseDao::class.java.canonicalName),
             FrameworkSQLiteOpenHelperFactory())
-
-
 
     @Before
     fun setUp() {
@@ -66,7 +59,6 @@ class MigrationTest {
         Assert.assertTrue(textChapters.blockingGet().any())
 
     }
-
 
     companion object {
         private val TEST_DB = "test-db"

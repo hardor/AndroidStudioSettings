@@ -37,5 +37,4 @@ class RanobeImage() {
         return ranobeUrl.hashCode()
     }
 
-
 }

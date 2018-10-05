@@ -45,15 +45,13 @@ class SearchFragment : Fragment() {
     lateinit var progressBar: ProgressBar
     private var request: Disposable? = null
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let { }
         mRanobeList = ArrayList()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_search, container, false)
 
@@ -94,7 +92,6 @@ class SearchFragment : Fragment() {
             throw RuntimeException(context!!.toString() + " must implement OnFragmentInteractionListener")
         }
 
-
     }
 
     override fun onDetach() {
@@ -110,20 +107,17 @@ class SearchFragment : Fragment() {
         mRanobeList.clear()
         mRanobeRecyclerViewAdapter!!.notifyItemRangeRemoved(0, size)
 
-        request = Single.mergeDelayError(findRulateRanobe(searchString), findRanobeRfRanobe(searchString), findRanobeHubRanobe(searchString))
-                .map { ranobeList ->
-                    for (ranobe in ranobeList) {
-                        if (ranobe.image.isNullOrBlank()) {
-                            MyApp.database?.ranobeImageDao()?.getImageByUrl(ranobe.url)?.observeOn(AndroidSchedulers.mainThread())?.subscribeOn(Schedulers.io())?.subscribe { it ->
-                                ranobe.image = it.image
-                            }
-                        }
+        request = Single.mergeDelayError(findRulateRanobe(searchString), findRanobeRfRanobe(searchString), findRanobeHubRanobe(searchString)).map { ranobeList ->
+            for (ranobe in ranobeList) {
+                if (ranobe.image.isNullOrBlank()) {
+                    MyApp.database?.ranobeImageDao()?.getImageByUrl(ranobe.url)?.observeOn(AndroidSchedulers.mainThread())?.subscribeOn(Schedulers.io())?.subscribe { it ->
+                        ranobe.image = it.image
                     }
-                    return@map ranobeList
-
                 }
-                .observeOn(AndroidSchedulers.mainThread(), true)
-                .subscribeOn(Schedulers.io())
+            }
+            return@map ranobeList
+
+        }.observeOn(AndroidSchedulers.mainThread(), true).subscribeOn(Schedulers.io())
 
                 .subscribe({ result ->
                     val prevSize = mRanobeList.size
@@ -137,12 +131,9 @@ class SearchFragment : Fragment() {
 
                     progressBar.visibility = GONE
                 }, { error ->
-                    Toast.makeText(mContext,
-                            getString(R.string.ErrorConnection),
-                            Toast.LENGTH_SHORT).show()
+                    Toast.makeText(mContext, getString(R.string.ErrorConnection), Toast.LENGTH_SHORT).show()
                     progressBar.visibility = GONE
                 })
-
 
     }
 
@@ -165,8 +156,7 @@ class SearchFragment : Fragment() {
 
     private fun findRanobeHubRanobe(searchString: String): Single<ArrayList<Ranobe>> {
 
-        return RanobeHubRepository
-                .searchBooks(searchString).map {
+        return RanobeHubRepository.searchBooks(searchString).map {
                     val or: ArrayList<Ranobe> = ArrayList()
                     if (it.isNotEmpty()) {
 
@@ -183,8 +173,7 @@ class SearchFragment : Fragment() {
 
     private fun findRanobeRfRanobe(searchString: String): Single<ArrayList<Ranobe>> {
 
-        return RanobeRfRepository
-                .searchBooks(searchString).map {
+        return RanobeRfRepository.searchBooks(searchString).map {
                     val or: ArrayList<Ranobe> = ArrayList()
                     if (it.size > 0) {
 
@@ -197,19 +186,17 @@ class SearchFragment : Fragment() {
                     return@map or
                 }
 
-
     }
 
     interface OnFragmentInteractionListener
 
     companion object {
         @JvmStatic
-        fun newInstance() =
-                SearchFragment().apply {
-                    arguments = Bundle().apply {
+        fun newInstance() = SearchFragment().apply {
+            arguments = Bundle().apply {
 
-                    }
-                }
+            }
+        }
     }
 
     override fun onDestroy() {

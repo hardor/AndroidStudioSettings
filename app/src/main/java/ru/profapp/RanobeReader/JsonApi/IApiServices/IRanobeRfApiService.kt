@@ -1,14 +1,11 @@
 package ru.profapp.RanobeReader.JsonApi.IApiServices
 
-
 import io.reactivex.Single
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 import ru.profapp.RanobeReader.JsonApi.Ranoberf.*
-import ru.profapp.RanobeReader.JsonApi.Rulate.BookmarkGson
-
 
 interface IRanobeRfApiService {
 
@@ -32,15 +29,13 @@ interface IRanobeRfApiService {
     @POST("/v1/auth/login/")
     fun Login(@Field("email") email: String, @Field("password") password: String): Single<RfLoginGson>
 
-
     @FormUrlEncoded
     @POST("/v1/bookmark/add/")
     fun AddBookmark(@Header("Authorization") token: String, @Field("book_id") book_id: Int, @Field("part_id") part_id: Int): Single<RfBookmarkGson>
 
     @FormUrlEncoded
     @DELETE("/v1/bookmark/delete/")
-    fun RemoveBookmark(@Header("Authorization") token: String,@Field("bookmark_id") bookmark_id: Int): Single<RfBookmarkGson>
-
+    fun RemoveBookmark(@Header("Authorization") token: String, @Field("bookmark_id") bookmark_id: Int): Single<RfBookmarkGson>
 
     companion object Factory {
 

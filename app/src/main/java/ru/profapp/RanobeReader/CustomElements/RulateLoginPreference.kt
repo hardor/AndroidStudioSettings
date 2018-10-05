@@ -17,7 +17,6 @@ import ru.profapp.RanobeReader.R
 
 class RulateLoginPreference(context: Context, attrs: AttributeSet) : DialogPreference(context, attrs), DialogInterface.OnClickListener {
 
-
     private lateinit var sharedPref: SharedPreferences
     // Current value
     private val mCurrentValue: String? = null
@@ -38,7 +37,6 @@ class RulateLoginPreference(context: Context, attrs: AttributeSet) : DialogPrefe
 
         val context = this.context
         sharedPref = context.getSharedPreferences(Constants.Rulate_Login_Pref, Context.MODE_PRIVATE)
-
 
         val value = sharedPref.getString(Constants.KEY_Login, "")
         // Setup SeekBar
@@ -79,7 +77,6 @@ class RulateLoginPreference(context: Context, attrs: AttributeSet) : DialogPrefe
 
         sharedPref.edit().putString(Constants.KEY_Login, username).commit()
 
-
         val alert = AlertDialog.Builder(context).create()
         // Check if username, password is filled
         if (username.isNotBlank() && password.isNotBlank()) {
@@ -94,7 +91,7 @@ class RulateLoginPreference(context: Context, attrs: AttributeSet) : DialogPrefe
                         } else {
                             sharedPref.edit().putString(Constants.KEY_Token, "").commit()
 
-                            summary = context.getString(R.string.login_to_summary)
+                            summary = context.getString(R.string.summary_login)
                         }
 
                         alert.setTitle(username)
@@ -104,7 +101,7 @@ class RulateLoginPreference(context: Context, attrs: AttributeSet) : DialogPrefe
                     }, {
                         sharedPref.edit().putString(Constants.KEY_Token, "").commit()
 
-                        summary = context.getString(R.string.login_to_summary)
+                        summary = context.getString(R.string.summary_login)
 
                         alert.setTitle(username)
                         alert.setMessage("Response error")
@@ -112,7 +109,6 @@ class RulateLoginPreference(context: Context, attrs: AttributeSet) : DialogPrefe
                         alert.show()
 
                     })
-
 
         } else {
             // user didn't entered username or password
@@ -122,7 +118,7 @@ class RulateLoginPreference(context: Context, attrs: AttributeSet) : DialogPrefe
             alert.setMessage(context.getString(R.string.enter_user_pass))
             alert.setButton(Dialog.BUTTON_POSITIVE, "OK") { dialog, which ->
                 sharedPref.edit().putString(Constants.KEY_Token, "").commit()
-                summary = context.getString(R.string.login_to_summary)
+                summary = context.getString(R.string.summary_login)
             }
             alert.setButton(Dialog.BUTTON_NEUTRAL, "Cancel") { dialog, which ->
 

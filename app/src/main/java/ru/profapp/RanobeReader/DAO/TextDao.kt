@@ -31,7 +31,6 @@ interface TextDao {
     @Query("Delete FROM textChapter where ChapterUrl = :ChapterUrl")
     fun delete(ChapterUrl: String)
 
-
     @Query("SELECT * FROM textChapter WHERE ChapterUrl = :ChapterUrl")
     fun getTextByChapterUrl(ChapterUrl: String): Single<TextChapter>
 

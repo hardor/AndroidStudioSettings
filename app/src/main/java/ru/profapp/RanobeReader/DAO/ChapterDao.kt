@@ -10,10 +10,8 @@ import ru.profapp.RanobeReader.Models.Chapter
 @Dao
 interface ChapterDao {
 
-
     @Query("SELECT * FROM chapter")
     fun allChapters(): List<Chapter>
-
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(chapter: Chapter)

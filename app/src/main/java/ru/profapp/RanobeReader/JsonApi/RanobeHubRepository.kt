@@ -16,38 +16,34 @@ import java.util.*
 object RanobeHubRepository {
 
     fun getBookInfo(ranobe: Ranobe): Single<Ranobe> {
-        return IRanobeHubApiService.create().GetChapters(ranobe.id)
-                .map {
-                    ranobe.chapterList.clear()
-                    var index = 0
-                    for (volume in it.data) {
-                        for (rChapter in volume.chapters.reversed()) {
-                            val chapter = Chapter()
+        return IRanobeHubApiService.create().GetChapters(ranobe.id).map {
+            ranobe.chapterList.clear()
+            var index = 0
+            for (volume in it.data) {
+                for (rChapter in volume.chapters.reversed()) {
+                    val chapter = Chapter()
 
-                            chapter.title = if (chapter.title.isBlank()) rChapter.name else chapter.title
+                    chapter.title = if (chapter.title.isBlank()) rChapter.name else chapter.title
 
-                            chapter.url = if (chapter.url.isBlank()) "${ranobe.url}/${volume.num}/${rChapter.num}" else chapter.url
+                    chapter.url = if (chapter.url.isBlank()) "${ranobe.url}/${volume.num}/${rChapter.num}" else chapter.url
 
-                            chapter.ranobeUrl = ranobe.url
-                            chapter.ranobeName = ranobe.title
-                            chapter.index = index++
+                    chapter.ranobeUrl = ranobe.url
+                    chapter.ranobeName = ranobe.title
+                    chapter.index = index++
 
-                            ranobe.chapterList.add(chapter)
-                        }
-                    }
-                    return@map ranobe
+                    ranobe.chapterList.add(chapter)
                 }
-
+            }
+            return@map ranobe
+        }
 
     }
 
     fun getReadyBooks(page: Int): Single<List<Ranobe>> {
-        return IRanobeHubApiService.create().GetReadyBooks(page)
-                .map {
-                    return@map getRanobeReadyList(it)
-                }
+        return IRanobeHubApiService.create().GetReadyBooks(page).map {
+            return@map getRanobeReadyList(it)
+        }
     }
-
 
     private fun getRanobeReadyList(it: RanobeHubReadyGson): List<Ranobe> {
         val or: MutableList<Ranobe> = mutableListOf()
@@ -72,43 +68,39 @@ object RanobeHubRepository {
     }
 
     fun searchBooks(search: String): Single<List<Ranobe>> {
-        return IRanobeHubApiService.create().SearchBooks(search)
-                .map {
-                    return@map getRanobeList(it.categories.ranobe.items)
-                }
+        return IRanobeHubApiService.create().SearchBooks(search).map {
+            return@map getRanobeList(it.categories.ranobe.items)
+        }
     }
-
 
     fun getChapterText(mCurrentChapter: Chapter): Single<Boolean> {
 
         val parts = mCurrentChapter.url.split("/")
 
-        return IRanobeHubApiService.create().GetChapterText(parts[4].toInt(), parts[5].toInt(), parts[6].toInt())
-                .map {
+        return IRanobeHubApiService.create().GetChapterText(parts[4].toInt(), parts[5].toInt(), parts[6].toInt()).map {
 
+            val a = it
+            return@map true
 
-                    val a = it
-                    return@map true
+            //                    if (it.status == 200) {
+            //                        val response = it.result
+            //                        if (response?.status == 200) {
+            //                            mCurrentChapter.title = response.part!!.title.toString()
+            //                            mCurrentChapter.text = response.part.content
+            //                            mCurrentChapter.url = response.part.url!!
+            //                        }
+            //
+            //                        if (it.result!!.part!!.payment!! && mCurrentChapter.text.isNullOrBlank()) {
+            //                            mCurrentChapter.text = "Даннная страница находится на платной подписке"
+            //                            return@map false
+            //                        }
+            //                        return@map true
+            //                    } else {
+            //                        mCurrentChapter.text = it.message
+            //                        return@map false
+            //                    }
 
-//                    if (it.status == 200) {
-//                        val response = it.result
-//                        if (response?.status == 200) {
-//                            mCurrentChapter.title = response.part!!.title.toString()
-//                            mCurrentChapter.text = response.part.content
-//                            mCurrentChapter.url = response.part.url!!
-//                        }
-//
-//                        if (it.result!!.part!!.payment!! && mCurrentChapter.text.isNullOrBlank()) {
-//                            mCurrentChapter.text = "Даннная страница находится на платной подписке"
-//                            return@map false
-//                        }
-//                        return@map true
-//                    } else {
-//                        mCurrentChapter.text = it.message
-//                        return@map false
-//                    }
-
-                }
+        }
     }
 
     private fun getRanobeList(it: List<RanobeHubBook>): List<Ranobe> {
@@ -150,7 +142,6 @@ object RanobeHubRepository {
         rating = book.rating?.toString()
         chapterCount = chapterCount ?: book.chapters
     }
-
 
 }
 

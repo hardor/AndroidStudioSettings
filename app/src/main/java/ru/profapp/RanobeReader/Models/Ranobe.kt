@@ -106,7 +106,7 @@ class Ranobe() {
 
         if (!wasUpdated) {
             if (ranobeSite == Rulate.url || url.contains(Rulate.url)) {
-                val mPreferences = mContext.getSharedPreferences(  Constants.Rulate_Login_Pref, 0)
+                val mPreferences = mContext.getSharedPreferences(Constants.Rulate_Login_Pref, 0)
                 val token = mPreferences.getString(Constants.KEY_Token, "") ?: ""
                 return RulateRepository.getBookInfo(this, token, id)
             } else if (ranobeSite == RanobeRf.url || url.contains(RanobeRf.url)) {
@@ -119,7 +119,7 @@ class Ranobe() {
                 throw NullPointerException()
             }
         }
-        return Single.create {  }
+        return Single.create { }
 
     }
 
@@ -137,8 +137,6 @@ class Ranobe() {
     override fun hashCode(): Int {
         return url.hashCode()
     }
-
-    constructor(ranobeUrl: String) : this()
 
 
 }
