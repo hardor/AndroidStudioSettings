@@ -40,6 +40,7 @@ class ChapterTextActivity : AppCompatActivity() {
     private lateinit var mWebView: WebView
     private var mContext: Context? = null
     private var mIndex: Int = 0
+    private var chIndex: Int = 0
     var mProgress: Float = -1f
     private var mChapterCount: Int? = null
     private var mChapterList: List<Chapter> = ArrayList()
@@ -49,8 +50,6 @@ class ChapterTextActivity : AppCompatActivity() {
     private lateinit var prevMenu: ImageButton
 
     var currentRanobe: Ranobe? = null
-
-
 
     private lateinit var progressBar: ProgressBar
 
@@ -79,19 +78,26 @@ class ChapterTextActivity : AppCompatActivity() {
         setContentView(R.layout.activity_chapter_text)
 
         if (savedInstanceState != null) {
-            mIndex = savedInstanceState.getInt("ChapterIndex", intent.getIntExtra("ChapterIndex", 0))
+            mIndex = savedInstanceState.getInt("ChapterIndex", -1)
             mProgress = savedInstanceState.getFloat("Progress", -1f)
         } else {
-            mIndex = intent.getIntExtra("ChapterIndex", 0)
+            chIndex = intent.getIntExtra("ChapterIndex", 0)
             mProgress = intent.getFloatExtra("Progress", -1f)
         }
 
         mContext = this@ChapterTextActivity
 
         currentRanobe = MyApp.ranobe
-        mChapterList = currentRanobe?.chapterList ?: mChapterList
+        mChapterList = currentRanobe?.chapterList?.filter { it -> it.canRead } ?: mChapterList
 
-        mCurrentChapter = mChapterList[mIndex]
+        if (mIndex >= 0) {
+            mCurrentChapter = mChapterList[mIndex]
+        } else {
+            mCurrentChapter = mChapterList.firstOrNull { it.index == mIndex } ?: mChapterList.first()
+            mIndex = mChapterList.indexOf(mCurrentChapter)
+        }
+
+        mCurrentChapter = mChapterList.firstOrNull { it.index == mIndex } ?: mChapterList.first()
         mChapterCount = mChapterList.size
 
         progressBar = findViewById(R.id.progressBar2)
@@ -170,9 +176,9 @@ class ChapterTextActivity : AppCompatActivity() {
     private fun initWebView() {
 
         @ColorInt
-         val color = resources.getColor(R.color.webViewText)
+        val color = resources.getColor(R.color.webViewText)
         @ColorInt
-         val color2 = resources.getColor(R.color.webViewBackground)
+        val color2 = resources.getColor(R.color.webViewBackground)
 
         progressBar.visibility = View.VISIBLE
 
@@ -198,7 +204,7 @@ class ChapterTextActivity : AppCompatActivity() {
                     mWebView.loadDataWithBaseURL("https:\\\\" + mCurrentChapter.url + "/", summary, "text/html", "UTF-8", null)
 
                 }, { error ->
-                    LogHelper.SendError(LogHelper.LogType.ERROR, "GetChapterText", "", error.fillInStackTrace())
+                    LogHelper.logError(LogHelper.LogType.ERROR, "GetChapterText", "", error.fillInStackTrace())
                     val summary = ("<html><style>img{display: inline;height: auto;max-width: 90%;}</style><body "
                             + style + ">" + "<b>" + mCurrentChapter.title + "</b>" + "</br>"
                             + mCurrentChapter.text + "</body></html>")

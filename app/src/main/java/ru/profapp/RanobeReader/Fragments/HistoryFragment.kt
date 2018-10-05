@@ -63,7 +63,7 @@ class HistoryFragment : Fragment() {
                     chapterHistoryViewAdapter = HistoryRecyclerViewAdapter(mContext!!, it)
                     chapterRecyclerView.adapter = chapterHistoryViewAdapter
                 }, { error ->
-                    LogHelper.SendError(LogHelper.LogType.ERROR, "HistoryFragment", "", error)
+                    LogHelper.logError(LogHelper.LogType.ERROR, "HistoryFragment", "", error)
                 })
 
         request2 = MyApp.database?.ranobeHistoryDao()?.allRanobes()?.subscribeOn(Schedulers.io())
@@ -83,7 +83,7 @@ class HistoryFragment : Fragment() {
                     ranobeHistoryViewAdapter = RanobeRecyclerViewAdapter(mContext!!, ranobeRecyclerView, it)
                     ranobeRecyclerView.adapter = ranobeHistoryViewAdapter
                 }, { error ->
-                    LogHelper.SendError(LogHelper.LogType.ERROR, "HistoryFragment", "", error)
+                    LogHelper.logError(LogHelper.LogType.ERROR, "HistoryFragment", "", error)
                 })
 
 

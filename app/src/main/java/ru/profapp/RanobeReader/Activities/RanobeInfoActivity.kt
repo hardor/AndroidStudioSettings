@@ -284,7 +284,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                     }
 
                 }, { error ->
-                    LogHelper.SendError(LogHelper.LogType.ERROR, "loadChapters", "", error.fillInStackTrace())
+                    LogHelper.logError(LogHelper.LogType.ERROR, "loadChapters", "", error.fillInStackTrace())
 
                     currentRanobe.wasUpdated = false
                     progressBar.visibility = View.GONE
@@ -349,7 +349,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                                     }
                                 }
                             } catch (e: JSONException) {
-                                LogHelper.SendError(LogHelper.LogType.WARN, RanobeInfoActivity::class.java.toString(), "", e)
+                                LogHelper.logError(LogHelper.LogType.WARN, RanobeInfoActivity::class.java.toString(), "", e)
 
                             }
 
@@ -371,7 +371,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                                     }
                                 }
                             } catch (e: JSONException) {
-                                LogHelper.SendError(LogHelper.LogType.WARN, RanobeInfoActivity::class.java.toString(), "", e)
+                                LogHelper.logError(LogHelper.LogType.WARN, RanobeInfoActivity::class.java.toString(), "", e)
 
                             }
 
@@ -414,7 +414,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                                 item.setImageDrawable(notFavImage)
                             }
                         } catch (e: JSONException) {
-                            LogHelper.SendError(LogHelper.LogType.WARN, RanobeInfoActivity::class.java.toString(), "", e)
+                            LogHelper.logError(LogHelper.LogType.WARN, RanobeInfoActivity::class.java.toString(), "", e)
 
                         }
 

@@ -67,7 +67,7 @@ class MyApp : Application() {
                     database.execSQL("ALTER TABLE textChapter2 RENAME TO textChapter;")
                     database.execSQL("CREATE INDEX index_textChapter_ChapterUrl ON textChapter (ChapterUrl);")
                 } catch (e: Exception) {
-                    LogHelper.SendError(LogHelper.LogType.ERROR, "MIGRATION_2_3", "MIGRATION_2_3 failed", e)
+                    LogHelper.logError(LogHelper.LogType.ERROR, "MIGRATION_2_3", "MIGRATION_2_3 failed", e)
                 }
 
             }

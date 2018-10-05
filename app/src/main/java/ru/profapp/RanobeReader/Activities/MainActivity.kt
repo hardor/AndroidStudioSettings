@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity(),
         NavigationView.OnNavigationItemSelectedListener {
 
     private val ExceptionHandler = Thread.UncaughtExceptionHandler { th, ex ->
-        LogHelper.SendError(LogHelper.LogType.WARN, "MainActivity", "Uncaught exception", ex)
+        LogHelper.logError(LogHelper.LogType.WARN, "MainActivity", "Uncaught exception", ex)
     }
     private var adView: AdView? = null
 

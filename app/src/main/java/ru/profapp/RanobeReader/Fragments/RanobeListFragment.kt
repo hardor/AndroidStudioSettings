@@ -200,7 +200,7 @@ class RanobeListFragment : Fragment() {
                     onItemsLoadFinished()
 
                 }, { error ->
-                    LogHelper.SendError(LogHelper.LogType.ERROR, "refreshItems", "", error.fillInStackTrace())
+                    LogHelper.logError(LogHelper.LogType.ERROR, "refreshItems", "", error.fillInStackTrace())
                     onItemsLoadFinished(error)
                 })
 

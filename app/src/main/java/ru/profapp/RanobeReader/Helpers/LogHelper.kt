@@ -10,7 +10,7 @@ class LogHelper {
 
         private const val showLog = BuildConfig.USE_LOG
         @JvmStatic
-        fun SendMessage(type: LogType, Tag: String, Message: String) {
+        fun logMessage(type: LogType, Tag: String, Message: String, sendMessage: Boolean = true) {
             if (showLog) {
                 when (type) {
                     LogType.INFO -> Log.i(Tag, Message)
@@ -22,10 +22,14 @@ class LogHelper {
                 }
 
             }
+
+            if (sendMessage && Message.isNotEmpty()) {
+                Crashlytics.log(Message)
+            }
         }
 
         @JvmStatic
-        fun SendError(type: LogType, Tag: String, Message: String = "", exception: Throwable) {
+        fun logError(type: LogType, Tag: String, Message: String = "", exception: Throwable, sendError: Boolean = true) {
             if (showLog) {
                 when (type) {
                     LogType.INFO -> Log.i(Tag, Message, exception)
@@ -37,9 +41,11 @@ class LogHelper {
                 }
 
             }
-            Crashlytics.logException(exception)
-            if (Message.isNotEmpty()) {
-                Crashlytics.log(Message)
+            if (sendError) {
+                Crashlytics.logException(exception)
+                if (Message.isNotEmpty()) {
+                    Crashlytics.log(Message)
+                }
             }
         }
 

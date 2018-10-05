@@ -142,7 +142,7 @@ object RulateRepository {
             }
 
         } catch (e: ParseException) {
-            LogHelper.SendError(LogHelper.LogType.WARN, Ranobe::class.java.toString(), "", e)
+            LogHelper.logError(LogHelper.LogType.WARN, Ranobe::class.java.toString(), "", e)
         }
 
         readyDate = readyDate ?: (if (book.lastActivity != null) Date(book.lastActivity!! * 1000) else readyDate)
