@@ -16,7 +16,7 @@
     android:summaryOn="@string/summary_dark_theme_off"
     android:title="@string/app_theme"/>
 
-  <ru.profapp.RanobeReader.CustomElements.NumberPickerPreference
+  <ru.profapp.RanobeReaderTest.CustomElements.NumberPickerPreference
     android:defaultValue="16"
     android:key="@string/pref_general_text_size"
     android:summary="@string/select_text_size"
