@@ -15,7 +15,6 @@ import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReaderTest.Adapters.HistoryRecyclerViewAdapter
 import ru.profapp.RanobeReaderTest.Adapters.RanobeRecyclerViewAdapter
 import ru.profapp.RanobeReaderTest.Helpers.LogHelper
-import ru.profapp.RanobeReaderTest.Models.ChapterHistory
 import ru.profapp.RanobeReaderTest.Models.Ranobe
 import ru.profapp.RanobeReaderTest.Models.RanobeHistory
 import ru.profapp.RanobeReaderTest.MyApp
@@ -40,7 +39,6 @@ class HistoryFragment : Fragment() {
     private var mContext: Context? = null
     private var request: Disposable? = null
     private var request2: Disposable? = null
-    private var chapterTextList = listOf<ChapterHistory>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let { }

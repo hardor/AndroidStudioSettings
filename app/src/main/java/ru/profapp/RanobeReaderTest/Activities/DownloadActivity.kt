@@ -33,7 +33,7 @@ class DownloadActivity : AppCompatActivity() {
                 for (chapter in chapterList) {
                     chapter.isChecked = false
                 }
-                adapter!!.notifyItemRangeChanged(0, chapterList.size)
+                adapter!!.notifyDataSetChanged()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.download -> {
@@ -60,7 +60,7 @@ class DownloadActivity : AppCompatActivity() {
                 for (chapter in chapterList) {
                     chapter.isChecked = true
                 }
-                adapter!!.notifyItemRangeChanged(0, chapterList.size)
+                adapter!!.notifyDataSetChanged()
                 return@OnNavigationItemSelectedListener true
             }
         }

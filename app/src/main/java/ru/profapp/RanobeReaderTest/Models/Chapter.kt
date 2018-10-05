@@ -108,6 +108,11 @@ class Chapter() {
         return url.hashCode()
     }
 
-    constructor(chapterUrl: String) : this()
+    constructor(textChapter: TextChapter) : this(){
+        ranobeName = textChapter.ranobeName
+        title = textChapter.chapterName
+        text = textChapter.text
+        url = textChapter.chapterUrl
+    }
 
 }

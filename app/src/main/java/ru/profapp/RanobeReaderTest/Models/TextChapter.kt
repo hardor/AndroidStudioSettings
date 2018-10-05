@@ -20,16 +20,19 @@ class TextChapter {
     var chapterName: String
     @ColumnInfo(name = "RanobeName")
     var ranobeName: String
+    @ColumnInfo(name = "RanobeUrl")
+    var ranobeUrl: String
     @ColumnInfo(name = "Text")
     var text: String
     @ColumnInfo(name = "Index")
     var index: Int = 0
 
-    constructor(@NonNull chapterUrl: String, text: String, chapterName: String, ranobeName: String, index: Int) {
+    constructor(@NonNull chapterUrl: String, text: String, chapterName: String, ranobeName: String, ranobeUrl: String, index: Int) {
         this.chapterUrl = chapterUrl
         this.text = text
         this.chapterName = chapterName
         this.ranobeName = ranobeName
+        this.ranobeUrl = ranobeUrl
         this.index = index
     }
 
@@ -39,6 +42,7 @@ class TextChapter {
         this.chapterName = chapter.title
         this.ranobeName = chapter.ranobeName
         this.index = chapter.index
+        this.ranobeUrl = chapter.ranobeUrl
     }
 
     override fun equals(other: Any?): Boolean {

@@ -1,7 +1,6 @@
 package ru.profapp.RanobeReaderTest.DAO
 
 import androidx.room.*
-import io.reactivex.Flowable
 import io.reactivex.Single
 import ru.profapp.RanobeReaderTest.Models.Ranobe
 import ru.profapp.RanobeReaderTest.Models.RanobeWithChapters
@@ -14,7 +13,7 @@ import ru.profapp.RanobeReaderTest.Models.RanobeWithChapters
 interface RanobeDao {
 
     @Query("SELECT * FROM ranobe")
-    fun allRanobe(): Flowable<List<Ranobe>>
+    fun allRanobe(): Single<List<Ranobe>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(ranobe: Ranobe)

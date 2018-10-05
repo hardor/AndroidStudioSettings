@@ -63,7 +63,7 @@ class ExpandableChapterRecyclerViewAdapter(private val context: Context, private
             if (!childItem.canRead) {
                 currentTextView.setBackgroundColor(Color.GRAY)
             } else {
-                // Todo
+
                 currentTextView.setOnClickListener {
                     if (MyApp.ranobe == null || childItem.ranobeUrl != MyApp.ranobe!!.url) {
 
