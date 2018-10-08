@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.annotation.NonNull
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReaderTest.Activities.ChapterTextActivity
 import ru.profapp.RanobeReaderTest.Common.Constants
 import ru.profapp.RanobeReaderTest.Models.Chapter
@@ -24,26 +25,26 @@ class ChapterRecyclerViewAdapter(private val context: Context, private val mValu
     private val clickListener = object : OnItemClickListener {
         override fun onItemClick(item: Chapter) {
             if (item.canRead) {
-                if (MyApp.ranobe == null || item.ranobeUrl != MyApp.ranobe!!.url) {
+                if (MyApp.ranobe?.wasUpdated !=true || !MyApp.ranobe!!.url.contains(item.ranobeUrl)) {
 
                     var ranobe = Ranobe()
                     ranobe.url = item.ranobeUrl
-                    if (MyApp.fragmentType != null && MyApp.fragmentType != Constants.FragmentType.Saved) {
+                    ranobe = if (MyApp.fragmentType != null && MyApp.fragmentType != Constants.FragmentType.Saved) {
                         try {
-                            ranobe = ranobe.updateRanobe(context).blockingGet()
+                            ranobe.updateRanobe(context).subscribeOn(Schedulers.io()).blockingGet()
                         } catch (ignored: Exception) {
-                            ranobe = mRanobe
+                            mRanobe
                         }
 
                     } else {
-                        ranobe = mRanobe
+                        mRanobe
                     }
 
                     MyApp.ranobe = ranobe
                 }
                 if (MyApp.ranobe != null) {
                     val intent = Intent(context, ChapterTextActivity::class.java)
-                    intent.putExtra("ChapterIndex", item.index)
+                    intent.putExtra("ChapterUrl", item.url)
                     context.startActivity(intent)
                 }
             }

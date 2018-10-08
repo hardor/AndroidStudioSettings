@@ -1,6 +1,7 @@
 package ru.profapp.RanobeReaderTest.DAO
 
 import androidx.room.*
+import io.reactivex.Maybe
 import io.reactivex.Single
 import ru.profapp.RanobeReaderTest.Models.TextChapter
 
@@ -33,6 +34,9 @@ interface TextDao {
 
     @Query("SELECT * FROM textChapter WHERE ChapterUrl = :ChapterUrl")
     fun getTextByChapterUrl(ChapterUrl: String): Single<TextChapter>
+
+    @Query("SELECT * FROM textChapter WHERE RanobeUrl = :RanobeUrl")
+    fun getTextByRanobeUrl(RanobeUrl: String): Maybe<List<TextChapter>>
 
     @Query("DELETE FROM textChapter")
     fun cleanTable()

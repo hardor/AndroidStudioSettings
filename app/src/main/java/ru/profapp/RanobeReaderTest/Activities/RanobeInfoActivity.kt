@@ -39,7 +39,6 @@ import ru.profapp.RanobeReaderTest.BuildConfig
 import ru.profapp.RanobeReaderTest.Common.Constants
 import ru.profapp.RanobeReaderTest.Common.Constants.last_chapter_id_Pref
 import ru.profapp.RanobeReaderTest.Helpers.LogHelper
-import ru.profapp.RanobeReaderTest.Helpers.StringHelper
 import ru.profapp.RanobeReaderTest.Models.Chapter
 import ru.profapp.RanobeReaderTest.Models.Ranobe
 import ru.profapp.RanobeReaderTest.MyApp
@@ -94,27 +93,12 @@ class RanobeInfoActivity : AppCompatActivity() {
         fab.setOnClickListener { SetToFavorite(fab) }
 
         val bookmarkFab = findViewById<FloatingActionButton>(R.id.bookmark_fab)
-        bookmarkFab.setOnClickListener { view ->
+        bookmarkFab.setOnClickListener {
 
-            val sChapterPref = mContext!!.getSharedPreferences(StringHelper.CleanString(currentRanobe.url), Context.MODE_PRIVATE)
-
-            // TODO get from db
-            val url: String? = null //sChapterPref.getString(Constants.Chapter_Url, null)
+            val chapterHistory = MyApp.database?.ranobeHistoryDao()?.getLastChapterByName(currentRanobe.title)?.subscribeOn(Schedulers.io())?.blockingGet()
             val intent = Intent(mContext, ChapterTextActivity::class.java)
-            var tempIndex = currentRanobe.chapterList.size - 1
-            if (url != null) {
-                val tempList = currentRanobe.chapterList
-                for (i in tempList.indices) {
-                    val chapter = tempList[i]
-                    if (chapter.url == url) {
-                        tempIndex = i
-                        break
-                    }
-
-                }
-            }
-            intent.putExtra("ChapterIndex", tempIndex)
-
+            intent.putExtra("ChapterUrl", chapterHistory?.chapterUrl)
+            intent.putExtra("Progress", chapterHistory?.progress)
             mContext!!.startActivity(intent)
 
         }
@@ -153,6 +137,7 @@ class RanobeInfoActivity : AppCompatActivity() {
         chapterRecyclerView.setHasFixedSize(true)
         progressBar = findViewById(R.id.progressBar)
         progressBar.visibility = View.VISIBLE
+        loadData()
         loadChapters()
 
         tabHost = findViewById<TabHost>(R.id.tabHost)
@@ -235,7 +220,7 @@ class RanobeInfoActivity : AppCompatActivity() {
         request = currentRanobe.updateRanobe(mContext!!).map {
             var checked = false
             if (lastIndexPref != null) {
-                val lastId:Int = lastIndexPref?.getInt(it.url, -1)?:-1
+                val lastId: Int = lastIndexPref?.getInt(it.url, -1) ?: -1
                 if (lastId > 0) {
                     checked = true
                     for (chapter in it.chapterList) chapter.isRead = chapter.id!! < lastId
@@ -251,14 +236,13 @@ class RanobeInfoActivity : AppCompatActivity() {
                 }
             }
             return@map it
-                }
+        }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ result ->
                     currentRanobe = result
                     progressBar.visibility = View.GONE
                     loadData()
-                    result.wasUpdated = true
                     recycleChapterList.addAll(result?.chapterList!!)
                     adapterExpandable = ExpandableChapterRecyclerViewAdapter(mContext!!, recycleChapterList, currentRanobe)
                     chapterRecyclerView.adapter = adapterExpandable
@@ -285,8 +269,6 @@ class RanobeInfoActivity : AppCompatActivity() {
 
                 }, { error ->
                     LogHelper.logError(LogHelper.LogType.ERROR, "loadChapters", "", error.fillInStackTrace())
-
-                    currentRanobe.wasUpdated = false
                     progressBar.visibility = View.GONE
                 })
 
@@ -296,10 +278,7 @@ class RanobeInfoActivity : AppCompatActivity() {
         if (currentRanobe.isFavorite || currentRanobe.isFavoriteInWeb) {
             item.icon = favImage
         } else {
-            MyApp.database?.ranobeDao()?.isRanobeFavorite(currentRanobe.url)?.
-                    observeOn(AndroidSchedulers.mainThread())?.
-                    subscribeOn(Schedulers.io())?.
-                    subscribe({
+            MyApp.database?.ranobeDao()?.isRanobeFavorite(currentRanobe.url)?.observeOn(AndroidSchedulers.mainThread())?.subscribeOn(Schedulers.io())?.subscribe({
                 if (it != null) {
                     currentRanobe.isFavorite = it.isFavorite
                     currentRanobe.isFavoriteInWeb = it.isFavoriteInWeb

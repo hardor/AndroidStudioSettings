@@ -21,7 +21,6 @@ class ChapterHistory {
     var chapterName: String
     @ColumnInfo(name = "RanobeName")
     var ranobeName: String
-
     @ColumnInfo(name = "Index")
     var index: Int = 0
     @ColumnInfo(name = "ReadDate")

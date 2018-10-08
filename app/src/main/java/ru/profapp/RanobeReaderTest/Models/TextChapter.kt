@@ -21,7 +21,7 @@ class TextChapter {
     @ColumnInfo(name = "RanobeName")
     var ranobeName: String
     @ColumnInfo(name = "RanobeUrl")
-    var ranobeUrl: String
+    var ranobeUrl: String=""
     @ColumnInfo(name = "Text")
     var text: String
     @ColumnInfo(name = "Index")

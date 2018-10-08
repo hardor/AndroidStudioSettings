@@ -11,8 +11,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.crashlytics.android.Crashlytics
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.fabric.sdk.android.Fabric
+import io.reactivex.Completable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReaderTest.Adapters.ExpandableDownloadRecyclerViewAdapter
 import ru.profapp.RanobeReaderTest.Models.Chapter
+import ru.profapp.RanobeReaderTest.Models.Ranobe
 import ru.profapp.RanobeReaderTest.MyApp
 import ru.profapp.RanobeReaderTest.R
 
@@ -23,17 +27,20 @@ class DownloadActivity : AppCompatActivity() {
     private var progressDialog: ProgressDialog? = null
     private var chapterList: List<Chapter> = listOf()
     private var recyclerView: RecyclerView? = null
-    private var adapter: ExpandableDownloadRecyclerViewAdapter? = null
+    private lateinit var adapter: ExpandableDownloadRecyclerViewAdapter
     private var context: Context? = null
+
+    lateinit var currentRanobe: Ranobe
+
     private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+
 
         when (item.itemId) {
 
             R.id.select_none -> {
-                for (chapter in chapterList) {
-                    chapter.isChecked = false
-                }
-                adapter!!.notifyDataSetChanged()
+                chapterList.forEach { it.isChecked = false }
+                adapter.selectAll = false
+                adapter.notifyDataSetChanged()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.download -> {
@@ -57,9 +64,8 @@ class DownloadActivity : AppCompatActivity() {
                 return@OnNavigationItemSelectedListener true
             }
             R.id.select_all -> {
-                for (chapter in chapterList) {
-                    chapter.isChecked = true
-                }
+                chapterList.forEach { it.isChecked = true }
+                adapter.selectAll = true
                 adapter!!.notifyDataSetChanged()
                 return@OnNavigationItemSelectedListener true
             }
@@ -86,38 +92,35 @@ class DownloadActivity : AppCompatActivity() {
 
         val chapterText = ChapterTextActivity()
 
-        object : Thread() {
 
-            override fun run() {
-                progressDialog!!.progress = 0
-                for (chapter in chapterList) {
-                    if (running) {
-                        if (!chapter.isChecked) {
+        progressDialog!!.progress = 0
+        for (chapter in chapterList) {
+            if (running) {
+                if (!chapter.isChecked) {
 
-                            MyApp.database?.textDao()?.delete(chapter.url)
-                            //
-                            //                                MyApp.database?.personDao()?.insert(person)
-                            //                            ?.subscribeOn(Schedulers.io())
-                            //                                    .subscribe()
-                            //                            MyApp.database?.textDao()?.delete(chapter.getUrl());
-                            chapter.text = ""
-                            chapter.downloaded = false
-                        } else {
-                            chapter.downloaded = chapterText.GetChapterText(chapter, context!!)
-                        }
-                        progressDialog!!.incrementProgressBy(1)
-                    } else {
-                        break
-                    }
+
+                    Completable.fromAction {
+                        MyApp.database?.textDao()?.delete(chapter.url)
+                    }?.doFinally {
+                        chapter.text = ""
+                        chapter.downloaded = false
+                    }?.subscribeOn(Schedulers.io())?.blockingAwait()
+
+
+                } else {
+                    chapter.downloaded = chapterText.GetChapterText(chapter, context!!).subscribeOn(Schedulers.io()).blockingGet()
                 }
-
-                runOnUiThread {
-                    progressDialog!!.getButton(BUTTON_NEGATIVE).setText(R.string.finish)
-                    progressDialog!!.setMessage(getString(R.string.task_finished))
-                }
-
+                progressDialog!!.incrementProgressBy(1)
+            } else {
+                break
             }
-        }.start()
+        }
+
+
+        progressDialog!!.getButton(BUTTON_NEGATIVE).setText(R.string.finish)
+        progressDialog!!.setMessage(getString(R.string.task_finished))
+
+
     }
 
     private fun updateList() {
@@ -139,38 +142,41 @@ class DownloadActivity : AppCompatActivity() {
 
         recyclerView = findViewById(R.id.chapter_list)
 
-        chapterList = MyApp.ranobe!!.chapterList
+        currentRanobe = MyApp.ranobe!!
+        chapterList = currentRanobe.chapterList
         val pDialog = ProgressDialog(this)
         pDialog.setTitle("Loading")
         pDialog.setCancelable(false)
         pDialog.show()
-        object : Thread() {
-            override fun run() {
-                for (chapter in chapterList) {
-                    if (!chapter.downloaded) {
 
-                        val textChapter = MyApp.database?.textDao()?.getTextByChapterUrl(chapter.url)
-                        //Todo
-                        //                        if (textChapter?.text != null
-                        //                                && textChapter.text != "") {
-                        //                            chapter.downloaded = true
-                        //                            chapter.isChecked = true
-                        //                        } else {
-                        //                            chapter.downloaded = false
-                        //                            chapter.isChecked = false
-                        //                        }
-                    } else {
-                        chapter.isChecked = true
+        MyApp.database?.textDao()?.getTextByRanobeUrl(currentRanobe.url)
+                ?.subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe({ result ->
+
+                    for (chapter in chapterList) {
+                        if (!chapter.downloaded) {
+
+                            if (!result.firstOrNull { it -> it.chapterUrl == chapter.url }?.text.isNullOrBlank()) {
+                                chapter.downloaded = true
+                                chapter.isChecked = true
+                            } else {
+                                chapter.downloaded = false
+                                chapter.isChecked = false
+                            }
+
+                        } else {
+                            chapter.isChecked = true
+                        }
                     }
-                }
-                adapter = ExpandableDownloadRecyclerViewAdapter(this@DownloadActivity, chapterList)
-                runOnUiThread {
+
+                    adapter = ExpandableDownloadRecyclerViewAdapter(this@DownloadActivity, chapterList)
                     recyclerView!!.adapter = adapter
                     pDialog.dismiss()
-                }
+                }, {
+                    pDialog.dismiss()
+                })
 
-            }
-        }.start()
 
     }
 
@@ -184,5 +190,10 @@ class DownloadActivity : AppCompatActivity() {
             android.R.id.home -> onBackPressed()
         }
         return true
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        progressDialog!!.dismiss()
     }
 }

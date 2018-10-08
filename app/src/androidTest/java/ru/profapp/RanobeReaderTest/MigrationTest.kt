@@ -6,6 +6,7 @@ import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -52,11 +53,11 @@ class MigrationTest {
     @Test
     fun migrateData() {
         val chapters = database?.chapterDao()?.getChaptersForRanobe("tl.rulate.ru/book/3693")
-                ?: mutableListOf()
+                ?:  Single.just(mutableListOf())
         val textChapters = database?.textDao()?.allText() ?: Single.just(mutableListOf())
 
-        Assert.assertTrue(chapters.any())
-        Assert.assertTrue(textChapters.blockingGet().any())
+        Assert.assertTrue(chapters.subscribeOn(Schedulers.io()).blockingGet().any())
+        Assert.assertTrue(textChapters.subscribeOn(Schedulers.io()).blockingGet().any())
 
     }
 

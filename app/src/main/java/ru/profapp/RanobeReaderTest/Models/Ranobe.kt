@@ -43,7 +43,7 @@ class Ranobe() {
                     }
 
                 } catch (ignore: NumberFormatException) {
-                    return field
+                    field
                 }
             }
             return field
@@ -108,18 +108,16 @@ class Ranobe() {
             if (ranobeSite == Rulate.url || url.contains(Rulate.url)) {
                 val mPreferences = mContext.getSharedPreferences(Constants.Rulate_Login_Pref, 0)
                 val token = mPreferences.getString(Constants.KEY_Token, "") ?: ""
-                return RulateRepository.getBookInfo(this, token, id)
+                return RulateRepository.getBookInfo(this, token, id).doOnSuccess { wasUpdated = true }
             } else if (ranobeSite == RanobeRf.url || url.contains(RanobeRf.url)) {
-
-                return RanobeRfRepository.getBookInfo(this)
+                return RanobeRfRepository.getBookInfo(this).doOnSuccess { wasUpdated = true }
             } else if (ranobeSite == RanobeHub.url || url.contains(RanobeHub.url)) {
-
-                return RanobeHubRepository.getBookInfo(this)
+                return RanobeHubRepository.getBookInfo(this).doOnSuccess { wasUpdated = true }
             } else if (ranobeSite != Title.url) {
                 throw NullPointerException()
             }
         }
-        return Single.create { }
+        return Single.just(this)
 
     }
 

@@ -39,10 +39,10 @@ class ChapterTextActivity : AppCompatActivity() {
     lateinit var mCurrentChapter: Chapter
     private lateinit var mWebView: WebView
     private var mContext: Context? = null
-    private var mIndex: Int = 0
-    private var chIndex: Int = 0
+    private var hChapterUrl: String? = null
+    private var chapterIndex: Int = 0
     var mProgress: Float = -1f
-    private var mChapterCount: Int? = null
+    private var mChapterCount: Int = 0
     private var mChapterList: List<Chapter> = ArrayList()
 
     private var lastIndexPref: SharedPreferences? = null
@@ -78,10 +78,10 @@ class ChapterTextActivity : AppCompatActivity() {
         setContentView(R.layout.activity_chapter_text)
 
         if (savedInstanceState != null) {
-            mIndex = savedInstanceState.getInt("ChapterIndex", -1)
+            hChapterUrl = savedInstanceState.getString("ChapterUrl", null)
             mProgress = savedInstanceState.getFloat("Progress", -1f)
         } else {
-            chIndex = intent.getIntExtra("ChapterIndex", 0)
+            hChapterUrl = intent.getStringExtra("ChapterUrl")
             mProgress = intent.getFloatExtra("Progress", -1f)
         }
 
@@ -90,15 +90,17 @@ class ChapterTextActivity : AppCompatActivity() {
         currentRanobe = MyApp.ranobe
         mChapterList = currentRanobe?.chapterList?.filter { it -> it.canRead } ?: mChapterList
 
-        if (mIndex >= 0) {
-            mCurrentChapter = mChapterList[mIndex]
+        mChapterCount = mChapterList.size
+
+        if (hChapterUrl != null) {
+            mCurrentChapter = mChapterList.first { it.url == hChapterUrl }
+            chapterIndex = mChapterList.indexOf(mCurrentChapter)
         } else {
-            mCurrentChapter = mChapterList.firstOrNull { it.index == mIndex } ?: mChapterList.first()
-            mIndex = mChapterList.indexOf(mCurrentChapter)
+            chapterIndex = mChapterCount-1
+            mCurrentChapter = mChapterList[chapterIndex]
         }
 
-        mCurrentChapter = mChapterList.firstOrNull { it.index == mIndex } ?: mChapterList.first()
-        mChapterCount = mChapterList.size
+
 
         progressBar = findViewById(R.id.progressBar2)
 
@@ -141,12 +143,8 @@ class ChapterTextActivity : AppCompatActivity() {
         }
         mWebView.setLayerType(View.LAYER_TYPE_HARDWARE, null)
 
-        // mWebView.getSettings().setBuiltInZoomControls(true);
-        // TODO: check zooming
-        mWebView.settings.displayZoomControls = true
-        mWebView.setInitialScale(1)
-        mWebView.settings.loadWithOverviewMode = true
-        mWebView.settings.useWideViewPort = true
+        mWebView.settings.builtInZoomControls = false
+        mWebView.settings.displayZoomControls = false
 
         mWebView.setBackgroundColor(resources.getColor(R.color.webViewBackground))
 
@@ -164,8 +162,8 @@ class ChapterTextActivity : AppCompatActivity() {
         nextMenu = findViewById(R.id.navigation_next)
 
 
-        prevMenu.visibility = if (mIndex < mChapterCount!! - 1) View.VISIBLE else View.INVISIBLE
-        nextMenu.visibility = if (mIndex > 0) View.VISIBLE else View.INVISIBLE
+        prevMenu.visibility = if (chapterIndex < mChapterCount!! - 1) View.VISIBLE else View.INVISIBLE
+        nextMenu.visibility = if (chapterIndex > 0) View.VISIBLE else View.INVISIBLE
 
         nextMenu.setOnClickListener { OnClicked(-1) }
 
@@ -254,13 +252,10 @@ class ChapterTextActivity : AppCompatActivity() {
         actionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
-    fun GetChapterText(chapter: Chapter, context: Context): Boolean {
+    fun GetChapterText(chapter: Chapter, context: Context): Single<Boolean> {
         mContext = context
         mCurrentChapter = chapter
-
         return GetChapterText(true)
-                .subscribeOn(Schedulers.io())
-                .blockingGet()
 
     }
 
@@ -281,19 +276,19 @@ class ChapterTextActivity : AppCompatActivity() {
                     else -> return@onErrorResumeNext Single.just(false)
                 }
 
+            }.map {
+
+                if ((MyApp.autoSaveText || needSave) && !mCurrentChapter.text.isNullOrBlank() && it) {
+                    Completable.fromAction {
+                        MyApp.database?.textDao()?.insert(TextChapter(mCurrentChapter))
+                    }?.subscribeOn(Schedulers.io())?.subscribe()
+
+                }
+                return@map it
             }
 
         } else {
             Single.just(true)
-        }.map {
-
-            if ((MyApp.autoSaveText || needSave) && !mCurrentChapter.text.isNullOrBlank() && it) {
-                Completable.fromAction {
-                    MyApp.database?.textDao()?.insert(TextChapter(mCurrentChapter))
-                }?.subscribeOn(Schedulers.io())?.subscribe()
-
-            }
-            return@map it
         }
 
     }
@@ -325,23 +320,23 @@ class ChapterTextActivity : AppCompatActivity() {
 
     private fun OnClicked(i: Int) {
 
-        mIndex += i
-        if (mIndex >= 0 && mIndex <= mChapterCount!! - 1) {
+        chapterIndex += i
+        if (chapterIndex >= 0 && chapterIndex <= mChapterCount!! - 1) {
             try {
                 saveProgressToDb()
-                mCurrentChapter = mChapterList[mIndex]
+                mCurrentChapter = mChapterList[chapterIndex]
                 initWebView()
             } catch (e: ArrayIndexOutOfBoundsException) {
-                mIndex -= i
+                chapterIndex -= i
             }
 
         } else {
             Toast.makeText(mContext, R.string.not_exist, Toast.LENGTH_SHORT).show()
-            mIndex -= i
+            chapterIndex -= i
         }
 
-        prevMenu.visibility = if (mIndex < mChapterCount!! - 1) View.VISIBLE else View.INVISIBLE
-        nextMenu.visibility = if (mIndex > 0) View.VISIBLE else View.INVISIBLE
+        prevMenu.visibility = if (chapterIndex < mChapterCount!! - 1) View.VISIBLE else View.INVISIBLE
+        nextMenu.visibility = if (chapterIndex > 0) View.VISIBLE else View.INVISIBLE
 
     }
 
@@ -369,7 +364,7 @@ class ChapterTextActivity : AppCompatActivity() {
         // Make sure to call the super method so that the states of our views are saved
         super.onSaveInstanceState(outState)
         // Save our own state now
-        outState.putInt("ChapterIndex", mIndex)
+        outState.putString("ChapterUrl", mCurrentChapter.url)
         outState.putFloat("Progress", calculateProgression())
     }
 

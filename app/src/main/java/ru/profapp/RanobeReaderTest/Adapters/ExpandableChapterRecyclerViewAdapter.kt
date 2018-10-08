@@ -65,7 +65,7 @@ class ExpandableChapterRecyclerViewAdapter(private val context: Context, private
             } else {
 
                 currentTextView.setOnClickListener {
-                    if (MyApp.ranobe == null || childItem.ranobeUrl != MyApp.ranobe!!.url) {
+                    if (MyApp.ranobe?.wasUpdated !=true || !MyApp.ranobe!!.url.contains(childItem.ranobeUrl)) {
 
                         var ranobe = Ranobe()
                         ranobe.url = childItem.ranobeUrl
@@ -84,7 +84,7 @@ class ExpandableChapterRecyclerViewAdapter(private val context: Context, private
                     }
                     if (MyApp.ranobe != null) {
                         val intent = Intent(context, ChapterTextActivity::class.java)
-                        intent.putExtra("ChapterIndex", childItem.index)
+                        intent.putExtra("ChapterUrl", childItem.url)
 
                         context.startActivity(intent)
                     }

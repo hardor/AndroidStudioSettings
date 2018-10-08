@@ -1,6 +1,7 @@
 package ru.profapp.RanobeReaderTest.DAO
 
 import androidx.room.*
+import io.reactivex.Single
 import ru.profapp.RanobeReaderTest.Models.Chapter
 
 /**
@@ -11,7 +12,7 @@ import ru.profapp.RanobeReaderTest.Models.Chapter
 interface ChapterDao {
 
     @Query("SELECT * FROM chapter")
-    fun allChapters(): List<Chapter>
+    fun allChapters(): Single<List<Chapter>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(chapter: Chapter)
@@ -32,6 +33,6 @@ interface ChapterDao {
     fun getByChapterUrl(ChapterUrl: String): Chapter
 
     @Query("SELECT * FROM chapter WHERE RanobeUrl IS :RanobeUrl order by chapter.`Index` Asc")
-    fun getChaptersForRanobe(RanobeUrl: String): List<Chapter>
+    fun getChaptersForRanobe(RanobeUrl: String): Single<List<Chapter>>
 
 }

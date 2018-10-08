@@ -15,7 +15,7 @@ import ru.profapp.RanobeReaderTest.R
 class ExpandableDownloadRecyclerViewAdapter(private val context: Context) : RecyclerView.Adapter<ExpandableDownloadRecyclerViewAdapter.GroupViewHolder>() {
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
-
+    public var selectAll: Boolean? = null
     fun pxToDp(x: Int): Int {
         return (context.resources.displayMetrics.density * 6 + 0.5f).toInt()
     }
@@ -42,6 +42,9 @@ class ExpandableDownloadRecyclerViewAdapter(private val context: Context) : Recy
 
         val parentDataItem = parentDataItems[position]
         holder.textView_parentName.text = parentDataItem.parentName
+
+        if (selectAll != null)
+            holder.checkBox_parentName.isChecked = selectAll!!
 
         val noOfChildTextViews = holder.linearLayout_childItems.childCount
         val noOfChild = parentDataItem.childDataItems
@@ -107,6 +110,9 @@ class ExpandableDownloadRecyclerViewAdapter(private val context: Context) : Recy
                 linearLayout_childItems.addView(checkBox, layoutParams)
             }
             textView_parentName.setOnClickListener(this)
+
+
+
             checkBox_parentName.setOnCheckedChangeListener { buttonView, isChecked ->
                 buttonView.isChecked = isChecked
                 for (i in 0 until linearLayout_childItems.childCount) {

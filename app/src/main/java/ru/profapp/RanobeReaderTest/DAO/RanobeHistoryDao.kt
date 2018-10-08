@@ -1,6 +1,7 @@
 package ru.profapp.RanobeReaderTest.DAO
 
 import androidx.room.*
+import io.reactivex.Maybe
 import io.reactivex.Single
 import ru.profapp.RanobeReaderTest.Models.ChapterHistory
 import ru.profapp.RanobeReaderTest.Models.RanobeHistory
@@ -10,6 +11,9 @@ import ru.profapp.RanobeReaderTest.Models.RanobeHistory
  */
 @Dao
 interface RanobeHistoryDao {
+    @Query("SELECT * FROM chapterHistory where ranobeName=:ranobeName ORDER BY ReadDate DESC  LIMIT 1 ")
+    fun getLastChapterByName(ranobeName: String): Maybe<ChapterHistory>
+
     @Query("SELECT * FROM ranobeHistory order by ReadDate desc")
     fun allRanobes(): Single<List<RanobeHistory>>
 
@@ -47,7 +51,7 @@ interface RanobeHistoryDao {
     fun cleanChapters()
 
     @Transaction
-    fun cleanHistory(remove:Boolean=true) {
+    fun cleanHistory(remove: Boolean = true) {
         cleanRanobes()
         cleanChapters()
     }

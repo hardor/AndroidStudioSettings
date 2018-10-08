@@ -23,7 +23,9 @@ object RulateRepository {
     fun getBookInfo(ranobe: Ranobe, token: String = "", book_id: Int?): Single<Ranobe> {
         return IRulateApiService.create().GetBookInfo(token, book_id).map {
             if (it.status == "success") {
-                it.response?.let { it1 -> ranobe.updateRanobe(it1) }
+                it.response?.let { it1 ->
+                    ranobe.updateRanobe(it1)
+                }
             }
             return@map ranobe
         }

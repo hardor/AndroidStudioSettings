@@ -19,7 +19,7 @@ object RanobeRfRepository {
 
     fun getBookInfo(ranobe: Ranobe): Single<Ranobe> {
         var ranobeName = ranobe.url.replace(Constants.RanobeSite.RanobeRf.url, "")
-        ranobeName = ranobeName.substring(1, ranobeName.length - 1)
+        ranobeName = ranobeName.replace("/","")
         return IRanobeRfApiService.create().GetBookInfo(ranobeName).map {
             if (it.status == 200) {
                 it.result?.let { it1 -> ranobe.updateRanobe(it1) }

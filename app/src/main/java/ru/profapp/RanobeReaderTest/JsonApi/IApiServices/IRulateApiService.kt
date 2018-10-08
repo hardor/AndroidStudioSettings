@@ -7,6 +7,12 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 import ru.profapp.RanobeReaderTest.JsonApi.Rulate.*
+import com.google.gson.FieldNamingPolicy
+import org.jsoup.select.Evaluator.Id
+import com.google.gson.GsonBuilder
+import com.google.gson.Gson
+import ru.profapp.RanobeReaderTest.JsonApi.CustomDeserializer.RulateBookDeserializer
+
 
 interface IRulateApiService {
 
@@ -36,10 +42,13 @@ interface IRulateApiService {
 
     companion object Factory {
 
+        val gson = GsonBuilder().registerTypeAdapter(RulateBook::class.java, RulateBookDeserializer()).create()
+
         fun create(): IRulateApiService {
+
             val retrofit = Retrofit.Builder()
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create(gson))
                     .baseUrl("https://tl.rulate.ru")
                     .build()
 
