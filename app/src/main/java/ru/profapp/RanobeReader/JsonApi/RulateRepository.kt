@@ -21,7 +21,7 @@ import java.util.*
 object RulateRepository {
 
     fun getBookInfo(ranobe: Ranobe, token: String = "", book_id: Int?): Single<Ranobe> {
-        return IRulateApiService.create().GetBookInfo(token, book_id).map {
+        return IRulateApiService.instance.GetBookInfo(token, book_id).map {
             if (it.status == "success") {
                 it.response?.let { it1 ->
                     ranobe.updateRanobe(it1)
@@ -32,7 +32,7 @@ object RulateRepository {
     }
 
     fun getReadyBooks(page: Int): Single<List<Ranobe>> {
-        return IRulateApiService.create().GetReadyBooks(page).map {
+        return IRulateApiService.instance.GetReadyBooks(page).map {
             return@map getRanobeList(it)
         }
     }
@@ -40,7 +40,7 @@ object RulateRepository {
     fun getFavoriteBooks(token: String?): Single<List<Ranobe>> {
         if (token.isNullOrBlank()) return Single.just(listOf())
 
-        return IRulateApiService.create().GetFavoriteBooks(token!!).map {
+        return IRulateApiService.instance.GetFavoriteBooks(token!!).map {
             val or: MutableList<Ranobe> = mutableListOf()
 
 
@@ -63,13 +63,13 @@ object RulateRepository {
     }
 
     fun searchBooks(search: String): Single<List<Ranobe>> {
-        return IRulateApiService.create().SearchBooks(search).map {
+        return IRulateApiService.instance.SearchBooks(search).map {
             return@map getRanobeList(it)
         }
     }
 
     fun login(login: String, password: String): Single<Array<String>> {
-        return IRulateApiService.create().Login(login, password).map {
+        return IRulateApiService.instance.Login(login, password).map {
             if (it.status == "success") {
                 return@map arrayOf("true", it.msg, it.response.token)
             } else arrayOf("false", it.msg)
@@ -77,7 +77,7 @@ object RulateRepository {
     }
 
     fun getChapterText(token: String, mCurrentChapter: Chapter): Single<Boolean> {
-        return IRulateApiService.create().GetChapterText(token, mCurrentChapter.id, mCurrentChapter.ranobeId).map {
+        return IRulateApiService.instance.GetChapterText(token, mCurrentChapter.id, mCurrentChapter.ranobeId).map {
             if (it.status == "success") {
                 it.response?.let { it1 ->
                     mCurrentChapter.updateChapter(it1)
@@ -91,16 +91,16 @@ object RulateRepository {
         }
     }
 
-    fun addBookmark(token: String, book_id: Int): Single<Pair<Boolean, String>> {
-        return IRulateApiService.create().AddBookmark(token, book_id).map {
+    fun addBookmark(token: String, book_id: Int?): Single<Pair<Boolean, String>> {
+        return IRulateApiService.instance.AddBookmark(token, book_id).map {
 
             if (it.status == "success") return@map Pair(true, it.msg.toString())
             else return@map Pair(false, it.msg.toString())
         }
     }
 
-    fun removeBookmark(token: String, book_id: Int): Single<Pair<Boolean, String>> {
-        return IRulateApiService.create().RemoveBookmark(token, book_id).map {
+    fun removeBookmark(token: String, book_id: Int?): Single<Pair<Boolean, String>> {
+        return IRulateApiService.instance.RemoveBookmark(token, book_id).map {
 
             if (it.status == "success") return@map Pair(true, it.msg.toString())
             else return@map Pair(false, it.msg.toString())

@@ -31,14 +31,15 @@ interface IRanobeRfApiService {
 
     @FormUrlEncoded
     @POST("/v1/bookmark/add/")
-    fun AddBookmark(@Header("Authorization") token: String, @Field("book_id") book_id: Int, @Field("part_id") part_id: Int): Single<RfBookmarkGson>
+    fun AddBookmark(@Header("Authorization") token: String, @Field("book_id") book_id: Int?, @Field("part_id") part_id: Int): Single<RfBookmarkGson>
 
     @FormUrlEncoded
     @DELETE("/v1/bookmark/delete/")
-    fun RemoveBookmark(@Header("Authorization") token: String, @Field("bookmark_id") bookmark_id: Int): Single<RfBookmarkGson>
+    fun RemoveBookmark(@Header("Authorization") token: String, @Field("bookmark_id") bookmark_id: Int?): Single<RfBookmarkGson>
 
     companion object Factory {
 
+        var instance: IRanobeRfApiService = create()
         fun create(): IRanobeRfApiService {
             val retrofit = Retrofit.Builder()
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())

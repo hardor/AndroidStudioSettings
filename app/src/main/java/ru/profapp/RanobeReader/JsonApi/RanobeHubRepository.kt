@@ -15,8 +15,12 @@ import java.util.*
 
 object RanobeHubRepository {
 
+    private var token: String = ""
+
+    var Cookie: HashMap<String, String> = hashMapOf()
+
     fun getBookInfo(ranobe: Ranobe): Single<Ranobe> {
-        return IRanobeHubApiService.create().GetChapters(ranobe.id).map {
+        return IRanobeHubApiService.instance.GetChapters(ranobe.id).map {
             ranobe.chapterList.clear()
             var index = 0
             for (volume in it.data) {
@@ -40,9 +44,14 @@ object RanobeHubRepository {
     }
 
     fun getReadyBooks(page: Int): Single<List<Ranobe>> {
-        return IRanobeHubApiService.create().GetReadyBooks(page).map {
+
+        return when (page) {
+            1 -> IRanobeHubApiService.instance.GetReady()
+            else -> IRanobeHubApiService.instance.GetReadyBooks(page)
+        }.map {
             return@map getRanobeReadyList(it)
         }
+
     }
 
     private fun getRanobeReadyList(it: RanobeHubReadyGson): List<Ranobe> {
@@ -68,7 +77,7 @@ object RanobeHubRepository {
     }
 
     fun searchBooks(search: String): Single<List<Ranobe>> {
-        return IRanobeHubApiService.create().SearchBooks(search).map {
+        return IRanobeHubApiService.instance.SearchBooks(search).map {
             return@map getRanobeList(it.categories.ranobe.items)
         }
     }
@@ -77,7 +86,7 @@ object RanobeHubRepository {
 
         val parts = mCurrentChapter.url.split("/")
 
-        return IRanobeHubApiService.create().GetChapterText(parts[4].toInt(), parts[5].toInt(), parts[6].toInt()).map {
+        return IRanobeHubApiService.instance.GetChapterText(parts[4].toInt(), parts[5].toInt(), parts[6].toInt()).map {
 
             val a = it
             return@map true

@@ -136,5 +136,6 @@
   <string name="summary_send_reports_off">summary_send_reports_on</string>
   <string name="summary_send_reports_on">summary_send_reports_on</string>
   <string name="ranobes">Ranobes</string>
+  <string name="Load_from_RanobeHub"/>
 
 </resources>

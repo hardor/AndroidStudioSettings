@@ -10,6 +10,8 @@ import retrofit2.http.Query
 import ru.profapp.RanobeReader.JsonApi.CustomDeserializer.RulateBookDeserializer
 import ru.profapp.RanobeReader.JsonApi.Rulate.*
 
+
+
 interface IRulateApiService {
 
     @GET("/api/getReady?key=fpoiKLUues81werht039")
@@ -25,10 +27,10 @@ interface IRulateApiService {
     fun GetChapterText(@Query("token") token: String, @Query("chapter_id") chapter_id: Int?, @Query("book_id") book_id: Int?): Single<ChapterTextGson>
 
     @GET("/api/addBookmark?key=fpoiKLUues81werht039")
-    fun AddBookmark(@Query("token") token: String, @Query("book_id") book_id: Int): Single<BookmarkGson>
+    fun AddBookmark(@Query("token") token: String, @Query("book_id") book_id: Int?): Single<BookmarkGson>
 
     @GET("/api/removeBookmark?key=fpoiKLUues81werht039")
-    fun RemoveBookmark(@Query("token") token: String, @Query("book_id") book_id: Int): Single<BookmarkGson>
+    fun RemoveBookmark(@Query("token") token: String, @Query("book_id") book_id: Int?): Single<BookmarkGson>
 
     @GET("/api/book?key=fpoiKLUues81werht039")
     fun GetBookInfo(@Query("token") token: String = "", @Query("book_id") book_id: Int?): Single<BookInfoGson>
@@ -39,12 +41,14 @@ interface IRulateApiService {
     companion object Factory {
 
         val gson = GsonBuilder().registerTypeAdapter(RulateBook::class.java, RulateBookDeserializer()).create()
+        var instance: IRulateApiService = create()
 
         fun create(): IRulateApiService {
 
             val retrofit = Retrofit.Builder()
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create(gson))
+
                     .baseUrl("https://tl.rulate.ru")
                     .build()
 

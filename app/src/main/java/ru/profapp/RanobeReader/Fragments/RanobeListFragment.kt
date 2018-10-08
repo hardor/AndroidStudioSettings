@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -135,14 +136,14 @@ class RanobeListFragment : Fragment() {
         val sPref = mContext!!.getSharedPreferences(Constants.is_readed_Pref, MODE_PRIVATE)
         val lastIndexPref = mContext!!.getSharedPreferences(Constants.last_chapter_id_Pref, MODE_PRIVATE)
 
-        val loader: Single<List<Ranobe>> = when (fragmentType) {
-            Constants.FragmentType.Rulate -> rulateLoadRanobe()
-            Constants.FragmentType.Ranoberf -> ranobeRfLoadRanobe()
-            Constants.FragmentType.RanobeHub -> ranobeHubLoadRanobe()
+        val loader: Observable<List<Ranobe>> = when (fragmentType) {
+            Constants.FragmentType.Rulate -> rulateLoadRanobe().toObservable()
+            Constants.FragmentType.Ranoberf -> ranobeRfLoadRanobe().toObservable()
+            Constants.FragmentType.RanobeHub -> ranobeHubLoadRanobe().toObservable()
             Constants.FragmentType.Favorite -> {
                 favoriteLoadRanobe()
             }
-            Constants.FragmentType.Saved -> savedLoadRanobe()
+            Constants.FragmentType.Saved -> savedLoadRanobe().toObservable()
             else -> favoriteLoadRanobe()
         }
 
@@ -150,8 +151,6 @@ class RanobeListFragment : Fragment() {
 
 
         request = loader
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
                 .map { ranobeList ->
                     for (ranobe in ranobeList) {
                         if (ranobe.image.isNullOrBlank()) {
@@ -193,10 +192,14 @@ class RanobeListFragment : Fragment() {
                         }
                     }
                     return@map it
-                }.subscribe({ result ->
-                    ranobeList.addAll(result)
-                    mRanobeRecyclerViewAdapter.notifyItemRangeInserted(oldListSize, ranobeList.size)
-
+                }.observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({ result ->
+                    if (result.any()) {
+                        ranobeList.addAll(result)
+                        mRanobeRecyclerViewAdapter.notifyItemRangeInserted(oldListSize, ranobeList.size)
+                        oldListSize = ranobeList.size
+                    }
                     page++
                     onItemsLoadFinished()
 
@@ -231,7 +234,7 @@ class RanobeListFragment : Fragment() {
         progressDialog?.dismiss()
     }
 
-    private fun favoriteLoadRanobe(): Single<List<Ranobe>> {
+    private fun favoriteLoadRanobe(): Observable<List<Ranobe>> {
 
         progressDialog = ProgressDialog(context)
         progressDialog!!.setMessage(resources.getString(R.string.load_please_wait))
@@ -261,7 +264,7 @@ class RanobeListFragment : Fragment() {
                             for (webGroup in webGroupList) {
                                 val titleRanobe = Ranobe(Title)
                                 titleRanobe.title = (Constants.RanobeSite.fromUrl(siteGroup.key)?.title
-                                        ?: None.title).plus(if (webGroup.key) "Web" else "Local")
+                                        ?: None.title).plus(if (webGroup.key) " Web" else " Local")
                                 newRanobeList.add(titleRanobe)
                                 newRanobeList.addAll(siteGroup.value.map { gr ->
                                     gr.ranobe.chapterList = gr.chapterList
@@ -272,141 +275,63 @@ class RanobeListFragment : Fragment() {
                         }
 
                         return@map newRanobeList.toList()
-                    } ?: Single.just(listOf())).doOnSuccess {
-                loadFromDatabase = false
-            }
+                    }?.doOnSuccess { loadFromDatabase = false }?.toObservable()
+                    ?: Observable.just(listOf()))
 
         } else {
             progressDialog!!.setTitle(resources.getString(R.string.Load_from_Rulate))
             progressDialog!!.show()
-            return Single.fromObservable(
-                    getRulateWebFavorite().doFinally { progressDialog!!.setTitle(context!!.getString(R.string.Load_from_RanobeRf)) }
-                            .concatWith(getRanobeRfWebFavorite().doFinally { progressDialog!!.setTitle(context!!.getString(R.string.Load_from_RanobeRf)) })
-                            .concatWith(getRanobeHubWebFavorite().doFinally { progressDialog!!.setTitle(context!!.getString(R.string.Load_from_RanobeRf)) })
+            return getRulateWebFavorite().doOnSubscribe() { progressDialog!!.setTitle(context!!.getString(R.string.Load_from_Rulate)) }
+                    .concatWith(getRanobeRfWebFavorite().doOnSubscribe { progressDialog!!.setTitle(context!!.getString(R.string.Load_from_RanobeRf)) })
+                    .concatWith(getRanobeHubWebFavorite().doOnSubscribe { progressDialog!!.setTitle(context!!.getString(R.string.Load_from_RanobeHub)) })
 
-                            .map { ranobeList ->
-                                for (ranobe in ranobeList) {
-                                    ranobe.updateRanobe(mContext!!)
-                                    ranobe.isFavoriteInWeb = true
-                                    ranobe.isFavorite = true
-                                    MyApp.database?.ranobeDao()?.insert(ranobe)
-                                    MyApp.database?.chapterDao()?.insertAll(*ranobe.chapterList.toTypedArray())
-                                }
-                                return@map ranobeList
-                            }.toObservable()
+                    .map { ranobeList ->
+                        val newList = mutableListOf<Ranobe>()
+                        if (ranobeList.any()) {
+                            val titleRanobe = Ranobe(Title)
+                            titleRanobe.title = (Constants.RanobeSite.fromUrl(ranobeList.first().ranobeSite)?.title).plus(" Web")
+                            newList.add(titleRanobe)
+                        }
+                        for (ranobe in ranobeList) {
+                            ranobe.updateRanobe(mContext!!).blockingGet()
+                            ranobe.isFavoriteInWeb = true
+                            ranobe.isFavorite = true
+                        }
+                        newList.addAll(ranobeList)
+                        return@map newList.toList()
+                    }.concatWith(
+                            MyApp.database?.ranobeDao()?.getLocalFavoriteRanobes()
+                                    ?.map { it ->
+                                        val newRanobeList = mutableListOf<Ranobe>()
+                                        val groupList = it.groupBy { g -> g.ranobeSite }
+                                        for (siteGroup in groupList) {
 
-            )
+                                            val titleRanobe = Ranobe(Title)
+                                            titleRanobe.title = (Constants.RanobeSite.fromUrl(siteGroup.key)?.title
+                                                    ?: None.title).plus(" Local")
+                                            newRanobeList.add(titleRanobe)
+
+                                            for (ranobe in siteGroup.value) {
+                                                ranobe.updateRanobe(mContext!!).blockingGet()
+                                                newRanobeList.add(ranobe)
+                                            }
+
+                                        }
+                                        return@map newRanobeList.toList()
+                                    } ?: Single.just(listOf())
+
+                    ).map { result ->
+
+                        for (ranobe in result) {
+                            if(ranobe.ranobeSite != Title.url) {
+                                MyApp.database?.ranobeDao()?.insert(ranobe)
+                                MyApp.database?.chapterDao()?.insertAll(*ranobe.chapterList.toTypedArray())
+                            }
+                        }
+                        return@map result
+                    }.toObservable()
 
         }
-        //
-        //        var favRanobeList = MyApp.database?.ranobeDao()?.getFavoriteBySite(Rulate.url)                ?: ArrayList()
-        //        if (favRanobeList.isNotEmpty()) {
-        //            val TitleRanobe = Ranobe()
-        //            TitleRanobe.title = getString(R.string.tl_rulate_name)
-        //            TitleRanobe.ranobeSite = Title.url
-        //            newRanobeList.add(TitleRanobe)
-        //            newRanobeList.addAll(favRanobeList)
-        //            step--
-        //        }
-        //
-        //        favRanobeList = MyApp.database?.ranobeDao()?.getFavoriteBySite(RanobeRf.url) ?: ArrayList()
-        //        if (favRanobeList.isNotEmpty()) {
-        //            val TitleRanobe = Ranobe()
-        //            TitleRanobe.title = getString(R.string.ranobe_rf)
-        //            TitleRanobe.ranobeSite = Title.url
-        //            newRanobeList.add(TitleRanobe)
-        //            newRanobeList.addAll(favRanobeList)
-        //            step--
-        //        }
-
-        //        activity?.runOnUiThread {
-        //            progressDialog!!.setTitle(                    context!!.getString(R.string.Load_from_Rulate))
-        //        }
-        //
-        //        val rulateWebList = getRulateWebFavorite
-        //        if (rulateWebList.isNotEmpty()) {
-        //            val TitleRanobe = Ranobe()
-        //            TitleRanobe.title = context!!.getString(R.string.tl_rulate_web)
-        //            TitleRanobe.ranobeSite = Title.url
-        //            newRanobeList.add(TitleRanobe)
-        //            step--
-        //        }
-        //        newRanobeList.addAll(rulateWebList)
-        //
-        //        activity?.runOnUiThread {
-        //            progressDialog!!.setTitle(                    context!!.getString(R.string.Load_from_RanobeRf))
-        //
-        //        }
-        //        val ranoberfWebList = getRanobeRfWebFavorite
-        //        if (ranoberfWebList.isNotEmpty()) {
-        //            val TitleRanobe = Ranobe()
-        //            TitleRanobe.title = context!!.getString(R.string.ranoberf_web)
-        //            TitleRanobe.ranobeSite = Title.url
-        //            newRanobeList.add(TitleRanobe)
-        //            step--
-        //        }
-        //        newRanobeList.addAll(ranoberfWebList)
-
-        //        activity?.runOnUiThread {
-        //            progressDialog!!.setTitle(                    context!!.getString(R.string.Update_ranobe_info))
-        //        }
-        //
-        //        progressDialog!!.max = newRanobeList.size + step
-        //
-        //        for (ranobe in newRanobeList) {
-        //
-        //            var error = false
-        //
-        //
-        //            activity?.runOnUiThread { progressDialog!!.setMessage(ranobe.title) }
-        //
-        //
-        //            if (!loadFromDatabase) {
-        //                try {
-        //                    ranobe.updateRanobe(context!!)
-        //                    AsyncTask.execute {
-        //
-        //                        if (!ranobe.isFavoriteInWeb && ranobe.ranobeSite != Title.url) {
-        //                            MyApp.database?.ranobeDao()?.update(ranobe)
-        //                            MyApp.database?.chapterDao()?.insertAll(*ranobe.chapterList.toTypedArray())
-        //
-        //                        }
-        //
-        //                    }
-        //                } catch (e: NullPointerException) {
-        //
-        //                    error = true
-        //                    activity?.runOnUiThread {
-        //                        Toast.makeText(context, getString(R.string.Error),
-        //                                Toast.LENGTH_SHORT).show()
-        //                    }
-        //                } catch (e: ErrorConnectionException) {
-        //
-        //                    error = true
-        //                    activity?.runOnUiThread {
-        //                        Toast.makeText(context,
-        //                                getString(R.string.ErrorConnection),
-        //                                Toast.LENGTH_SHORT).show()
-        //                    }
-        //                }
-        //
-        //            }
-        //
-        //            if (loadFromDatabase || error) {
-        //                val chapterList = MyApp.database?.chapterDao()?.getChaptersForRanobe(
-        //                        ranobe.url)
-        //                ranobe.chapterList = chapterList as MutableList<Chapter>
-        //
-        //            }
-        //
-        //            ranobeList.add(ranobe)
-        //            if (ranobe.ranobeSite != Title.url) {
-        //                progressDialog!!.incrementProgressBy(1)
-        //            }
-        //
-        //        }
-        //
-        //        loadFromDatabase = false
 
     }
 

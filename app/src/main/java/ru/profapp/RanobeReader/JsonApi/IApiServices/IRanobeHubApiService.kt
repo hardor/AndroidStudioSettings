@@ -1,6 +1,7 @@
 package ru.profapp.RanobeReader.JsonApi.IApiServices
 
 import io.reactivex.Single
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -21,6 +22,12 @@ interface IRanobeHubApiService {
                       @Field("tags") tags: List<String>? = null,
                       @Field("years") years: String? = null): Single<RanobeHubReadyGson>
 
+
+
+    @GET("/ranobe")
+    fun GetReady(): Single<RanobeHubReadyGson>
+
+
     @Headers("X-Requested-With: XMLHttpRequest")
     @GET("/api/ranobe/getByName/{name}")
     fun SearchBooks(@Path("name") name: String): Single<RanobeHubSearchGson>
@@ -33,10 +40,17 @@ interface IRanobeHubApiService {
 
     companion object Factory {
 
+        var instance: IRanobeHubApiService = create()
+
         fun create(): IRanobeHubApiService {
+            val httpClient = OkHttpClient().newBuilder()
+            httpClient.addInterceptor(AddCookiesInterceptor())
+            httpClient.addInterceptor(ReceivedCookiesInterceptor())
+
             val retrofit = Retrofit.Builder()
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create())
+                    .client(httpClient.build())
                     .baseUrl("https://ranobehub.org")
                     .build()
 
