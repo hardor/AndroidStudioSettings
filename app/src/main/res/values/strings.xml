@@ -1,5 +1,5 @@
 <resources>
-  <string name="app_name"  translatable="false">TestRanobeReader</string>
+  <string name="app_name" translatable="false">TestRanobeReader</string>
 
   <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
   <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
@@ -19,8 +19,8 @@
   <string name="show_all_chapter">Show all chapters</string>
   <string name="show_only_readable">Show only readable chapters</string>
   <string name="hide_unavailable_chapters">Hide unavailable (paid) chapters</string>
-  <string name="tl.rulate_name" translatable="false">Rulate</string>
-  <string name="tl.rulate_web" translatable="false">Rulate Web</string>
+  <string name="tl_rulate_name" translatable="false">Rulate</string>
+  <string name="tl_rulate_web" translatable="false">Rulate Web</string>
   <string name="ranoberf_web" translatable="false">Ранобэ.рф Web</string>
   <string name="text_size">Text size</string>
   <string name="select_text_size">Select size for chapter\'s text</string>

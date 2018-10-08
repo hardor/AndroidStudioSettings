@@ -36,7 +36,7 @@
       android:isScrollContainer="false"
       android:visibility="gone"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-      tools:context="ru.profapp.RanobeReaderTest.ChapterRecyclerFragment"
+      tools:context="ru.profapp.RanobeReader.ChapterRecyclerFragment"
       tools:listitem="@layout/item_chapter"
       tools:visibility="visible"/>
     <TextView

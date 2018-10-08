@@ -11,7 +11,7 @@
     <item
       android:id="@+id/nav_rulate"
       android:icon="@drawable/ic_book_black_24dp"
-      android:title="@string/tl.rulate_name"
+      android:title="@string/tl_rulate_name"
       />
     <item
       android:id="@+id/nav_ranoberf"

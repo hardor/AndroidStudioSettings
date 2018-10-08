@@ -15,7 +15,7 @@
     android:name="ru.profapp.RanobeReader.FavoriteFragment"
     android:scrollbars="vertical"
     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-    tools:context="ru.profapp.RanobeReaderTest.Fragments.RanobeListFragment"
+    tools:context="ru.profapp.RanobeReader.Fragments.RanobeListFragment"
     tools:listitem="@layout/item_ranobe"
     >
   </androidx.recyclerview.widget.RecyclerView>

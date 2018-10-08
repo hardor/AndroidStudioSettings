@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="ru.profapp.RanobeReaderTest">
+  package="ru.profapp.RanobeReader">
 
   <uses-permission android:name="android.permission.INTERNET"/>
   <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
@@ -13,13 +13,13 @@
     android:fullBackupContent="@xml/backup_descriptor"
     android:icon="@mipmap/ic_launcher"
     android:label="@string/app_name"
-    android:name=".MyApp"
+    android:name="ru.profapp.RanobeReader.MyApp"
     android:roundIcon="@mipmap/ic_launcher"
     android:supportsRtl="true"
     android:theme="@style/AppTheme">
     <activity
       android:label="@string/app_name"
-      android:name=".Activities.MainActivity"
+      android:name="ru.profapp.RanobeReader.Activities.MainActivity"
       android:theme="@style/AppTheme.NoActionBar">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
@@ -90,10 +90,10 @@
     </activity>
     <activity
       android:label="@string/title_activity_settings"
-      android:name=".Activities.SettingsActivity"/>
+      android:name="ru.profapp.RanobeReader.Activities.SettingsActivity"/>
     <activity
       android:label="@string/title_activity_ranobe_info"
-      android:name=".Activities.RanobeInfoActivity"
+      android:name="ru.profapp.RanobeReader.Activities.RanobeInfoActivity"
       android:theme="@style/AppTheme.NoActionBar">
       <intent-filter>
         <action android:name="android.intent.action.VIEW"/>
@@ -121,7 +121,7 @@
     <activity
       android:configChanges="orientation"
       android:label="@string/title_activity_chapter_text"
-      android:name=".Activities.ChapterTextActivity"/>
+      android:name="ru.profapp.RanobeReader.Activities.ChapterTextActivity"/>
 
     <meta-data
       android:name="io.fabric.ApiKey"
@@ -129,7 +129,7 @@
 
     <activity
       android:label="@string/title_activity_download"
-      android:name=".Activities.DownloadActivity"/>
+      android:name="ru.profapp.RanobeReader.Activities.DownloadActivity"/>
 
     <meta-data
       android:name="com.google.android.backup.api_key"
