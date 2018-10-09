@@ -15,6 +15,7 @@ import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
 import io.fabric.sdk.android.Fabric
 import io.reactivex.Completable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReader.BuildConfig
 import ru.profapp.RanobeReader.Common.Constants
@@ -186,6 +187,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
                 Completable.fromAction {
                     MyApp.database?.textDao()?.cleanTable()
                 }?.andThen(Completable.fromAction { MyApp.database?.ranobeImageDao()?.cleanTable() })
+                        ?.observeOn(AndroidSchedulers.mainThread())
                         ?.subscribeOn(Schedulers.io())
                         ?.subscribe({
                             Toast.makeText(activity, resources.getText(R.string.cache_cleaned),
@@ -195,9 +197,11 @@ class SettingsActivity : AppCompatPreferenceActivity() {
                 true
             }
 
-            val favButton = findPreference(getString(R.string.CleanFavoriteButton))
+            val favButton = findPreference(getString(R.string.CleanLocalFavButton))
             favButton.setOnPreferenceClickListener { preference ->
-                Completable.fromAction { MyApp.database?.ranobeDao()?.cleanTable() }?.subscribeOn(Schedulers.io())
+                Completable.fromAction { MyApp.database?.ranobeDao()?.cleanTable() }
+                        ?.observeOn(AndroidSchedulers.mainThread())
+                        ?.subscribeOn(Schedulers.io())
                         ?.subscribe({
                             Toast.makeText(activity, resources.getText(R.string.bookmarks_cleaned),
                                     Toast.LENGTH_SHORT).show()
@@ -210,8 +214,16 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             val prefButton = findPreference(getString(R.string.CleanHistoryButton))
             prefButton.setOnPreferenceClickListener { preference ->
                 activity!!.getSharedPreferences(Constants.is_readed_Pref, 0).edit().clear().apply()
+                activity!!.getSharedPreferences(Constants.last_chapter_id_Pref, 0).edit().clear().apply()
 
-                Toast.makeText(activity, resources.getText(R.string.cache_cleaned), Toast.LENGTH_SHORT).show()
+                Completable.fromAction { MyApp.database?.ranobeHistoryDao()?.cleanHistory()}
+                        ?.observeOn(AndroidSchedulers.mainThread())
+                        ?.subscribeOn(Schedulers.io())
+                        ?.subscribe({
+                            Toast.makeText(activity, resources.getText(R.string.history_cleaned), Toast.LENGTH_SHORT).show()
+                        }, { })
+
+
                 true
             }
 

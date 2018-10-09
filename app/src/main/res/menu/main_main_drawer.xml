@@ -10,7 +10,7 @@
       android:title="@string/favorite"/>
     <item
       android:id="@+id/nav_rulate"
-      android:icon="@drawable/ic_book_black_24dp"
+      android:icon="@mipmap/ic_rulate"
       android:title="@string/tl_rulate_name"
       />
     <item
@@ -23,15 +23,15 @@
       android:title="@string/ranobe_hub"/>
     <item
       android:id="@+id/nav_search"
-      android:icon="@android:drawable/ic_menu_search"
+      android:icon="@drawable/ic_search_black_24dp"
       android:title="@string/search"/>
     <item
       android:id="@+id/nav_chapters"
-      android:icon="@android:drawable/ic_menu_recent_history"
+      android:icon="@drawable/ic_file_download_black_24dp"
       android:title="@string/saved_chapters"/>
     <item
       android:id="@+id/nav_history"
-      android:icon="@android:drawable/ic_menu_recent_history"
+      android:icon="@drawable/ic_history_black_24dp"
       android:title="@string/history"/>
 
   </group>
@@ -40,7 +40,7 @@
     <menu>
       <item
         android:id="@+id/nav_manage"
-        android:icon="@drawable/ic_menu_manage"
+        android:icon="@drawable/ic_settings_black_24dp"
         android:title="@string/settings"/>
 
       <item

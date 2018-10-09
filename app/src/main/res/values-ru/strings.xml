@@ -16,11 +16,12 @@
   <string name="next">Следующая</string>
   <string name="previous">Предыдущая</string>
   <string name="Delete_downloaded_chapters">Удалить скачанные главы</string>
-  <string name="сlean_cache">Очистить кэш</string>
+  <string name="сlean_cache">Очистить кэш и скачанные главы</string>
   <string name="select_text_size">Выберите размер текста</string>
-  <string name="cache_cleaned">Данные очищены</string>
+  <string name="history_cleaned">История очищена</string>
+  <string name="cache_cleaned">Кеш очищен</string>
   <string name="clean_history">Очистить историю</string>
-  <string name="clean_history_full">Очистить информацию о прочитанных главах</string>
+  <string name="clean_history_full">Очистить историю о прочитанных главах</string>
   <string name="summary_login">Авторизируйтесь для синхронизации закладок</string>
   <string name="rulate_authorization">Авторизация Rulate</string>
   <string name="search">Поиск</string>

@@ -272,7 +272,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                     }
 
                 }, { error ->
-                    LogHelper.logError(LogHelper.LogType.ERROR, "loadChapters", "", error.fillInStackTrace())
+                    LogHelper.logError(LogHelper.LogType.ERROR, "loadChapters", "", error)
                     progressBar.visibility = View.GONE
                 })
 
@@ -283,22 +283,24 @@ class RanobeInfoActivity : AppCompatActivity() {
             fab.setImageDrawable(favImage)
 
         } else {
-            MyApp.database?.ranobeDao()?.isRanobeFavorite(currentRanobe.url)?.observeOn(AndroidSchedulers.mainThread())?.subscribeOn(Schedulers.io())?.subscribe({
-                if (it != null) {
-                    currentRanobe.isFavorite = it.isFavorite
-                    currentRanobe.isFavoriteInWeb = it.isFavoriteInWeb
-                    fab.setImageDrawable(favImage)
-                } else {
-                    currentRanobe.isFavorite = false
-                    currentRanobe.isFavoriteInWeb = false
-                    fab.setImageDrawable(notFavImage)
-                }
+            MyApp.database?.ranobeDao()?.isRanobeFavorite(currentRanobe.url)?.observeOn(AndroidSchedulers.mainThread())?.subscribeOn(Schedulers.io())
+                    ?.subscribe({
+                        if (it != null) {
+                            currentRanobe.isFavorite = it.isFavorite
+                            currentRanobe.isFavoriteInWeb = it.isFavoriteInWeb
+                            fab.setImageDrawable(favImage)
+                        } else {
+                            currentRanobe.isFavorite = false
+                            currentRanobe.isFavoriteInWeb = false
+                            fab.setImageDrawable(notFavImage)
+                        }
 
-            }, {
-                currentRanobe.isFavorite = false
-                currentRanobe.isFavoriteInWeb = false
-                fab.setImageDrawable(notFavImage)
-            })
+                    }, {error->
+                        LogHelper.logError(LogHelper.LogType.ERROR, "loadChapters", "", error)
+                        currentRanobe.isFavorite = false
+                        currentRanobe.isFavoriteInWeb = false
+                        fab.setImageDrawable(notFavImage)
+                    })
         }
     }
 
@@ -311,7 +313,6 @@ class RanobeInfoActivity : AppCompatActivity() {
     private fun setToFavorite(item: FloatingActionButton) {
 
         if (!currentRanobe.isFavorite && !currentRanobe.isFavoriteInWeb) {
-
 
             var fabRequest = Single.just(Pair(false, "not matching site"))
             when (currentRanobe.ranobeSite) {
@@ -341,7 +342,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                             currentRanobe.isFavoriteInWeb = false
                             return@map false
                         }
-                    }.map{
+                    }.map {
                         MyApp.database?.ranobeDao()?.insert(currentRanobe)
                         MyApp.database?.chapterDao()?.insertAll(*currentRanobe.chapterList.toTypedArray())
                         return@map it

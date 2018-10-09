@@ -30,6 +30,10 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
     private val VIEW_TYPE_ITEM = 0
     private val VIEW_TYPE_GROUP_TITLE = 2
     private val glide: RequestManager = Glide.with(context)
+
+    private val sPref = context.getSharedPreferences(Constants.is_readed_Pref, Context.MODE_PRIVATE)
+    private val lastIndexPref = context.getSharedPreferences(Constants.last_chapter_id_Pref, Context.MODE_PRIVATE)
+
     private val imageOptions: RequestOptions = RequestOptions().placeholder(R.drawable.ic_adb_black_24dp).error(R.drawable.ic_error_outline_black_24dp).fitCenter()
     var onLoadMoreListener: OnLoadMoreListener? = null
 
@@ -116,12 +120,35 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
                 glide.load(/*mValues[position].image*/"").apply(imageOptions).into(holder.imageView)
 
                 val chapterList = holder.mItem.chapterList
-                if (chapterList.isNotEmpty()) {
-                    val adapter = ChapterRecyclerViewAdapter(context, ArrayList(chapterList.subList(0, Math.min(Constants.chaptersNum, chapterList.size))), holder.mItem)
 
-                    //                    val itemDecorator = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
-                    //                    itemDecorator.setDrawable(context.resources.getDrawable(R.drawable.divider))
-                    //                    holder.chaptersListView.addItemDecoration(itemDecorator)
+
+                if (chapterList.isNotEmpty()) {
+
+                    val templist = chapterList.filter { it.canRead }
+                    val chapterlist2 = templist.subList(0, Math.min(Constants.chaptersNum, templist.size))
+                    var checked = false
+                    if (lastIndexPref != null && lastIndexPref.contains(chapterlist2.first().ranobeUrl)) {
+                        val lastId = lastIndexPref.getInt(chapterlist2.first().ranobeUrl, -1)
+                        if (lastId > 0) {
+                            checked = true
+                            for (chapter in chapterlist2) {
+                                if (chapter.id!! <= lastId) {
+                                    chapter.isRead = true
+                                }
+                            }
+                        }
+
+                    }
+
+                    if (sPref != null && !checked) {
+                        for (chapter in chapterlist2) {
+                            if (!chapter.isRead) {
+                                chapter.isRead = sPref.getBoolean(chapter.url, false)
+                            }
+                        }
+                    }
+
+                    val adapter = ChapterRecyclerViewAdapter(context, chapterlist2, holder.mItem)
                     holder.chaptersListView.adapter = adapter
                     holder.chaptersListView.visibility = View.VISIBLE
                 } else {

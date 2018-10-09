@@ -51,12 +51,12 @@
   <string name="next">Next</string>
   <string name="logo" translatable="false">Logo</string>
   <string name="Delete_downloaded_chapters">Delete the downloaded chapters</string>
-  <string name="сlean_cache">Clean cache</string>
-  <string name="cache_cleaned">Cache cleaned</string>
+  <string name="сlean_cache">Clean cache and downloaded chapters</string>
+  <string name="history_cleaned">History cleaned</string>
   <string name="CleanCacheButton" translatable="false">CleanCacheButton</string>
   <string name="clean_history">Clean history</string>
-  <string name="clean_history_full">Clean information about readed chapters</string>
-  <string name="CleanHistoryButton" translatable="false">CleanPreferencesButton</string>
+  <string name="clean_history_full">Clean history and information about readed chapters</string>
+  <string name="CleanHistoryButton" translatable="false">CleanHistoryButton</string>
   <string name="search">Search</string>
   <string name="banner_ad_unit_id" translatable="false">ca-app-pub-1483315001492731/3353494026
     </string>
@@ -84,7 +84,7 @@
 
   <string name="comments">Comments</string>
   <string name="сlean_favorite">Clean local bookmarks</string>
-  <string name="CleanFavoriteButton" translatable="false">CleanFavoriteButton</string>
+  <string name="CleanLocalFavButton" translatable="false">CleanFavoriteButton</string>
   <string name="Delete_favorited_ranobes">Clean all local favorited ranobes
     </string>
   <string name="bookmarks_cleaned">Local bookmarks were cleaned</string>
@@ -131,11 +131,12 @@
   <string name="history">History</string>
   <string name="date_format">MM/dd/yyyy HH:mm</string>
   <string name="load_ranobes_from_db">Loading favorite ranobe from database</string>
-  <string name="pref_general_send_reports"/>
+  <string name="pref_general_send_reports" translatable="false"/>
   <string name="send_crash_reports">Send crash reports</string>
   <string name="summary_send_reports_off">summary_send_reports_on</string>
   <string name="summary_send_reports_on">summary_send_reports_on</string>
-  <string name="ranobes">Ranobes</string>
+  <string name="ranobes" translatable="false">Ranobes</string>
   <string name="Load_from_RanobeHub"/>
+  <string name="cache_cleaned">Cache was cleaned</string>
 
 </resources>

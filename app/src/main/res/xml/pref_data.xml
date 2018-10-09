@@ -14,7 +14,7 @@
     android:title="@string/clean_history"/>
 
   <Preference
-    android:key="@string/CleanFavoriteButton"
+    android:key="@string/CleanLocalFavButton"
     android:summary="@string/Delete_favorited_ranobes"
     android:title="@string/сlean_favorite"/>
 

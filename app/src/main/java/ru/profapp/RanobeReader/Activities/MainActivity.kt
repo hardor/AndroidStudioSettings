@@ -110,6 +110,7 @@ class MainActivity : AppCompatActivity(),
         toggle.syncState()
 
         val navigationView = findViewById<NavigationView>(R.id.nav_view)
+        navigationView.itemIconTintList = null
         navigationView.setNavigationItemSelectedListener(this)
         handleIntent(intent)
     }

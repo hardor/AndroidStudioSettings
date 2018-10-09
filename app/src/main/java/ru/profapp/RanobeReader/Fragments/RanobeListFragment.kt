@@ -3,7 +3,6 @@ package ru.profapp.RanobeReader.Fragments
 import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.Context
-import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -24,7 +23,6 @@ import ru.profapp.RanobeReader.Adapters.RanobeRecyclerViewAdapter
 import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Common.Constants.RanobeSite.None
 import ru.profapp.RanobeReader.Common.Constants.RanobeSite.Title
-import ru.profapp.RanobeReader.Common.Constants.chaptersNum
 import ru.profapp.RanobeReader.Common.Constants.fragmentBundle
 import ru.profapp.RanobeReader.Common.OnLoadMoreListener
 import ru.profapp.RanobeReader.Helpers.LogHelper
@@ -133,8 +131,7 @@ class RanobeListFragment : Fragment() {
             oldListSize = 0
         }
         //Todo: remove sPref. Move to lastIndexPref
-        val sPref = mContext!!.getSharedPreferences(Constants.is_readed_Pref, MODE_PRIVATE)
-        val lastIndexPref = mContext!!.getSharedPreferences(Constants.last_chapter_id_Pref, MODE_PRIVATE)
+
 
         val loader: Observable<List<Ranobe>> = when (fragmentType) {
             Constants.FragmentType.Rulate -> rulateLoadRanobe().toObservable()
@@ -151,6 +148,7 @@ class RanobeListFragment : Fragment() {
 
 
         request = loader
+                // Find images
                 .map { ranobeList ->
                     for (ranobe in ranobeList) {
                         if (ranobe.image.isNullOrBlank()) {
@@ -161,38 +159,29 @@ class RanobeListFragment : Fragment() {
                     }
                     return@map ranobeList
 
-                }.map { it ->
-                    var checked = false
-                    if (lastIndexPref != null) {
-                        for (ranobe in it) {
-                            if (lastIndexPref.contains(ranobe.url)) {
-                                val lastId = lastIndexPref.getInt(ranobe.url, -1)
-                                if (lastId > 0) {
-                                    checked = true
-                                    val sizeList = ranobe.chapterList.size
-                                    for (chapter in ranobe.chapterList.subList(0, Math.min(chaptersNum, sizeList))) {
-                                        if (chapter.id!! <= lastId) {
-                                            chapter.isRead = true
-                                        }
-                                    }
-                                }
-
-                            }
-
+                }  //Add titles
+                .map {
+                    val newRanobeList = mutableListOf<Ranobe>()
+                    val groupList = it.groupBy { g -> g.ranobeSite }
+                    for (siteGroup in groupList) {
+                        val webGroupList = siteGroup.value.groupBy { g -> g.isFavoriteInWeb }
+                        for (webGroup in webGroupList) {
+                            val titleRanobe = Ranobe(Title)
+                            titleRanobe.title = (Constants.RanobeSite.fromUrl(siteGroup.key)?.title
+                                    ?: None.title).plus(if (webGroup.key) " Web" else " Local")
+                            newRanobeList.add(titleRanobe)
+                            newRanobeList.addAll(siteGroup.value.map { gr ->
+                                gr.chapterList = gr.chapterList
+                                return@map gr
+                            })
                         }
+
                     }
-                    if (sPref != null && !checked) {
-                        for (ranobe in it) {
-                            val sizeList = ranobe.chapterList.size
-                            for (chapter in ranobe.chapterList.subList(0, Math.min(chaptersNum, sizeList))) {
-                                if (!chapter.isRead) {
-                                    chapter.isRead = sPref.getBoolean(chapter.url, false)
-                                }
-                            }
-                        }
-                    }
-                    return@map it
-                }.observeOn(AndroidSchedulers.mainThread())
+
+                    return@map newRanobeList.toList()
+                }
+
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ result ->
                     if (result.any()) {
@@ -255,25 +244,12 @@ class RanobeListFragment : Fragment() {
             progressDialog!!.show()
             return (MyApp.database?.ranobeDao()?.getFavoriteRanobes()
                     ?.map { it ->
+
                         val newRanobeList = mutableListOf<Ranobe>()
-
-                        val groupList = it.groupBy { g -> g.ranobe.ranobeSite }
-                        for (siteGroup in groupList) {
-                            val webGroupList = siteGroup.value.groupBy { g -> g.ranobe.isFavoriteInWeb }
-
-                            for (webGroup in webGroupList) {
-                                val titleRanobe = Ranobe(Title)
-                                titleRanobe.title = (Constants.RanobeSite.fromUrl(siteGroup.key)?.title
-                                        ?: None.title).plus(if (webGroup.key) " Web" else " Local")
-                                newRanobeList.add(titleRanobe)
-                                newRanobeList.addAll(siteGroup.value.map { gr ->
-                                    gr.ranobe.chapterList = gr.chapterList
-                                    return@map gr.ranobe
-                                })
-                            }
-
-                        }
-
+                        newRanobeList.addAll(it.map { gr ->
+                            gr.ranobe.chapterList = gr.chapterList
+                            return@map gr.ranobe
+                        })
                         return@map newRanobeList.toList()
                     }?.doOnSuccess { loadFromDatabase = false }?.toObservable()
                     ?: Observable.just(listOf()))
@@ -281,52 +257,23 @@ class RanobeListFragment : Fragment() {
         } else {
             progressDialog!!.setTitle(resources.getString(R.string.Load_from_Rulate))
             progressDialog!!.show()
-            return getRulateWebFavorite().doOnSubscribe() { progressDialog!!.setTitle(context!!.getString(R.string.Load_from_Rulate)) }
-                    .concatWith(getRanobeRfWebFavorite().doOnSubscribe { progressDialog!!.setTitle(context!!.getString(R.string.Load_from_RanobeRf)) })
-                    .concatWith(getRanobeHubWebFavorite().doOnSubscribe { progressDialog!!.setTitle(context!!.getString(R.string.Load_from_RanobeHub)) })
-
+            return getRulateWebFavorite() //.doOnSubscribe { progressDialog!!.setTitle(context!!.getString(R.string.Load_from_Rulate)) }
+                    .concatWith(getRanobeRfWebFavorite()) //.doOnSubscribe { progressDialog!!.setTitle(context!!.getString(R.string.Load_from_RanobeRf)) })
+                    .concatWith(getRanobeHubWebFavorite()) //.doOnSubscribe { progressDialog!!.setTitle(context!!.getString(R.string.Load_from_RanobeHub)) })
+                    .concatWith(MyApp.database?.ranobeDao()?.getLocalFavoriteRanobes()
+                            ?: Single.just(listOf()))
                     .map { ranobeList ->
-                        val newList = mutableListOf<Ranobe>()
-                        if (ranobeList.any()) {
-                            val titleRanobe = Ranobe(Title)
-                            titleRanobe.title = (Constants.RanobeSite.fromUrl(ranobeList.first().ranobeSite)?.title).plus(" Web")
-                            newList.add(titleRanobe)
-                        }
                         for (ranobe in ranobeList) {
                             ranobe.updateRanobe(mContext!!).blockingGet()
                             ranobe.isFavoriteInWeb = true
                             ranobe.isFavorite = true
                         }
-                        newList.addAll(ranobeList)
-                        return@map newList.toList()
-                    }.concatWith(
-                            MyApp.database?.ranobeDao()?.getLocalFavoriteRanobes()
-                                    ?.map { it ->
-                                        val newRanobeList = mutableListOf<Ranobe>()
-                                        val groupList = it.groupBy { g -> g.ranobeSite }
-                                        for (siteGroup in groupList) {
-
-                                            val titleRanobe = Ranobe(Title)
-                                            titleRanobe.title = (Constants.RanobeSite.fromUrl(siteGroup.key)?.title
-                                                    ?: None.title).plus(" Local")
-                                            newRanobeList.add(titleRanobe)
-
-                                            for (ranobe in siteGroup.value) {
-                                                ranobe.updateRanobe(mContext!!).blockingGet()
-                                                newRanobeList.add(ranobe)
-                                            }
-
-                                        }
-                                        return@map newRanobeList.toList()
-                                    } ?: Single.just(listOf())
-
-                    ).map { result ->
-
+                        return@map ranobeList
+                    }
+                    .map { result ->
                         for (ranobe in result) {
-                            if(ranobe.ranobeSite != Title.url) {
-                                MyApp.database?.ranobeDao()?.insert(ranobe)
-                                MyApp.database?.chapterDao()?.insertAll(*ranobe.chapterList.toTypedArray())
-                            }
+                            MyApp.database?.ranobeDao()?.insert(ranobe)
+                            MyApp.database?.chapterDao()?.insertAll(*ranobe.chapterList.toTypedArray())
                         }
                         return@map result
                     }.toObservable()
@@ -353,14 +300,7 @@ class RanobeListFragment : Fragment() {
                 val chapterList = mutableListOf<Chapter>()
                 chapterList.addAll(group.value.map { it -> Chapter(it) })
                 newRanobe.chapterList = chapterList
-
-                val titleRanobe = Ranobe(Title)
-                titleRanobe.title = (Constants.RanobeSite.fromUrl(group.key)?.title ?: None.title)
-
-                savedList.add(titleRanobe)
-
                 savedList.add(newRanobe)
-
             }
 
             return@map savedList.toList()
