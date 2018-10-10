@@ -14,7 +14,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.RecyclerView
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
 import com.google.android.gms.ads.AdRequest
@@ -23,13 +22,16 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import io.fabric.sdk.android.Fabric
+import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReader.BuildConfig
 import ru.profapp.RanobeReader.Common.Constants
-import ru.profapp.RanobeReader.Common.ThemeUtils
 import ru.profapp.RanobeReader.Fragments.HistoryFragment
 import ru.profapp.RanobeReader.Fragments.RanobeListFragment
 import ru.profapp.RanobeReader.Fragments.SearchFragment
 import ru.profapp.RanobeReader.Helpers.LogHelper
+import ru.profapp.RanobeReader.Helpers.ThemeHelper
+import ru.profapp.RanobeReader.Models.Chapter
+import ru.profapp.RanobeReader.Models.Ranobe
 import ru.profapp.RanobeReader.MyApp
 import ru.profapp.RanobeReader.R
 
@@ -96,11 +98,29 @@ class MainActivity : AppCompatActivity(),
 
         val floatingActionButton = findViewById<FloatingActionButton>(R.id.fab)
         floatingActionButton.setOnClickListener { view ->
-            try {
-                val ranobeListview = findViewById<RecyclerView>(R.id.ranobeListView)
-                ranobeListview.scrollToPosition(0)
-            } catch (ignored: NullPointerException) {
+            val chapterHistory = MyApp.database?.ranobeHistoryDao()?.getLastChapter()?.subscribeOn(Schedulers.io())?.blockingGet()
+            if (chapterHistory != null) {
+                if (MyApp.ranobe == null || !MyApp.ranobe!!.url.contains(chapterHistory.ranobeUrl) || !MyApp.ranobe!!.wasUpdated) {
 
+                    var ranobe = Ranobe()
+                    ranobe.url = chapterHistory.ranobeUrl
+                    ranobe.title = chapterHistory.ranobeName
+
+                    ranobe.updateRanobe(this).subscribeOn(Schedulers.io()).blockingGet()
+                    if (!ranobe.chapterList.any()) {
+                        ranobe.chapterList.add(Chapter(chapterHistory))
+                    }
+                    MyApp.ranobe = ranobe
+                }
+                if (MyApp.ranobe != null && MyApp.ranobe!!.url.contains(chapterHistory.ranobeUrl)) {
+                    val intent = Intent(this@MainActivity, ChapterTextActivity::class.java)
+                    intent.putExtra("ChapterUrl", chapterHistory.chapterUrl)
+                    intent.putExtra("Progress", chapterHistory.progress)
+                    startActivity(intent)
+                }
+
+            } else {
+                Toast.makeText(this, resources.getText(R.string.not_history), Toast.LENGTH_SHORT).show()
             }
 
         }
@@ -149,8 +169,8 @@ class MainActivity : AppCompatActivity(),
             MyApp.ranobeRfToken = rfPref.getString(Constants.KEY_Login, "")
         }
 
-        ThemeUtils.setTheme(settingPref.getBoolean(applicationContext.getString(R.string.pref_general_app_theme), false))
-        ThemeUtils.onActivityCreateSetTheme()
+        ThemeHelper.setTheme(settingPref.getBoolean(applicationContext.getString(R.string.pref_general_app_theme), false))
+        ThemeHelper.onActivityCreateSetTheme()
     }
 
     override fun onBackPressed() {

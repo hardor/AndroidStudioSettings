@@ -27,20 +27,20 @@ class ChapterRecyclerViewAdapter(private val context: Context, private val mValu
             if (item.canRead) {
                 if (MyApp.ranobe?.wasUpdated != true || !MyApp.ranobe!!.url.contains(item.ranobeUrl)) {
 
-                    var ranobe = Ranobe()
+                    val ranobe = Ranobe()
                     ranobe.url = item.ranobeUrl
-                    ranobe = if (MyApp.fragmentType != null && MyApp.fragmentType != Constants.FragmentType.Saved) {
-                        try {
-                            ranobe.updateRanobe(context).subscribeOn(Schedulers.io()).blockingGet()
-                        } catch (ignored: Exception) {
-                            mRanobe
+                    if (MyApp.fragmentType != null && MyApp.fragmentType != Constants.FragmentType.Saved) {
+
+                        if (ranobe.updateRanobe(context).subscribeOn(Schedulers.io()).blockingGet())
+                            MyApp.ranobe = ranobe
+                        else {
+                            MyApp.ranobe = mRanobe
                         }
 
                     } else {
-                        mRanobe
+                        MyApp.ranobe = mRanobe
                     }
 
-                    MyApp.ranobe = ranobe
                 }
                 if (MyApp.ranobe != null) {
                     val intent = Intent(context, ChapterTextActivity::class.java)

@@ -17,15 +17,17 @@ object RanobeRfRepository {
     val gson = Gson()
     private val listType = object : TypeToken<List<Sequence>>() {}.type
 
-    fun getBookInfo(ranobe: Ranobe): Single<Ranobe> {
+    fun getBookInfo(ranobe: Ranobe): Single<Boolean> {
         var ranobeName = ranobe.url.replace(Constants.RanobeSite.RanobeRf.url, "")
         ranobeName = ranobeName.replace("/", "")
         return IRanobeRfApiService.instance.GetBookInfo(ranobeName).map {
             if (it.status == 200) {
                 it.result?.let { it1 -> ranobe.updateRanobe(it1) }
+                return@map true
             }
-            return@map ranobe
-        }
+
+            return@map false
+        }.onErrorReturn { false }
     }
 
     fun getReadyBooks(page: Int): Single<List<Ranobe>> {
@@ -113,7 +115,7 @@ object RanobeRfRepository {
         }
     }
 
-    fun addBookmark(token: String?, book_id: Int?, part_id: Int): Single<Pair<Boolean, String>> {
+    fun addBookmark(token: String?, book_id: Int?, part_id: Int?): Single<Pair<Boolean, String>> {
         if (token.isNullOrBlank()) return Single.just(Pair(false, "No token found"))
         return IRanobeRfApiService.instance.AddBookmark("Bearer $token", book_id, part_id).map {
 

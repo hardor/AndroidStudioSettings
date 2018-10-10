@@ -31,7 +31,7 @@ interface IRanobeRfApiService {
 
     @FormUrlEncoded
     @POST("/v1/bookmark/add/")
-    fun AddBookmark(@Header("Authorization") token: String, @Field("book_id") book_id: Int?, @Field("part_id") part_id: Int): Single<RfBookmarkGson>
+    fun AddBookmark(@Header("Authorization") token: String, @Field("book_id") book_id: Int?, @Field("part_id") part_id: Int?): Single<RfBookmarkGson>
 
     @FormUrlEncoded
     @DELETE("/v1/bookmark/delete/")

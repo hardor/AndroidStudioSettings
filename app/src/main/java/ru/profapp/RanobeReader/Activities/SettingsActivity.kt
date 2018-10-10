@@ -19,7 +19,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReader.BuildConfig
 import ru.profapp.RanobeReader.Common.Constants
-import ru.profapp.RanobeReader.Common.ThemeUtils
+import ru.profapp.RanobeReader.Common.Constants.last_chapter_id_Pref
+import ru.profapp.RanobeReader.Helpers.ThemeHelper
 import ru.profapp.RanobeReader.MyApp
 import ru.profapp.RanobeReader.R
 
@@ -213,7 +214,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 
             val prefButton = findPreference(getString(R.string.CleanHistoryButton))
             prefButton.setOnPreferenceClickListener { preference ->
-                activity!!.getSharedPreferences(Constants.is_readed_Pref, 0).edit().clear().apply()
+                activity!!.getSharedPreferences(last_chapter_id_Pref, 0).edit().clear().apply()
                 activity!!.getSharedPreferences(Constants.last_chapter_id_Pref, 0).edit().clear().apply()
 
                 Completable.fromAction { MyApp.database?.ranobeHistoryDao()?.cleanHistory()}
@@ -239,8 +240,8 @@ class SettingsActivity : AppCompatPreferenceActivity() {
                 preference.key == preference.context.getString(R.string.pref_general_auto_save) -> MyApp.autoSaveText = java.lang.Boolean.valueOf(value.toString())
                 preference.key == preference.context.getString(R.string.pref_general_app_theme) -> {
 
-                    ThemeUtils.setTheme(java.lang.Boolean.valueOf(value.toString()))
-                    ThemeUtils.onActivityCreateSetTheme()
+                    ThemeHelper.setTheme(java.lang.Boolean.valueOf(value.toString()))
+                    ThemeHelper.onActivityCreateSetTheme()
                 }
             }
 

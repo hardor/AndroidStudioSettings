@@ -15,10 +15,8 @@ import ru.profapp.RanobeReader.R
 class ExpandableDownloadRecyclerViewAdapter(private val context: Context) : RecyclerView.Adapter<ExpandableDownloadRecyclerViewAdapter.GroupViewHolder>() {
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
-    public var selectAll: Boolean? = null
-    fun pxToDp(x: Int): Int {
-        return (context.resources.displayMetrics.density * 6 + 0.5f).toInt()
-    }
+    var selectAll: Boolean? = null
+
 
     constructor(context: Context, mChapters: List<Chapter>) : this(context) {
 

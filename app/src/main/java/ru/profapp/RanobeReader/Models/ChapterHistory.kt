@@ -21,6 +21,8 @@ class ChapterHistory {
     var chapterName: String
     @ColumnInfo(name = "RanobeName")
     var ranobeName: String
+    @ColumnInfo(name = "RanobeUrl")
+    var ranobeUrl: String
     @ColumnInfo(name = "Index")
     var index: Int = 0
     @ColumnInfo(name = "ReadDate")
@@ -28,10 +30,11 @@ class ChapterHistory {
     @ColumnInfo(name = "Progress")
     var progress: Float = 0F
 
-    constructor(chapterUrl: String, chapterName: String, ranobeName: String, index: Int, progress: Float) {
+    constructor(chapterUrl: String, chapterName: String, ranobeName: String, ranobeUrl: String, index: Int, progress: Float) {
         this.chapterUrl = chapterUrl
         this.chapterName = chapterName
         this.ranobeName = ranobeName
+        this.ranobeUrl = ranobeUrl
         this.index = index
         this.progress = progress
     }
@@ -43,12 +46,25 @@ class ChapterHistory {
         other as ChapterHistory
 
         if (chapterUrl != other.chapterUrl) return false
+        if (chapterName != other.chapterName) return false
+        if (ranobeName != other.ranobeName) return false
+        if (ranobeUrl != other.ranobeUrl) return false
+        if (index != other.index) return false
+        if (readDate != other.readDate) return false
+        if (progress != other.progress) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        return chapterUrl.hashCode()
+        var result = chapterUrl.hashCode()
+        result = 31 * result + chapterName.hashCode()
+        result = 31 * result + ranobeName.hashCode()
+        result = 31 * result + ranobeUrl.hashCode()
+        result = 31 * result + index
+        result = 31 * result + readDate.hashCode()
+        result = 31 * result + progress.hashCode()
+        return result
     }
 
 }

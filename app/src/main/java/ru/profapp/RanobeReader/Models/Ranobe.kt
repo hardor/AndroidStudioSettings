@@ -13,6 +13,7 @@ import ru.profapp.RanobeReader.JsonApi.RanobeHubRepository
 import ru.profapp.RanobeReader.JsonApi.RanobeRfRepository
 import ru.profapp.RanobeReader.JsonApi.Rulate.RulateComment
 import ru.profapp.RanobeReader.JsonApi.RulateRepository
+import ru.profapp.RanobeReader.MyApp
 import java.util.*
 
 /**
@@ -102,22 +103,37 @@ class Ranobe() {
     @Ignore
     var bookmarkIdRf: Int = 0
 
-    fun updateRanobe(mContext: Context): Single<Ranobe> {
+    fun updateRanobe(mContext: Context): Single<Boolean> {
 
-        if (!wasUpdated) {
+        val bookInfo: Single<Boolean>
+
+        bookInfo = if (!wasUpdated) {
             if (ranobeSite == Rulate.url || url.contains(Rulate.url)) {
                 val mPreferences = mContext.getSharedPreferences(Constants.Rulate_Login_Pref, 0)
                 val token = mPreferences.getString(Constants.KEY_Token, "") ?: ""
-                return RulateRepository.getBookInfo(this, token, id).doOnSuccess { wasUpdated = true }
+                RulateRepository.getBookInfo(this, token, id)
             } else if (ranobeSite == RanobeRf.url || url.contains(RanobeRf.url)) {
-                return RanobeRfRepository.getBookInfo(this).doOnSuccess { wasUpdated = true }
+                RanobeRfRepository.getBookInfo(this)
             } else if (ranobeSite == RanobeHub.url || url.contains(RanobeHub.url)) {
-                return RanobeHubRepository.getBookInfo(this).doOnSuccess { wasUpdated = true }
-            } else if (ranobeSite != Title.url) {
-                throw NullPointerException()
-            }
+                RanobeHubRepository.getBookInfo(this)
+            } else
+                Single.just(false)
+
+        } else {
+            Single.just(true)
         }
-        return Single.just(this)
+
+        return bookInfo.map {
+            if (!it) {
+                val result = MyApp.database?.ranobeDao()?.getRanobeWithChaptersByUrl(url)?.blockingGet()
+                if (result != null) {
+                    chapterList = result.chapterList
+                }
+            }
+            return@map it
+        }.doAfterSuccess {
+            wasUpdated = it
+        }
 
     }
 
@@ -128,12 +144,49 @@ class Ranobe() {
         other as Ranobe
 
         if (url != other.url) return false
+        if (engTitle != other.engTitle) return false
+        if (title != other.title) return false
+        if (image != other.image) return false
+        if (readyDate != other.readyDate) return false
+        if (lang != other.lang) return false
+        if (description != other.description) return false
+        if (additionalInfo != other.additionalInfo) return false
+        if (chapterCount != other.chapterCount) return false
+        if (lastReadChapter != other.lastReadChapter) return false
+        if (wasUpdated != other.wasUpdated) return false
+        if (isFavorite != other.isFavorite) return false
+        if (isFavoriteInWeb != other.isFavoriteInWeb) return false
+        if (rating != other.rating) return false
+        if (status != other.status) return false
+        if (genres != other.genres) return false
+        if (chapterList != other.chapterList) return false
+        if (comments != other.comments) return false
+        if (bookmarkIdRf != other.bookmarkIdRf) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        return url.hashCode()
+        var result = url.hashCode()
+        result = 31 * result + (engTitle?.hashCode() ?: 0)
+        result = 31 * result + title.hashCode()
+        result = 31 * result + (image?.hashCode() ?: 0)
+        result = 31 * result + (readyDate?.hashCode() ?: 0)
+        result = 31 * result + (lang?.hashCode() ?: 0)
+        result = 31 * result + (description?.hashCode() ?: 0)
+        result = 31 * result + (additionalInfo?.hashCode() ?: 0)
+        result = 31 * result + (chapterCount ?: 0)
+        result = 31 * result + (lastReadChapter ?: 0)
+        result = 31 * result + wasUpdated.hashCode()
+        result = 31 * result + isFavorite.hashCode()
+        result = 31 * result + isFavoriteInWeb.hashCode()
+        result = 31 * result + (rating?.hashCode() ?: 0)
+        result = 31 * result + (status?.hashCode() ?: 0)
+        result = 31 * result + (genres?.hashCode() ?: 0)
+        result = 31 * result + chapterList.hashCode()
+        result = 31 * result + comments.hashCode()
+        result = 31 * result + bookmarkIdRf
+        return result
     }
 
 }

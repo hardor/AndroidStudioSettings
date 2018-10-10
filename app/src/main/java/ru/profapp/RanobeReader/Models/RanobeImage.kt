@@ -29,12 +29,15 @@ class RanobeImage() {
         other as RanobeImage
 
         if (ranobeUrl != other.ranobeUrl) return false
+        if (image != other.image) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        return ranobeUrl.hashCode()
+        var result = ranobeUrl.hashCode()
+        result = 31 * result + (image?.hashCode() ?: 0)
+        return result
     }
 
 }

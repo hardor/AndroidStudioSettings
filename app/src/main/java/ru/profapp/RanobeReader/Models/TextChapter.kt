@@ -52,12 +52,23 @@ class TextChapter {
         other as TextChapter
 
         if (chapterUrl != other.chapterUrl) return false
+        if (chapterName != other.chapterName) return false
+        if (ranobeName != other.ranobeName) return false
+        if (ranobeUrl != other.ranobeUrl) return false
+        if (text != other.text) return false
+        if (index != other.index) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        return chapterUrl.hashCode()
+        var result = chapterUrl.hashCode()
+        result = 31 * result + chapterName.hashCode()
+        result = 31 * result + ranobeName.hashCode()
+        result = 31 * result + ranobeUrl.hashCode()
+        result = 31 * result + text.hashCode()
+        result = 31 * result + index
+        return result
     }
 
 }

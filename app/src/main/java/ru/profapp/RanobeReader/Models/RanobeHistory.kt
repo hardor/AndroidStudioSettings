@@ -35,12 +35,20 @@ class RanobeHistory {
         other as RanobeHistory
 
         if (ranobeUrl != other.ranobeUrl) return false
+        if (ranobeName != other.ranobeName) return false
+        if (description != other.description) return false
+        if (readDate != other.readDate) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        return ranobeUrl.hashCode()
+        var result = ranobeUrl.hashCode()
+        result = 31 * result + ranobeName.hashCode()
+        result = 31 * result + (description?.hashCode() ?: 0)
+        result = 31 * result + readDate.hashCode()
+        return result
     }
+
 }
 

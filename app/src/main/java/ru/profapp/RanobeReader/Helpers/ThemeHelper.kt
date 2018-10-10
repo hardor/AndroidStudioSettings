@@ -1,4 +1,4 @@
-package ru.profapp.RanobeReader.Common
+package ru.profapp.RanobeReader.Helpers
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatDelegate
  * Created by Ruslan on 15.03.2018.
  */
 
-object ThemeUtils {
+object ThemeHelper {
 
     private var sTheme = AppCompatDelegate.MODE_NIGHT_NO
 

@@ -138,5 +138,6 @@
   <string name="ranobes" translatable="false">Ranobes</string>
   <string name="Load_from_RanobeHub"/>
   <string name="cache_cleaned">Cache was cleaned</string>
+  <string name="not_history">History is empty</string>
 
 </resources>

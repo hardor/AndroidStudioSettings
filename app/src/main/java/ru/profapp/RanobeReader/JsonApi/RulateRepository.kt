@@ -20,15 +20,16 @@ import java.util.*
 
 object RulateRepository {
 
-    fun getBookInfo(ranobe: Ranobe, token: String = "", book_id: Int?): Single<Ranobe> {
+    fun getBookInfo(ranobe: Ranobe, token: String = "", book_id: Int?): Single<Boolean> {
         return IRulateApiService.instance.GetBookInfo(token, book_id).map {
             if (it.status == "success") {
                 it.response?.let { it1 ->
                     ranobe.updateRanobe(it1)
+                    return@map true
                 }
             }
-            return@map ranobe
-        }
+            return@map false
+        }.onErrorReturn { false }
     }
 
     fun getReadyBooks(page: Int): Single<List<Ranobe>> {

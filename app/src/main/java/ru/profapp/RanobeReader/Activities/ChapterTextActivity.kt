@@ -25,8 +25,8 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReader.Common.Constants
-import ru.profapp.RanobeReader.Common.ThemeUtils
 import ru.profapp.RanobeReader.Helpers.LogHelper
+import ru.profapp.RanobeReader.Helpers.ThemeHelper
 import ru.profapp.RanobeReader.JsonApi.RanobeHubRepository
 import ru.profapp.RanobeReader.JsonApi.RanobeRfRepository
 import ru.profapp.RanobeReader.JsonApi.RulateRepository
@@ -58,8 +58,8 @@ class ChapterTextActivity : AppCompatActivity() {
         val settingPref = PreferenceManager.getDefaultSharedPreferences(applicationContext)
         val oldColor = settingPref.getBoolean(resources.getString(R.string.pref_general_app_theme), false)
         settingPref.edit().putBoolean(resources.getString(R.string.pref_general_app_theme), !oldColor).commit()
-        ThemeUtils.setTheme(!oldColor)
-        ThemeUtils.onActivityCreateSetTheme()
+        ThemeHelper.setTheme(!oldColor)
+        ThemeHelper.onActivityCreateSetTheme()
         this.recreate()
 
     }
@@ -90,6 +90,7 @@ class ChapterTextActivity : AppCompatActivity() {
         currentRanobe = MyApp.ranobe
         mChapterList = currentRanobe?.chapterList?.filter { it -> it.canRead } ?: mChapterList
 
+
         mChapterCount = mChapterList.size
 
         if (hChapterUrl != null) {
@@ -99,6 +100,7 @@ class ChapterTextActivity : AppCompatActivity() {
             chapterIndex = mChapterCount - 1
             mCurrentChapter = mChapterList[chapterIndex]
         }
+
 
 
 
@@ -162,7 +164,7 @@ class ChapterTextActivity : AppCompatActivity() {
         nextMenu = findViewById(R.id.navigation_next)
 
 
-        prevMenu.visibility = if (chapterIndex < mChapterCount!! - 1) View.VISIBLE else View.INVISIBLE
+        prevMenu.visibility = if (chapterIndex < mChapterCount - 1) View.VISIBLE else View.INVISIBLE
         nextMenu.visibility = if (chapterIndex > 0) View.VISIBLE else View.INVISIBLE
 
         nextMenu.setOnClickListener { OnClicked(-1) }
@@ -313,7 +315,7 @@ class ChapterTextActivity : AppCompatActivity() {
         val progress = pr ?: calculateProgression()
         Completable.fromAction {
             MyApp.database?.ranobeHistoryDao()?.insertNewChapter(
-                    ChapterHistory(mCurrentChapter.url, mCurrentChapter.title, mCurrentChapter.ranobeName, mCurrentChapter.index, progress)
+                    ChapterHistory(mCurrentChapter.url, mCurrentChapter.title, mCurrentChapter.ranobeName, mCurrentChapter.ranobeUrl, mCurrentChapter.index, progress)
             )
         }?.subscribeOn(Schedulers.io())?.subscribe()
     }
@@ -321,7 +323,7 @@ class ChapterTextActivity : AppCompatActivity() {
     private fun OnClicked(i: Int) {
 
         chapterIndex += i
-        if (chapterIndex >= 0 && chapterIndex <= mChapterCount!! - 1) {
+        if (chapterIndex >= 0 && chapterIndex <= mChapterCount - 1) {
             try {
                 saveProgressToDb()
                 mCurrentChapter = mChapterList[chapterIndex]
@@ -335,7 +337,7 @@ class ChapterTextActivity : AppCompatActivity() {
             chapterIndex -= i
         }
 
-        prevMenu.visibility = if (chapterIndex < mChapterCount!! - 1) View.VISIBLE else View.INVISIBLE
+        prevMenu.visibility = if (chapterIndex < mChapterCount - 1) View.VISIBLE else View.INVISIBLE
         nextMenu.visibility = if (chapterIndex > 0) View.VISIBLE else View.INVISIBLE
 
     }

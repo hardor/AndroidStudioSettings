@@ -132,7 +132,6 @@ class RanobeListFragment : Fragment() {
         }
         //Todo: remove sPref. Move to lastIndexPref
 
-
         val loader: Observable<List<Ranobe>> = when (fragmentType) {
             Constants.FragmentType.Rulate -> rulateLoadRanobe().toObservable()
             Constants.FragmentType.Ranoberf -> ranobeRfLoadRanobe().toObservable()

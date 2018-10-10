@@ -38,6 +38,7 @@ import ru.profapp.RanobeReader.BuildConfig
 import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Common.Constants.last_chapter_id_Pref
 import ru.profapp.RanobeReader.Helpers.LogHelper
+import ru.profapp.RanobeReader.JsonApi.RanobeRfRepository
 import ru.profapp.RanobeReader.JsonApi.RulateRepository
 import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.Models.Ranobe
@@ -224,16 +225,16 @@ class RanobeInfoActivity : AppCompatActivity() {
         request = currentRanobe.updateRanobe(mContext!!).map {
             var checked = false
             if (lastIndexPref != null) {
-                val lastId: Int = lastIndexPref?.getInt(it.url, -1) ?: -1
+                val lastId: Int = lastIndexPref?.getInt(currentRanobe.url, -1) ?: -1
                 if (lastId > 0) {
                     checked = true
-                    for (chapter in it.chapterList) chapter.isRead = chapter.id!! < lastId
+                    for (chapter in currentRanobe.chapterList) chapter.isRead = chapter.id!! < lastId
 
                 }
             }
 
             if (sPref != null && !checked) {
-                for (chapter in it.chapterList) {
+                for (chapter in currentRanobe.chapterList) {
                     if (!chapter.isRead) {
                         chapter.isRead = sPref?.getBoolean(chapter.url, false)!!
                     }
@@ -244,10 +245,10 @@ class RanobeInfoActivity : AppCompatActivity() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ result ->
-                    currentRanobe = result
+
                     progressBar.visibility = View.GONE
                     loadData()
-                    recycleChapterList.addAll(result?.chapterList!!)
+                    recycleChapterList.addAll(currentRanobe.chapterList)
                     adapterExpandable = ExpandableChapterRecyclerViewAdapter(mContext!!, recycleChapterList, currentRanobe)
                     chapterRecyclerView.adapter = adapterExpandable
 
@@ -326,7 +327,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                 Constants.RanobeSite.RanobeRf.url -> {
                     val token = rfpreferences!!.getString(Constants.KEY_Token, "") ?: ""
                     if (!token.isBlank()) {
-                        fabRequest = RulateRepository.addBookmark(token, currentRanobe.id)
+                        fabRequest = RanobeRfRepository.addBookmark(token, currentRanobe.id, currentRanobe.chapterList.firstOrNull()?.id)
                     }
                 }
             }
@@ -373,7 +374,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                     Constants.RanobeSite.RanobeRf.url -> {
                         val token = rfpreferences!!.getString(Constants.KEY_Token, "") ?: ""
                         if (!token.isBlank()) {
-                            fabRequest = RulateRepository.removeBookmark(token, currentRanobe.bookmarkIdRf)
+                            fabRequest = RanobeRfRepository.removeBookmark(token, currentRanobe.bookmarkIdRf)
                         }
                     }
                 }

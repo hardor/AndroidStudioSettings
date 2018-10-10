@@ -40,7 +40,7 @@ android {
         config {
             keyAlias 'ranobereader'
             keyPassword 'gf6ds7fsfs7'
-            storeFile file('D:/Projects/Keystore/RanobeReader/RanobeReader.keystore')
+            storeFile file('C:/Users/rvildanov/Desktop/Android/ru.profapp.keystore')
             storePassword 'gf6ds7fsfs7'
         }
     }
@@ -88,8 +88,8 @@ android {
         }
     }
     compileOptions {
-       // sourceCompatibility JavaVersion.VERSION_1_8
-       // targetCompatibility JavaVersion.VERSION_1_8
+        // sourceCompatibility JavaVersion.VERSION_1_8
+        // targetCompatibility JavaVersion.VERSION_1_8
     }
     flavorDimensions "default"
 
@@ -132,8 +132,8 @@ dependencies {
 
 
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
+    androidTestImplementation 'androidx.test:runner:1.1.0-beta01'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-beta01'
 
     //Room
     implementation 'androidx.room:room-runtime:2.0.0'

@@ -19,7 +19,7 @@ object RanobeHubRepository {
 
     var Cookie: HashMap<String, String> = hashMapOf()
 
-    fun getBookInfo(ranobe: Ranobe): Single<Ranobe> {
+    fun getBookInfo(ranobe: Ranobe): Single<Boolean> {
         return IRanobeHubApiService.instance.GetChapters(ranobe.id).map {
             ranobe.chapterList.clear()
             var index = 0
@@ -38,8 +38,9 @@ object RanobeHubRepository {
                     ranobe.chapterList.add(chapter)
                 }
             }
-            return@map ranobe
-        }
+
+            return@map true
+        }.onErrorReturn { false }
 
     }
 

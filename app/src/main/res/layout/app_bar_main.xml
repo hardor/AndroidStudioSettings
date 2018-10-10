@@ -34,6 +34,6 @@
     android:layout_gravity="bottom|end"
     android:clickable="true"
     android:focusable="true"
-    app:srcCompat="@drawable/ic_keyboard_arrow_up_black_24dp"/>
+    app:srcCompat="@drawable/ic_library_books_black_24dp"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

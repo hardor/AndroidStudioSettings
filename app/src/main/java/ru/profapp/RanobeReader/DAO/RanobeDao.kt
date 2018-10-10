@@ -42,7 +42,7 @@ interface RanobeDao {
 
     @Transaction
     @Query("SELECT * FROM ranobe WHERE url=:UrlToRanobe")
-    fun getRanobeWithChaptersByUrl(UrlToRanobe: String): RanobeWithChapters
+    fun getRanobeWithChaptersByUrl(UrlToRanobe: String): Maybe<RanobeWithChapters>
 
     @Transaction
     @Query("SELECT * FROM ranobe WHERE IsFavorite = 1")

@@ -11,8 +11,10 @@ import android.widget.TextView
 import androidx.annotation.NonNull
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReader.Activities.ChapterTextActivity
 import ru.profapp.RanobeReader.Common.Constants
+import ru.profapp.RanobeReader.Helpers.Helper
 import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.Models.Ranobe
 import ru.profapp.RanobeReader.MyApp
@@ -22,9 +24,6 @@ class ExpandableChapterRecyclerViewAdapter(private val context: Context, private
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
 
-    fun pxToDp(x: Int): Int {
-        return (context.resources.displayMetrics.density * 6 + 0.5f).toInt()
-    }
 
     constructor(context: Context, mChapters: ArrayList<Chapter>, mRanobe: Ranobe) : this(context, mRanobe) {
 
@@ -67,20 +66,18 @@ class ExpandableChapterRecyclerViewAdapter(private val context: Context, private
                 currentTextView.setOnClickListener {
                     if (MyApp.ranobe?.wasUpdated != true || !MyApp.ranobe!!.url.contains(childItem.ranobeUrl)) {
 
-                        var ranobe = Ranobe()
+                        val ranobe = Ranobe()
                         ranobe.url = childItem.ranobeUrl
                         if (MyApp.fragmentType != null && MyApp.fragmentType != Constants.FragmentType.Saved) {
-                            try {
-                                ranobe.updateRanobe(context)
-                            } catch (ignored: Exception) {
-                                ranobe = mRanobe
+                            if (ranobe.updateRanobe(context).subscribeOn(Schedulers.io()).blockingGet())
+                                MyApp.ranobe = ranobe
+                            else {
+                                MyApp.ranobe = mRanobe
                             }
 
                         } else {
-                            ranobe = mRanobe
+                            MyApp.ranobe = mRanobe
                         }
-
-                        MyApp.ranobe = ranobe
                     }
                     if (MyApp.ranobe != null) {
                         val intent = Intent(context, ChapterTextActivity::class.java)
@@ -118,7 +115,9 @@ class ExpandableChapterRecyclerViewAdapter(private val context: Context, private
             for (indexView in 0 until intMaxNoOfChild) {
                 val textView = TextView(context)
                 textView.id = indexView
-                textView.setPadding(pxToDp(2), pxToDp(6), pxToDp(2), pxToDp(6))
+                val dp2 = Helper.convertDpToPixel(2, context)
+                val dp6 = Helper.convertDpToPixel(6, context)
+                textView.setPadding(dp2, dp6, dp2, dp6)
                 textView.textSize = 14.0F
                 textView.ellipsize = android.text.TextUtils.TruncateAt.END
                 textView.maxLines = 1
