@@ -95,9 +95,6 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             super.onCreate(savedInstanceState)
             addPreferencesFromResource(R.xml.pref_general)
             setHasOptionsMenu(true)
-
-            findPreference(getString(R.string.pref_general_auto_save)).onPreferenceChangeListener = sChangePreferenceListener
-
             findPreference(getString(R.string.pref_general_app_theme)).onPreferenceChangeListener = sChangePreferenceListener
         }
 
@@ -148,7 +145,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     class RanobeRfPreferenceFragment : PreferenceFragment() {
-        override fun onCreate(savedInstanceState: Bundle) {
+        override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             addPreferencesFromResource(R.xml.pref_ranoberf)
             val prefLogin = findPreference(getString(R.string.ranoberf_authorization_pref))
@@ -185,6 +182,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             val cacheButton = findPreference(getString(R.string.CleanCacheButton))
 
             cacheButton.setOnPreferenceClickListener { preference ->
+
                 Completable.fromAction {
                     MyApp.database?.textDao()?.cleanTable()
                 }?.andThen(Completable.fromAction { MyApp.database?.ranobeImageDao()?.cleanTable() })
@@ -217,7 +215,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
                 activity!!.getSharedPreferences(last_chapter_id_Pref, 0).edit().clear().apply()
                 activity!!.getSharedPreferences(Constants.last_chapter_id_Pref, 0).edit().clear().apply()
 
-                Completable.fromAction { MyApp.database?.ranobeHistoryDao()?.cleanHistory()}
+                Completable.fromAction { MyApp.database?.ranobeHistoryDao()?.cleanHistory() }
                         ?.observeOn(AndroidSchedulers.mainThread())
                         ?.subscribeOn(Schedulers.io())
                         ?.subscribe({
@@ -237,7 +235,6 @@ class SettingsActivity : AppCompatPreferenceActivity() {
         private val sChangePreferenceListener = Preference.OnPreferenceChangeListener { preference, value ->
 
             when {
-                preference.key == preference.context.getString(R.string.pref_general_auto_save) -> MyApp.autoSaveText = java.lang.Boolean.valueOf(value.toString())
                 preference.key == preference.context.getString(R.string.pref_general_app_theme) -> {
 
                     ThemeHelper.setTheme(java.lang.Boolean.valueOf(value.toString()))

@@ -145,7 +145,7 @@ class HistoryFragment : Fragment() {
 
     companion object {
 
-        @JvmStatic
+
         fun newInstance() = HistoryFragment().apply {
             arguments = Bundle().apply {
 

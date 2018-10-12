@@ -57,7 +57,7 @@ class ChapterTextActivity : AppCompatActivity() {
 
         val settingPref = PreferenceManager.getDefaultSharedPreferences(applicationContext)
         val oldColor = settingPref.getBoolean(resources.getString(R.string.pref_general_app_theme), false)
-        settingPref.edit().putBoolean(resources.getString(R.string.pref_general_app_theme), !oldColor).commit()
+        settingPref.edit().putBoolean(resources.getString(R.string.pref_general_app_theme), !oldColor).apply()
         ThemeHelper.setTheme(!oldColor)
         ThemeHelper.onActivityCreateSetTheme()
         this.recreate()
@@ -158,7 +158,9 @@ class ChapterTextActivity : AppCompatActivity() {
             MyApp.database?.ranobeHistoryDao()?.insertNewRanobe(
                     RanobeHistory(currentRanobe?.url!!, currentRanobe?.title!!, currentRanobe?.description)
             )
-        }?.subscribeOn(Schedulers.io())?.subscribe()
+        }?.subscribeOn(Schedulers.io())?.subscribe({}, { error ->
+            LogHelper.logError(LogHelper.LogType.ERROR, "", "", error, false)
+        })
 
         prevMenu = findViewById(R.id.navigation_prev)
         nextMenu = findViewById(R.id.navigation_next)
@@ -189,7 +191,7 @@ class ChapterTextActivity : AppCompatActivity() {
                 + "\"")
 
 
-        GetChapterText(false)
+        GetChapterText()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ result ->
@@ -257,37 +259,38 @@ class ChapterTextActivity : AppCompatActivity() {
     fun GetChapterText(chapter: Chapter, context: Context): Single<Boolean> {
         mContext = context
         mCurrentChapter = chapter
-        return GetChapterText(true)
+        return GetChapterText()
 
     }
 
-    private fun GetChapterText(needSave: Boolean): Single<Boolean> {
+    private fun GetChapterTextFromWeb(url: String): Single<Boolean> {
+        return when {
+            url.contains(Constants.RanobeSite.Rulate.url) -> getRulateChapterText()
+            url.contains(Constants.RanobeSite.RanobeRf.url) -> getRanobeRfChapterText()
+            url.contains(Constants.RanobeSite.RanobeHub.url) -> getRanobeHubChapterText()
+            else -> Single.just(false)
+        }
+    }
+
+    private fun GetChapterText(): Single<Boolean> {
 
         return if (mCurrentChapter.text.isNullOrBlank()) {
 
             return MyApp.database?.textDao()!!.getTextByChapterUrl(mCurrentChapter.url).map {
                 mCurrentChapter.text = it.text
                 return@map true
-            }.onErrorResumeNext {
+            }.switchIfEmpty(GetChapterTextFromWeb(mCurrentChapter.ranobeUrl))
+                    .map {
+                        if (!mCurrentChapter.text.isNullOrBlank() && it) {
+                            Completable.fromAction {
+                                MyApp.database?.textDao()?.insert(TextChapter(mCurrentChapter))
+                            }?.subscribeOn(Schedulers.io())?.subscribe({}, { error ->
+                                LogHelper.logError(LogHelper.LogType.ERROR, "", "", error, false)
+                            })
 
-                val url = mCurrentChapter.ranobeUrl
-                when {
-                    url.contains(Constants.RanobeSite.Rulate.url) -> return@onErrorResumeNext getRulateChapterText()
-                    url.contains(Constants.RanobeSite.RanobeRf.url) -> return@onErrorResumeNext getRanobeRfChapterText()
-                    url.contains(Constants.RanobeSite.RanobeHub.url) -> return@onErrorResumeNext getRanobeHubChapterText()
-                    else -> return@onErrorResumeNext Single.just(false)
-                }
-
-            }.map {
-
-                if ((MyApp.autoSaveText || needSave) && !mCurrentChapter.text.isNullOrBlank() && it) {
-                    Completable.fromAction {
-                        MyApp.database?.textDao()?.insert(TextChapter(mCurrentChapter))
-                    }?.subscribeOn(Schedulers.io())?.subscribe()
-
-                }
-                return@map it
-            }
+                        }
+                        return@map it
+                    }
 
         } else {
             Single.just(true)
@@ -312,12 +315,15 @@ class ChapterTextActivity : AppCompatActivity() {
     }
 
     private fun saveProgressToDb(pr: Float? = null) {
-        val progress = pr ?: calculateProgression()
+        val progress = pr ?: calculateProgression() ?: 0f
         Completable.fromAction {
             MyApp.database?.ranobeHistoryDao()?.insertNewChapter(
                     ChapterHistory(mCurrentChapter.url, mCurrentChapter.title, mCurrentChapter.ranobeName, mCurrentChapter.ranobeUrl, mCurrentChapter.index, progress)
             )
-        }?.subscribeOn(Schedulers.io())?.subscribe()
+        }?.subscribeOn(Schedulers.io())
+                ?.subscribe({}, { error ->
+                    LogHelper.logError(LogHelper.LogType.ERROR, "", "", error, false)
+                })
     }
 
     private fun OnClicked(i: Int) {
@@ -350,7 +356,7 @@ class ChapterTextActivity : AppCompatActivity() {
         }
         mCurrentChapter.isRead = true
 
-        mCurrentChapter.id?.let { lastIndexPref!!.edit().putInt(mCurrentChapter.ranobeUrl, it).commit() }
+        mCurrentChapter.id?.let { lastIndexPref!!.edit().putInt(mCurrentChapter.ranobeUrl, it).apply() }
 
         saveProgressToDb(0f)
 

@@ -2,12 +2,6 @@
 
   <PreferenceCategory android:title="@string/pref_header_general"/>
 
-  <SwitchPreference
-    android:defaultValue="false"
-    android:key="@string/pref_general_auto_save"
-    android:summaryOff="@string/summary_save_text_off"
-    android:summaryOn="@string/summary_save_text_on"
-    android:title="@string/auto_save_text"/>
 
   <SwitchPreference
     android:defaultValue="false"

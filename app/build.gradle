@@ -125,7 +125,7 @@ dependencies {
     implementation 'androidx.mediarouter:mediarouter:1.0.0'
     implementation 'androidx.palette:palette:1.0.0'
     implementation 'androidx.annotation:annotation:1.0.0'
-    implementation 'com.google.android.gms:play-services-ads:15.0.1'
+    implementation 'com.google.android.gms:play-services-ads:17.0.0'
     implementation "androidx.paging:paging-runtime:2.0.0"
     implementation 'androidx.multidex:multidex:2.0.0'
 
@@ -166,12 +166,18 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.1.10'
 
     //firebase
-    implementation 'com.google.firebase:firebase-ads:15.0.1'
-    implementation 'com.google.firebase:firebase-appindexing:16.0.1'
-    implementation 'com.google.firebase:firebase-core:16.0.3'
+    implementation 'com.google.firebase:firebase-ads:17.0.0'
+    implementation 'com.google.firebase:firebase-appindexing:16.0.2'
+    implementation 'com.google.firebase:firebase-core:16.0.4'
     //implementation 'com.google.firebase:firebase-crash:16.0.1'
 
+    // Leakcanary
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.1'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.1'
+    // Optional, if you use support library fragments:
+    //debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.1'
     // common
+
 
 }
 

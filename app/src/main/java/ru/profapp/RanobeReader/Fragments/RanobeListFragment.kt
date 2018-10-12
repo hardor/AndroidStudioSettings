@@ -13,8 +13,10 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.Single.zip
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.exceptions.CompositeException
@@ -108,7 +110,6 @@ class RanobeListFragment : Fragment() {
         }
         mSwipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         mSwipeRefreshLayout.setOnRefreshListener {
-            mSwipeRefreshLayout.isRefreshing = false
             page = 0
             refreshItems(true)
         }
@@ -165,10 +166,16 @@ class RanobeListFragment : Fragment() {
                     for (siteGroup in groupList) {
                         val webGroupList = siteGroup.value.groupBy { g -> g.isFavoriteInWeb }
                         for (webGroup in webGroupList) {
-                            val titleRanobe = Ranobe(Title)
-                            titleRanobe.title = (Constants.RanobeSite.fromUrl(siteGroup.key)?.title
-                                    ?: None.title).plus(if (webGroup.key) " Web" else " Local")
-                            newRanobeList.add(titleRanobe)
+                            if (page == 0) {
+                                val titleRanobe = Ranobe(Title)
+                                titleRanobe.title = (Constants.RanobeSite.fromUrl(siteGroup.key)?.title
+                                        ?: None.title).plus(
+                                        if (fragmentType == Constants.FragmentType.Favorite) {
+                                            if (webGroup.key) " Web" else " Local"
+                                        } else ""
+                                )
+                                newRanobeList.add(titleRanobe)
+                            }
                             newRanobeList.addAll(siteGroup.value.map { gr ->
                                 gr.chapterList = gr.chapterList
                                 return@map gr
@@ -256,26 +263,53 @@ class RanobeListFragment : Fragment() {
         } else {
             progressDialog!!.setTitle(resources.getString(R.string.Load_from_Rulate))
             progressDialog!!.show()
-            return getRulateWebFavorite() //.doOnSubscribe { progressDialog!!.setTitle(context!!.getString(R.string.Load_from_Rulate)) }
-                    .concatWith(getRanobeRfWebFavorite()) //.doOnSubscribe { progressDialog!!.setTitle(context!!.getString(R.string.Load_from_RanobeRf)) })
-                    .concatWith(getRanobeHubWebFavorite()) //.doOnSubscribe { progressDialog!!.setTitle(context!!.getString(R.string.Load_from_RanobeHub)) })
-                    .concatWith(MyApp.database?.ranobeDao()?.getLocalFavoriteRanobes()
-                            ?: Single.just(listOf()))
-                    .map { ranobeList ->
-                        for (ranobe in ranobeList) {
-                            ranobe.updateRanobe(mContext!!).blockingGet()
-                            ranobe.isFavoriteInWeb = true
-                            ranobe.isFavorite = true
-                        }
-                        return@map ranobeList
+
+
+            return zip(
+                    getRulateWebFavorite().map {
+                        Completable.fromAction {
+                            progressDialog!!.setTitle(context!!.getString(R.string.Load_from_RanobeRf))
+                        }?.subscribeOn(AndroidSchedulers.mainThread())
+                        return@map it
+                    },
+                    getRanobeRfWebFavorite().map {
+                        Completable.fromAction {
+                            progressDialog!!.setTitle(context!!.getString(R.string.Load_from_RanobeHub))
+                        }?.subscribeOn(AndroidSchedulers.mainThread())
+                        return@map it
+                    },
+                    getRanobeHubWebFavorite().map {
+                        Completable.fromAction {
+                            progressDialog!!.setTitle(context!!.getString(R.string.Load_from_Local))
+                        }?.subscribeOn(AndroidSchedulers.mainThread())
+                        return@map it
+                    }, MyApp.database?.ranobeDao()?.getLocalFavoriteRanobes(),
+                    io.reactivex.functions.Function4<List<Ranobe>, List<Ranobe>, List<Ranobe>, List<Ranobe>, List<Ranobe>>
+                    { Rulate, RanobeRfW, RanobeHub, local ->
+
+                        val newList = mutableListOf<Ranobe>()
+                        newList.addAll(Rulate)
+                        newList.addAll(RanobeRfW)
+                        newList.addAll(RanobeHub)
+                        newList.addAll(local)
+                        return@Function4 newList
                     }
-                    .map { result ->
-                        for (ranobe in result) {
-                            MyApp.database?.ranobeDao()?.insert(ranobe)
-                            MyApp.database?.chapterDao()?.insertAll(*ranobe.chapterList.toTypedArray())
-                        }
-                        return@map result
-                    }.toObservable()
+
+            ).map { ranobeList ->
+                for (ranobe in ranobeList) {
+                    activity?.runOnUiThread{progressDialog!!.setTitle(ranobe.title)}
+                    ranobe.updateRanobe(mContext!!).blockingGet()
+                    ranobe.isFavoriteInWeb = true
+                    ranobe.isFavorite = true
+                }
+                return@map ranobeList
+            }.map { result ->
+                for (ranobe in result) {
+                    MyApp.database?.ranobeDao()?.insert(ranobe)
+                    MyApp.database?.chapterDao()?.insertAll(*ranobe.chapterList.toTypedArray())
+                }
+                return@map result
+            }.toObservable()
 
         }
 
@@ -308,12 +342,12 @@ class RanobeListFragment : Fragment() {
     }
 
     override fun onDestroy() {
-
+        super.onDestroy()
         if (progressDialog != null && progressDialog!!.isShowing) {
             progressDialog!!.dismiss()
         }
         request?.dispose()
-        super.onDestroy()
+
     }
 
     private fun rulateLoadRanobe(): Single<List<Ranobe>> {
@@ -342,14 +376,15 @@ class RanobeListFragment : Fragment() {
     }
 
     override fun onDetach() {
-        mListener = null
-        request?.dispose()
         super.onDetach()
+        mListener = null
+
     }
 
     override fun onDestroyView() {
-        request?.dispose()
         super.onDestroyView()
+        request?.dispose()
+
     }
 
     interface OnListFragmentInteractionListener

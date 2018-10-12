@@ -5,6 +5,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.squareup.leakcanary.LeakCanary
 import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.DAO.DatabaseDao
 import ru.profapp.RanobeReader.Helpers.LogHelper
@@ -17,8 +18,6 @@ class MyApp : Application() {
         var ranobeRfToken: String? = null
 
         var chapterTextSize: Int? = null
-
-        var autoSaveText: Boolean = true
 
         var fragmentType: Constants.FragmentType? = null
 
@@ -78,6 +77,14 @@ class MyApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        if(BuildConfig.DEBUG){
+            if (LeakCanary.isInAnalyzerProcess(this)) {
+                // This process is dedicated to LeakCanary for heap analysis.
+                // You should not init your app in this process.
+                return;
+            }
+            LeakCanary.install(this);
+        }
         MyApp.database = Room.databaseBuilder(this, DatabaseDao::class.java, DB_NAME).addMigrations(MIGRATION_2_3).build()
     }
 }

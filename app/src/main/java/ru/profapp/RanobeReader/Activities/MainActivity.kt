@@ -161,9 +161,6 @@ class MainActivity : AppCompatActivity(),
         PreferenceManager.setDefaultValues(this, R.xml.pref_general, false)
         val settingPref = PreferenceManager.getDefaultSharedPreferences(applicationContext)
         MyApp.chapterTextSize = settingPref.getInt(applicationContext.getString(R.string.pref_general_text_size), 13)
-
-        MyApp.autoSaveText = settingPref.getBoolean(applicationContext.getString(R.string.pref_general_auto_save), false)
-
         val rfPref = applicationContext.getSharedPreferences(Constants.Ranoberf_Login_Pref, Context.MODE_PRIVATE)
         if (rfPref != null) {
             MyApp.ranobeRfToken = rfPref.getString(Constants.KEY_Login, "")

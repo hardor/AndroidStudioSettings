@@ -33,7 +33,7 @@ interface TextDao {
     fun delete(ChapterUrl: String)
 
     @Query("SELECT * FROM textChapter WHERE ChapterUrl = :ChapterUrl")
-    fun getTextByChapterUrl(ChapterUrl: String): Single<TextChapter>
+    fun getTextByChapterUrl(ChapterUrl: String): Maybe<TextChapter>
 
     @Query("SELECT * FROM textChapter WHERE RanobeUrl = :RanobeUrl")
     fun getTextByRanobeUrl(RanobeUrl: String): Maybe<List<TextChapter>>

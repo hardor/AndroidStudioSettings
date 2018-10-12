@@ -9,7 +9,7 @@ class LogHelper {
     companion object {
 
         private const val showLog = BuildConfig.USE_LOG
-        @JvmStatic
+
         fun logMessage(type: LogType, Tag: String, Message: String, sendMessage: Boolean = true) {
             if (showLog) {
                 when (type) {
@@ -28,7 +28,7 @@ class LogHelper {
             }
         }
 
-        @JvmStatic
+
         fun logError(type: LogType, Tag: String, Message: String = "", exception: Throwable, sendError: Boolean = true) {
             if (showLog) {
                 when (type) {

@@ -75,7 +75,7 @@ class RulateLoginPreference(context: Context, attrs: AttributeSet) : DialogPrefe
         val username = mLoginEditor.text.toString()
         val password = mPasswordEditor.text.toString()
 
-        sharedPref.edit().putString(Constants.KEY_Login, username).commit()
+        sharedPref.edit().putString(Constants.KEY_Login, username).apply()
 
         val alert = AlertDialog.Builder(context).create()
         // Check if username, password is filled
@@ -86,10 +86,10 @@ class RulateLoginPreference(context: Context, attrs: AttributeSet) : DialogPrefe
                     .subscribe({ result ->
                         val resBool = java.lang.Boolean.valueOf(result[0])
                         if (resBool) {
-                            sharedPref.edit().putString(Constants.KEY_Token, result[2]).commit()
+                            sharedPref.edit().putString(Constants.KEY_Token, result[2]).apply()
                             summary = username
                         } else {
-                            sharedPref.edit().putString(Constants.KEY_Token, "").commit()
+                            sharedPref.edit().putString(Constants.KEY_Token, "").apply()
 
                             summary = context.getString(R.string.summary_login)
                         }
@@ -99,12 +99,12 @@ class RulateLoginPreference(context: Context, attrs: AttributeSet) : DialogPrefe
                         alert.setButton(Dialog.BUTTON_POSITIVE, "OK") { dialog, which -> }
                         alert.show()
                     }, {
-                        sharedPref.edit().putString(Constants.KEY_Token, "").commit()
+                        sharedPref.edit().putString(Constants.KEY_Token, "").apply()
 
                         summary = context.getString(R.string.summary_login)
 
                         alert.setTitle(username)
-                        alert.setMessage("Response error")
+                        alert.setMessage(context.getString(R.string.responce_error))
                         alert.setButton(Dialog.BUTTON_POSITIVE, "OK") { dialog, which -> }
                         alert.show()
 
@@ -117,7 +117,7 @@ class RulateLoginPreference(context: Context, attrs: AttributeSet) : DialogPrefe
             alert.setTitle(context.getString(R.string.login_failed))
             alert.setMessage(context.getString(R.string.enter_user_pass))
             alert.setButton(Dialog.BUTTON_POSITIVE, "OK") { dialog, which ->
-                sharedPref.edit().putString(Constants.KEY_Token, "").commit()
+                sharedPref.edit().putString(Constants.KEY_Token, "").apply()
                 summary = context.getString(R.string.summary_login)
             }
             alert.setButton(Dialog.BUTTON_NEUTRAL, "Cancel") { dialog, which ->

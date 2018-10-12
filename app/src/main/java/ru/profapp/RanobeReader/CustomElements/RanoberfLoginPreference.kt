@@ -10,13 +10,15 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReader.Common.Constants
-import ru.profapp.RanobeReader.MyApp
+import ru.profapp.RanobeReader.JsonApi.RanobeRfRepository
 import ru.profapp.RanobeReader.R
 
 class RanoberfLoginPreference(context: Context, attrs: AttributeSet) : DialogPreference(context, attrs), DialogInterface.OnClickListener {
 
-    private var sharedPref: SharedPreferences? = null
+    private lateinit var sharedPref: SharedPreferences
     // Current value
     private val mCurrentValue: String? = null
     // View elements
@@ -77,37 +79,47 @@ class RanoberfLoginPreference(context: Context, attrs: AttributeSet) : DialogPre
         val username = mLoginEditor!!.text.toString()
         val password = mPasswordEditor!!.text.toString()
 
-        sharedPref!!.edit().putString(Constants.KEY_Login, username).commit()
+        sharedPref.edit().putString(Constants.KEY_Login, username).apply()
 
         val alert = AlertDialog.Builder(context).create()
         // Check if username, password is filled
         if (username.isNotBlank() && password.isNotBlank()) {
-            val result = listOf<String>("false", "dfdfg")
-            //session.createRanobeRfLoginSession(username, password)
-            val resBool = java.lang.Boolean.valueOf(result[0])
-            if (resBool) {
-                sharedPref!!.edit().putString(Constants.KEY_Token, result[2]).commit()
-                summary = username
-                MyApp.ranobeRfToken = result[2]
-                alert.setMessage(context.getString(R.string.auth_succes))
-            } else {
-                sharedPref!!.edit().putString(Constants.KEY_Token, "").commit()
-                summary = context.getString(R.string.summary_login)
+            RanobeRfRepository.login(username, password)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ result ->
+                        val resBool = java.lang.Boolean.valueOf(result[0])
+                        if (resBool) {
+                            sharedPref.edit().putString(Constants.KEY_Token, result[2]).apply()
+                            summary = username
+                            alert.setMessage(context.getString(R.string.auth_succes))
+                        } else {
+                            sharedPref.edit().putString(Constants.KEY_Token, "").apply()
+                            summary = context.getString(R.string.summary_login)
+                            alert.setMessage(context.getString(R.string.auth_error))
+                        }
 
-                alert.setMessage(context.getString(R.string.auth_error))
-            }
+                        alert.setTitle(username)
+                        alert.setButton(Dialog.BUTTON_POSITIVE, "OK") { dialog, which -> }
+                        alert.show()
+                    }, {
+                        sharedPref.edit().putString(Constants.KEY_Token, "").apply()
 
-            alert.setTitle(username)
+                        summary = context.getString(R.string.summary_login)
 
-            alert.setButton(Dialog.BUTTON_POSITIVE, "OK") { dialog, which -> }
-            alert.show()
+                        alert.setTitle(username)
+                        alert.setMessage(context.getString(R.string.responce_error))
+                        alert.setButton(Dialog.BUTTON_POSITIVE, "OK") { dialog, which -> }
+                        alert.show()
+
+                    })
 
         } else {
 
             alert.setTitle(context.getString(R.string.login_failed))
             alert.setMessage(context.getString(R.string.enter_user_pass))
             alert.setButton(Dialog.BUTTON_POSITIVE, "OK") { dialog, which ->
-                sharedPref!!.edit().putString(Constants.KEY_Token, "").commit()
+                sharedPref!!.edit().putString(Constants.KEY_Token, "").apply()
 
                 summary = context.getString(R.string.summary_login)
             }

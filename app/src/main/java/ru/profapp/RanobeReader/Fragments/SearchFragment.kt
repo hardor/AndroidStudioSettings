@@ -191,7 +191,6 @@ class SearchFragment : Fragment() {
     interface OnFragmentInteractionListener
 
     companion object {
-        @JvmStatic
         fun newInstance() = SearchFragment().apply {
             arguments = Bundle().apply {
 
@@ -200,8 +199,8 @@ class SearchFragment : Fragment() {
     }
 
     override fun onDestroy() {
-        request?.dispose()
         super.onDestroy()
+        request?.dispose()
     }
 }
 

@@ -47,7 +47,7 @@ object RanobeHubRepository {
     fun getReadyBooks(page: Int): Single<List<Ranobe>> {
 
         return when (page) {
-            1 -> IRanobeHubApiService.instance.GetReady()
+            -1 -> IRanobeHubApiService.instance.GetReady()
             else -> IRanobeHubApiService.instance.GetReadyBooks(page)
         }.map {
             return@map getRanobeReadyList(it)
@@ -87,9 +87,10 @@ object RanobeHubRepository {
 
         val parts = mCurrentChapter.url.split("/")
 
-        return IRanobeHubApiService.instance.GetChapterText(parts[4].toInt(), parts[5].toInt(), parts[6].toInt()).map {
+        return IRanobeHubApiService.instanceHtml.GetChapterText(parts[4].toInt(), parts[5].toInt(), parts[6].toInt()).map {
 
-            val a = it
+            val a = it.length
+
             return@map true
 
             //                    if (it.status == 200) {

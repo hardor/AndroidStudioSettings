@@ -139,5 +139,7 @@
   <string name="Load_from_RanobeHub"/>
   <string name="cache_cleaned">Cache was cleaned</string>
   <string name="not_history">History is empty</string>
+  <string name="Load_from_Local">Load local bookmarks</string>
+  <string name="responce_error">Responce error</string>
 
 </resources>
