@@ -225,10 +225,11 @@ class RanobeInfoActivity : AppCompatActivity() {
         request = currentRanobe.updateRanobe(mContext!!).map {
             var checked = false
             if (lastIndexPref != null) {
-                val lastId: Int = lastIndexPref?.getInt(currentRanobe.url, -1) ?: -1
-                if (lastId > 0) {
+                val lastInd: Int = lastIndexPref?.getInt(currentRanobe.url, -1) ?: -1
+                if (lastInd > 0) {
                     checked = true
-                    for (chapter in currentRanobe.chapterList) chapter.isRead = chapter.id!! < lastId
+                    for (chapter in currentRanobe.chapterList)
+                        chapter.isRead = chapter.index!! < lastInd
 
                 }
             }

@@ -361,9 +361,7 @@ class RanobeListFragment : Fragment() {
     }
 
     private fun ranobeHubLoadRanobe(): Single<List<Ranobe>> {
-
         return RanobeHubRepository.getReadyBooks(page + 1)
-
     }
 
     override fun onAttach(context: Context?) {

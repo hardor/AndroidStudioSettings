@@ -10,10 +10,9 @@ class ReceivedCookiesInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalResponse = chain.proceed(chain.request())
         if (!originalResponse.headers("set-cookie").isEmpty()) {
-
+            RanobeHubRepository.Cookie.clear()
             for (header in originalResponse.headers("Set-Cookie")) {
-                RanobeHubRepository.Cookie["Cookie"]=header
-                break
+                RanobeHubRepository.Cookie.add(header)
             }
 
         }

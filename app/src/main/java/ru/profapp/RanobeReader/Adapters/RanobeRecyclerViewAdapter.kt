@@ -128,11 +128,11 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
                     val chapterlist2 = templist.subList(0, Math.min(Constants.chaptersNum, templist.size))
                     var checked = false
                     if (lastIndexPref != null && lastIndexPref.contains(chapterlist2.first().ranobeUrl)) {
-                        val lastId = lastIndexPref.getInt(chapterlist2.first().ranobeUrl, -1)
-                        if (lastId > 0) {
+                        val lastInd = lastIndexPref.getInt(chapterlist2.first().ranobeUrl, -1)
+                        if (lastInd > 0) {
                             checked = true
                             for (chapter in chapterlist2) {
-                                if (chapter.id!! <= lastId) {
+                                if (chapter.id!! <= lastInd) {
                                     chapter.isRead = true
                                 }
                             }

@@ -13,11 +13,12 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
+
 object RanobeHubRepository {
 
     private var token: String = ""
 
-    var Cookie: HashMap<String, String> = hashMapOf()
+    var Cookie: MutableList<String> = mutableListOf()
 
     fun getBookInfo(ranobe: Ranobe): Single<Boolean> {
         return IRanobeHubApiService.instance.GetChapters(ranobe.id).map {
@@ -46,12 +47,27 @@ object RanobeHubRepository {
 
     fun getReadyBooks(page: Int): Single<List<Ranobe>> {
 
-        return when (page) {
-            -1 -> IRanobeHubApiService.instance.GetReady()
-            else -> IRanobeHubApiService.instance.GetReadyBooks(page)
-        }.map {
-            return@map getRanobeReadyList(it)
+        if (page == 1 && token.isBlank()) {
+
+
+            return IRanobeHubApiService.instanceHtml.GetReady().flatMap { response ->
+                if (response.isSuccessful) {
+                    val metaOgTitle = Jsoup.parse(response.body()?.string()).head().select("meta[name=csrf-token]")
+                    if (metaOgTitle != null) {
+                        token = metaOgTitle.attr("content")
+                    }
+                }
+                return@flatMap IRanobeHubApiService.instance.GetReadyBooks(page, token).map {
+                    return@map getRanobeReadyList(it)
+                }
+            }
+
+        } else {
+            return IRanobeHubApiService.instance.GetReadyBooks(page, token).map {
+                return@map getRanobeReadyList(it)
+            }
         }
+
 
     }
 
@@ -87,32 +103,31 @@ object RanobeHubRepository {
 
         val parts = mCurrentChapter.url.split("/")
 
-        return IRanobeHubApiService.instanceHtml.GetChapterText(parts[4].toInt(), parts[5].toInt(), parts[6].toInt()).map {
+        return IRanobeHubApiService.instanceHtml.GetChapterText(parts[4], parts[5], parts[6]).map { response ->
+            if (response.isSuccessful) {
+                val jsObject = Jsoup.parse(response.body()?.string())
+                if (token.isBlank()) {
+                    val metaOgTitle = jsObject.head().selectFirst("meta[name=csrf-token]")
+                    if (metaOgTitle != null) {
+                        token = metaOgTitle.attr("content")
+                    }
+                }
 
-            val a = it.length
-
-            return@map true
-
-            //                    if (it.status == 200) {
-            //                        val response = it.result
-            //                        if (response?.status == 200) {
-            //                            mCurrentChapter.title = response.part!!.title.toString()
-            //                            mCurrentChapter.text = response.part.content
-            //                            mCurrentChapter.url = response.part.url!!
-            //                        }
-            //
-            //                        if (it.result!!.part!!.payment!! && mCurrentChapter.text.isNullOrBlank()) {
-            //                            mCurrentChapter.text = "Даннная страница находится на платной подписке"
-            //                            return@map false
-            //                        }
-            //                        return@map true
-            //                    } else {
-            //                        mCurrentChapter.text = it.message
-            //                        return@map false
-            //                    }
-
+                val body = jsObject.body()
+                mCurrentChapter.title = body.selectFirst(".__ranobe_read_container h1").text()
+                val textObj =body.selectFirst(".__ranobe_read_container")
+                textObj.selectFirst("h1").remove()
+                textObj.select(".ads-desktop").remove()
+                textObj.select(".ads-mobile").remove()
+                textObj.select(".adsbygoogle").remove()
+                mCurrentChapter.text = textObj.html()
+                return@map true
+            } else
+                return@map false
         }
+
     }
+
 
     private fun getRanobeList(it: List<RanobeHubBook>): List<Ranobe> {
         val or: MutableList<Ranobe> = mutableListOf()

@@ -14,9 +14,9 @@ class AddCookiesInterceptor : Interceptor {
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         val builder = chain.request().newBuilder()
-        val preferences = RanobeHubRepository.Cookie
-        for (cookie in preferences) {
-            builder.addHeader("Cookie",cookie.value)
+        val cookies = RanobeHubRepository.Cookie
+        for (cookie in cookies) {
+            builder.addHeader("Cookie",cookie)
         }
         return chain.proceed(builder.build())
     }
