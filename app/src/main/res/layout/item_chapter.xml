@@ -16,8 +16,5 @@
     android:maxLines="1"
     tools:text="@tools:sample/lorem/random"
     />
-  <View
-    android:layout_width="match_parent"
-    android:layout_height="1dp"
-    android:background="@color/colorPrimaryDark"/>
+  <View style="@style/divider"/>
 </LinearLayout>

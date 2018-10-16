@@ -188,7 +188,7 @@ object RulateRepository {
 
         if (!image.isNullOrBlank()) {
             Completable.fromAction {
-                MyApp.database?.ranobeImageDao()?.insert(RanobeImage(url, image!!))
+                MyApp.database.ranobeImageDao().insert(RanobeImage(url, image!!))
             }?.subscribeOn(Schedulers.io())?.subscribe({},{error ->
                 LogHelper.logError(LogHelper.LogType.ERROR, "", "", error, false)})
 

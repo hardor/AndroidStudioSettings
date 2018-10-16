@@ -38,7 +38,7 @@ class RanoberfLoginPreference(context: Context, attrs: AttributeSet) : DialogPre
         val context = this.context
         sharedPref = context.getSharedPreferences(Constants.Ranoberf_Login_Pref, Context.MODE_PRIVATE)
 
-        val value = sharedPref!!.getString(Constants.KEY_Login, "")
+        val value = sharedPref.getString(Constants.KEY_Login, "")
 
         // Setup SeekBar
 
@@ -119,7 +119,7 @@ class RanoberfLoginPreference(context: Context, attrs: AttributeSet) : DialogPre
             alert.setTitle(context.getString(R.string.login_failed))
             alert.setMessage(context.getString(R.string.enter_user_pass))
             alert.setButton(Dialog.BUTTON_POSITIVE, "OK") { dialog, which ->
-                sharedPref!!.edit().putString(Constants.KEY_Token, "").apply()
+                sharedPref.edit().putString(Constants.KEY_Token, "").apply()
 
                 summary = context.getString(R.string.summary_login)
             }

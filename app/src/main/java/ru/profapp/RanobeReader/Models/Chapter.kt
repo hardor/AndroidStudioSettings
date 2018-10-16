@@ -47,10 +47,10 @@ class Chapter() {
     var id: Int? = null
         get() {
             if (field == null) {
-                try {
-                    return Integer.parseInt(url.substring(url.lastIndexOf("/") + 1))
+                return try {
+                    Integer.parseInt(url.substring(url.lastIndexOf("/") + 1))
                 } catch (ignore: NumberFormatException) {
-                    return field
+                    field
                 }
             }
             return field

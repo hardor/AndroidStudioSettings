@@ -98,11 +98,11 @@ class MainActivity : AppCompatActivity(),
 
         val floatingActionButton = findViewById<FloatingActionButton>(R.id.fab)
         floatingActionButton.setOnClickListener { view ->
-            val chapterHistory = MyApp.database?.ranobeHistoryDao()?.getLastChapter()?.subscribeOn(Schedulers.io())?.blockingGet()
+            val chapterHistory = MyApp.database.ranobeHistoryDao().getLastChapter().subscribeOn(Schedulers.io())?.blockingGet()
             if (chapterHistory != null) {
                 if (MyApp.ranobe == null || !MyApp.ranobe!!.url.contains(chapterHistory.ranobeUrl) || !MyApp.ranobe!!.wasUpdated) {
 
-                    var ranobe = Ranobe()
+                    val ranobe = Ranobe()
                     ranobe.url = chapterHistory.ranobeUrl
                     ranobe.title = chapterHistory.ranobeName
 

@@ -155,7 +155,7 @@ class ChapterTextActivity : AppCompatActivity() {
         initWebView()
 
         Completable.fromAction {
-            MyApp.database?.ranobeHistoryDao()?.insertNewRanobe(
+            MyApp.database.ranobeHistoryDao().insertNewRanobe(
                     RanobeHistory(currentRanobe?.url!!, currentRanobe?.title!!, currentRanobe?.description)
             )
         }?.subscribeOn(Schedulers.io())?.subscribe({}, { error ->
@@ -276,14 +276,14 @@ class ChapterTextActivity : AppCompatActivity() {
 
         return if (mCurrentChapter.text.isNullOrBlank()) {
 
-            return MyApp.database?.textDao()!!.getTextByChapterUrl(mCurrentChapter.url).map {
+            return MyApp.database.textDao().getTextByChapterUrl(mCurrentChapter.url).map {
                 mCurrentChapter.text = it.text
                 return@map true
             }.switchIfEmpty(GetChapterTextFromWeb(mCurrentChapter.ranobeUrl))
                     .map {
                         if (!mCurrentChapter.text.isNullOrBlank() && it) {
                             Completable.fromAction {
-                                MyApp.database?.textDao()?.insert(TextChapter(mCurrentChapter))
+                                MyApp.database.textDao().insert(TextChapter(mCurrentChapter))
                             }?.subscribeOn(Schedulers.io())?.subscribe({}, { error ->
                                 LogHelper.logError(LogHelper.LogType.ERROR, "", "", error, false)
                             })
@@ -317,7 +317,7 @@ class ChapterTextActivity : AppCompatActivity() {
     private fun saveProgressToDb(pr: Float? = null) {
         val progress = pr ?: calculateProgression() ?: 0f
         Completable.fromAction {
-            MyApp.database?.ranobeHistoryDao()?.insertNewChapter(
+            MyApp.database.ranobeHistoryDao().insertNewChapter(
                     ChapterHistory(mCurrentChapter.url, mCurrentChapter.title, mCurrentChapter.ranobeName, mCurrentChapter.ranobeUrl, mCurrentChapter.index, progress)
             )
         }?.subscribeOn(Schedulers.io())

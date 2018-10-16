@@ -62,7 +62,7 @@ class DownloadActivity : AppCompatActivity() {
             R.id.select_all -> {
                 chapterList.forEach { it.isChecked = true }
                 adapter.selectAll = true
-                adapter!!.notifyDataSetChanged()
+                adapter.notifyDataSetChanged()
                 return@OnNavigationItemSelectedListener true
             }
         }
@@ -95,7 +95,7 @@ class DownloadActivity : AppCompatActivity() {
                 if (!chapter.isChecked) {
 
                     Completable.fromAction {
-                        MyApp.database?.textDao()?.delete(chapter.url)
+                        MyApp.database.textDao().delete(chapter.url)
                     }?.doFinally {
                         chapter.text = ""
                         chapter.downloaded = false
@@ -121,7 +121,7 @@ class DownloadActivity : AppCompatActivity() {
         for (chapter in chapterList) {
             chapter.isChecked = chapter.downloaded
         }
-        adapter!!.notifyItemRangeChanged(0, chapterList.size)
+        adapter.notifyItemRangeChanged(0, chapterList.size)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -142,8 +142,7 @@ class DownloadActivity : AppCompatActivity() {
         pDialog.setCancelable(false)
         pDialog.show()
 
-        MyApp.database?.textDao()?.getTextByRanobeUrl(currentRanobe.url)
-                ?.subscribeOn(Schedulers.io())
+        MyApp.database.textDao().getTextByRanobeUrl(currentRanobe.url).subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe({ result ->
 
@@ -186,6 +185,6 @@ class DownloadActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        progressDialog!!.dismiss()
+        progressDialog?.dismiss()
     }
 }

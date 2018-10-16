@@ -15,9 +15,13 @@
   <header
     android:fragment="ru.profapp.RanobeReader.Activities.SettingsActivity$DataPreferenceFragment"
     android:title="@string/data"/>
-  <!--<header-->
-  <!--android:fragment="ru.profapp.RanobeReader.Activities.SettingsActivity$ExportPreferenceFragment"-->
-  <!--android:title="@string/export_import" />-->
+
+  <header
+    android:summary="Launches an Intent."
+    android:title="@string/export_import">
+    <intent
+      android:action="ru.profapp.RanobeReader.Activities.BackupActivity"/>
+  </header>
 
 
 </preference-headers>

@@ -15,6 +15,7 @@ import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
 import ru.profapp.RanobeReader.Activities.RanobeInfoActivity
 import ru.profapp.RanobeReader.Common.Constants
+import ru.profapp.RanobeReader.Common.Constants.last_chapter_id_Pref
 import ru.profapp.RanobeReader.Common.OnLoadMoreListener
 import ru.profapp.RanobeReader.Fragments.RanobeListFragment.OnListFragmentInteractionListener
 import ru.profapp.RanobeReader.Models.Ranobe
@@ -31,7 +32,7 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
     private val VIEW_TYPE_GROUP_TITLE = 2
     private val glide: RequestManager = Glide.with(context)
 
-    private val sPref = context.getSharedPreferences(Constants.is_readed_Pref, Context.MODE_PRIVATE)
+    private val sPref = context.getSharedPreferences(last_chapter_id_Pref, Context.MODE_PRIVATE)
     private val lastIndexPref = context.getSharedPreferences(Constants.last_chapter_id_Pref, Context.MODE_PRIVATE)
 
     private val imageOptions: RequestOptions = RequestOptions().placeholder(R.drawable.ic_adb_black_24dp).error(R.drawable.ic_error_outline_black_24dp).fitCenter()
@@ -81,18 +82,18 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        when (viewType) {
+        return when (viewType) {
             VIEW_TYPE_ITEM -> {
                 val view = inflater.inflate(R.layout.item_ranobe, parent, false)
-                return RanobeViewHolder(view)
+                RanobeViewHolder(view)
             }
             VIEW_TYPE_GROUP_TITLE -> {
                 val view = inflater.inflate(R.layout.item_title, parent, false)
-                return TitleViewHolder(view)
+                TitleViewHolder(view)
             }
             else -> {
                 val view = inflater.inflate(R.layout.item_loading, parent, false)
-                return LoadingViewHolder(view)
+                LoadingViewHolder(view)
             }
         }
 

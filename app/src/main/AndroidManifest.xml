@@ -6,8 +6,8 @@
   <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
   <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-  <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> -->
   <application
     android:allowBackup="true"
     android:fullBackupContent="@xml/backup_descriptor"
@@ -23,7 +23,6 @@
       android:theme="@style/AppTheme.NoActionBar">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
-
         <category android:name="android.intent.category.LAUNCHER"/>
       </intent-filter>
       <intent-filter android:autoVerify="true">
@@ -86,7 +85,6 @@
           android:host="ranobehub.org"
           android:scheme="https"/>
       </intent-filter>
-
     </activity>
     <activity
       android:label="@string/title_activity_settings"
@@ -123,18 +121,24 @@
       android:label="@string/title_activity_chapter_text"
       android:name=".Activities.ChapterTextActivity"/>
 
-    <meta-data
-      android:name="io.fabric.ApiKey"
-      android:value="cac79ff615d7eefe4a0287318c94853a3858ee47"/>
-
     <activity
       android:label="@string/title_activity_download"
       android:name=".Activities.DownloadActivity"/>
+    <activity
+      android:label="BackupActivity"
+      android:name=".Activities.BackupActivity">
+      <intent-filter>
+        <action android:name="ru.profapp.RanobeReader.Activities.BackupActivity"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+      </intent-filter>
+    </activity>
 
+    <meta-data
+      android:name="io.fabric.ApiKey"
+      android:value="cac79ff615d7eefe4a0287318c94853a3858ee47"/>
     <meta-data
       android:name="com.google.android.backup.api_key"
       android:value="AEdPqrEAAAAIcORPcg1t8lO1zc5q5si6PVokDoSqx9zWn1G_MA"/>
-
     <meta-data
       android:name="com.google.android.gms.ads.APPLICATION_ID"
       android:value="@string/app_admob_id"/>

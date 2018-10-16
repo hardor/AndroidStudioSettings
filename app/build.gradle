@@ -40,7 +40,7 @@ android {
         config {
             keyAlias 'ranobereader'
             keyPassword 'gf6ds7fsfs7'
-            storeFile file('C:/Users/rvildanov/Desktop/Android/ru.profapp.keystore')
+            storeFile file('C:/Users/rvildanov/Desktop/Android/RanobeReader.keystore')
             storePassword 'gf6ds7fsfs7'
         }
     }
@@ -78,7 +78,7 @@ android {
                 variant.outputs.all {
                     def date = new Date()
                     def formattedDate = date.format('dd_MM_HH-mm')
-                    outputFileName = "${variant.applicationId}_${defaultConfig.versionName}-${variantData.variantConfiguration.baseName}_${formattedDate}.apk"
+                    outputFileName = "${variant.applicationId}_${defaultConfig.versionName}-${variantData.variantConfiguration.baseName}.apk"
                 }
             }
         }
@@ -130,7 +130,6 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.0'
 
 
-
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.0-beta01'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-beta01'
@@ -176,8 +175,9 @@ dependencies {
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.1'
     // Optional, if you use support library fragments:
     //debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.1'
-    // common
 
+    // common
+    implementation 'com.google.android.gms:play-services-drive:16.0.0'
 
 }
 

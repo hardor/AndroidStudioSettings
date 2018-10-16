@@ -19,6 +19,9 @@ import ru.profapp.RanobeReader.Models.Ranobe
 import ru.profapp.RanobeReader.Models.RanobeHistory
 import ru.profapp.RanobeReader.MyApp
 import ru.profapp.RanobeReader.R
+import com.squareup.leakcanary.RefWatcher
+
+
 
 /**
  * A simple [Fragment] subclass.
@@ -56,7 +59,7 @@ class HistoryFragment : Fragment() {
         ranobeRecyclerView = view.findViewById(R.id.ranobeListView)
         ranobeRecyclerView.layoutManager = LinearLayoutManager(mContext)
 
-        request = MyApp.database?.ranobeHistoryDao()?.allChapters()?.subscribeOn(Schedulers.io())
+        request = MyApp.database.ranobeHistoryDao().allChapters().subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())?.subscribe({
                     chapterHistoryViewAdapter = HistoryRecyclerViewAdapter(mContext!!, it)
                     chapterRecyclerView.adapter = chapterHistoryViewAdapter
@@ -64,12 +67,12 @@ class HistoryFragment : Fragment() {
                     LogHelper.logError(LogHelper.LogType.ERROR, "HistoryFragment", "", error)
                 })
 
-        request2 = MyApp.database?.ranobeHistoryDao()?.allRanobes()?.subscribeOn(Schedulers.io())
+        request2 = MyApp.database.ranobeHistoryDao().allRanobes().subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())?.map {
                     val ranobeList = it.map { r -> toRanobe(r) }
                     for (ranobe in ranobeList) {
                         if (ranobe.image.isNullOrBlank()) {
-                            MyApp.database?.ranobeImageDao()?.getImageByUrl(ranobe.url)?.observeOn(AndroidSchedulers.mainThread())?.subscribeOn(Schedulers.io())?.subscribe { it2 ->
+                            MyApp.database.ranobeImageDao().getImageByUrl(ranobe.url).observeOn(AndroidSchedulers.mainThread())?.subscribeOn(Schedulers.io())?.subscribe { it2 ->
                                 ranobe.image = it2.image
                             }
                         }
@@ -139,6 +142,7 @@ class HistoryFragment : Fragment() {
         super.onDestroy()
         request?.dispose()
         request2?.dispose()
+        MyApp.refWatcher?.watch(this)
     }
 
     interface OnFragmentInteractionListener

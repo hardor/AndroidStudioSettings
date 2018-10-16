@@ -1,15 +1,19 @@
 package ru.profapp.RanobeReader
 
+import android.app.Activity
 import android.app.Application
 import androidx.annotation.VisibleForTesting
 import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.squareup.leakcanary.LeakCanary
+import com.squareup.leakcanary.RefWatcher
 import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.DAO.DatabaseDao
 import ru.profapp.RanobeReader.Helpers.LogHelper
 import ru.profapp.RanobeReader.Models.Ranobe
+
+
 
 class MyApp : Application() {
 
@@ -71,19 +75,22 @@ class MyApp : Application() {
 
             }
         }
-        var database: DatabaseDao? = null
+        lateinit var database: DatabaseDao
         var ranobe: Ranobe? = null
+        var refWatcher: RefWatcher?=null
+
     }
+
 
     override fun onCreate() {
         super.onCreate()
-        if(BuildConfig.DEBUG){
+        if (BuildConfig.DEBUG) {
             if (LeakCanary.isInAnalyzerProcess(this)) {
                 // This process is dedicated to LeakCanary for heap analysis.
                 // You should not init your app in this process.
-                return;
+                return
             }
-            LeakCanary.install(this);
+            refWatcher = LeakCanary.install(this)
         }
         MyApp.database = Room.databaseBuilder(this, DatabaseDao::class.java, DB_NAME).addMigrations(MIGRATION_2_3).build()
     }

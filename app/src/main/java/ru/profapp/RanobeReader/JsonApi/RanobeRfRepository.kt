@@ -186,7 +186,7 @@ object RanobeRfRepository {
         result.book?.let { this.updateRanobe(it) }
 
         // genres = result.genres.map { genre -> genre.title }.toString()
-        genres = result.genres.map { it -> it.title }.joinToString()
+        genres = result.genres.asSequence().map { it -> it.title }.joinToString()
 
         chapterList.clear()
 

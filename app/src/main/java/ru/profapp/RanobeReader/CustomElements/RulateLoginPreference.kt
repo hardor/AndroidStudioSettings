@@ -85,13 +85,13 @@ class RulateLoginPreference(context: Context, attrs: AttributeSet) : DialogPrefe
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({ result ->
                         val resBool = java.lang.Boolean.valueOf(result[0])
-                        if (resBool) {
+                        summary = if (resBool) {
                             sharedPref.edit().putString(Constants.KEY_Token, result[2]).apply()
-                            summary = username
+                            username
                         } else {
                             sharedPref.edit().putString(Constants.KEY_Token, "").apply()
 
-                            summary = context.getString(R.string.summary_login)
+                            context.getString(R.string.summary_login)
                         }
 
                         alert.setTitle(username)

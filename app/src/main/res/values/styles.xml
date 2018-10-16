@@ -30,12 +30,6 @@
 
   </style>
 
-  <style name="Divider">
-    <item name="android:layout_width">match_parent</item>
-    <item name="android:layout_height">1dp</item>
-    <item name="background">?android:attr/listDivider</item>
-  </style>
-
   <style name="TitleCardViewStyle" parent="@android:style/TextAppearance.Widget.TextView">
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">wrap_content</item>
@@ -44,6 +38,12 @@
     <item name="android:textSize">@dimen/title_text_size</item>
     <item name="android:textStyle">bold</item>
     <item name="android:maxLines">1</item>
+  </style>
+
+  <style name="divider">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">1dp</item>
+    <item name="android:background">@color/colorAccent</item>
   </style>
 
 

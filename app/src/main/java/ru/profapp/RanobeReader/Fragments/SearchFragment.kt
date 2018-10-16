@@ -110,7 +110,7 @@ class SearchFragment : Fragment() {
         request = Single.mergeDelayError(findRulateRanobe(searchString), findRanobeRfRanobe(searchString), findRanobeHubRanobe(searchString)).map { ranobeList ->
             for (ranobe in ranobeList) {
                 if (ranobe.image.isNullOrBlank()) {
-                    MyApp.database?.ranobeImageDao()?.getImageByUrl(ranobe.url)?.observeOn(AndroidSchedulers.mainThread())?.subscribeOn(Schedulers.io())?.subscribe { it ->
+                    MyApp.database.ranobeImageDao().getImageByUrl(ranobe.url).observeOn(AndroidSchedulers.mainThread())?.subscribeOn(Schedulers.io())?.subscribe { it ->
                         ranobe.image = it.image
                     }
                 }
@@ -175,7 +175,7 @@ class SearchFragment : Fragment() {
 
         return RanobeRfRepository.searchBooks(searchString).map {
             val or: ArrayList<Ranobe> = ArrayList()
-            if (it.size > 0) {
+            if (it.isNotEmpty()) {
 
                 val ranobet = Ranobe()
                 ranobet.ranobeSite = Title.url
@@ -201,6 +201,7 @@ class SearchFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         request?.dispose()
+        MyApp.refWatcher?.watch(this)
     }
 }
 

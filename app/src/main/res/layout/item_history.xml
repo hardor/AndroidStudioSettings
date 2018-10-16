@@ -24,9 +24,6 @@
     android:textSize="@dimen/last_updated_text_size"
     tools:text="@tools:sample/date/ddmmyy"/>
 
-  <View
-    android:layout_width="match_parent"
-    android:layout_height="1dp"
-    android:background="@color/colorPrimaryDark"/>
+  <View    style="@style/divider"/>
 
 </LinearLayout>

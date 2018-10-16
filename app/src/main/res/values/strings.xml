@@ -140,6 +140,41 @@
   <string name="cache_cleaned">Cache was cleaned</string>
   <string name="not_history">History is empty</string>
   <string name="Load_from_Local">Load local bookmarks</string>
-  <string name="responce_error">Responce error</string>
+  <string name="responce_error">Response error</string>
+  <string name="export_import">Export/Import</string>
+
+   <!--Backup-->
+  <string name="sidebar_backup_export">Backup &amp; Export</string>
+  <string name="menu_backup_backup">Backup on Google Drive</string>
+  <string name="menu_backup_restore">Restore</string>
+  <string name="menu_backup_csv">CSV export</string>
+  <string name="activity_backup_drive_automatic">Automatic backup</string>
+  <string name="activity_backup_drive_desc">Backing up your data to Google Drive allows you to restore all your readings in case you lose or change devices.</string>
+  <string name="activity_backup_drive_message_restart">Restarting to apply changes…</string>
+  <string name="activity_backup_drive_desc_1">Sync Glucosio\'s database in the cloud with Google Drive.</string>
+  <string name="activity_backup_drive_desc_2">You\'ll be able to restore all your readings if you lost or change phone or sync Glucosio\'s data between your devices.</string>
+  <string name="backup_buckup_success">Database successfully backed up to storage</string>
+  <string name="backup_restore_success">Successfully restored database from storage</string>
+  <string name="backup_restore_nothing">No files found for backup/restore</string>
+  <string name="activity_backup_drive_failed">Something went wrong. Please try again :/</string>
+  <string name="activity_backup_drive_last">Last backup:</string>
+  <string name="activity_backup_drive_folder">Backup folder</string>
+  <string name="activity_backup_drive_folder_not_set">Not set</string>
+  <string name="activity_backup_drive_button_backup">Backup now</string>
+  <string name="activity_backup_drive_recent">Recent backups</string>
+  <string name="activity_backup_drive_more">See more Backups</string>
+  <string name="activity_backup_drive_dialog_restore_title">Revert to previous version</string>
+  <string name="activity_backup_drive_dialog_restore_desc">Restoring the backup will overwrite all the existing data with the backup.</string>
+  <string name="activity_backup_drive_dialog_restore_details">Backup details</string>
+  <string name="activity_backup_drive_dialog_restore_button_cancel">Cancel</string>
+  <string name="activity_backup_drive_dialog_restore_button_restore">Restore backup</string>
+  <string name="activity_backup_drive_button_restore">Restore from Drive</string>
+  <string name="activity_backup_drive_error_restore">Unable to find a valid backup to restore from Drive</string>
+  <string name="activity_main_error_play_services">Glucosio needs Play Services to enable Google Drive backup.</string>
+  <string name="activity_main_dialog_csv_title">Export to CSV file</string>
+  <string name="activity_backup_drive_button_open_drive">Manage on Drive</string>
+  <string name="allow_external_storage">Please allow access to your storage</string>
+  <string name="allow">Allow</string>
+
 
 </resources>

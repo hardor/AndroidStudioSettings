@@ -2,7 +2,6 @@
 
   <PreferenceCategory android:title="@string/pref_header_general"/>
 
-
   <SwitchPreference
     android:defaultValue="false"
     android:key="@string/pref_general_app_theme"
@@ -22,6 +21,7 @@
     android:summaryOff="@string/summary_send_reports_on"
     android:summaryOn="@string/summary_send_reports_off"
     android:title="@string/send_crash_reports"/>
+
 
 
 </PreferenceScreen>

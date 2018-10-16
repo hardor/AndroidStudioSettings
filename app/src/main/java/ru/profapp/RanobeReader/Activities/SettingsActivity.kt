@@ -184,8 +184,8 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             cacheButton.setOnPreferenceClickListener { preference ->
 
                 Completable.fromAction {
-                    MyApp.database?.textDao()?.cleanTable()
-                }?.andThen(Completable.fromAction { MyApp.database?.ranobeImageDao()?.cleanTable() })
+                    MyApp.database.textDao().cleanTable()
+                }?.andThen(Completable.fromAction { MyApp.database.ranobeImageDao().cleanTable() })
                         ?.observeOn(AndroidSchedulers.mainThread())
                         ?.subscribeOn(Schedulers.io())
                         ?.subscribe({
@@ -198,7 +198,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 
             val favButton = findPreference(getString(R.string.CleanLocalFavButton))
             favButton.setOnPreferenceClickListener { preference ->
-                Completable.fromAction { MyApp.database?.ranobeDao()?.cleanTable() }
+                Completable.fromAction { MyApp.database.ranobeDao().cleanTable() }
                         ?.observeOn(AndroidSchedulers.mainThread())
                         ?.subscribeOn(Schedulers.io())
                         ?.subscribe({
@@ -215,7 +215,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
                 activity!!.getSharedPreferences(last_chapter_id_Pref, 0).edit().clear().apply()
                 activity!!.getSharedPreferences(Constants.last_chapter_id_Pref, 0).edit().clear().apply()
 
-                Completable.fromAction { MyApp.database?.ranobeHistoryDao()?.cleanHistory() }
+                Completable.fromAction { MyApp.database.ranobeHistoryDao().cleanHistory() }
                         ?.observeOn(AndroidSchedulers.mainThread())
                         ?.subscribeOn(Schedulers.io())
                         ?.subscribe({
@@ -272,7 +272,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
     //                    FileOutputStream fileout = isNew FileOutputStream(output.getAbsolutePath());
     //                    OutputStreamWriter outputWriter = isNew OutputStreamWriter(fileout);
     //
-    //                    List<Ranobe> ranobes = MyApp.database?.RanobeDao()?.GetFavoriteRanobes();
+    //                    List<Ranobe> ranobes = MyApp.database.RanobeDao()?.GetFavoriteRanobes();
     //                    Gson gson = isNew GsonBuilder().setPrettyPrinting().create();
     //
     //                    //value = gson.toJson(ranobes.get(0));

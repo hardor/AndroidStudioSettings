@@ -99,7 +99,7 @@ class RanobeInfoActivity : AppCompatActivity() {
         val bookmarkFab = findViewById<FloatingActionButton>(R.id.bookmark_fab)
         bookmarkFab.setOnClickListener {
 
-            val chapterHistory = MyApp.database?.ranobeHistoryDao()?.getLastChapterByName(currentRanobe.title)?.subscribeOn(Schedulers.io())?.blockingGet()
+            val chapterHistory = MyApp.database.ranobeHistoryDao().getLastChapterByName(currentRanobe.title).subscribeOn(Schedulers.io())?.blockingGet()
             val intent = Intent(mContext, ChapterTextActivity::class.java)
             intent.putExtra("ChapterUrl", chapterHistory?.chapterUrl)
             intent.putExtra("Progress", chapterHistory?.progress)
@@ -229,7 +229,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                 if (lastInd > 0) {
                     checked = true
                     for (chapter in currentRanobe.chapterList)
-                        chapter.isRead = chapter.index!! < lastInd
+                        chapter.isRead = chapter.index < lastInd
 
                 }
             }
@@ -285,7 +285,7 @@ class RanobeInfoActivity : AppCompatActivity() {
             fab.setImageDrawable(favImage)
 
         } else {
-            MyApp.database?.ranobeDao()?.isRanobeFavorite(currentRanobe.url)?.observeOn(AndroidSchedulers.mainThread())?.subscribeOn(Schedulers.io())
+            MyApp.database.ranobeDao().isRanobeFavorite(currentRanobe.url).observeOn(AndroidSchedulers.mainThread())?.subscribeOn(Schedulers.io())
                     ?.subscribe({
                         if (it != null) {
                             currentRanobe.isFavorite = it.isFavorite
@@ -345,8 +345,8 @@ class RanobeInfoActivity : AppCompatActivity() {
                             return@map false
                         }
                     }.map {
-                        MyApp.database?.ranobeDao()?.insert(currentRanobe)
-                        MyApp.database?.chapterDao()?.insertAll(*currentRanobe.chapterList.toTypedArray())
+                        MyApp.database.ranobeDao().insert(currentRanobe)
+                        MyApp.database.chapterDao().insertAll(*currentRanobe.chapterList.toTypedArray())
                         return@map it
                     }
                     .observeOn(AndroidSchedulers.mainThread())
@@ -386,7 +386,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                             if (result.first) {
                                 currentRanobe.isFavorite = false
                                 currentRanobe.isFavoriteInWeb = false
-                                MyApp.database?.ranobeDao()?.deleteWeb(currentRanobe.url)
+                                MyApp.database.ranobeDao().deleteWeb(currentRanobe.url)
                                 return@map result
                             } else {
                                 return@map result
@@ -401,7 +401,7 @@ class RanobeInfoActivity : AppCompatActivity() {
 
             } else {
                 Completable.fromAction {
-                    MyApp.database?.ranobeDao()?.delete(currentRanobe.url)
+                    MyApp.database.ranobeDao().delete(currentRanobe.url)
                 }?.observeOn(AndroidSchedulers.mainThread())
                         ?.subscribeOn(Schedulers.io())
                         ?.subscribe({

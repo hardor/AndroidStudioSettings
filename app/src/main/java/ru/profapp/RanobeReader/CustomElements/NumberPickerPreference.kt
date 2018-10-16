@@ -16,23 +16,28 @@ import ru.profapp.RanobeReader.MyApp
  */
 class NumberPickerPreference : DialogPreference {
 
-    private var picker: NumberPicker? = null
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
+
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+
+    companion object {
+        const val MAX_VALUE: Int = 30
+        const val MIN_VALUE: Int = 6
+    }
+
+    private lateinit var picker: NumberPicker
     private var value: Int = 0
         set(value) {
             field = value
             persistInt(this.value)
         }
 
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
-
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
-
     override fun onCreateDialogView(): View {
         val layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         layoutParams.gravity = Gravity.CENTER
 
         picker = NumberPicker(context)
-        picker!!.layoutParams = layoutParams
+        picker.layoutParams = layoutParams
 
         val dialogView = FrameLayout(context)
         dialogView.addView(picker)
@@ -42,16 +47,16 @@ class NumberPickerPreference : DialogPreference {
 
     override fun onBindDialogView(view: View) {
         super.onBindDialogView(view)
-        picker!!.minValue = MIN_VALUE
-        picker!!.maxValue = MAX_VALUE
-        picker!!.wrapSelectorWheel = WRAP_SELECTOR_WHEEL
-        picker!!.value = value
+        picker.minValue = MIN_VALUE
+        picker.maxValue = MAX_VALUE
+        picker.wrapSelectorWheel = true
+        picker.value = value
     }
 
     override fun onDialogClosed(positiveResult: Boolean) {
         if (positiveResult) {
-            picker!!.clearFocus()
-            val newValue = picker!!.value
+            picker.clearFocus()
+            val newValue = picker.value
             if (callChangeListener(newValue)) {
                 value = newValue
                 MyApp.chapterTextSize = newValue
@@ -59,20 +64,12 @@ class NumberPickerPreference : DialogPreference {
         }
     }
 
-    override fun onGetDefaultValue(a: TypedArray, index: Int): Any {
-        return a.getInt(index, MIN_VALUE)
+    override fun onGetDefaultValue(a: TypedArray?, index: Int): Any {
+        return a?.getInt(index, 16) ?: 16
     }
 
-    override fun onSetInitialValue(restorePersistedValue: Boolean, defaultValue: Any) {
+    override fun onSetInitialValue(restorePersistedValue: Boolean, defaultValue: Any?) {
         value = if (restorePersistedValue) getPersistedInt(MIN_VALUE) else defaultValue as Int
     }
 
-    companion object {
-
-        // allowed range
-        private const val MAX_VALUE = 30
-        private const val MIN_VALUE = 6
-        // enable or disable the 'circular behavior'
-        private const val WRAP_SELECTOR_WHEEL = true
-    }
 }

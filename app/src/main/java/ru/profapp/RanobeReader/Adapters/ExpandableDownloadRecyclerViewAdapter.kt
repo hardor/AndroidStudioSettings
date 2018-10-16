@@ -39,21 +39,21 @@ class ExpandableDownloadRecyclerViewAdapter(private val context: Context) : Recy
     override fun onBindViewHolder(@NonNull holder: ExpandableDownloadRecyclerViewAdapter.GroupViewHolder, position: Int) {
 
         val parentDataItem = parentDataItems[position]
-        holder.textView_parentName.text = parentDataItem.parentName
+        holder.textViewParentName.text = parentDataItem.parentName
 
         if (selectAll != null)
-            holder.checkBox_parentName.isChecked = selectAll!!
+            holder.checkBoxParentName.isChecked = selectAll!!
 
-        val noOfChildTextViews = holder.linearLayout_childItems.childCount
+        val noOfChildTextViews = holder.linearLayoutChildItems.childCount
         val noOfChild = parentDataItem.childDataItems
         if (noOfChild.size < noOfChildTextViews) {
             for (index in noOfChild.size until noOfChildTextViews) {
-                val currentTextView = holder.linearLayout_childItems.getChildAt(index) as TextView
+                val currentTextView = holder.linearLayoutChildItems.getChildAt(index) as TextView
                 currentTextView.visibility = View.GONE
             }
         }
         for ((checkBox, childItem) in noOfChild.withIndex()) {
-            val currentCheckBox = holder.linearLayout_childItems.getChildAt(checkBox) as CheckBox
+            val currentCheckBox = holder.linearLayoutChildItems.getChildAt(checkBox) as CheckBox
             currentCheckBox.text = childItem.title
             currentCheckBox.id = childItem.index
             if (childItem.canRead) {
@@ -90,12 +90,12 @@ class ExpandableDownloadRecyclerViewAdapter(private val context: Context) : Recy
 
     inner class GroupViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
-        val textView_parentName: TextView = itemView.findViewById(R.id.tv_parent_name)
-        val checkBox_parentName: CheckBox = itemView.findViewById(R.id.cb_parent_name)
-        val linearLayout_childItems: LinearLayout = itemView.findViewById(R.id.ll_child_items)
+        val textViewParentName: TextView = itemView.findViewById(R.id.tv_parent_name)
+        val checkBoxParentName: CheckBox = itemView.findViewById(R.id.cb_parent_name)
+        val linearLayoutChildItems: LinearLayout = itemView.findViewById(R.id.ll_child_items)
 
         init {
-            linearLayout_childItems.visibility = View.GONE
+            linearLayoutChildItems.visibility = View.GONE
             var intMaxNoOfChild = 0
             for (index in 0 until parentDataItems.size) {
                 val intMaxSizeTemp = parentDataItems[index].childDataItems.size
@@ -105,16 +105,16 @@ class ExpandableDownloadRecyclerViewAdapter(private val context: Context) : Recy
                 val checkBox = CheckBox(context)
                 checkBox.id = indexView
                 val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-                linearLayout_childItems.addView(checkBox, layoutParams)
+                linearLayoutChildItems.addView(checkBox, layoutParams)
             }
-            textView_parentName.setOnClickListener(this)
+            textViewParentName.setOnClickListener(this)
 
 
 
-            checkBox_parentName.setOnCheckedChangeListener { buttonView, isChecked ->
+            checkBoxParentName.setOnCheckedChangeListener { buttonView, isChecked ->
                 buttonView.isChecked = isChecked
-                for (i in 0 until linearLayout_childItems.childCount) {
-                    val item = linearLayout_childItems.getChildAt(i) as CheckBox
+                for (i in 0 until linearLayoutChildItems.childCount) {
+                    val item = linearLayoutChildItems.getChildAt(i) as CheckBox
                     if (item.isEnabled) item.isChecked = isChecked
                 }
                 parentDataItems[adapterPosition].childDataItems.forEach { it.isChecked = isChecked }
@@ -123,10 +123,10 @@ class ExpandableDownloadRecyclerViewAdapter(private val context: Context) : Recy
 
         override fun onClick(view: View) {
             if (view.id == R.id.tv_parent_name) {
-                if (linearLayout_childItems.visibility == View.VISIBLE) {
-                    linearLayout_childItems.visibility = View.GONE
+                if (linearLayoutChildItems.visibility == View.VISIBLE) {
+                    linearLayoutChildItems.visibility = View.GONE
                 } else {
-                    linearLayout_childItems.visibility = View.VISIBLE
+                    linearLayoutChildItems.visibility = View.VISIBLE
                 }
             }
 

@@ -125,7 +125,7 @@ class Ranobe() {
 
         return bookInfo.map {
             if (!it) {
-                val result = MyApp.database?.ranobeDao()?.getRanobeWithChaptersByUrl(url)?.blockingGet()
+                val result = MyApp.database.ranobeDao().getRanobeWithChaptersByUrl(url).blockingGet()
                 if (result != null) {
                     chapterList = result.chapterList
                 }
