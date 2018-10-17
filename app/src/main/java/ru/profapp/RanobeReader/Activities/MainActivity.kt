@@ -136,30 +136,9 @@ class MainActivity : AppCompatActivity(),
         val navigationView = findViewById<NavigationView>(R.id.nav_view)
         navigationView.itemIconTintList = null
         navigationView.setNavigationItemSelectedListener(this)
-        handleIntent(intent)
+
     }
 
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-        handleIntent(intent)
-    }
-
-    private fun handleIntent(intent: Intent) {
-        val appLinkAction = intent.action
-        val appLinkData: Uri? = intent.data
-
-        // Todo: catch URLS
-        if (Intent.ACTION_VIEW == appLinkAction) {
-            appLinkData?.lastPathSegment?.also { recipeId ->
-                //                Uri.parse("content://com.recipe_app/recipe/")
-                //                        .buildUpon()
-                //                        .appendPath(recipeId)
-                //                        .build().also { appData ->
-                //                            //  showRecipe(appData)
-                //                        }
-            }
-        }
-    }
 
     private fun initSettingPreference() {
         PreferenceManager.setDefaultValues(this, R.xml.pref_general, false)
