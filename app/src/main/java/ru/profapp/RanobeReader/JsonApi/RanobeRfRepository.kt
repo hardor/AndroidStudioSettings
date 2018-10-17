@@ -6,7 +6,7 @@ import io.reactivex.Single
 import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Helpers.StringHelper
 import ru.profapp.RanobeReader.JsonApi.IApiServices.IRanobeRfApiService
-import ru.profapp.RanobeReader.JsonApi.Ranoberf.*
+import ru.profapp.RanobeReader.JsonApi.RanoberfDTO.*
 import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.Models.Ranobe
 import java.util.*

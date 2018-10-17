@@ -6,10 +6,10 @@ import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Helpers.LogHelper
 import ru.profapp.RanobeReader.JsonApi.IApiServices.IRulateApiService
-import ru.profapp.RanobeReader.JsonApi.Rulate.ReadyGson
-import ru.profapp.RanobeReader.JsonApi.Rulate.RulateBook
-import ru.profapp.RanobeReader.JsonApi.Rulate.RulateChapter
-import ru.profapp.RanobeReader.JsonApi.Rulate.RulateText
+import ru.profapp.RanobeReader.JsonApi.RulateDTO.ReadyGson
+import ru.profapp.RanobeReader.JsonApi.RulateDTO.RulateBook
+import ru.profapp.RanobeReader.JsonApi.RulateDTO.RulateChapter
+import ru.profapp.RanobeReader.JsonApi.RulateDTO.RulateText
 import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.Models.Ranobe
 import ru.profapp.RanobeReader.Models.RanobeImage

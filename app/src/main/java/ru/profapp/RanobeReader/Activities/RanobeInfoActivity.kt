@@ -69,7 +69,6 @@ class RanobeInfoActivity : AppCompatActivity() {
     private lateinit var infoCard: CardView
     private lateinit var descriptionCard: CardView
     lateinit var imageView: ImageView
-    // private val imageOptions: RequestOptions = RequestOptions().placeholder(R.drawable.ic_adb_black_24dp).error(R.drawable.ic_error_outline_black_24dp).fitCenter()
     lateinit var progressBar: ProgressBar
     lateinit var fab: FloatingActionButton
 

@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 import ru.profapp.RanobeReader.JsonApi.CustomDeserializer.RulateBookDeserializer
-import ru.profapp.RanobeReader.JsonApi.Rulate.*
+import ru.profapp.RanobeReader.JsonApi.RulateDTO.*
 
 interface IRulateApiService {
 

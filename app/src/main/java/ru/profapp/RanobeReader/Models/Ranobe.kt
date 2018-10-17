@@ -11,7 +11,7 @@ import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Common.Constants.RanobeSite.*
 import ru.profapp.RanobeReader.JsonApi.RanobeHubRepository
 import ru.profapp.RanobeReader.JsonApi.RanobeRfRepository
-import ru.profapp.RanobeReader.JsonApi.Rulate.RulateComment
+import ru.profapp.RanobeReader.JsonApi.RulateDTO.RulateComment
 import ru.profapp.RanobeReader.JsonApi.RulateRepository
 import ru.profapp.RanobeReader.MyApp
 import java.util.*

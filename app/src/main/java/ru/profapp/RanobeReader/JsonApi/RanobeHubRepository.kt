@@ -5,8 +5,8 @@ import org.jsoup.Jsoup
 import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Helpers.StringHelper
 import ru.profapp.RanobeReader.JsonApi.IApiServices.IRanobeHubApiService
-import ru.profapp.RanobeReader.JsonApi.RanobeHub.RanobeHubBook
-import ru.profapp.RanobeReader.JsonApi.RanobeHub.RanobeHubReadyGson
+import ru.profapp.RanobeReader.JsonApi.RanobeHubDTO.RanobeHubBook
+import ru.profapp.RanobeReader.JsonApi.RanobeHubDTO.RanobeHubReadyGson
 import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.Models.Ranobe
 import java.text.ParseException

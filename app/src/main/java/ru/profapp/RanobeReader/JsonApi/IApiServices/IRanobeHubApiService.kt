@@ -8,9 +8,9 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
-import ru.profapp.RanobeReader.JsonApi.RanobeHub.ChaptersGson
-import ru.profapp.RanobeReader.JsonApi.RanobeHub.RanobeHubReadyGson
-import ru.profapp.RanobeReader.JsonApi.RanobeHub.RanobeHubSearchGson
+import ru.profapp.RanobeReader.JsonApi.RanobeHubDTO.ChaptersGson
+import ru.profapp.RanobeReader.JsonApi.RanobeHubDTO.RanobeHubReadyGson
+import ru.profapp.RanobeReader.JsonApi.RanobeHubDTO.RanobeHubSearchGson
 
 interface IRanobeHubApiService {
 

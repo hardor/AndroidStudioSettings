@@ -121,6 +121,7 @@ class ExpandableChapterRecyclerViewAdapter(private val context: Context, private
                 textView.ellipsize = android.text.TextUtils.TruncateAt.END
                 textView.maxLines = 1
                 val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                layoutParams.setMargins(0,dp2,0,dp2)
                 linearLayout_childItems.addView(textView, layoutParams)
             }
             textView_parentName.setOnClickListener(this)

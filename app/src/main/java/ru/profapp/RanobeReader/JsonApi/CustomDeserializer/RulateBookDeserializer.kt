@@ -1,7 +1,7 @@
 package ru.profapp.RanobeReader.JsonApi.CustomDeserializer
 
 import com.google.gson.*
-import ru.profapp.RanobeReader.JsonApi.Rulate.RulateBook
+import ru.profapp.RanobeReader.JsonApi.RulateDTO.RulateBook
 import java.lang.reflect.Type
 
 internal class RulateBookDeserializer : JsonDeserializer<RulateBook> {
