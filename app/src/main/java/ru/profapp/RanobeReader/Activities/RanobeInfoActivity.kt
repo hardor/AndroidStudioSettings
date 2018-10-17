@@ -18,8 +18,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
 import com.google.android.gms.ads.AdRequest
@@ -38,16 +36,19 @@ import ru.profapp.RanobeReader.BuildConfig
 import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Common.Constants.last_chapter_id_Pref
 import ru.profapp.RanobeReader.Helpers.LogHelper
+import ru.profapp.RanobeReader.Helpers.ThemeHelper
 import ru.profapp.RanobeReader.JsonApi.RanobeRfRepository
 import ru.profapp.RanobeReader.JsonApi.RulateRepository
 import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.Models.Ranobe
 import ru.profapp.RanobeReader.MyApp
 import ru.profapp.RanobeReader.R
+import ru.profapp.RanobeReader.Utils.GlideApp
 import java.util.*
 
 class RanobeInfoActivity : AppCompatActivity() {
 
+    private var currentTheme = ThemeHelper.sTheme
     private val recycleChapterList = ArrayList<Chapter>()
     lateinit var chapterRecyclerView: RecyclerView
     var preferences: SharedPreferences? = null
@@ -68,11 +69,12 @@ class RanobeInfoActivity : AppCompatActivity() {
     private lateinit var infoCard: CardView
     private lateinit var descriptionCard: CardView
     lateinit var imageView: ImageView
-    private val imageOptions: RequestOptions = RequestOptions().placeholder(R.drawable.ic_adb_black_24dp).error(R.drawable.ic_error_outline_black_24dp).fitCenter()
+    // private val imageOptions: RequestOptions = RequestOptions().placeholder(R.drawable.ic_adb_black_24dp).error(R.drawable.ic_error_outline_black_24dp).fitCenter()
     lateinit var progressBar: ProgressBar
     lateinit var fab: FloatingActionButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        currentTheme = AppCompatDelegate.getDefaultNightMode()
         super.onCreate(savedInstanceState)
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         // Set up Crashlytics, disabled for debug builds
@@ -82,9 +84,7 @@ class RanobeInfoActivity : AppCompatActivity() {
 
         Fabric.with(this, crashlyticsKit)
         setContentView(R.layout.activity_ranobe_info)
-
         initAds()
-
         mContext = this@RanobeInfoActivity
         currentRanobe = MyApp.ranobe!!
 
@@ -118,7 +118,8 @@ class RanobeInfoActivity : AppCompatActivity() {
 
         imageView = findViewById<ImageView>(R.id.main_logoimage)
 
-        Glide.with(this).load(currentRanobe.image).apply(imageOptions).into(imageView)
+
+        GlideApp.with(this).load(currentRanobe.image).into(imageView)
 
         supportActionBar?.title = currentRanobe.title
 
@@ -205,7 +206,7 @@ class RanobeInfoActivity : AppCompatActivity() {
         }
 
 
-        Glide.with(mContext!!).load(currentRanobe.image).apply(imageOptions).into(imageView)
+        GlideApp.with(this).load(currentRanobe.image).into(imageView)
 
         var aboutText = String.format("%s / %s \n\n%s\n\nРейтинг: %s", currentRanobe.title, currentRanobe.engTitle, currentRanobe.description, currentRanobe.rating)
 
@@ -297,7 +298,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                             fab.setImageDrawable(notFavImage)
                         }
 
-                    }, {error->
+                    }, { error ->
                         LogHelper.logError(LogHelper.LogType.ERROR, "loadChapters", "", error)
                         currentRanobe.isFavorite = false
                         currentRanobe.isFavoriteInWeb = false
@@ -420,6 +421,12 @@ class RanobeInfoActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         request?.dispose()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (currentTheme != AppCompatDelegate.getDefaultNightMode())
+            recreate()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

@@ -19,9 +19,6 @@ import ru.profapp.RanobeReader.Models.Ranobe
 import ru.profapp.RanobeReader.Models.RanobeHistory
 import ru.profapp.RanobeReader.MyApp
 import ru.profapp.RanobeReader.R
-import com.squareup.leakcanary.RefWatcher
-
-
 
 /**
  * A simple [Fragment] subclass.
@@ -148,7 +145,6 @@ class HistoryFragment : Fragment() {
     interface OnFragmentInteractionListener
 
     companion object {
-
 
         fun newInstance() = HistoryFragment().apply {
             arguments = Bundle().apply {

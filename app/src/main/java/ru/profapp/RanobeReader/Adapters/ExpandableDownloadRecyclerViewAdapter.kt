@@ -17,7 +17,6 @@ class ExpandableDownloadRecyclerViewAdapter(private val context: Context) : Recy
     private val inflater: LayoutInflater = LayoutInflater.from(context)
     var selectAll: Boolean? = null
 
-
     constructor(context: Context, mChapters: List<Chapter>) : this(context) {
 
         val numInGroup = 100
@@ -76,7 +75,7 @@ class ExpandableDownloadRecyclerViewAdapter(private val context: Context) : Recy
                 currentCheckBox.isEnabled = false
             }
 
-            if (childItem.isRead) {
+            if (childItem.canRead && childItem.isRead) {
                 currentCheckBox.setBackgroundColor(context.resources.getColor(R.color.colorPrimaryDark))
             }
 

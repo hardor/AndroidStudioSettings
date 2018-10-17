@@ -13,6 +13,6 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"
     tools:text="@tools:sample/lorem"/>
-  <View    style="@style/divider"/>
+  <View style="@style/divider"/>
 
 </LinearLayout>

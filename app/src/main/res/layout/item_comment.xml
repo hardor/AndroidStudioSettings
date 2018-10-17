@@ -22,5 +22,5 @@
     tools:text="@tools:sample/date/mmddyy"
     />
 
-  <View    style="@style/divider"/>
+  <View style="@style/divider"/>
 </LinearLayout>

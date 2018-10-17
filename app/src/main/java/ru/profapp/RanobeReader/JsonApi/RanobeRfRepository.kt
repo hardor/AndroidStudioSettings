@@ -98,7 +98,7 @@ object RanobeRfRepository {
                 val response = it.result
                 if (response?.status == 200) {
                     mCurrentChapter.title = response.part!!.title.toString()
-                    mCurrentChapter.text = response.part.content
+                    mCurrentChapter.text = "<b>" + mCurrentChapter.title + "</b>" + "</br>" + response.part.content
                     mCurrentChapter.url = response.part.url!!
                 }
 

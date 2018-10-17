@@ -10,6 +10,7 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -41,6 +42,8 @@ class MainActivity : AppCompatActivity(),
         HistoryFragment.OnFragmentInteractionListener,
         NavigationView.OnNavigationItemSelectedListener {
 
+    private var currentTheme = ThemeHelper.sTheme
+
     private val ExceptionHandler = Thread.UncaughtExceptionHandler { th, ex ->
         LogHelper.logError(LogHelper.LogType.WARN, "MainActivity", "Uncaught exception", ex)
     }
@@ -61,6 +64,7 @@ class MainActivity : AppCompatActivity(),
 
         Thread.setDefaultUncaughtExceptionHandler(ExceptionHandler)
         setContentView(R.layout.activity_main)
+
         if (!BuildConfig.PAID_VERSION) {
 
             MobileAds.initialize(this, getString(R.string.app_admob_id))
@@ -168,6 +172,7 @@ class MainActivity : AppCompatActivity(),
 
         ThemeHelper.setTheme(settingPref.getBoolean(applicationContext.getString(R.string.pref_general_app_theme), false))
         ThemeHelper.onActivityCreateSetTheme()
+        currentTheme = AppCompatDelegate.getDefaultNightMode()
     }
 
     override fun onBackPressed() {
@@ -284,7 +289,12 @@ class MainActivity : AppCompatActivity(),
 
         outState.putString("Fragment", currentFragment)
         outState.putString("Title", currentTitle)
+    }
 
+    override fun onResume() {
+        super.onResume()
+        if (currentTheme != AppCompatDelegate.getDefaultNightMode())
+            recreate()
     }
 
 }

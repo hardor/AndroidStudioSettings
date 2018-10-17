@@ -143,7 +143,7 @@
   <string name="responce_error">Response error</string>
   <string name="export_import">Export/Import</string>
 
-   <!--Backup-->
+  <!--Backup-->
   <string name="sidebar_backup_export">Backup &amp; Export</string>
   <string name="menu_backup_backup">Backup on Google Drive</string>
   <string name="menu_backup_restore">Restore</string>

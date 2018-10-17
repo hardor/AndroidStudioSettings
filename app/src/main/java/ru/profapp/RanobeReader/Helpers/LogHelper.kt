@@ -28,7 +28,6 @@ class LogHelper {
             }
         }
 
-
         fun logError(type: LogType, Tag: String, Message: String = "", exception: Throwable, sendError: Boolean = true) {
             if (showLog) {
                 when (type) {

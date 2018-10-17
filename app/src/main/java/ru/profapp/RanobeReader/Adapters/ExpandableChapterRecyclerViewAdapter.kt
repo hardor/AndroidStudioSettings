@@ -24,7 +24,6 @@ class ExpandableChapterRecyclerViewAdapter(private val context: Context, private
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
 
-
     constructor(context: Context, mChapters: ArrayList<Chapter>, mRanobe: Ranobe) : this(context, mRanobe) {
 
         val numInGroup = 100
@@ -88,7 +87,7 @@ class ExpandableChapterRecyclerViewAdapter(private val context: Context, private
                 }
             }
 
-            if (childItem.isRead) {
+            if (childItem.canRead && childItem.isRead) {
                 currentTextView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimaryDark))
             }
 

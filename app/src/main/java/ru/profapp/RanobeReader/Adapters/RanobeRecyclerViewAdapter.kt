@@ -10,7 +10,6 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
 import ru.profapp.RanobeReader.Activities.RanobeInfoActivity
@@ -21,6 +20,7 @@ import ru.profapp.RanobeReader.Fragments.RanobeListFragment.OnListFragmentIntera
 import ru.profapp.RanobeReader.Models.Ranobe
 import ru.profapp.RanobeReader.MyApp
 import ru.profapp.RanobeReader.R
+import ru.profapp.RanobeReader.Utils.GlideApp
 import java.util.*
 
 /**
@@ -30,7 +30,7 @@ import java.util.*
 class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: RecyclerView, private val mValues: List<Ranobe>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val VIEW_TYPE_ITEM = 0
     private val VIEW_TYPE_GROUP_TITLE = 2
-    private val glide: RequestManager = Glide.with(context)
+    private val glide: RequestManager = GlideApp.with(context)
 
     private val sPref = context.getSharedPreferences(last_chapter_id_Pref, Context.MODE_PRIVATE)
     private val lastIndexPref = context.getSharedPreferences(Constants.last_chapter_id_Pref, Context.MODE_PRIVATE)
@@ -118,7 +118,7 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
                 }
 
                 holder.imageView.visibility = View.VISIBLE
-                glide.load(/*mValues[position].image*/"").apply(imageOptions).into(holder.imageView)
+                glide.load(mValues[position].image).into(holder.imageView)
 
                 val chapterList = holder.mItem.chapterList
 

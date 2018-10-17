@@ -23,5 +23,4 @@
     android:title="@string/send_crash_reports"/>
 
 
-
 </PreferenceScreen>

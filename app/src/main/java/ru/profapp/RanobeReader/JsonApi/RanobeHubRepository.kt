@@ -13,7 +13,6 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 object RanobeHubRepository {
 
     private var token: String = ""
@@ -49,7 +48,6 @@ object RanobeHubRepository {
 
         if (page == 1 && token.isBlank()) {
 
-
             return IRanobeHubApiService.instanceHtml.GetReady().flatMap { response ->
                 if (response.isSuccessful) {
                     val metaOgTitle = Jsoup.parse(response.body()?.string()).head().select("meta[name=csrf-token]")
@@ -67,7 +65,6 @@ object RanobeHubRepository {
                 return@map getRanobeReadyList(it)
             }
         }
-
 
     }
 
@@ -115,7 +112,7 @@ object RanobeHubRepository {
 
                 val body = jsObject.body()
                 mCurrentChapter.title = body.selectFirst(".__ranobe_read_container h1").text()
-                val textObj =body.selectFirst(".__ranobe_read_container")
+                val textObj = body.selectFirst(".__ranobe_read_container")
                 textObj.selectFirst("h1").remove()
                 textObj.select(".ads-desktop").remove()
                 textObj.select(".ads-mobile").remove()
@@ -127,7 +124,6 @@ object RanobeHubRepository {
         }
 
     }
-
 
     private fun getRanobeList(it: List<RanobeHubBook>): List<Ranobe> {
         val or: MutableList<Ranobe> = mutableListOf()

@@ -1,6 +1,5 @@
 package ru.profapp.RanobeReader.JsonApi.IApiServices
 
-
 import okhttp3.Interceptor
 import okhttp3.Response
 import ru.profapp.RanobeReader.JsonApi.RanobeHubRepository
@@ -16,7 +15,7 @@ class AddCookiesInterceptor : Interceptor {
         val builder = chain.request().newBuilder()
         val cookies = RanobeHubRepository.Cookie
         for (cookie in cookies) {
-            builder.addHeader("Cookie",cookie)
+            builder.addHeader("Cookie", cookie)
         }
         return chain.proceed(builder.build())
     }

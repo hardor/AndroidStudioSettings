@@ -19,20 +19,20 @@
 
     <Button
       android:id="@+id/backup_button_backup"
+      style="?android:attr/buttonBarButtonStyle"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_margin="16dp"
       android:padding="16dp"
-      android:text="@string/activity_backup_drive_button_backup"
-      style="?android:attr/buttonBarButtonStyle"/>
+      android:text="@string/activity_backup_drive_button_backup"/>
     <Button
       android:id="@+id/backup_button_restore"
+      style="?android:attr/buttonBarButtonStyle"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_margin="16dp"
       android:padding="16dp"
       android:text="@string/activity_backup_drive_dialog_restore_button_restore"
-      style="?android:attr/buttonBarButtonStyle"
       />
   </LinearLayout>
 </LinearLayout>

@@ -1,6 +1,5 @@
 package ru.profapp.RanobeReader
 
-import android.app.Activity
 import android.app.Application
 import androidx.annotation.VisibleForTesting
 import androidx.room.Room
@@ -12,8 +11,6 @@ import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.DAO.DatabaseDao
 import ru.profapp.RanobeReader.Helpers.LogHelper
 import ru.profapp.RanobeReader.Models.Ranobe
-
-
 
 class MyApp : Application() {
 
@@ -77,10 +74,9 @@ class MyApp : Application() {
         }
         lateinit var database: DatabaseDao
         var ranobe: Ranobe? = null
-        var refWatcher: RefWatcher?=null
+        var refWatcher: RefWatcher? = null
 
     }
-
 
     override fun onCreate() {
         super.onCreate()
