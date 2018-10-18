@@ -3,7 +3,7 @@ package ru.profapp.RanobeReader.JsonApi.RanobeHubDTO
 import com.google.gson.annotations.SerializedName
 
 data class ChaptersGson(
-        @SerializedName("data") val data: List<Volumes>
+        @SerializedName("data") val data: List<Volumes> = listOf()
 )
 
 data class Volumes(
@@ -14,9 +14,9 @@ data class Volumes(
 
         //        @SerializedName("idStatus") val idStatus: Int,
         //        @SerializedName("idRanobe") val idRanobe: Int,
-        //        @SerializedName("statusOriginal") val statusOriginal: Any?,
-        //        @SerializedName("idOriginal") val idOriginal: Any?,
-        //        @SerializedName("idRecheckStatus") val idRecheckStatus: Any?,
+        //        @SerializedName("statusOriginal") val statusOriginal: Any?=null,
+        //        @SerializedName("idOriginal") val idOriginal: Any?=null,
+        //        @SerializedName("idRecheckStatus") val idRecheckStatus: Any?=null,
         //        @SerializedName("imageStorage") val imageStorage: String,
         //        @SerializedName("createdAt") val createdAt: String,
         //        @SerializedName("updatedAt") val updatedAt: String,
@@ -30,7 +30,7 @@ data class tChapter(
         @SerializedName("name") val name: String
         //        @SerializedName("idRanobe") val idRanobe: Int,
         //        @SerializedName("numVolume") val numVolume: Int,
-        //        @SerializedName("idOriginal") val idOriginal: Any?,
+        //        @SerializedName("idOriginal") val idOriginal: Any?=null,
         //        @SerializedName("createdAt") val createdAt: String
 )
 

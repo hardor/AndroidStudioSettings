@@ -132,7 +132,7 @@ class RanobeListFragment : Fragment() {
             ranobeRecyclerViewAdapter.notifyItemRangeRemoved(0, oldListSize)
             oldListSize = 0
         }
-        //Todo: remove sPref. Move to lastIndexPref
+        //Todo: remove sPref. Move to lastChapterIdPref
 
         val loader: Observable<List<Ranobe>> = when (fragmentType) {
             Constants.FragmentType.Rulate -> rulateLoadRanobe().toObservable()
@@ -147,7 +147,7 @@ class RanobeListFragment : Fragment() {
 
 
 
-
+        request?.dispose()
         request = loader
                 // Find images
                 .map { ranobeList ->
@@ -266,24 +266,24 @@ class RanobeListFragment : Fragment() {
 
 
             return zip(
-                    getRulateWebFavorite().map {
+                    getRulateWebFavorite()/*.map {
                         Completable.fromAction {
                             progressDialog!!.setTitle(context!!.getString(R.string.Load_from_RanobeRf))
                         }?.subscribeOn(AndroidSchedulers.mainThread())
                         return@map it
-                    },
-                    getRanobeRfWebFavorite().map {
+                    }*/,
+                    getRanobeRfWebFavorite()/*.map {
                         Completable.fromAction {
                             progressDialog!!.setTitle(context!!.getString(R.string.Load_from_RanobeHub))
                         }?.subscribeOn(AndroidSchedulers.mainThread())
                         return@map it
-                    },
-                    getRanobeHubWebFavorite().map {
+                    }*/,
+                    getRanobeHubWebFavorite()/*.map {
                         Completable.fromAction {
                             progressDialog!!.setTitle(context!!.getString(R.string.Load_from_Local))
                         }?.subscribeOn(AndroidSchedulers.mainThread())
                         return@map it
-                    }, MyApp.database.ranobeDao().getLocalFavoriteRanobes(),
+                    }*/, MyApp.database.ranobeDao().getLocalFavoriteRanobes(),
                     io.reactivex.functions.Function4<List<Ranobe>, List<Ranobe>, List<Ranobe>, List<Ranobe>, List<Ranobe>>
                     { Rulate, RanobeRfW, RanobeHub, local ->
 
@@ -374,12 +374,6 @@ class RanobeListFragment : Fragment() {
     override fun onDetach() {
         super.onDetach()
         mListener = null
-
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        request?.dispose()
 
     }
 

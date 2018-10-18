@@ -33,7 +33,7 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
     private val glide: RequestManager = GlideApp.with(context)
 
     private val sPref = context.getSharedPreferences(last_chapter_id_Pref, Context.MODE_PRIVATE)
-    private val lastIndexPref = context.getSharedPreferences(Constants.last_chapter_id_Pref, Context.MODE_PRIVATE)
+    private val lastChapterIdPref = context.getSharedPreferences(Constants.last_chapter_id_Pref, Context.MODE_PRIVATE)
 
     private val imageOptions: RequestOptions = RequestOptions().placeholder(R.drawable.ic_adb_black_24dp).error(R.drawable.ic_error_outline_black_24dp).fitCenter()
     var onLoadMoreListener: OnLoadMoreListener? = null
@@ -128,12 +128,12 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
                     val templist = chapterList.filter { it.canRead }
                     val chapterlist2 = templist.subList(0, Math.min(Constants.chaptersNum, templist.size))
                     var checked = false
-                    if (lastIndexPref != null && lastIndexPref.contains(chapterlist2.first().ranobeUrl)) {
-                        val lastInd = lastIndexPref.getInt(chapterlist2.first().ranobeUrl, -1)
-                        if (lastInd > 0) {
+                    if (lastChapterIdPref != null && lastChapterIdPref.contains(chapterlist2.first().ranobeUrl)) {
+                        val lastId = lastChapterIdPref.getInt(chapterlist2.first().ranobeUrl, -1)
+                        if (lastId > 0) {
                             checked = true
                             for (chapter in chapterlist2) {
-                                if (chapter.id!! <= lastInd) {
+                                if (chapter.id!! <= lastId) {
                                     chapter.isRead = true
                                 }
                             }

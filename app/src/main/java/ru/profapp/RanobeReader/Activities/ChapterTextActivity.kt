@@ -45,7 +45,7 @@ class ChapterTextActivity : AppCompatActivity() {
     private var mChapterCount: Int = 0
     private var mChapterList: List<Chapter> = ArrayList()
 
-    private var lastIndexPref: SharedPreferences? = null
+    private var lastChapterIdPref: SharedPreferences? = null
     private lateinit var nextMenu: ImageButton
     private lateinit var prevMenu: ImageButton
 
@@ -150,7 +150,7 @@ class ChapterTextActivity : AppCompatActivity() {
 
         mWebView.setBackgroundColor(resources.getColor(R.color.webViewBackground))
 
-        lastIndexPref = getSharedPreferences(Constants.last_chapter_id_Pref, Context.MODE_PRIVATE)
+        lastChapterIdPref = getSharedPreferences(Constants.last_chapter_id_Pref, Context.MODE_PRIVATE)
 
         initWebView()
 
@@ -195,7 +195,7 @@ class ChapterTextActivity : AppCompatActivity() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ result ->
-                    if (!mCurrentChapter.isRead && result!!) {
+                    if (result!!) {
                         putToReaded()
                     }
 
@@ -351,12 +351,12 @@ class ChapterTextActivity : AppCompatActivity() {
     private fun putToReaded() {
 
         //Todo: add to history table
-        if (lastIndexPref == null) {
-            lastIndexPref = mContext!!.getSharedPreferences(Constants.last_chapter_id_Pref, Context.MODE_PRIVATE)
+        if (lastChapterIdPref == null) {
+            lastChapterIdPref = mContext!!.getSharedPreferences(Constants.last_chapter_id_Pref, Context.MODE_PRIVATE)
         }
         mCurrentChapter.isRead = true
 
-        mCurrentChapter.id?.let { lastIndexPref!!.edit().putInt(mCurrentChapter.ranobeUrl, it).apply() }
+        mCurrentChapter.id?.let { lastChapterIdPref!!.edit().putInt(mCurrentChapter.ranobeUrl, it).apply() }
 
         saveProgressToDb(0f)
 

@@ -175,6 +175,7 @@
   <string name="activity_backup_drive_button_open_drive">Manage on Drive</string>
   <string name="allow_external_storage">Please allow access to your storage</string>
   <string name="allow">Allow</string>
+  <string name="error">Error</string>
 
 
 </resources>

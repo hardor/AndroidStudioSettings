@@ -30,6 +30,7 @@ class ExpandableChapterRecyclerViewAdapter(private val context: Context, private
         val num = mChapters.size / numInGroup
         for (i in 0..num) {
             val parentDataItem = ParentDataItem("${mChapters[minOf((i + 1) * numInGroup, mChapters.size - 1)].title} - ${mChapters[minOf(i * numInGroup, mChapters.size - 1)].title}", (mChapters.subList(i * numInGroup, minOf((i + 1) * numInGroup, mChapters.size))))
+            parentDataItem.canRead = parentDataItem.childDataItems.any { it -> it.canRead }
             parentDataItems.add(parentDataItem)
         }
 
@@ -45,18 +46,20 @@ class ExpandableChapterRecyclerViewAdapter(private val context: Context, private
     override fun onBindViewHolder(@NonNull holder: ExpandableChapterRecyclerViewAdapter.GroupViewHolder, position: Int) {
 
         val parentDataItem = parentDataItems[position]
-        holder.textView_parentName.text = parentDataItem.parentName
+        holder.textViewParentName.text = parentDataItem.parentName
+        if (!parentDataItem.canRead)
+            holder.textViewParentName.setBackgroundColor(Color.GRAY)
 
-        val noOfChildTextViews = holder.linearLayout_childItems.childCount
+        val noOfChildTextViews = holder.linearLayoutChildItems.childCount
         val noOfChild = parentDataItem.childDataItems
         if (noOfChild.size < noOfChildTextViews) {
             for (index in noOfChild.size until noOfChildTextViews) {
-                val currentTextView = holder.linearLayout_childItems.getChildAt(index) as TextView
+                val currentTextView = holder.linearLayoutChildItems.getChildAt(index) as TextView
                 currentTextView.visibility = View.GONE
             }
         }
         for ((textViewIndex, childItem) in noOfChild.withIndex()) {
-            val currentTextView = holder.linearLayout_childItems.getChildAt(textViewIndex) as TextView
+            val currentTextView = holder.linearLayoutChildItems.getChildAt(textViewIndex) as TextView
             currentTextView.text = childItem.title
             if (!childItem.canRead) {
                 currentTextView.setBackgroundColor(Color.GRAY)
@@ -101,11 +104,11 @@ class ExpandableChapterRecyclerViewAdapter(private val context: Context, private
 
     inner class GroupViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
-        val textView_parentName: TextView = itemView.findViewById(R.id.tv_parent_name)
-        val linearLayout_childItems: LinearLayout = itemView.findViewById(R.id.ll_child_items)
+        val textViewParentName: TextView = itemView.findViewById(R.id.tv_parent_name)
+        val linearLayoutChildItems: LinearLayout = itemView.findViewById(R.id.ll_child_items)
 
         init {
-            linearLayout_childItems.visibility = View.GONE
+            linearLayoutChildItems.visibility = View.GONE
             var intMaxNoOfChild = 0
             for (index in 0 until parentDataItems.size) {
                 val intMaxSizeTemp = parentDataItems[index].childDataItems.size
@@ -121,18 +124,18 @@ class ExpandableChapterRecyclerViewAdapter(private val context: Context, private
                 textView.ellipsize = android.text.TextUtils.TruncateAt.END
                 textView.maxLines = 1
                 val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-                layoutParams.setMargins(0,dp2,0,dp2)
-                linearLayout_childItems.addView(textView, layoutParams)
+                layoutParams.setMargins(0, dp2, 0, dp2)
+                linearLayoutChildItems.addView(textView, layoutParams)
             }
-            textView_parentName.setOnClickListener(this)
+            textViewParentName.setOnClickListener(this)
         }
 
         override fun onClick(view: View) {
             if (view.id == R.id.tv_parent_name) {
-                if (linearLayout_childItems.visibility == View.VISIBLE) {
-                    linearLayout_childItems.visibility = View.GONE
+                if (linearLayoutChildItems.visibility == View.VISIBLE) {
+                    linearLayoutChildItems.visibility = View.GONE
                 } else {
-                    linearLayout_childItems.visibility = View.VISIBLE
+                    linearLayoutChildItems.visibility = View.VISIBLE
                 }
             }
 

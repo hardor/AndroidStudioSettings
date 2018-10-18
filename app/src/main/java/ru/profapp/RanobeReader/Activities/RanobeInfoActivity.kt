@@ -60,7 +60,7 @@ class RanobeInfoActivity : AppCompatActivity() {
     lateinit var tabHost: TabHost
     private var adapterExpandable: ExpandableChapterRecyclerViewAdapter? = null
     private var sPref: SharedPreferences? = null
-    private var lastIndexPref: SharedPreferences? = null
+    private var lastChapterIdPref: SharedPreferences? = null
     private var mChapterLayoutManager: LinearLayoutManager? = null
     private var request: Disposable? = null
 
@@ -197,16 +197,16 @@ class RanobeInfoActivity : AppCompatActivity() {
     private fun loadChapters() {
         recycleChapterList.clear()
         sPref = mContext!!.getSharedPreferences(last_chapter_id_Pref, Context.MODE_PRIVATE)
-        lastIndexPref = mContext!!.getSharedPreferences(last_chapter_id_Pref, Context.MODE_PRIVATE)
+        lastChapterIdPref = mContext!!.getSharedPreferences(last_chapter_id_Pref, Context.MODE_PRIVATE)
 
         request = currentRanobe.updateRanobe(mContext!!).map {
             var checked = false
-            if (lastIndexPref != null) {
-                val lastInd: Int = lastIndexPref?.getInt(currentRanobe.url, -1) ?: -1
-                if (lastInd > 0) {
+            if (lastChapterIdPref != null) {
+                val lastId: Int = lastChapterIdPref?.getInt(currentRanobe.url, -1) ?: -1
+                if (lastId > 0) {
                     checked = true
                     for (chapter in currentRanobe.chapterList)
-                        chapter.isRead = chapter.index < lastInd
+                        chapter.isRead = chapter.id!! < lastId
 
                 }
             }
@@ -340,7 +340,7 @@ class RanobeInfoActivity : AppCompatActivity() {
         } else {
 
             if (currentRanobe.isFavoriteInWeb) {
-                var fabRequest = Single.just(Pair(false, "not matching site"))
+                var fabRequest = Single.just(Pair(false, "Can not remove from web site. Are you log into?"))
                 when (currentRanobe.ranobeSite) {
 
                     Constants.RanobeSite.Rulate.url -> {

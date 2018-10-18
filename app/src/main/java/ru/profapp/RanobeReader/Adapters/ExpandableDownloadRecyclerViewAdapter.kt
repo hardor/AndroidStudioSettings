@@ -1,6 +1,7 @@
 package ru.profapp.RanobeReader.Adapters
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +24,7 @@ class ExpandableDownloadRecyclerViewAdapter(private val context: Context) : Recy
         val num = mChapters.size / numInGroup
         for (i in 0..num) {
             val parentDataItem = ParentDataItem("${mChapters[minOf((i + 1) * numInGroup, mChapters.size - 1)].title} - ${mChapters[minOf(i * numInGroup, mChapters.size - 1)].title}", (mChapters.subList(i * numInGroup, minOf((i + 1) * numInGroup, mChapters.size))))
+            parentDataItem.canRead = parentDataItem.childDataItems.any { it -> it.canRead }
             parentDataItems.add(parentDataItem)
         }
 
@@ -39,9 +41,12 @@ class ExpandableDownloadRecyclerViewAdapter(private val context: Context) : Recy
 
         val parentDataItem = parentDataItems[position]
         holder.textViewParentName.text = parentDataItem.parentName
-
-        if (selectAll != null)
+        if (!parentDataItem.canRead) {
+            holder.textViewParentName.setBackgroundColor(Color.GRAY)
+            holder.checkBoxParentName.isEnabled = false
+        } else if (selectAll != null) {
             holder.checkBoxParentName.isChecked = selectAll!!
+        }
 
         val noOfChildTextViews = holder.linearLayoutChildItems.childCount
         val noOfChild = parentDataItem.childDataItems
@@ -57,7 +62,6 @@ class ExpandableDownloadRecyclerViewAdapter(private val context: Context) : Recy
             currentCheckBox.id = childItem.index
             if (childItem.canRead) {
                 currentCheckBox.isEnabled = true
-
                 currentCheckBox.isChecked = childItem.isChecked
                 if (childItem.downloaded) {
                     currentCheckBox.setTextColor(context.resources.getColor(R.color.colorAccent))
@@ -72,7 +76,9 @@ class ExpandableDownloadRecyclerViewAdapter(private val context: Context) : Recy
 
                 }
             } else {
+                currentCheckBox.setBackgroundColor(Color.GRAY)
                 currentCheckBox.isEnabled = false
+                currentCheckBox.isChecked =false
             }
 
             if (childItem.canRead && childItem.isRead) {
@@ -110,13 +116,18 @@ class ExpandableDownloadRecyclerViewAdapter(private val context: Context) : Recy
 
 
 
-            checkBoxParentName.setOnCheckedChangeListener { buttonView, isChecked ->
-                buttonView.isChecked = isChecked
-                for (i in 0 until linearLayoutChildItems.childCount) {
-                    val item = linearLayoutChildItems.getChildAt(i) as CheckBox
-                    if (item.isEnabled) item.isChecked = isChecked
+            checkBoxParentName.setOnClickListener { buttonView ->
+                val isChecked = (buttonView as CheckBox).isChecked
+                if (parentDataItems[adapterPosition].canRead) {
+                    buttonView.isChecked = isChecked
+                    for (i in 0 until linearLayoutChildItems.childCount) {
+                        val item = linearLayoutChildItems.getChildAt(i) as CheckBox
+                        if (item.isEnabled) item.isChecked = isChecked
+                    }
+                    parentDataItems[adapterPosition].childDataItems.filter { it.canRead }.forEach {
+                        it.isChecked = isChecked
+                    }
                 }
-                parentDataItems[adapterPosition].childDataItems.forEach { it.isChecked = isChecked }
             }
         }
 

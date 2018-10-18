@@ -121,18 +121,18 @@ dependencies {
     implementation 'androidx.vectordrawable:vectordrawable:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'androidx.gridlayout:gridlayout:1.0.0'
-    implementation 'androidx.mediarouter:mediarouter:1.0.0'
-    implementation 'androidx.palette:palette:1.0.0'
+    //implementation 'androidx.gridlayout:gridlayout:1.0.0'
+    //implementation 'androidx.mediarouter:mediarouter:1.0.0'
+    //implementation 'androidx.palette:palette:1.0.0'
     implementation 'androidx.annotation:annotation:1.0.0'
     implementation 'com.google.android.gms:play-services-ads:17.0.0'
-    implementation "androidx.paging:paging-runtime:2.0.0"
-    implementation 'androidx.multidex:multidex:2.0.0'
+    //implementation "androidx.paging:paging-runtime:2.0.0"
+    //implementation 'androidx.multidex:multidex:2.0.0'
 
 
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.0-beta01'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-beta01'
+    androidTestImplementation 'androidx.test:runner:1.1.0-beta02'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-beta02'
 
     //Room
     implementation 'androidx.room:room-runtime:2.0.0'
@@ -149,9 +149,8 @@ dependencies {
 
 
 
-    implementation 'org.jsoup:jsoup:1.11.3'
+
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.5'
-    // implementation 'com.google.code.gson:gson:2.8.2'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.2.71"
 
 // retrofit
@@ -165,7 +164,7 @@ dependencies {
 
     //firebase
     implementation 'com.google.firebase:firebase-ads:17.0.0'
-    implementation 'com.google.firebase:firebase-appindexing:16.0.2'
+    //implementation 'com.google.firebase:firebase-appindexing:16.0.2'
     implementation 'com.google.firebase:firebase-core:16.0.4'
     //implementation 'com.google.firebase:firebase-crash:16.0.1'
 
@@ -177,7 +176,8 @@ dependencies {
 
     // common
     implementation 'com.google.android.gms:play-services-drive:16.0.0'
-
+    implementation 'com.google.code.gson:gson:2.8.2'
+    implementation 'org.jsoup:jsoup:1.11.3'
 }
 
 apply plugin: 'com.google.gms.google-services'

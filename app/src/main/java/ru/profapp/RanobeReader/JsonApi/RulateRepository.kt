@@ -148,7 +148,7 @@ object RulateRepository {
             LogHelper.logError(LogHelper.LogType.WARN, Ranobe::class.java.toString(), "", e)
         }
 
-        readyDate = readyDate ?: (if (book.lastActivity != null) Date(book.lastActivity!! * 1000) else readyDate)
+        readyDate = readyDate ?: (if (book.lastActivity != null) Date(book.lastActivity * 1000) else readyDate)
 
         url = if (url.isBlank()) (Constants.RanobeSite.Rulate.url + "/book/" + id) else url
 

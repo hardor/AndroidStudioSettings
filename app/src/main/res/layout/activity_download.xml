@@ -8,12 +8,23 @@
   android:layout_height="match_parent"
   tools:context="ru.profapp.RanobeReader.Activities.DownloadActivity"
   >
+
+
   <androidx.cardview.widget.CardView
     android:id="@+id/linearLayout"
     style="@style/CardViewStyle"
     android:layout_above="@+id/navigation"
     android:layout_alignParentTop="true">
 
+    <ProgressBar
+      android:id="@+id/progressBar"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:visibility="gone"
+      tools:visibility="visible"
+      android:clickable="true"
+      android:focusable="true"/>
 
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/chapter_list"
@@ -42,4 +53,5 @@
     app:layout_constraintBottom_toBottomOf="parent"
     app:menu="@menu/download"
     />
+
 </RelativeLayout>

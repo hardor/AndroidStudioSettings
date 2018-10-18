@@ -205,14 +205,6 @@ object RanobeRfRepository {
 
     }
 
-    private infix fun Chapter.updateChapter(response: RfText) {
-
-        if (response.status == 200) {
-            title = response.part!!.title.toString()
-            text = response.part.content
-            url = response.part.url!!
-        }
-    }
 
     private infix fun Chapter.updateChapter(rChapter: RfChapter) {
 

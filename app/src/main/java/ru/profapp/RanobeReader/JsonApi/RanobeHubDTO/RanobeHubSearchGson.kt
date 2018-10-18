@@ -12,5 +12,5 @@ data class Categories(
 
 data class RanobeHub(
         @SerializedName("items") val items: List<RanobeHubBook> = listOf(),
-        @SerializedName("name") val name: String?
+        @SerializedName("name") val name: String? = null
 )

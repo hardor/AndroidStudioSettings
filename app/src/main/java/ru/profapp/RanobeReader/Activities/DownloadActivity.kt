@@ -5,14 +5,17 @@ import android.content.Context
 import android.content.DialogInterface.BUTTON_NEGATIVE
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
+import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.crashlytics.android.Crashlytics
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.fabric.sdk.android.Fabric
-import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReader.Adapters.ExpandableDownloadRecyclerViewAdapter
 import ru.profapp.RanobeReader.Models.Chapter
@@ -21,14 +24,16 @@ import ru.profapp.RanobeReader.MyApp
 import ru.profapp.RanobeReader.R
 
 class DownloadActivity : AppCompatActivity() {
-    @Volatile
-    private var running = true
-    @Volatile
+
+    private var running: Disposable? = null
+
     private var progressDialog: ProgressDialog? = null
+    private lateinit var progressBar: ProgressBar
     private var chapterList: List<Chapter> = listOf()
     private var recyclerView: RecyclerView? = null
     private lateinit var adapter: ExpandableDownloadRecyclerViewAdapter
     private var context: Context? = null
+    var request: Disposable? = null
 
     lateinit var currentRanobe: Ranobe
 
@@ -39,6 +44,7 @@ class DownloadActivity : AppCompatActivity() {
             R.id.select_none -> {
                 chapterList.forEach { it.isChecked = false }
                 adapter.selectAll = false
+
                 adapter.notifyDataSetChanged()
                 return@OnNavigationItemSelectedListener true
             }
@@ -50,7 +56,6 @@ class DownloadActivity : AppCompatActivity() {
                         .setNegativeButton("Cancel") { dialog, id1 -> dialog.cancel() }
                         .setPositiveButton("OK") { dialog, id1 ->
                             dialog.cancel()
-                            running = true
                             download()
                         }
 
@@ -62,6 +67,7 @@ class DownloadActivity : AppCompatActivity() {
             R.id.select_all -> {
                 chapterList.forEach { it.isChecked = true }
                 adapter.selectAll = true
+
                 adapter.notifyDataSetChanged()
                 return@OnNavigationItemSelectedListener true
             }
@@ -76,7 +82,7 @@ class DownloadActivity : AppCompatActivity() {
         progressDialog!!.setTitle(resources.getString(R.string.load_ranobes))
         progressDialog!!.setCancelable(false)
         progressDialog!!.setButton(BUTTON_NEGATIVE, "Cancel") { dialog, which ->
-            running = false
+            running?.dispose()
             progressDialog!!.dismiss()
             updateList()
         }
@@ -90,29 +96,52 @@ class DownloadActivity : AppCompatActivity() {
 
 
         progressDialog!!.progress = 0
-        for (chapter in chapterList) {
-            if (running) {
-                if (!chapter.isChecked) {
 
-                    Completable.fromAction {
+        running = Observable.fromIterable(chapterList)
+                .map { chapter ->
+                    if (!chapter.isChecked) {
+
                         MyApp.database.textDao().delete(chapter.url)
-                    }?.doFinally {
                         chapter.text = ""
                         chapter.downloaded = false
-                    }?.subscribeOn(Schedulers.io())?.blockingAwait()
 
-                } else {
-                    chapter.downloaded = chapterText.GetChapterText(chapter, context!!).subscribeOn(Schedulers.io()).blockingGet()
+                    } else {
+                        chapter.downloaded = chapterText.GetChapterText(chapter, context!!).blockingGet()
+                    }
+                    return@map true
                 }
-                progressDialog!!.incrementProgressBy(1)
-            } else {
-                break
-            }
-        }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map {
+                    progressDialog!!.incrementProgressBy(1)
+                    return@map it
+                }
+                .doOnComplete { progressDialog!!.setMessage(getString(R.string.task_finished)) }
+                .doOnError { progressDialog!!.setMessage(getString(R.string.error)) }
+                .doFinally {
+                    progressDialog!!.getButton(BUTTON_NEGATIVE).setText(R.string.finish)
+                }
+                .subscribe()
 
-
-        progressDialog!!.getButton(BUTTON_NEGATIVE).setText(R.string.finish)
-        progressDialog!!.setMessage(getString(R.string.task_finished))
+        //        for (chapter in chapterList) {
+        //            if (running) {
+        //                if (!chapter.isChecked) {
+        //
+        //                    Completable.fromAction {
+        //                        MyApp.database.textDao().delete(chapter.url)
+        //                    }?.doFinally {
+        //                        chapter.text = ""
+        //                        chapter.downloaded = false
+        //                    }?.subscribeOn(Schedulers.io())?.blockingAwait()
+        //
+        //                } else {
+        //                    chapter.downloaded = chapterText.GetChapterText(chapter, context!!).subscribeOn(Schedulers.io()).blockingGet()
+        //                }
+        //                progressDialog!!.incrementProgressBy(1)
+        //            } else {
+        //                break
+        //            }
+        //        }
 
     }
 
@@ -121,7 +150,8 @@ class DownloadActivity : AppCompatActivity() {
         for (chapter in chapterList) {
             chapter.isChecked = chapter.downloaded
         }
-        adapter.notifyItemRangeChanged(0, chapterList.size)
+
+        adapter.notifyDataSetChanged()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -129,23 +159,22 @@ class DownloadActivity : AppCompatActivity() {
         Fabric.with(this, Crashlytics())
         setupActionBar()
         setContentView(R.layout.activity_download)
-        context = applicationContext
+        context = this@DownloadActivity
         val navigation = findViewById<BottomNavigationView>(R.id.navigation)
         navigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
 
         recyclerView = findViewById(R.id.chapter_list)
+        progressBar = findViewById(R.id.progressBar)
 
         currentRanobe = MyApp.ranobe!!
         chapterList = currentRanobe.chapterList
-        val pDialog = ProgressDialog(this)
-        pDialog.setTitle("Loading")
-        pDialog.setCancelable(false)
-        pDialog.show()
 
-        MyApp.database.textDao().getTextByRanobeUrl(currentRanobe.url).subscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe({ result ->
 
+
+        progressBar.visibility = View.VISIBLE
+
+        request = MyApp.database.textDao().getTextByRanobeUrl(currentRanobe.url)
+                .map { result ->
                     for (chapter in chapterList) {
                         if (!chapter.downloaded) {
 
@@ -163,10 +192,19 @@ class DownloadActivity : AppCompatActivity() {
                     }
 
                     adapter = ExpandableDownloadRecyclerViewAdapter(this@DownloadActivity, chapterList)
-                    recyclerView!!.adapter = adapter
-                    pDialog.dismiss()
+                    return@map true
+                }.onErrorReturn { false }
+
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doFinally {
+                    progressBar.visibility = View.GONE
+                }
+                .subscribe({
+                    if (it)
+                        recyclerView!!.adapter = adapter
                 }, {
-                    pDialog.dismiss()
+
                 })
 
     }
@@ -185,6 +223,7 @@ class DownloadActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        progressDialog?.dismiss()
+        request?.dispose()
+        running?.dispose()
     }
 }

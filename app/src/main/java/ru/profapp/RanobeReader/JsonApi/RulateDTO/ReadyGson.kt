@@ -4,87 +4,86 @@ import com.google.gson.annotations.SerializedName
 
 data class ReadyGson(
         @SerializedName("status") val status: String,
-        //  @SerializedName("") val msg: String,
-
+        //   val msg: String,
         @SerializedName("response") val books: List<RulateBook> = listOf()
 )
 
 data class RulateBook(
 
-        @SerializedName("id") val id: Int?,
-        @SerializedName("book_id") val bookId: Int?,
-        @SerializedName("s_title") val sTitle: String?,
-        @SerializedName("t_title") val tTitle: String?,
+        @SerializedName("id") val id: Int? = null,
+        @SerializedName("book_id") val bookId: Int? = null,
+        @SerializedName("s_title") val sTitle: String? = null,
+        @SerializedName("t_title") val tTitle: String? = null,
 
-        @SerializedName("title") val title: String?,
+        @SerializedName("title") val title: String? = null,
 
-        @SerializedName("img") val img: String?,
-        @SerializedName("ready_date") val readyDate: String?,
+        @SerializedName("img") val img: String? = null,
+        @SerializedName("ready_date") val readyDate: String? = null,
 
-        @SerializedName("lang") val lang: String?,
+        @SerializedName("lang") val lang: String? = null,
 
         //   @SerializedName("n_chapters")
-        //   @SerializedName("") val nChapters: Int?,
+        //   val nChapters: Int? = null,
 
-        @SerializedName("last_activity") val lastActivity: Long?,
+        @SerializedName("last_activity") val lastActivity: Long? = null,
 
-        @SerializedName("status") val status: String?,
+        @SerializedName("status") val status: String? = null,
 
-        @SerializedName("rating") val rating: String?,
+        @SerializedName("rating") val rating: String? = null,
 
-        //   @SerializedName("") val author: String?,
+        //   val author: String? = null,
 
-        //   @SerializedName("") val writer: String?,
+        //   val writer: String? = null,
 
-        //   @SerializedName("") val publisher: String?,
+        //   val publisher: String? = null,
 
-        //  @SerializedName("") val year: String?,
-        @SerializedName("chapters_total") val chaptersTotal: Int?,
+        //   val year: String? = null,
+        @SerializedName("chapters_total") val chaptersTotal: Int? = null,
 
-        //  @SerializedName("") val adult: Int?,
+        //  val adult: Int? = null,
 
-        //   @SerializedName("") val team: String?,
+        //  val team: String? = null,
 
         @SerializedName("chapters") val chapters: List<RulateChapter> = listOf(),
 
         @SerializedName("comments") val comments: List<RulateComment> = listOf()
 
-        //  @SerializedName("") val bookmark: Int?
+        //  val bookmark: Int? = null
 
 )
 
 data class RulateChapter(
 
-        @SerializedName("id") val id: Int?,
+        @SerializedName("id") val id: Int? = null,
 
-        @SerializedName("title") val title: String?,
+        @SerializedName("title") val title: String? = null,
 
-        @SerializedName("status") val status: String?,
-        @SerializedName("can_read") val canRead: Boolean?,
+        @SerializedName("status") val status: String? = null,
+        @SerializedName("can_read") val canRead: Boolean? = null,
 
-        @SerializedName("new") val new: Boolean?
-
-)
-
-data class RulateText(
-
-        @SerializedName("title") val title: String?,
-
-        @SerializedName("text") val text: String?,
-
-        @SerializedName("comments") val comments: List<RulateComment> = listOf()
+        @SerializedName("new") val new: Boolean? = null
 
 )
 
 data class RulateComment(
 
-        @SerializedName("body") val body: String?,
+        @SerializedName("body") val body: String? = null,
 
-        @SerializedName("time") val time: Long?,
+        @SerializedName("time") val time: Long? = null,
 
-        @SerializedName("author") val author: String?,
+        @SerializedName("author") val author: String? = null,
 
-        @SerializedName("avatar") val avatar: String?
+        @SerializedName("avatar") val avatar: String? = null
+
+)
+
+data class RulateText(
+
+        @SerializedName("title") val title: String? = null,
+
+        @SerializedName("text") val text: String? = null,
+
+        @SerializedName("comments") val comments: List<RulateComment> = listOf()
 
 )
 
