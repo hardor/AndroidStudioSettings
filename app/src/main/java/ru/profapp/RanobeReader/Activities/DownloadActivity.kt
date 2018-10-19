@@ -164,7 +164,7 @@ class DownloadActivity : AppCompatActivity() {
         navigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
 
         recyclerView = findViewById(R.id.chapter_list)
-        progressBar = findViewById(R.id.progressBar)
+        progressBar = findViewById(R.id.progressBar_download)
 
         currentRanobe = MyApp.ranobe!!
         chapterList = currentRanobe.chapterList

@@ -27,7 +27,7 @@
   <string name="search">Поиск</string>
   <string name="Updated">Обновлено</string>
   <string name="ago">назад</string>
-  <string name="not_found">Не найдено</string>
+  <string name="all_notFound">Не найдено</string>
 
   <string name="general">Общие</string>
   <string name="settings">Настройки</string>
@@ -48,7 +48,7 @@
   <string name="auto_save_text">Автоматически сохранять главы</string>
   <string name="summary_save_text_on">Автоматически сохранять текст при открытии главы</string>
   <string name="summary_save_text_off">Сохранять текст только вручную</string>
-  <string name="search_here">Строка поиска</string>
+  <string name="search_hereHint">Строка поиска</string>
   <string name="feedback">Отзыв</string>
 
   <string name="action_bookmark">Закладка</string>

@@ -7,7 +7,7 @@
   tools:context=".Fragments.HistoryFragment">
 
   <TabHost
-    android:id="@+id/tabHost"
+    android:id="@+id/tH_history"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -26,11 +26,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.cardview.widget.CardView
-          android:id="@+id/linearLayout"
-          style="@style/CardViewStyle">
+
           <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/ranobeListView"
+            android:id="@+id/rV_history_ranobe"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="16dp"
@@ -38,13 +36,10 @@
             android:scrollbars="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_ranobe"/>
-        </androidx.cardview.widget.CardView>
 
-        <androidx.cardview.widget.CardView
-          android:id="@+id/linearLayout2"
-          style="@style/CardViewStyle">
+
           <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/chapterListView"
+            android:id="@+id/rV_history_chapters"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="16dp"
@@ -53,7 +48,7 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_history"/>
 
-        </androidx.cardview.widget.CardView>
+
 
       </FrameLayout>
     </LinearLayout>

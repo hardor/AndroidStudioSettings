@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReader.Adapters.HistoryRecyclerViewAdapter
 import ru.profapp.RanobeReader.Adapters.RanobeRecyclerViewAdapter
@@ -37,8 +37,8 @@ class HistoryFragment : Fragment() {
     private var ranobeHistoryViewAdapter: RanobeRecyclerViewAdapter? = null
     private var listener: OnFragmentInteractionListener? = null
     private var mContext: Context? = null
-    private var request: Disposable? = null
-    private var request2: Disposable? = null
+    private var compositeDisposable: CompositeDisposable = CompositeDisposable()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let { }
@@ -48,54 +48,56 @@ class HistoryFragment : Fragment() {
 
         val view = inflater.inflate(R.layout.fragment_history, container, false)
 
-        mContext = context
-        chapterRecyclerView = view.findViewById(R.id.chapterListView)
+        chapterRecyclerView = view.findViewById(R.id.rV_history_chapters)
+        ranobeRecyclerView = view.findViewById(R.id.rV_history_ranobe)
+        tabHost = view.findViewById(R.id.tH_history)
+
         chapterRecyclerView.layoutManager = LinearLayoutManager(mContext)
 
 
-        ranobeRecyclerView = view.findViewById(R.id.ranobeListView)
         ranobeRecyclerView.layoutManager = LinearLayoutManager(mContext)
 
-        request = MyApp.database.ranobeHistoryDao().allChapters().subscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())?.subscribe({
+        val chapterRequest = MyApp.database.ranobeHistoryDao().allChapters().subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe({
                     chapterHistoryViewAdapter = HistoryRecyclerViewAdapter(mContext!!, it)
                     chapterRecyclerView.adapter = chapterHistoryViewAdapter
                 }, { error ->
                     LogHelper.logError(LogHelper.LogType.ERROR, "HistoryFragment", "", error)
                 })
 
-        request2 = MyApp.database.ranobeHistoryDao().allRanobes().subscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())?.map {
-                    val ranobeList = it.map { r -> toRanobe(r) }
-                    for (ranobe in ranobeList) {
-                        if (ranobe.image.isNullOrBlank()) {
-                            MyApp.database.ranobeImageDao().getImageByUrl(ranobe.url).observeOn(AndroidSchedulers.mainThread())?.subscribeOn(Schedulers.io())?.subscribe { it2 ->
-                                ranobe.image = it2.image
-                            }
-                        }
+        val ranobeRequest = MyApp.database.ranobeHistoryDao().allRanobes().map {
+            val ranobeList = it.map { r -> toRanobe(r) }
+            for (ranobe in ranobeList) {
+                if (ranobe.image.isNullOrBlank()) {
+                    MyApp.database.ranobeImageDao().getImageByUrl(ranobe.url).subscribeOn(Schedulers.io()).subscribe { it2 ->
+                        ranobe.image = it2.image
                     }
-                    return@map ranobeList
+                }
+            }
+            return@map ranobeList
 
-                }?.subscribe({
-
+        }.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
                     ranobeHistoryViewAdapter = RanobeRecyclerViewAdapter(mContext!!, ranobeRecyclerView, it)
                     ranobeRecyclerView.adapter = ranobeHistoryViewAdapter
                 }, { error ->
                     LogHelper.logError(LogHelper.LogType.ERROR, "HistoryFragment", "", error)
                 })
+        compositeDisposable.add(chapterRequest)
+        compositeDisposable.add(ranobeRequest)
 
 
-        tabHost = view.findViewById<TabHost>(R.id.tabHost)
 
         tabHost.setup()
 
         val tabSpec: TabHost.TabSpec = tabHost.newTabSpec("Ranobes")
-        tabSpec.setContent(R.id.linearLayout)
+        tabSpec.setContent(R.id.rV_history_ranobe)
         tabSpec.setIndicator(resources.getString(R.string.ranobes))
         tabHost.addTab(tabSpec)
 
         val tabSpec2: TabHost.TabSpec = tabHost.newTabSpec("Chapters")
-        tabSpec2.setContent(R.id.linearLayout2)
+        tabSpec2.setContent(R.id.rV_history_chapters)
         tabSpec2.setIndicator(resources.getString(R.string.chapters))
         tabHost.addTab(tabSpec2)
 
@@ -105,6 +107,8 @@ class HistoryFragment : Fragment() {
         return view
 
     }
+
+
 
     private fun toRanobe(ranobeHistory: RanobeHistory): Ranobe {
 
@@ -117,6 +121,7 @@ class HistoryFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        mContext = context
         if (context is OnFragmentInteractionListener) {
             listener = context
         } else {
@@ -127,18 +132,13 @@ class HistoryFragment : Fragment() {
     override fun onDetach() {
         super.onDetach()
         listener = null
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        request?.dispose()
-        request2?.dispose()
+        mContext = null
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        request?.dispose()
-        request2?.dispose()
+        compositeDisposable.clear()
+        mContext = null
         MyApp.refWatcher?.watch(this)
     }
 

@@ -11,13 +11,13 @@
 
 
   <androidx.cardview.widget.CardView
-    android:id="@+id/linearLayout"
+    android:id="@+id/cV_history_ranobe"
     style="@style/CardViewStyle"
     android:layout_above="@+id/navigation"
     android:layout_alignParentTop="true">
 
     <ProgressBar
-      android:id="@+id/progressBar"
+      android:id="@+id/progressBar_download"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_gravity="center"

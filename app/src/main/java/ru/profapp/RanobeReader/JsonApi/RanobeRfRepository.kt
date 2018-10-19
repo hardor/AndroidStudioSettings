@@ -42,7 +42,7 @@ object RanobeRfRepository {
         return IRanobeRfApiService.instance.Login(email, password).map {
             if (it.status == 200) {
                 return@map arrayOf("true", it.message, it.result.token)
-            } else arrayOf("false", it.message)
+            } else arrayOf("false", it.message,"")
         }
     }
 

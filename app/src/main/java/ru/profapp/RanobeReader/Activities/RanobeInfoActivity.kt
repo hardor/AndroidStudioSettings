@@ -28,7 +28,7 @@ import io.fabric.sdk.android.Fabric
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReader.Adapters.CommentsRecyclerViewAdapter
 import ru.profapp.RanobeReader.Adapters.ExpandableChapterRecyclerViewAdapter
@@ -62,7 +62,6 @@ class RanobeInfoActivity : AppCompatActivity() {
     private var sPref: SharedPreferences? = null
     private var lastChapterIdPref: SharedPreferences? = null
     private var mChapterLayoutManager: LinearLayoutManager? = null
-    private var request: Disposable? = null
 
     private lateinit var aboutTextView: TextView
     private lateinit var additionalInfoTextView: TextView
@@ -71,6 +70,8 @@ class RanobeInfoActivity : AppCompatActivity() {
     lateinit var imageView: ImageView
     lateinit var progressBar: ProgressBar
     lateinit var fab: FloatingActionButton
+
+    var compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         currentTheme = AppCompatDelegate.getDefaultNightMode()
@@ -83,7 +84,7 @@ class RanobeInfoActivity : AppCompatActivity() {
 
         Fabric.with(this, crashlyticsKit)
         setContentView(R.layout.activity_ranobe_info)
-        initAds()
+
         mContext = this@RanobeInfoActivity
         currentRanobe = MyApp.ranobe!!
 
@@ -139,33 +140,37 @@ class RanobeInfoActivity : AppCompatActivity() {
         }
 
         chapterRecyclerView.setHasFixedSize(true)
-        progressBar = findViewById(R.id.progressBar)
+        progressBar = findViewById(R.id.progressBar_ranobeInfo)
         progressBar.visibility = View.VISIBLE
         loadData()
         loadChapters()
 
-        tabHost = findViewById<TabHost>(R.id.tabHost)
+        tabHost = findViewById<TabHost>(R.id.tH_history)
 
         tabHost.setup()
 
         val tabSpec: TabHost.TabSpec = tabHost.newTabSpec("chapters")
 
-        tabSpec.setContent(R.id.linearLayout)
+        tabSpec.setContent(R.id.cV_history_ranobe)
         tabSpec.setIndicator(resources.getString(R.string.chapters))
         tabHost.addTab(tabSpec)
         tabHost.currentTab = 0
+
+        initAds()
     }
+
+    var adView: AdView? = null
 
     private fun initAds() {
         MobileAds.initialize(this, getString(R.string.app_admob_id))
-        val adView = findViewById<AdView>(R.id.adView)
+        adView = findViewById<AdView>(R.id.adView)
         val adRequest = AdRequest.Builder()
 
         if (BuildConfig.DEBUG) {
             adRequest.addTestDevice("test")
         }
 
-        adView.loadAd(adRequest.build())
+        adView?.loadAd(adRequest.build())
     }
 
     private fun loadData() {
@@ -199,7 +204,7 @@ class RanobeInfoActivity : AppCompatActivity() {
         sPref = mContext!!.getSharedPreferences(last_chapter_id_Pref, Context.MODE_PRIVATE)
         lastChapterIdPref = mContext!!.getSharedPreferences(last_chapter_id_Pref, Context.MODE_PRIVATE)
 
-        request = currentRanobe.updateRanobe(mContext!!).map {
+        val request = currentRanobe.updateRanobe(mContext!!).map {
             var checked = false
             if (lastChapterIdPref != null) {
                 val lastId: Int = lastChapterIdPref?.getInt(currentRanobe.url, -1) ?: -1
@@ -245,7 +250,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                         commentRecycleView.adapter = CommentsRecyclerViewAdapter(mContext!!, currentRanobe.comments)
 
                         val tabSpec: TabHost.TabSpec = tabHost.newTabSpec("comments")
-                        tabSpec.setContent(R.id.linearLayout2)
+                        tabSpec.setContent(R.id.cV_history_chapters)
                         tabSpec.setIndicator(resources.getString(R.string.comments))
                         tabHost.addTab(tabSpec)
                     }
@@ -255,6 +260,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                     progressBar.visibility = View.GONE
                 })
 
+        compositeDisposable.add(request)
     }
 
     private fun getFavoriteIcon() {
@@ -262,8 +268,10 @@ class RanobeInfoActivity : AppCompatActivity() {
             fab.setImageDrawable(favImage)
 
         } else {
-            MyApp.database.ranobeDao().isRanobeFavorite(currentRanobe.url).observeOn(AndroidSchedulers.mainThread())?.subscribeOn(Schedulers.io())
-                    ?.subscribe({
+            val request = MyApp.database.ranobeDao().isRanobeFavorite(currentRanobe.url)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({
                         if (it != null) {
                             currentRanobe.isFavorite = it.isFavorite
                             currentRanobe.isFavoriteInWeb = it.isFavoriteInWeb
@@ -280,6 +288,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                         currentRanobe.isFavoriteInWeb = false
                         fab.setImageDrawable(notFavImage)
                     })
+            compositeDisposable.add(request)
         }
     }
 
@@ -310,7 +319,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                 }
             }
 
-            fabRequest.subscribeOn(Schedulers.io())
+            val request = fabRequest.subscribeOn(Schedulers.io())
                     .map { result ->
                         if (result.first) {
                             currentRanobe.isFavorite = true
@@ -336,6 +345,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                     }, { error ->
                         LogHelper.logError(LogHelper.LogType.ERROR, "setToFavorite", "WEB", error, false)
                     })
+            compositeDisposable.add(request)
 
         } else {
 
@@ -357,7 +367,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                     }
                 }
 
-                fabRequest.subscribeOn(Schedulers.io())
+                val request = fabRequest.subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .map { result ->
                             if (result.first) {
@@ -375,19 +385,21 @@ class RanobeInfoActivity : AppCompatActivity() {
                                 Toast.makeText(mContext, result.second, Toast.LENGTH_SHORT).show()
                             }
                         }, { error -> LogHelper.logError(LogHelper.LogType.ERROR, "", "", error, false) })
-
+                compositeDisposable.add(request)
             } else {
-                Completable.fromAction {
+                val request = Completable.fromAction {
                     MyApp.database.ranobeDao().delete(currentRanobe.url)
-                }?.observeOn(AndroidSchedulers.mainThread())
-                        ?.subscribeOn(Schedulers.io())
-                        ?.subscribe({
+                }.observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({
                             currentRanobe.isFavorite = false
                             currentRanobe.isFavoriteInWeb = false
                             item.setImageDrawable(notFavImage)
                         }, { error ->
                             LogHelper.logError(LogHelper.LogType.ERROR, "", "", error, false)
                         })
+
+                compositeDisposable.add(request)
 
             }
         }
@@ -396,13 +408,21 @@ class RanobeInfoActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        request?.dispose()
+        adView?.destroy()
+        compositeDisposable.clear()
+
     }
 
     override fun onResume() {
         super.onResume()
+        adView?.resume()
         if (currentTheme != AppCompatDelegate.getDefaultNightMode())
             recreate()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        adView?.pause()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

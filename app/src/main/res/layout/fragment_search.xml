@@ -7,29 +7,29 @@
   tools:context="ru.profapp.RanobeReader.Fragments.SearchFragment">
 
   <androidx.appcompat.widget.SearchView
-    android:id="@+id/search"
+    android:id="@+id/sV_search"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clickable="true"
     android:focusable="true"
     app:iconifiedByDefault="false"
-    app:queryHint="@string/search_here">
+    app:queryHint="@string/search_hereHint">
   </androidx.appcompat.widget.SearchView>
   <ProgressBar
-    android:id="@+id/progressBar"
+    android:id="@+id/progressBar_search"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:visibility="gone"/>
 
   <TextView
-    android:id="@+id/search.result.label"
+    android:id="@+id/tV_search_resultLabel"
     style="@style/TitleCardViewStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:text="@string/not_found"
+    android:text="@string/all_notFound"
     android:visibility="gone"/>
   <androidx.recyclerview.widget.RecyclerView
-    android:id="@+id/ranobeListView"
+    android:id="@+id/rV_search_ranobe"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginLeft="16dp"

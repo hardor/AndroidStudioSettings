@@ -73,7 +73,7 @@ object RulateRepository {
         return IRulateApiService.instance.Login(login, password).map {
             if (it.status == "success") {
                 return@map arrayOf("true", it.msg, it.response.token)
-            } else arrayOf("false", it.msg)
+            } else arrayOf("false", it.msg,"")
         }
     }
 

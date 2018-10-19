@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
   android:id="@+id/swipeRefreshLayout"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
   <androidx.recyclerview.widget.RecyclerView
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/ranobeListView"
+
+    android:id="@+id/rV_ranobeList_ranobe"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     android:name="ru.profapp.RanobeReader.FavoriteFragment"
     android:scrollbars="vertical"
-    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
     tools:context="ru.profapp.RanobeReader.Fragments.RanobeListFragment"
+    tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
     tools:listitem="@layout/item_ranobe"
     >
   </androidx.recyclerview.widget.RecyclerView>

@@ -139,7 +139,6 @@ class MainActivity : AppCompatActivity(),
 
     }
 
-
     private fun initSettingPreference() {
         PreferenceManager.setDefaultValues(this, R.xml.pref_general, false)
         val settingPref = PreferenceManager.getDefaultSharedPreferences(applicationContext)
@@ -270,10 +269,20 @@ class MainActivity : AppCompatActivity(),
         outState.putString("Title", currentTitle)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        adView?.destroy()
+    }
     override fun onResume() {
         super.onResume()
+        adView?.resume()
         if (currentTheme != AppCompatDelegate.getDefaultNightMode())
             recreate()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        adView?.pause()
     }
 
 }

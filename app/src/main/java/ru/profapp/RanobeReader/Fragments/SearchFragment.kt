@@ -37,35 +37,31 @@ import ru.profapp.RanobeReader.R
  */
 class SearchFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
-    private var mRanobeRecyclerViewAdapter: RanobeRecyclerViewAdapter? = null
+    private var ranobeRecyclerViewAdapter: RanobeRecyclerViewAdapter? = null
     private var mListener: OnFragmentInteractionListener? = null
-    private var mRanobeList: MutableList<Ranobe> = ArrayList()
+    private var adapterRanobeList: MutableList<Ranobe> = mutableListOf()
     private var mContext: Context? = null
     lateinit var resultLabel: TextView
     lateinit var progressBar: ProgressBar
-    private var request: Disposable? = null
+    private var searhRequest: Disposable? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let { }
-        mRanobeList = ArrayList()
+        adapterRanobeList = ArrayList()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_search, container, false)
-
-        mContext = context
-
-        val simpleSearchView = view.findViewById<SearchView>(R.id.search)
-        progressBar = view.findViewById(R.id.progressBar)
-        resultLabel = view.findViewById(R.id.search_result_label)
+        val simpleSearchView = view.findViewById<SearchView>(R.id.sV_search)
+        progressBar = view.findViewById(R.id.progressBar_search)
+        resultLabel = view.findViewById(R.id.tV_search_resultLabel)
 
         simpleSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 resultLabel.visibility = View.GONE
                 findRanobe(query)
-
                 return false
             }
 
@@ -74,18 +70,19 @@ class SearchFragment : Fragment() {
             }
         })
 
-        recyclerView = view.findViewById(R.id.ranobeListView)
+        recyclerView = view.findViewById(R.id.rV_search_ranobe)
 
         recyclerView.layoutManager = LinearLayoutManager(mContext)
 
-        mRanobeRecyclerViewAdapter = RanobeRecyclerViewAdapter(mContext!!, recyclerView, mRanobeList)
-        recyclerView.adapter = mRanobeRecyclerViewAdapter
+        ranobeRecyclerViewAdapter = RanobeRecyclerViewAdapter(mContext!!, recyclerView, adapterRanobeList)
+        recyclerView.adapter = ranobeRecyclerViewAdapter
         return view
     }
 
     override fun onAttach(context: Context?) {
 
         super.onAttach(context)
+        mContext = context
         if (context is OnFragmentInteractionListener) {
             mListener = context
         } else {
@@ -97,17 +94,27 @@ class SearchFragment : Fragment() {
     override fun onDetach() {
         super.onDetach()
         mListener = null
+        mContext = null
     }
 
     private fun findRanobe(searchString: String) {
 
         progressBar.visibility = VISIBLE
 
-        val size = mRanobeList.size
-        mRanobeList.clear()
-        mRanobeRecyclerViewAdapter!!.notifyItemRangeRemoved(0, size)
+        val size = adapterRanobeList.size
+        adapterRanobeList.clear()
+        ranobeRecyclerViewAdapter!!.notifyItemRangeRemoved(0, size)
 
-        request = Single.mergeDelayError(findRulateRanobe(searchString), findRanobeRfRanobe(searchString), findRanobeHubRanobe(searchString)).map { ranobeList ->
+        searhRequest = Single.zip(findRulateRanobe(searchString), findRanobeRfRanobe(searchString), findRanobeHubRanobe(searchString),
+                io.reactivex.functions.Function3<List<Ranobe>, List<Ranobe>, List<Ranobe>, List<Ranobe>>
+                { Rulate, RanobeRfW, RanobeHub ->
+                    val newList = mutableListOf<Ranobe>()
+                    newList.addAll(Rulate)
+                    newList.addAll(RanobeRfW)
+                    newList.addAll(RanobeHub)
+                    return@Function3 newList
+                }
+        ).map { ranobeList ->
             for (ranobe in ranobeList) {
                 if (ranobe.image.isNullOrBlank()) {
                     MyApp.database.ranobeImageDao().getImageByUrl(ranobe.url).observeOn(AndroidSchedulers.mainThread())?.subscribeOn(Schedulers.io())?.subscribe { it ->
@@ -117,13 +124,13 @@ class SearchFragment : Fragment() {
             }
             return@map ranobeList
 
-        }.observeOn(AndroidSchedulers.mainThread(), true).subscribeOn(Schedulers.io())
+        }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
 
                 .subscribe({ result ->
-                    val prevSize = mRanobeList.size
-                    mRanobeList.addAll(result)
-                    mRanobeRecyclerViewAdapter!!.notifyItemRangeInserted(prevSize, mRanobeList.size)
-                    if (mRanobeList.size == 0) {
+                    val prevSize = adapterRanobeList.size
+                    adapterRanobeList.addAll(result)
+                    ranobeRecyclerViewAdapter!!.notifyItemRangeInserted(prevSize, adapterRanobeList.size)
+                    if (adapterRanobeList.size == 0) {
                         resultLabel.visibility = View.VISIBLE
                     }
 
@@ -137,7 +144,7 @@ class SearchFragment : Fragment() {
 
     }
 
-    private fun findRulateRanobe(searchString: String): Single<ArrayList<Ranobe>> {
+    private fun findRulateRanobe(searchString: String): Single<List<Ranobe>> {
 
         return RulateRepository.searchBooks(searchString).map {
             val or: ArrayList<Ranobe> = ArrayList()
@@ -154,7 +161,7 @@ class SearchFragment : Fragment() {
 
     }
 
-    private fun findRanobeHubRanobe(searchString: String): Single<ArrayList<Ranobe>> {
+    private fun findRanobeHubRanobe(searchString: String): Single<List<Ranobe>> {
 
         return RanobeHubRepository.searchBooks(searchString).map {
             val or: ArrayList<Ranobe> = ArrayList()
@@ -171,7 +178,7 @@ class SearchFragment : Fragment() {
 
     }
 
-    private fun findRanobeRfRanobe(searchString: String): Single<ArrayList<Ranobe>> {
+    private fun findRanobeRfRanobe(searchString: String): Single<List<Ranobe>> {
 
         return RanobeRfRepository.searchBooks(searchString).map {
             val or: ArrayList<Ranobe> = ArrayList()
@@ -200,7 +207,8 @@ class SearchFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        request?.dispose()
+        searhRequest?.dispose()
+        mContext = null
         MyApp.refWatcher?.watch(this)
     }
 }

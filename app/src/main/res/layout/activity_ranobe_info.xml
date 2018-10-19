@@ -114,7 +114,7 @@
         app:adUnitId="@string/banner_ad_unit_id"/>
 
       <TabHost
-        android:id="@+id/tabHost"
+        android:id="@+id/tH_history"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -135,7 +135,7 @@
 
 
             <androidx.cardview.widget.CardView
-              android:id="@+id/linearLayout"
+              android:id="@+id/cV_history_ranobe"
               style="@style/CardViewStyle">
 
               <LinearLayout
@@ -144,7 +144,7 @@
                 android:orientation="vertical">
 
                 <ProgressBar
-                  android:id="@+id/progressBar"
+                  android:id="@+id/progressBar_ranobeInfo"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:padding="10dp"
@@ -168,7 +168,7 @@
 
 
             <androidx.cardview.widget.CardView
-              android:id="@+id/linearLayout2"
+              android:id="@+id/cV_history_chapters"
               style="@style/CardViewStyle">
 
               <androidx.recyclerview.widget.RecyclerView

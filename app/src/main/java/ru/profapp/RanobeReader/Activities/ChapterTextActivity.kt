@@ -23,6 +23,7 @@ import io.fabric.sdk.android.Fabric
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Helpers.LogHelper
@@ -50,7 +51,7 @@ class ChapterTextActivity : AppCompatActivity() {
     private lateinit var prevMenu: ImageButton
 
     var currentRanobe: Ranobe? = null
-
+    var compositeDisposable: CompositeDisposable = CompositeDisposable()
     private lateinit var progressBar: ProgressBar
 
     private fun set_web_colors() {
@@ -154,13 +155,15 @@ class ChapterTextActivity : AppCompatActivity() {
 
         initWebView()
 
-        Completable.fromAction {
+        val request = Completable.fromAction {
             MyApp.database.ranobeHistoryDao().insertNewRanobe(
                     RanobeHistory(currentRanobe?.url!!, currentRanobe?.title!!, currentRanobe?.description)
             )
-        }?.subscribeOn(Schedulers.io())?.subscribe({}, { error ->
+        }.subscribeOn(Schedulers.io()).subscribe({}, { error ->
             LogHelper.logError(LogHelper.LogType.ERROR, "", "", error, false)
         })
+
+        compositeDisposable.add(request)
 
         prevMenu = findViewById(R.id.navigation_prev)
         nextMenu = findViewById(R.id.navigation_next)
@@ -190,8 +193,7 @@ class ChapterTextActivity : AppCompatActivity() {
                 + "; background-color: " + String.format("#%06X", 0xFFFFFF and color2)
                 + "\"")
 
-
-        GetChapterText()
+        val request = GetChapterText()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ result ->
@@ -214,6 +216,8 @@ class ChapterTextActivity : AppCompatActivity() {
                     mWebView.loadDataWithBaseURL("https:\\\\" + mCurrentChapter.url + "/", summary, "text/html", "UTF-8", null)
 
                 })
+
+        compositeDisposable.add(request)
 
     }
 
@@ -316,14 +320,15 @@ class ChapterTextActivity : AppCompatActivity() {
 
     private fun saveProgressToDb(pr: Float? = null) {
         val progress = pr ?: calculateProgression() ?: 0f
-        Completable.fromAction {
+        val request = Completable.fromAction {
             MyApp.database.ranobeHistoryDao().insertNewChapter(
                     ChapterHistory(mCurrentChapter.url, mCurrentChapter.title, mCurrentChapter.ranobeName, mCurrentChapter.ranobeUrl, mCurrentChapter.index, progress)
             )
-        }?.subscribeOn(Schedulers.io())
-                ?.subscribe({}, { error ->
+        }.subscribeOn(Schedulers.io())
+                .subscribe({}, { error ->
                     LogHelper.logError(LogHelper.LogType.ERROR, "", "", error, false)
                 })
+        compositeDisposable.add(request)
     }
 
     private fun OnClicked(i: Int) {
@@ -400,6 +405,11 @@ class ChapterTextActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         saveProgressToDb()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        compositeDisposable.clear()
     }
 
 }

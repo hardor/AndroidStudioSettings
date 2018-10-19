@@ -175,7 +175,7 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
 
     inner class LoadingViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        val progressBar: ProgressBar = view.findViewById(R.id.progressBar)
+        val progressBar: ProgressBar = view.findViewById(R.id.progressBar_itemLoading)
 
     }
 

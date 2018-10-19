@@ -13,7 +13,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.Single.zip
@@ -88,8 +87,7 @@ class RanobeListFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater.inflate(R.layout.fragment_ranobe_list, container, false)
 
-        mContext = view.context
-        val recyclerView = view.findViewById<RecyclerView>(R.id.ranobeListView)
+        val recyclerView = view.findViewById<RecyclerView>(R.id.rV_ranobeList_ranobe)
 
         recyclerView.layoutManager = LinearLayoutManager(mContext)
 
@@ -343,7 +341,7 @@ class RanobeListFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        progressDialog?.dismiss()
+        mContext = null
         request?.dispose()
         MyApp.refWatcher?.watch(this)
     }
@@ -364,8 +362,10 @@ class RanobeListFragment : Fragment() {
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
+        mContext = context
         if (context is OnListFragmentInteractionListener) {
             mListener = context
+
         } else {
             throw RuntimeException(context!!.toString() + " must implement OnListFragmentInteractionListener")
         }
@@ -374,6 +374,7 @@ class RanobeListFragment : Fragment() {
     override fun onDetach() {
         super.onDetach()
         mListener = null
+        mContext = null
 
     }
 
