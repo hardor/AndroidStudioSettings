@@ -6,10 +6,12 @@ import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.DialogPreference
+import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
+import com.google.android.material.textfield.TextInputEditText
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -26,7 +28,7 @@ open class BaseLoginPreference(context: Context, attrs: AttributeSet) : DialogPr
     // View elements
     lateinit var loginEditor: EditText
     lateinit var resultTextView: TextView
-    lateinit var passwordEditor: EditText
+    lateinit var passwordEditor: TextInputEditText
     var compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     var username: String = ""
@@ -40,10 +42,7 @@ open class BaseLoginPreference(context: Context, attrs: AttributeSet) : DialogPr
     override fun onCreateDialogView(): View {
 
         // Inflate layout
-        val view = View.inflate(context, R.layout.activity_login, null)
-
-        val context = context
-        sharedPref = context.getSharedPreferences(Constants.Rulate_Login_Pref, Context.MODE_PRIVATE)
+        val view = View.inflate(context, R.layout.diaolog_login, null)
 
         val value = sharedPref.getString(Constants.KEY_Login, "")
 

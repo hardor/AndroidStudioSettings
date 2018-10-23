@@ -37,11 +37,11 @@ import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Common.Constants.last_chapter_id_Pref
 import ru.profapp.RanobeReader.Helpers.LogHelper
 import ru.profapp.RanobeReader.Helpers.ThemeHelper
-import ru.profapp.RanobeReader.JsonApi.RanobeRfRepository
-import ru.profapp.RanobeReader.JsonApi.RulateRepository
 import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.Models.Ranobe
 import ru.profapp.RanobeReader.MyApp
+import ru.profapp.RanobeReader.Network.Repositories.RanobeRfRepository
+import ru.profapp.RanobeReader.Network.Repositories.RulateRepository
 import ru.profapp.RanobeReader.R
 import ru.profapp.RanobeReader.Utils.GlideApp
 import java.util.*
@@ -189,10 +189,12 @@ class RanobeInfoActivity : AppCompatActivity() {
 
         GlideApp.with(this).load(currentRanobe.image).into(imageView)
 
-        var aboutText = String.format("%s / %s \n\n%s\n\nРейтинг: %s", currentRanobe.title, currentRanobe.engTitle, currentRanobe.description, currentRanobe.rating)
+        var aboutText = String.format("%s / %s \n\n%s", currentRanobe.title, currentRanobe.engTitle, currentRanobe.description)
+        if (!currentRanobe.rating.isNullOrBlank())
+            aboutText = aboutText.plus("\n\nРейтинг: ${currentRanobe.rating}")
 
         if (currentRanobe.genres != null) {
-            aboutText = aboutText + "\n\n" + currentRanobe.genres
+            aboutText = aboutText.plus("\n\n${currentRanobe.genres}")
         }
 
         aboutTextView.text = aboutText
@@ -319,7 +321,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                 }
             }
 
-            val request = fabRequest.subscribeOn(Schedulers.io())
+            val request = fabRequest
                     .map { result ->
                         if (result.first) {
                             currentRanobe.isFavorite = true
@@ -335,6 +337,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                         MyApp.database.chapterDao().insertAll(*currentRanobe.chapterList.toTypedArray())
                         return@map it
                     }
+                    .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({ result ->
                         item.setImageDrawable(favImage)
@@ -367,30 +370,34 @@ class RanobeInfoActivity : AppCompatActivity() {
                     }
                 }
 
-                val request = fabRequest.subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
+                val request = fabRequest
                         .map { result ->
+                            MyApp.database.ranobeDao().deleteWeb(currentRanobe.url)
                             if (result.first) {
                                 currentRanobe.isFavorite = false
                                 currentRanobe.isFavoriteInWeb = false
-                                MyApp.database.ranobeDao().deleteWeb(currentRanobe.url)
                                 return@map result
                             } else {
                                 return@map result
                             }
-                        }.subscribe({ result ->
+                        }.subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({ result ->
                             if (result.first)
                                 item.setImageDrawable(notFavImage)
                             else {
                                 Toast.makeText(mContext, result.second, Toast.LENGTH_SHORT).show()
                             }
-                        }, { error -> LogHelper.logError(LogHelper.LogType.ERROR, "", "", error, false) })
+                        }, { error ->
+                            LogHelper.logError(LogHelper.LogType.ERROR, "", "", error, false)
+                        })
                 compositeDisposable.add(request)
             } else {
                 val request = Completable.fromAction {
                     MyApp.database.ranobeDao().delete(currentRanobe.url)
-                }.observeOn(AndroidSchedulers.mainThread())
+                }
                         .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({
                             currentRanobe.isFavorite = false
                             currentRanobe.isFavoriteInWeb = false

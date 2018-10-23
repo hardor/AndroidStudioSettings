@@ -86,4 +86,5 @@
   <string name="Error">Ошибка</string>
   <string name="ErrorConnection">Ошибка соединения</string>
   <string name="date_format">dd/MM/yyyy HH:mm</string>
+  <string name="saved_info">Мы автоматически сохраняем все загруженные главы для уменьшения нагрузки на сайты</string>
 </resources>

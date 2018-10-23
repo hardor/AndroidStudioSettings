@@ -20,9 +20,9 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReader.Adapters.RanobeRecyclerViewAdapter
 import ru.profapp.RanobeReader.Common.Constants.RanobeSite.Title
-import ru.profapp.RanobeReader.JsonApi.RanobeHubRepository
-import ru.profapp.RanobeReader.JsonApi.RanobeRfRepository
-import ru.profapp.RanobeReader.JsonApi.RulateRepository
+import ru.profapp.RanobeReader.Network.Repositories.RanobeHubRepository
+import ru.profapp.RanobeReader.Network.Repositories.RanobeRfRepository
+import ru.profapp.RanobeReader.Network.Repositories.RulateRepository
 import ru.profapp.RanobeReader.Models.Ranobe
 import ru.profapp.RanobeReader.MyApp
 import ru.profapp.RanobeReader.R

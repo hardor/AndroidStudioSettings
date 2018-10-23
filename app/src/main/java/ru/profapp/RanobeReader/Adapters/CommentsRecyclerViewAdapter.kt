@@ -12,7 +12,7 @@ import androidx.annotation.NonNull
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
-import ru.profapp.RanobeReader.JsonApi.RulateDTO.RulateComment
+import ru.profapp.RanobeReader.Network.DTO.RulateDTO.RulateComment
 import ru.profapp.RanobeReader.R
 import ru.profapp.RanobeReader.Utils.GlideApp
 import ru.profapp.RanobeReader.Utils.GlideRequests

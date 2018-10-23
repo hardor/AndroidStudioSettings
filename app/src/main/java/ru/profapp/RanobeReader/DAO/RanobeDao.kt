@@ -48,7 +48,7 @@ interface RanobeDao {
     @Query("SELECT * FROM ranobe WHERE IsFavorite = 1")
     fun getFavoriteRanobes(): Single<List<RanobeWithChapters>>
 
-    @Query("SELECT * FROM ranobe WHERE IsFavorite = 1 and  IsFavoriteInWeb = 0")
+    @Query("SELECT * FROM ranobe WHERE IsFavorite = 1")
     fun getLocalFavoriteRanobes(): Single<List<Ranobe>>
 
     @Query("SELECT * FROM ranobe ")

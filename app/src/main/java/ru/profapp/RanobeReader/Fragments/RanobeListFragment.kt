@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.snackbar.Snackbar
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.Single.zip
@@ -27,12 +28,12 @@ import ru.profapp.RanobeReader.Common.Constants.RanobeSite.Title
 import ru.profapp.RanobeReader.Common.Constants.fragmentBundle
 import ru.profapp.RanobeReader.Common.OnLoadMoreListener
 import ru.profapp.RanobeReader.Helpers.LogHelper
-import ru.profapp.RanobeReader.JsonApi.RanobeHubRepository
-import ru.profapp.RanobeReader.JsonApi.RanobeRfRepository
-import ru.profapp.RanobeReader.JsonApi.RulateRepository
 import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.Models.Ranobe
 import ru.profapp.RanobeReader.MyApp
+import ru.profapp.RanobeReader.Network.Repositories.RanobeHubRepository
+import ru.profapp.RanobeReader.Network.Repositories.RanobeRfRepository
+import ru.profapp.RanobeReader.Network.Repositories.RulateRepository
 import ru.profapp.RanobeReader.R
 import java.net.UnknownHostException
 
@@ -115,7 +116,6 @@ class RanobeListFragment : Fragment() {
         swipeRefreshLayout.isRefreshing = true
 
         refreshItems(true)
-
         return view
     }
 
@@ -189,6 +189,10 @@ class RanobeListFragment : Fragment() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ result ->
+                    if (fragmentType == Constants.FragmentType.Saved) {
+                        Snackbar.make(swipeRefreshLayout, R.string.saved_info, Snackbar.LENGTH_SHORT).show()
+                    }
+
                     if (result.any()) {
                         ranobeList.addAll(result)
                         ranobeRecyclerViewAdapter.notifyItemRangeInserted(oldListSize, ranobeList.size)
@@ -264,24 +268,10 @@ class RanobeListFragment : Fragment() {
 
 
             return zip(
-                    getRulateWebFavorite()/*.map {
-                        Completable.fromAction {
-                            progressDialog!!.setTitle(context!!.getString(R.string.Load_from_RanobeRf))
-                        }?.subscribeOn(AndroidSchedulers.mainThread())
-                        return@map it
-                    }*/,
-                    getRanobeRfWebFavorite()/*.map {
-                        Completable.fromAction {
-                            progressDialog!!.setTitle(context!!.getString(R.string.Load_from_RanobeHub))
-                        }?.subscribeOn(AndroidSchedulers.mainThread())
-                        return@map it
-                    }*/,
-                    getRanobeHubWebFavorite()/*.map {
-                        Completable.fromAction {
-                            progressDialog!!.setTitle(context!!.getString(R.string.Load_from_Local))
-                        }?.subscribeOn(AndroidSchedulers.mainThread())
-                        return@map it
-                    }*/, MyApp.database.ranobeDao().getLocalFavoriteRanobes(),
+                    getRulateWebFavorite(),
+                    getRanobeRfWebFavorite(),
+                    getRanobeHubWebFavorite(),
+                    MyApp.database.ranobeDao().getLocalFavoriteRanobes(),
                     io.reactivex.functions.Function4<List<Ranobe>, List<Ranobe>, List<Ranobe>, List<Ranobe>, List<Ranobe>>
                     { Rulate, RanobeRfW, RanobeHub, local ->
 
@@ -289,13 +279,27 @@ class RanobeListFragment : Fragment() {
                         newList.addAll(Rulate)
                         newList.addAll(RanobeRfW)
                         newList.addAll(RanobeHub)
-                        newList.addAll(local)
+
+                        for (ranobe in local) {
+                            if (ranobe.isFavoriteInWeb && !newList.any { it.url == ranobe.url }) {
+                                MyApp.database.ranobeDao().deleteWeb(ranobe.url)
+                            } else if (!ranobe.isFavoriteInWeb) {
+                                newList.add(ranobe)
+                            }
+                        }
+
                         return@Function4 newList
+
                     }
 
             ).map { ranobeList ->
+                progressDialog!!.max = ranobeList.size
                 for (ranobe in ranobeList) {
-                    activity?.runOnUiThread { progressDialog!!.setTitle(ranobe.title) }
+                    activity?.runOnUiThread {
+
+                        progressDialog!!.setTitle(ranobe.title)
+                        progressDialog!!.incrementProgressBy(1)
+                    }
                     ranobe.updateRanobe(mContext!!).blockingGet()
                     ranobe.isFavoriteInWeb = true
                     ranobe.isFavorite = true

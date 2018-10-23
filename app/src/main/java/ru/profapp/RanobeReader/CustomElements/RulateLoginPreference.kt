@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import io.reactivex.Single
 import ru.profapp.RanobeReader.Common.Constants
-import ru.profapp.RanobeReader.JsonApi.RulateRepository
+import ru.profapp.RanobeReader.Network.Repositories.RulateRepository
 import ru.profapp.RanobeReader.R
 
 class RulateLoginPreference(context: Context, attrs: AttributeSet) : BaseLoginPreference(context, attrs) {
@@ -12,6 +12,7 @@ class RulateLoginPreference(context: Context, attrs: AttributeSet) : BaseLoginPr
 
     init {
         setDialogIcon(R.mipmap.ic_rulate)
+        sharedPref = context.getSharedPreferences(Constants.Rulate_Login_Pref, Context.MODE_PRIVATE)
     }
 
     override fun auth(): Single<Array<String>> {

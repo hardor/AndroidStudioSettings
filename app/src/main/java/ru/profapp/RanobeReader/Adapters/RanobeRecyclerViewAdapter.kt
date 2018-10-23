@@ -35,7 +35,6 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
     private val sPref = context.getSharedPreferences(last_chapter_id_Pref, Context.MODE_PRIVATE)
     private val lastChapterIdPref = context.getSharedPreferences(Constants.last_chapter_id_Pref, Context.MODE_PRIVATE)
 
-    private val imageOptions: RequestOptions = RequestOptions().placeholder(R.drawable.ic_adb_black_24dp).error(R.drawable.ic_error_outline_black_24dp).fitCenter()
     var onLoadMoreListener: OnLoadMoreListener? = null
 
     var isLoading: Boolean = false
@@ -125,8 +124,11 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
 
                 if (chapterList.isNotEmpty()) {
 
-                    val templist = chapterList.filter { it.canRead }
-                    val chapterlist2 = templist.subList(0, Math.min(Constants.chaptersNum, templist.size))
+                    var templist = chapterList.filter { it.canRead }
+                    if(!templist.any()){
+                        templist = chapterList.take(Constants.chaptersNum)
+                    }
+                    val chapterlist2 = templist.take(Constants.chaptersNum)
                     var checked = false
                     if (lastChapterIdPref != null && lastChapterIdPref.contains(chapterlist2.first().ranobeUrl)) {
                         val lastId = lastChapterIdPref.getInt(chapterlist2.first().ranobeUrl, -1)

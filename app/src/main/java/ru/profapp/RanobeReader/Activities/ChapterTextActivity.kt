@@ -28,9 +28,9 @@ import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Helpers.LogHelper
 import ru.profapp.RanobeReader.Helpers.ThemeHelper
-import ru.profapp.RanobeReader.JsonApi.RanobeHubRepository
-import ru.profapp.RanobeReader.JsonApi.RanobeRfRepository
-import ru.profapp.RanobeReader.JsonApi.RulateRepository
+import ru.profapp.RanobeReader.Network.Repositories.RanobeHubRepository
+import ru.profapp.RanobeReader.Network.Repositories.RanobeRfRepository
+import ru.profapp.RanobeReader.Network.Repositories.RulateRepository
 import ru.profapp.RanobeReader.Models.*
 import ru.profapp.RanobeReader.MyApp
 import ru.profapp.RanobeReader.R

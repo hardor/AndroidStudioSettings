@@ -46,7 +46,7 @@
   <string name="chapters">Chapters</string>
   <string name="description">Description</string>
   <string name="additional_information">Additional Information</string>
-  <string name="title_activity_chapter_text" translatable="false">ChapterText</string>
+  <string name="title_activity_chapter_text" translatable="false"/>
   <string name="previous">Previous</string>
   <string name="next">Next</string>
   <string name="logo" translatable="false">Logo</string>
@@ -176,6 +176,7 @@
   <string name="allow_external_storage">Please allow access to your storage</string>
   <string name="allow">Allow</string>
   <string name="error">Error</string>
+  <string name="saved_info">We automatically save all downloaded chapters to reduce the load on the sites</string>
 
 
 </resources>
