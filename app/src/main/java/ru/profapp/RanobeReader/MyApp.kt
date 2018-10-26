@@ -75,6 +75,7 @@ class MyApp : Application() {
         lateinit var database: DatabaseDao
         var ranobe: Ranobe? = null
         var refWatcher: RefWatcher? = null
+        var useVolumeButtonsToScroll: Boolean = false
 
     }
 

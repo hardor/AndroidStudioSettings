@@ -138,6 +138,15 @@ object RulateRepository : BaseRepository() {
         title = if (title.isBlank()) book.tTitle ?: title else title
         image = image ?: book.img?.replace("-5050", "")
 
+        if (!image.isNullOrBlank()) {
+            Completable.fromAction {
+                MyApp.database.ranobeImageDao().insert(RanobeImage(url, image!!))
+            }?.subscribeOn(Schedulers.io())?.subscribe({}, { error ->
+                LogHelper.logError(LogHelper.LogType.ERROR, "", "", error, false)
+            })
+
+        }
+
         lang = lang ?: book.lang
         try {
 
@@ -221,7 +230,7 @@ object RulateRepository : BaseRepository() {
     var instance: IRulateApiService = create()
 
     fun create(): IRulateApiService {
-        val httpClient = OkHttpClient().newBuilder().addInterceptor(ApiKeyInterceptor())
+        val httpClient = baseClient.addInterceptor(ApiKeyInterceptor())
         val retrofit = Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(gson))

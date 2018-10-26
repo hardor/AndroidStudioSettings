@@ -95,6 +95,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             addPreferencesFromResource(R.xml.pref_general)
             setHasOptionsMenu(true)
             findPreference(getString(R.string.pref_general_app_theme)).onPreferenceChangeListener = sChangePreferenceListener
+            findPreference(getString(R.string.pref_general_volume_scroll)).onPreferenceChangeListener = sChangePreferenceListener
         }
 
         override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -240,11 +241,14 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 
         private val sChangePreferenceListener = Preference.OnPreferenceChangeListener { preference, value ->
 
-            when {
-                preference.key == preference.context.getString(R.string.pref_general_app_theme) -> {
+            when (preference.key) {
+                preference.context.getString(R.string.pref_general_app_theme) -> {
 
-                    ThemeHelper.setTheme(java.lang.Boolean.valueOf(value.toString()))
+                    ThemeHelper.setTheme(value.toString().toBoolean())
                     ThemeHelper.onActivityCreateSetTheme()
+                }
+                preference.context.getString(R.string.pref_general_volume_scroll) -> {
+                    MyApp.useVolumeButtonsToScroll =value.toString().toBoolean()
                 }
             }
 

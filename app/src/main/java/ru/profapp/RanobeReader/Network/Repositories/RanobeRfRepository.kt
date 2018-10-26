@@ -2,14 +2,19 @@ package ru.profapp.RanobeReader.Network.Repositories
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import io.reactivex.Completable
 import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.profapp.RanobeReader.Common.Constants
+import ru.profapp.RanobeReader.Helpers.LogHelper
 import ru.profapp.RanobeReader.Helpers.StringHelper
 import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.Models.Ranobe
+import ru.profapp.RanobeReader.Models.RanobeImage
+import ru.profapp.RanobeReader.MyApp
 import ru.profapp.RanobeReader.Network.DTO.RanoberfDTO.ResultBookInfo
 import ru.profapp.RanobeReader.Network.DTO.RanoberfDTO.RfBook
 import ru.profapp.RanobeReader.Network.DTO.RanoberfDTO.RfChapter
@@ -65,6 +70,14 @@ object RanobeRfRepository : BaseRepository() {
                     ranobe.title = book.label ?: ranobe.title
                     ranobe.engTitle = book.value?.replace(book.label + " / ", "")
                     ranobe.image = book.image
+                    if (!book.image.isNullOrBlank()) {
+                        Completable.fromAction {
+                            MyApp.database.ranobeImageDao().insert(RanobeImage(ranobe.url, book.image!!))
+                        }?.subscribeOn(Schedulers.io())?.subscribe({}, { error ->
+                            LogHelper.logError(LogHelper.LogType.ERROR, "", "", error, false)
+                        })
+
+                    }
                     or.add(ranobe)
                 }
             }
@@ -155,7 +168,17 @@ object RanobeRfRepository : BaseRepository() {
         title = if (title.isBlank()) book.title ?: title else title
         url = if (url.isBlank()) Constants.RanobeSite.RanobeRf.url + book.url else url
         readyDate = readyDate ?: book.lastUpdatedBook?.times(1000)?.let { Date(it) }
-        image = image ?: book.image?.desktop?.image
+        image = image ?: book.image?.mobile?.image?:book.image?.desktop?.image
+
+        if (!image.isNullOrBlank()) {
+            Completable.fromAction {
+                MyApp.database.ranobeImageDao().insert(RanobeImage(url, image!!))
+            }?.subscribeOn(Schedulers.io())?.subscribe({}, { error ->
+                LogHelper.logError(LogHelper.LogType.ERROR, "", "", error, false)
+            })
+
+        }
+
         rating = rating ?: "Likes: ${book.likes}, dislikes:${book.dislikes}"
 
 
@@ -231,6 +254,7 @@ object RanobeRfRepository : BaseRepository() {
         val retrofit = Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
+                .client(baseClient.build())
                 .baseUrl("https://xn--80ac9aeh6f.xn--p1ai")
                 .build()
         return retrofit.create(IRanobeRfApiService::class.java)

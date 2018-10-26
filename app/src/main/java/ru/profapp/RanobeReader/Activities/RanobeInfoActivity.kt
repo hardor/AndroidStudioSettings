@@ -34,6 +34,7 @@ import ru.profapp.RanobeReader.Adapters.CommentsRecyclerViewAdapter
 import ru.profapp.RanobeReader.Adapters.ExpandableChapterRecyclerViewAdapter
 import ru.profapp.RanobeReader.BuildConfig
 import ru.profapp.RanobeReader.Common.Constants
+import ru.profapp.RanobeReader.Common.Constants.is_readed_Pref
 import ru.profapp.RanobeReader.Common.Constants.last_chapter_id_Pref
 import ru.profapp.RanobeReader.Helpers.LogHelper
 import ru.profapp.RanobeReader.Helpers.ThemeHelper
@@ -203,7 +204,7 @@ class RanobeInfoActivity : AppCompatActivity() {
 
     private fun loadChapters() {
         recycleChapterList.clear()
-        sPref = mContext!!.getSharedPreferences(last_chapter_id_Pref, Context.MODE_PRIVATE)
+        sPref = mContext!!.getSharedPreferences(is_readed_Pref, Context.MODE_PRIVATE)
         lastChapterIdPref = mContext!!.getSharedPreferences(last_chapter_id_Pref, Context.MODE_PRIVATE)
 
         val request = currentRanobe.updateRanobe(mContext!!).map {
@@ -212,8 +213,10 @@ class RanobeInfoActivity : AppCompatActivity() {
                 val lastId: Int = lastChapterIdPref?.getInt(currentRanobe.url, -1) ?: -1
                 if (lastId > 0) {
                     checked = true
-                    for (chapter in currentRanobe.chapterList)
-                        chapter.isRead = chapter.id!! <= lastId
+                    for (chapter in currentRanobe.chapterList) {
+                        if (chapter.id != null)
+                            chapter.isRead = chapter.id!! <= lastId
+                    }
 
                 }
             }

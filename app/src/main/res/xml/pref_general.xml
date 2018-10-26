@@ -9,6 +9,13 @@
     android:summaryOn="@string/summary_dark_theme_off"
     android:title="@string/app_theme"/>
 
+  <SwitchPreference
+    android:defaultValue="false"
+    android:key="@string/pref_general_volume_scroll"
+    android:summaryOff="@string/summary_volume_scroll_on"
+    android:summaryOn="@string/summary_volume_scroll_off"
+    android:title="@string/volume_scroll"/>
+
   <ru.profapp.RanobeReader.CustomElements.NumberPickerPreference
     android:defaultValue="16"
     android:key="@string/pref_general_text_size"

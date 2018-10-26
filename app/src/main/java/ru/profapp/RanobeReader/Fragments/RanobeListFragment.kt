@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.snackbar.Snackbar
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.Single.zip
@@ -149,7 +150,7 @@ class RanobeListFragment : Fragment() {
                 .map { ranobeList ->
                     for (ranobe in ranobeList) {
                         if (ranobe.image.isNullOrBlank()) {
-                            MyApp.database.ranobeImageDao().getImageByUrl(ranobe.url).observeOn(AndroidSchedulers.mainThread())?.subscribeOn(Schedulers.io())?.subscribe { it ->
+                            MyApp.database.ranobeImageDao().getImageByUrl(ranobe.url).subscribeOn(Schedulers.io())?.subscribe { it ->
                                 ranobe.image = it.image
                             }
                         }
@@ -189,7 +190,7 @@ class RanobeListFragment : Fragment() {
                 .subscribe({ result ->
                     if (fragmentType == Constants.FragmentType.Saved) {
                         //Todo::
-                        // Snackbar.make(swipeRefreshLayout, R.string.saved_info, Snackbar.LENGTH_SHORT).show()
+                        Snackbar.make(swipeRefreshLayout, R.string.saved_info, Snackbar.LENGTH_SHORT).show()
                     }
 
                     if (result.any()) {
@@ -358,8 +359,9 @@ class RanobeListFragment : Fragment() {
                 val newRanobe = Ranobe()
                 newRanobe.url = group.key
                 newRanobe.title = group.value.first().ranobeName
-                val chapterList = mutableListOf<Chapter>()
-                chapterList.addAll(group.value.map { it -> Chapter(it) })
+                var chapterList = mutableListOf<Chapter>()
+                chapterList.addAll(group.value.asSequence().map { it -> Chapter(it) }.sortedByDescending { it -> it.id }.toList())
+
                 newRanobe.chapterList = chapterList
                 savedList.add(newRanobe)
             }

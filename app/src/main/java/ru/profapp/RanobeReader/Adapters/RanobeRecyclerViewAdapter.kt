@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import ru.profapp.RanobeReader.Activities.RanobeInfoActivity
 import ru.profapp.RanobeReader.Common.Constants
-import ru.profapp.RanobeReader.Common.Constants.last_chapter_id_Pref
 import ru.profapp.RanobeReader.Common.OnLoadMoreListener
 import ru.profapp.RanobeReader.Fragments.RanobeListFragment.OnListFragmentInteractionListener
 import ru.profapp.RanobeReader.Models.Ranobe
@@ -31,8 +30,7 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
     private val VIEW_TYPE_GROUP_TITLE = 2
     private val glide: RequestManager = GlideApp.with(context)
 
-    private val sPref = context.getSharedPreferences(last_chapter_id_Pref, Context.MODE_PRIVATE)
-    private val lastChapterIdPref = context.getSharedPreferences(Constants.last_chapter_id_Pref, Context.MODE_PRIVATE)
+    private val sPref = context.getSharedPreferences(Constants.is_readed_Pref, Context.MODE_PRIVATE)
 
     var onLoadMoreListener: OnLoadMoreListener? = null
 
@@ -129,12 +127,14 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
                     }
                     val chapterlist2 = templist.take(Constants.chaptersNum)
                     var checked = false
+                    val lastChapterIdPref = context.getSharedPreferences(Constants.last_chapter_id_Pref, Context.MODE_PRIVATE)
                     if (lastChapterIdPref != null && lastChapterIdPref.contains(chapterlist2.first().ranobeUrl)) {
                         val lastId = lastChapterIdPref.getInt(chapterlist2.first().ranobeUrl, -1)
                         if (lastId > 0) {
                             checked = true
                             for (chapter in chapterlist2) {
-                                chapter.isRead = chapter.id!! <= lastId
+                                if (chapter.id != null)
+                                    chapter.isRead = chapter.id!! <= lastId
                             }
                         }
 

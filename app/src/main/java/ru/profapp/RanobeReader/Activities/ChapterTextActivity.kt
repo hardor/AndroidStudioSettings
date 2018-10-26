@@ -90,7 +90,7 @@ class ChapterTextActivity : AppCompatActivity() {
         mContext = this@ChapterTextActivity
 
         currentRanobe = MyApp.ranobe
-        mChapterList = currentRanobe?.chapterList?.filter { it -> it.canRead } ?: mChapterList
+        mChapterList = currentRanobe?.chapterList ?: mChapterList
 
 
         mChapterCount = mChapterList.size
@@ -156,15 +156,17 @@ class ChapterTextActivity : AppCompatActivity() {
 
         initWebView()
 
-        val request = Completable.fromAction {
-            MyApp.database.ranobeHistoryDao().insertNewRanobe(
-                    RanobeHistory(currentRanobe?.url!!, currentRanobe?.title!!, currentRanobe?.description)
-            )
-        }.subscribeOn(Schedulers.io()).subscribe({}, { error ->
-            LogHelper.logError(LogHelper.LogType.ERROR, "", "", error, false)
-        })
+        if (!currentRanobe?.url.isNullOrBlank() && !currentRanobe?.title.isNullOrBlank()) {
+            val request = Completable.fromAction {
+                MyApp.database.ranobeHistoryDao().insertNewRanobe(
+                        RanobeHistory(currentRanobe?.url!!, currentRanobe?.title!!, currentRanobe?.description)
+                )
+            }.subscribeOn(Schedulers.io()).subscribe({}, { error ->
+                LogHelper.logError(LogHelper.LogType.ERROR, "", "", error, false)
+            })
+            compositeDisposable.add(request)
+        }
 
-        compositeDisposable.add(request)
 
         prevMenu = findViewById(R.id.navigation_prev)
         nextMenu = findViewById(R.id.navigation_next)
@@ -212,7 +214,6 @@ class ChapterTextActivity : AppCompatActivity() {
                     LogHelper.logError(LogHelper.LogType.ERROR, "GetChapterText", "", error.fillInStackTrace())
                     if (error is UnknownHostException)
                         Toast.makeText(mContext, R.string.error_connection, Toast.LENGTH_SHORT).show()
-
 
                     val summary = ("<html><style>img{display: inline;height: auto;max-width: 90%;}</style><body "
                             + style + ">" + "<b>" + mCurrentChapter.title + "</b>" + "</br>"
@@ -390,20 +391,24 @@ class ChapterTextActivity : AppCompatActivity() {
         val action = event.action
         val keyCode = event.keyCode
 
-        return when (keyCode) {
-            KeyEvent.KEYCODE_VOLUME_UP -> {
-                if (action == KeyEvent.ACTION_DOWN) {
-                    mWebView.pageUp(false)
+        if (!MyApp.useVolumeButtonsToScroll) {
+            return super.dispatchKeyEvent(event)
+        } else {
+            return when (keyCode) {
+                KeyEvent.KEYCODE_VOLUME_UP -> {
+                    if (action == KeyEvent.ACTION_DOWN) {
+                        mWebView.pageUp(false)
+                    }
+                    true
                 }
-                true
-            }
-            KeyEvent.KEYCODE_VOLUME_DOWN -> {
-                if (action == KeyEvent.ACTION_DOWN) {
-                    mWebView.pageDown(false)
+                KeyEvent.KEYCODE_VOLUME_DOWN -> {
+                    if (action == KeyEvent.ACTION_DOWN) {
+                        mWebView.pageDown(false)
+                    }
+                    true
                 }
-                true
+                else -> super.dispatchKeyEvent(event)
             }
-            else -> super.dispatchKeyEvent(event)
         }
     }
 
