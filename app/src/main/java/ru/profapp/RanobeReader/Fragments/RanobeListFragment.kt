@@ -13,7 +13,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.android.material.snackbar.Snackbar
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.Single.zip
@@ -23,8 +22,7 @@ import io.reactivex.exceptions.CompositeException
 import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReader.Adapters.RanobeRecyclerViewAdapter
 import ru.profapp.RanobeReader.Common.Constants
-import ru.profapp.RanobeReader.Common.Constants.RanobeSite.None
-import ru.profapp.RanobeReader.Common.Constants.RanobeSite.Title
+import ru.profapp.RanobeReader.Common.Constants.RanobeSite.*
 import ru.profapp.RanobeReader.Common.Constants.fragmentBundle
 import ru.profapp.RanobeReader.Common.OnLoadMoreListener
 import ru.profapp.RanobeReader.Helpers.LogHelper
@@ -161,7 +159,7 @@ class RanobeListFragment : Fragment() {
                 }  //Add titles
                 .map {
                     val newRanobeList = mutableListOf<Ranobe>()
-                    val groupList = it.groupBy { g -> g.ranobeSite }
+                    val groupList = it.asSequence().sortedByDescending { s -> s.readyDate }.groupBy { g -> g.ranobeSite }
                     for (siteGroup in groupList) {
                         val webGroupList = siteGroup.value.groupBy { g -> g.isFavoriteInWeb }
                         for (webGroup in webGroupList) {
@@ -190,7 +188,8 @@ class RanobeListFragment : Fragment() {
                 .subscribeOn(Schedulers.io())
                 .subscribe({ result ->
                     if (fragmentType == Constants.FragmentType.Saved) {
-                        Snackbar.make(swipeRefreshLayout, R.string.saved_info, Snackbar.LENGTH_SHORT).show()
+                        //Todo::
+                        // Snackbar.make(swipeRefreshLayout, R.string.saved_info, Snackbar.LENGTH_SHORT).show()
                     }
 
                     if (result.any()) {
@@ -211,18 +210,22 @@ class RanobeListFragment : Fragment() {
     private fun onItemsLoadFinished(error: Throwable? = null) {
 
         if (error != null) {
-            if (error is CompositeException) {
+
+            if (error is UnknownHostException) {
+                Toast.makeText(mContext, R.string.error_connection, Toast.LENGTH_SHORT).show()
+            } else if (error is CompositeException) {
                 var errorConnection = false
                 for (err in error.exceptions) {
                     if (err is UnknownHostException) {
-                        Toast.makeText(mContext, R.string.ErrorConnection, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(mContext, R.string.error_connection, Toast.LENGTH_SHORT).show()
                         errorConnection = true
                         break
                     }
                 }
-                if (!errorConnection) Toast.makeText(mContext, R.string.Error, Toast.LENGTH_SHORT).show()
+                if (!errorConnection)
+                    Toast.makeText(mContext, R.string.error, Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(mContext, R.string.Error, Toast.LENGTH_SHORT).show()
+                Toast.makeText(mContext, R.string.error, Toast.LENGTH_SHORT).show()
             }
 
         }
@@ -268,21 +271,45 @@ class RanobeListFragment : Fragment() {
 
 
             return zip(
-                    getRulateWebFavorite(),
-                    getRanobeRfWebFavorite(),
-                    getRanobeHubWebFavorite(),
-                    MyApp.database.ranobeDao().getLocalFavoriteRanobes(),
+                    getRulateWebFavorite().onErrorReturn {
+                        listOf<Ranobe>(Ranobe(Error))
+                    },
+                    getRanobeRfWebFavorite().onErrorReturn {
+                        return@onErrorReturn listOf<Ranobe>(Ranobe(Error))
+                    },
+
+                    getRanobeHubWebFavorite().onErrorReturn {
+                        return@onErrorReturn listOf<Ranobe>(Ranobe(Error))
+                    },
+                    MyApp.database.ranobeDao().getLocalFavoriteRanobes().onErrorReturn {
+                        return@onErrorReturn listOf<Ranobe>()
+                    },
                     io.reactivex.functions.Function4<List<Ranobe>, List<Ranobe>, List<Ranobe>, List<Ranobe>, List<Ranobe>>
-                    { Rulate, RanobeRfW, RanobeHub, local ->
+                    { Rulate, RanobeRf, RanobeHub, local ->
 
                         val newList = mutableListOf<Ranobe>()
-                        newList.addAll(Rulate)
-                        newList.addAll(RanobeRfW)
-                        newList.addAll(RanobeHub)
+
+                        val isRulateError = Rulate.firstOrNull()?.ranobeSite == Constants.RanobeSite.Error.url
+                        val isRanobeRfError = RanobeRf.firstOrNull()?.ranobeSite == Constants.RanobeSite.Error.url
+                        val isRanobeHubError = RanobeHub.firstOrNull()?.ranobeSite == Constants.RanobeSite.Error.url
+
+                        if (!isRulateError) newList.addAll(Rulate)
+                        if (!isRanobeRfError) newList.addAll(RanobeRf)
+                        if (!isRanobeHubError) newList.addAll(RanobeHub)
+
+                        if (isRanobeHubError || isRulateError || isRanobeRfError) {
+                            val errorString: String = if (isRulateError) "Rulate " else "" + if (isRanobeRfError) "Ранобэ.рф " else "" + if (isRanobeHubError) "RanobeHub " else ""
+                            activity?.runOnUiThread {
+                                Toast.makeText(mContext, getString(R.string.error_connection_to) + errorString, Toast.LENGTH_SHORT).show()
+                            }
+                        }
 
                         for (ranobe in local) {
                             if (ranobe.isFavoriteInWeb && !newList.any { it.url == ranobe.url }) {
-                                MyApp.database.ranobeDao().deleteWeb(ranobe.url)
+                                if ((!isRulateError && ranobe.ranobeSite == Constants.RanobeSite.Rulate.url)
+                                        || (!isRanobeRfError && ranobe.ranobeSite == Constants.RanobeSite.RanobeRf.url)
+                                        || (!isRanobeHubError && ranobe.ranobeSite == Constants.RanobeSite.RanobeHub.url))
+                                    MyApp.database.ranobeDao().deleteWeb(ranobe.url)
                             } else if (!ranobe.isFavoriteInWeb) {
                                 newList.add(ranobe)
                             }
@@ -296,7 +323,6 @@ class RanobeListFragment : Fragment() {
                 progressDialog!!.max = ranobeList.size
                 for (ranobe in ranobeList) {
                     activity?.runOnUiThread {
-
                         progressDialog!!.setTitle(ranobe.title)
                         progressDialog!!.incrementProgressBy(1)
                     }

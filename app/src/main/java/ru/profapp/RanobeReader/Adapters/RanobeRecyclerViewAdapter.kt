@@ -11,7 +11,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
-import com.bumptech.glide.request.RequestOptions
 import ru.profapp.RanobeReader.Activities.RanobeInfoActivity
 import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Common.Constants.last_chapter_id_Pref
@@ -125,7 +124,7 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
                 if (chapterList.isNotEmpty()) {
 
                     var templist = chapterList.filter { it.canRead }
-                    if(!templist.any()){
+                    if (!templist.any()) {
                         templist = chapterList.take(Constants.chaptersNum)
                     }
                     val chapterlist2 = templist.take(Constants.chaptersNum)
@@ -135,9 +134,7 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
                         if (lastId > 0) {
                             checked = true
                             for (chapter in chapterlist2) {
-                                if (chapter.id!! <= lastId) {
-                                    chapter.isRead = true
-                                }
+                                chapter.isRead = chapter.id!! <= lastId
                             }
                         }
 

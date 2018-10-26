@@ -54,7 +54,6 @@ interface RanobeDao {
     @Query("SELECT * FROM ranobe ")
     fun getAll(): List<Ranobe>
 
-
     @Query("SELECT * FROM ranobe WHERE IsFavorite = 1 AND url=:UrlToRanobe LIMIT 1")
     fun isRanobeFavorite(UrlToRanobe: String): Maybe<Ranobe>
 

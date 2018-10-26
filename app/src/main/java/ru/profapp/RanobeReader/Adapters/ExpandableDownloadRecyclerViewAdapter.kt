@@ -78,7 +78,7 @@ class ExpandableDownloadRecyclerViewAdapter(private val context: Context) : Recy
             } else {
                 currentCheckBox.setBackgroundColor(Color.GRAY)
                 currentCheckBox.isEnabled = false
-                currentCheckBox.isChecked =false
+                currentCheckBox.isChecked = false
             }
 
             if (childItem.canRead && childItem.isRead) {

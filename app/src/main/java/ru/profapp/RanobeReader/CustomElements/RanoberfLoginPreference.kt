@@ -20,7 +20,7 @@ class RanoberfLoginPreference(context: Context, attrs: AttributeSet) : BaseLogin
         val res = super.auth()
         return res.flatMap { it ->
 
-            if ( it[0].toBoolean()) {
+            if (it[0].toBoolean()) {
                 return@flatMap RanobeRfRepository.login(username, password)
             }
             return@flatMap Single.just(it)

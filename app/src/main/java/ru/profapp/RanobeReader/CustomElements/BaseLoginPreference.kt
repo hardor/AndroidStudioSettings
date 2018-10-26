@@ -6,7 +6,6 @@ import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.DialogPreference
-import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
 import android.widget.EditText
@@ -98,7 +97,7 @@ open class BaseLoginPreference(context: Context, attrs: AttributeSet) : DialogPr
 
                     }, { error ->
                         sharedPref.edit().putString(Constants.KEY_Token, "").apply()
-                        resultTextView.text = context.getString(R.string.responce_error)
+                        resultTextView.text = context.getString(R.string.response_error)
                         resultTextView.visibility = View.VISIBLE
                     })
             compositeDisposable.add(loginRequest)

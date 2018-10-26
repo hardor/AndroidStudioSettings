@@ -85,19 +85,26 @@ class MainActivity : AppCompatActivity(),
         val drawer = findViewById<DrawerLayout>(R.id.drawer_layout)
 
         val ft = supportFragmentManager.beginTransaction()
-        currentFragment = Constants.FragmentType.Favorite.name
-        currentTitle = resources.getText(R.string.favorite).toString()
-        if (savedInstanceState != null) {
+
+        if (savedInstanceState == null) {
+            currentFragment = Constants.FragmentType.Favorite.name
+            currentTitle = resources.getText(R.string.favorite).toString()
+            ft.replace(R.id.mainFrame, RanobeListFragment.newInstance(currentFragment!!), MY_FRAGMENT).commit()
+        } else {
             currentFragment = savedInstanceState.getString("Fragment", Constants.FragmentType.Favorite.name)
             currentTitle = savedInstanceState.getString("Title", resources.getText(R.string.favorite).toString())
-        }
-        if (currentFragment == Constants.FragmentType.Search.name) {
-            ft.replace(R.id.mainFrame, SearchFragment.newInstance())
-        } else {
-            ft.replace(R.id.mainFrame, RanobeListFragment.newInstance(currentFragment!!))
+
+            val myFragment = supportFragmentManager.findFragmentByTag("MY_FRAGMENT")
+            if (myFragment == null) {
+                if (currentFragment == Constants.FragmentType.Search.name) {
+                    ft.replace(R.id.mainFrame, SearchFragment.newInstance(), MY_FRAGMENT)
+                } else {
+                    ft.replace(R.id.mainFrame, RanobeListFragment.newInstance(currentFragment!!), MY_FRAGMENT)
+                }
+                ft.commit()
+            }
         }
 
-        ft.commit()
         title = currentTitle
 
         val floatingActionButton = findViewById<FloatingActionButton>(R.id.fab)
@@ -251,7 +258,7 @@ class MainActivity : AppCompatActivity(),
                 adView!!.loadAd(AdRequest.Builder().build())
             }
             val ft = supportFragmentManager.beginTransaction()
-            ft.replace(R.id.mainFrame, fragment)
+            ft.replace(R.id.mainFrame, fragment, MY_FRAGMENT)
             ft.commit()
         }
 
@@ -273,16 +280,23 @@ class MainActivity : AppCompatActivity(),
         super.onDestroy()
         adView?.destroy()
     }
+
     override fun onResume() {
         super.onResume()
         adView?.resume()
-        if (currentTheme != AppCompatDelegate.getDefaultNightMode())
+        if (currentTheme != AppCompatDelegate.getDefaultNightMode()) {
             recreate()
+        }
+
     }
 
     override fun onPause() {
         super.onPause()
         adView?.pause()
+    }
+
+    companion object {
+        const val MY_FRAGMENT = "MY_FRAGMENT"
     }
 
 }

@@ -1,7 +1,6 @@
 package ru.profapp.RanobeReader.Network.Endpoints
 
 import io.reactivex.Single
-import retrofit2.Response
 import retrofit2.http.*
 import ru.profapp.RanobeReader.Network.DTO.RanoberfDTO.*
 
@@ -30,7 +29,6 @@ interface IRanobeRfApiService {
     @FormUrlEncoded
     @POST("/v1/bookmark/add/")
     fun AddBookmark(@Header("Authorization") token: String, @Field("bookId") book_id: Int?, @Field("partId") part_id: Int?): Single<RfBookmarkGson>
-
 
     @FormUrlEncoded
     @HTTP(method = "DELETE", path = "/v1/bookmark/delete/", hasBody = true)

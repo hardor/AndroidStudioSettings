@@ -24,7 +24,7 @@ class HistoryRecyclerViewAdapter(private val context: Context, private val mValu
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.item = mValues[position]
-        holder.chTextView.text = "${holder.item.chapterName} ${holder.item.progress}"
+        holder.chTextView.text = holder.item.chapterName
 
         holder.rTextView.text = "${DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.SHORT, Locale.getDefault()).format(holder.item.readDate)} ${holder.item.ranobeName}"
 

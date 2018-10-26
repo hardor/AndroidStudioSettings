@@ -6,22 +6,19 @@
   <string name="favorite">Избранное</string>
   <string name="action_settings">Настройки</string>
   <string name="text_size">Размер текста</string>
-  <string name="hide_unavailable_chapters">Скрыть недоступные (платные) главы</string>
-  <string name="show_all_chapter">Показывать все главы</string>
-  <string name="show_only_readable">Показывать только доступные главы</string>
   <string name="description">Описание</string>
   <string name="additional_information">Дополнительная информация</string>
   <string name="chapters">Главы</string>
   <string name="pref_header_general">Общие</string>
   <string name="next">Следующая</string>
   <string name="previous">Предыдущая</string>
-  <string name="Delete_downloaded_chapters">Удалить скачанные главы</string>
-  <string name="сlean_cache">Очистить кэш и скачанные главы</string>
+  <string name="delete_cache_summary">Удалить скачанные главы</string>
+  <string name="delete_cache_chapters">Очистить кэш ихображений и скачанные главы</string>
   <string name="select_text_size">Выберите размер текста</string>
-  <string name="history_cleaned">История очищена</string>
-  <string name="cache_cleaned">Кеш очищен</string>
-  <string name="clean_history">Очистить историю</string>
-  <string name="clean_history_full">Очистить историю о прочитанных главах</string>
+  <string name="history_removed">История очищена</string>
+  <string name="cache_cremoved">Кеш очищен</string>
+  <string name="clear_history">Очистить историю</string>
+  <string name="clear_history_summary">Очистить историю о прочитанных ранобэ и главах</string>
   <string name="summary_login">Авторизируйтесь для синхронизации закладок</string>
   <string name="rulate_authorization">Авторизация Rulate</string>
   <string name="search">Поиск</string>
@@ -31,10 +28,8 @@
 
   <string name="general">Общие</string>
   <string name="settings">Настройки</string>
-  <string name="load_all">Загрузить всё</string>
   <string name="comments">Комментарии</string>
 
-  <string name="login_failed">Ошибка входа…</string>
   <string name="load_ranobes">Загрузка избранных ранобэ</string>
 
   <string name="load_please_wait">Пожалуйста подождите завершения загрузки</string>
@@ -42,27 +37,17 @@
   <string name="added_to_local">было добавлено в локальные закладки.</string>
   <string name="added_to_web">было добавлено в web закладки.</string>
   <string name="saved_chapters">Сохраненные главы</string>
-  <string name="bookmarks_cleaned">Локальные закладки очищены</string>
-  <string name="Delete_favorited_ranobes">Очистить все локальные избранные закладки</string>
-  <string name="сlean_favorite">Очистить локальные закладки</string>
-  <string name="auto_save_text">Автоматически сохранять главы</string>
-  <string name="summary_save_text_on">Автоматически сохранять текст при открытии главы</string>
-  <string name="summary_save_text_off">Сохранять текст только вручную</string>
+  <string name="bookmarks_removed">Локальные закладки очищены</string>
+  <string name="delete_favorite_ranobes_summary">Очистить все локальные избранные закладки</string>
+  <string name="delete_favorite_ranobes">Очистить локальные закладки</string>
   <string name="search_hereHint">Строка поиска</string>
   <string name="feedback">Отзыв</string>
 
-  <string name="action_bookmark">Закладка</string>
-  <string name="bookmark_saved">Закладка добавлена</string>
   <string name="app_theme">Темная тема</string>
   <string name="summary_dark_theme_off">Выключить темную тему</string>
   <string name="summary_dark_theme_on">Включить темную тему</string>
   <string name="login_email">Логин/E-mail</string>
   <string name="ranoberf_authorization">Авторизация ранобэ.рф</string>
-  <string name="auth_error">Ошибка авторизации</string>
-  <string name="auth_succes">Авторизация успешна</string>
-  <string name="update_to_remove">Пожалуйста обновите список избранных для удаления этой
-        закладки
-    </string>
   <string name="select_all">Выбрать все</string>
   <string name="select_none">Снять выбор</string>
   <string name="download">Скачать</string>
@@ -70,21 +55,23 @@
         отмеченные?
     </string>
   <string name="title_activity_download">Загрузка</string>
-  <string name="sort">Сортировка</string>
   <string name="task_finished">Загрузка завершена</string>
-  <string name="add_to_favorite">Добавить в избранное</string>
   <string name="day_night">Day/Night</string>
   <string name="data">Данные</string>
   <string name="not_exist">Глава отсутствет</string>
-  <string name="Load_local_bookmarks">Загрузка локальных закладок</string>
   <string name="Load_from_Rulate">Загрузка закладок с сайта Rulate</string>
-  <string name="Load_from_RanobeRf">Загрузка закладок с сайта Ранобэ.рф</string>
-  <string name="Update_ranobe_info">Обновление информации о ранобэ</string>
   <string name="history">История</string>
   <string name="market_exist">PlayMarket не найден</string>
   <string name="browser_exist">Браузер не найден</string>
-  <string name="Error">Ошибка</string>
-  <string name="ErrorConnection">Ошибка соединения</string>
-  <string name="date_format">dd/MM/yyyy HH:mm</string>
+  <string name="error_connection">Ошибка соединения</string>
   <string name="saved_info">Мы автоматически сохраняем все загруженные главы для уменьшения нагрузки на сайты</string>
+  <string name="error">Ошибка</string>
+  <string name="allow_external_storage">Разрешите доступ к внутренней памяти</string>
+  <string name="backup_restore_nothing">Не найдены данные для восстановления/бэкапа</string>
+  <string name="backup_restore_success">Данные успешно восстановлены</string>
+  <string name="activity_backup_success">Данные успешно сохранены в память телефона</string>
+  <string name="response_error">Ошибка ответа сервера</string>
+  <string name="not_history">История пуста</string>
+  <string name="activity_backup_drive_desc">Мы автоматически сохраняем все загруженные главы для уменьшения нагрузки на сайты</string>
+  <string name="load_ranobes_from_db">"Загрузка избранного из базы "</string>
 </resources>

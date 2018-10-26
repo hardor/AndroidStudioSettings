@@ -64,7 +64,7 @@ class BackupActivity : AppCompatActivity() {
                     //    FileUtils.copyFile(dbShm, dbShm2)
                     //      FileUtils.copyFile(dbWal, dbWal2)
                     FileUtils.copyFile(prefLastChapterId, prefLastChapterId2)
-                    Snackbar.make(findViewById(android.R.id.content), getString(R.string.backup_buckup_success), Snackbar.LENGTH_LONG).show()
+                    Snackbar.make(findViewById(android.R.id.content), getString(R.string.activity_backup_success), Snackbar.LENGTH_LONG).show()
                 } else {
                     val res1 = FileUtils.copyFile(db2, db)
                     val res2 = FileUtils.copyFile(prefLastChapterId2, prefLastChapterId)

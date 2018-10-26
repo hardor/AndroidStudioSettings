@@ -8,14 +8,16 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Helpers.StringHelper
-import ru.profapp.RanobeReader.Network.Endpoints.IRanobeRfApiService
-import ru.profapp.RanobeReader.Network.DTO.RanoberfDTO.*
 import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.Models.Ranobe
+import ru.profapp.RanobeReader.Network.DTO.RanoberfDTO.ResultBookInfo
+import ru.profapp.RanobeReader.Network.DTO.RanoberfDTO.RfBook
+import ru.profapp.RanobeReader.Network.DTO.RanoberfDTO.RfChapter
+import ru.profapp.RanobeReader.Network.DTO.RanoberfDTO.Sequence
+import ru.profapp.RanobeReader.Network.Endpoints.IRanobeRfApiService
 import java.util.*
 
-object RanobeRfRepository : BaseRepository(){
-
+object RanobeRfRepository : BaseRepository() {
 
     private var sequence: String = ""
     val gson = Gson()
@@ -46,7 +48,7 @@ object RanobeRfRepository : BaseRepository(){
         return instance.Login(email, password).map {
             if (it.status == 200) {
                 return@map arrayOf("true", it.message, it.result.token)
-            } else arrayOf("false", it.message,"")
+            } else arrayOf("false", it.message, "")
         }
     }
 
@@ -208,7 +210,6 @@ object RanobeRfRepository : BaseRepository(){
         }
 
     }
-
 
     private infix fun Chapter.updateChapter(rChapter: RfChapter) {
 

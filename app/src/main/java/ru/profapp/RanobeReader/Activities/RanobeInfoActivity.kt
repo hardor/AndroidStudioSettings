@@ -94,7 +94,7 @@ class RanobeInfoActivity : AppCompatActivity() {
         fab = findViewById<FloatingActionButton>(R.id.fav_button)
         getFavoriteIcon()
 
-        fab.setOnClickListener { setToFavorite(fab) }
+        fab.setOnClickListener { setToFavorite() }
 
         val bookmarkFab = findViewById<FloatingActionButton>(R.id.bookmark_fab)
         bookmarkFab.setOnClickListener {
@@ -213,7 +213,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                 if (lastId > 0) {
                     checked = true
                     for (chapter in currentRanobe.chapterList)
-                        chapter.isRead = chapter.id!! < lastId
+                        chapter.isRead = chapter.id!! <= lastId
 
                 }
             }
@@ -300,7 +300,7 @@ class RanobeInfoActivity : AppCompatActivity() {
         return true
     }
 
-    private fun setToFavorite(item: FloatingActionButton) {
+    private fun setToFavorite() {
 
         if (!currentRanobe.isFavorite && !currentRanobe.isFavoriteInWeb) {
 
@@ -340,7 +340,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({ result ->
-                        item.setImageDrawable(favImage)
+                        fab.setImageDrawable(favImage)
                         if (result)
                             Toast.makeText(mContext, currentRanobe.title + " " + mContext!!.getString(R.string.added_to_web), Toast.LENGTH_SHORT).show()
                         else
@@ -384,7 +384,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({ result ->
                             if (result.first)
-                                item.setImageDrawable(notFavImage)
+                                fab.setImageDrawable(notFavImage)
                             else {
                                 Toast.makeText(mContext, result.second, Toast.LENGTH_SHORT).show()
                             }
@@ -401,7 +401,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                         .subscribe({
                             currentRanobe.isFavorite = false
                             currentRanobe.isFavoriteInWeb = false
-                            item.setImageDrawable(notFavImage)
+                            fab.setImageDrawable(notFavImage)
                         }, { error ->
                             LogHelper.logError(LogHelper.LogType.ERROR, "", "", error, false)
                         })

@@ -19,7 +19,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReader.BuildConfig
 import ru.profapp.RanobeReader.Common.Constants
-import ru.profapp.RanobeReader.Common.Constants.last_chapter_id_Pref
 import ru.profapp.RanobeReader.Helpers.ThemeHelper
 import ru.profapp.RanobeReader.MyApp
 import ru.profapp.RanobeReader.R
@@ -179,7 +178,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             super.onCreate(savedInstanceState)
             addPreferencesFromResource(R.xml.pref_data)
 
-            val cacheButton = findPreference(getString(R.string.CleanCacheButton))
+            val cacheButton = findPreference(getString(R.string.ClearCacheButton))
 
             cacheButton.setOnPreferenceClickListener { preference ->
 
@@ -189,20 +188,20 @@ class SettingsActivity : AppCompatPreferenceActivity() {
                         ?.observeOn(AndroidSchedulers.mainThread())
                         ?.subscribeOn(Schedulers.io())
                         ?.subscribe({
-                            Toast.makeText(activity, resources.getText(R.string.cache_cleaned),
+                            Toast.makeText(activity, resources.getText(R.string.cache_cremoved),
                                     Toast.LENGTH_SHORT).show()
                         }, {})
 
                 true
             }
 
-            val favButton = findPreference(getString(R.string.CleanLocalFavButton))
+            val favButton = findPreference(getString(R.string.ClearLocalFavButton))
             favButton.setOnPreferenceClickListener { preference ->
                 Completable.fromAction { MyApp.database.ranobeDao().cleanTable() }
                         ?.observeOn(AndroidSchedulers.mainThread())
                         ?.subscribeOn(Schedulers.io())
                         ?.subscribe({
-                            Toast.makeText(activity, resources.getText(R.string.bookmarks_cleaned),
+                            Toast.makeText(activity, resources.getText(R.string.bookmarks_removed),
                                     Toast.LENGTH_SHORT).show()
                         }, { })
 
@@ -210,16 +209,23 @@ class SettingsActivity : AppCompatPreferenceActivity() {
                 true
             }
 
-            val prefButton = findPreference(getString(R.string.CleanHistoryButton))
+            val clearReadChapterButton = findPreference(getString(R.string.ClearReadChapterButton))
+            clearReadChapterButton.setOnPreferenceClickListener { preference ->
+                activity!!.getSharedPreferences(Constants.is_readed_Pref, 0).edit().clear().apply()
+                activity!!.getSharedPreferences(Constants.last_chapter_id_Pref, 0).edit().clear().apply()
+                true
+            }
+
+            val prefButton = findPreference(getString(R.string.ClearHistoryButton))
             prefButton.setOnPreferenceClickListener { preference ->
-                activity!!.getSharedPreferences(last_chapter_id_Pref, 0).edit().clear().apply()
+                activity!!.getSharedPreferences(Constants.is_readed_Pref, 0).edit().clear().apply()
                 activity!!.getSharedPreferences(Constants.last_chapter_id_Pref, 0).edit().clear().apply()
 
                 Completable.fromAction { MyApp.database.ranobeHistoryDao().cleanHistory() }
                         ?.observeOn(AndroidSchedulers.mainThread())
                         ?.subscribeOn(Schedulers.io())
                         ?.subscribe({
-                            Toast.makeText(activity, resources.getText(R.string.history_cleaned), Toast.LENGTH_SHORT).show()
+                            Toast.makeText(activity, resources.getText(R.string.history_removed), Toast.LENGTH_SHORT).show()
                         }, { })
 
 
@@ -249,77 +255,6 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             return context.resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK >= Configuration.SCREENLAYOUT_SIZE_XLARGE
         }
     }
-
-    //    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    //    public static class ExportPreferenceFragment extends PreferenceFragment {
-    //
-    //        @Override
-    //        public void onCreate(Bundle savedInstanceState?) {
-    //            super.onCreate(savedInstanceState);
-    //            addPreferencesFromResource(R.xml.pref_export);
-    //
-    //            Preference exportButton = findPreference(getString(R.string.ExportButton));
-    //            exportButton.setOnPreferenceClickListener((Preference preference) -> {
-    //                final Context context = preference.getContext();
-    //
-    //                String fileName = "ranobeReader.backup";
-    //
-    //
-    //                File output = isNew File(context.getFilesDir(), fileName);
-    //                AsyncTask.execute(() -> {
-    //                try {
-    //                    String value = "";
-    //                    FileOutputStream fileout = isNew FileOutputStream(output.getAbsolutePath());
-    //                    OutputStreamWriter outputWriter = isNew OutputStreamWriter(fileout);
-    //
-    //                    List<Ranobe> ranobes = MyApp.database.RanobeDao()?.GetFavoriteRanobes();
-    //                    Gson gson = isNew GsonBuilder().setPrettyPrinting().create();
-    //
-    //                    //value = gson.toJson(ranobes.get(0));
-    //                    // TypeToken<List<Ranobe>>() {}.getType());
-    //
-    //                    outputWriter.write(value);
-    //                    outputWriter.close();
-    //                    Toast.makeText(context, "File saved successfully!",
-    //                            Toast.LENGTH_SHORT).show();
-    //                } catch (IOException e) {
-    //                    Log.e("Exception", "File write failed: " + e.toString());
-    //                }
-    //
-    //
-    //
-    //                });
-    //                return true;
-    //            });
-    //
-    //            Preference importButton = findPreference(getString(R.string.ImportButton));
-    //            importButton.setOnPreferenceClickListener((Preference preference) -> {
-    //                final Context context = preference.getContext();
-    //                Intent intent = isNew Intent()
-    //                        .setType("*/*")
-    //                        .setAction(Intent.ACTION_GET_CONTENT);
-    //
-    //                startActivityForResult(Intent.createChooser(intent, "Select a file"), 123);
-    //
-    //                return true;
-    //            });
-    //
-    //
-    //
-    //            setHasOptionsMenu(true);
-    //        }
-    //
-    //        @Override
-    //        public boolean onOptionsItemSelected(MenuItem item) {
-    //            int id = item.getItemId();
-    //            if (id == android.R.id.home) {
-    //                getActivity().onBackPressed();
-    //                return true;
-    //            }
-    //            return super.onOptionsItemSelected(item);
-    //        }
-    //
-    //    }
 
 }
 

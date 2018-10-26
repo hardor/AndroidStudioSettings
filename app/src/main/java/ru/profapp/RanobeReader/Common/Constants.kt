@@ -30,6 +30,7 @@ object Constants {
     }
 
     enum class RanobeSite(val url: String, val title: String) {
+        Error("Error", "Error"),
         None("", ""),
         Title("Title", "Title"),
         Rulate("tl.rulate.ru", "Rulate"),

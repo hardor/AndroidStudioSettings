@@ -21,10 +21,10 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_gravity="center"
-      android:visibility="gone"
-      tools:visibility="visible"
       android:clickable="true"
-      android:focusable="true"/>
+      android:focusable="true"
+      android:visibility="gone"
+      tools:visibility="visible"/>
 
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/chapter_list"

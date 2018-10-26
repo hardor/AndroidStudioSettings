@@ -1,7 +1,6 @@
 package ru.profapp.RanobeReader.Network.Endpoints
 
 import io.reactivex.Single
-import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 import ru.profapp.RanobeReader.Network.DTO.RulateDTO.*

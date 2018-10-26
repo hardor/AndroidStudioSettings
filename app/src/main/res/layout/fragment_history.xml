@@ -27,27 +27,26 @@
         android:layout_height="match_parent">
 
 
-          <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rV_history_ranobe"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:scrollbars="vertical"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_ranobe"/>
+        <androidx.recyclerview.widget.RecyclerView
+          android:id="@+id/rV_history_ranobe"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_marginLeft="16dp"
+          android:layout_marginRight="16dp"
+          android:scrollbars="vertical"
+          app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+          tools:listitem="@layout/item_ranobe"/>
 
 
-          <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rV_history_chapters"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:scrollbars="vertical"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_history"/>
-
+        <androidx.recyclerview.widget.RecyclerView
+          android:id="@+id/rV_history_chapters"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_marginLeft="16dp"
+          android:layout_marginRight="16dp"
+          android:scrollbars="vertical"
+          app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+          tools:listitem="@layout/item_history"/>
 
 
       </FrameLayout>

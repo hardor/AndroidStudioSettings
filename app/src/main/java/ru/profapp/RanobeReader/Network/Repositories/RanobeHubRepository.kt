@@ -8,13 +8,13 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Helpers.StringHelper
+import ru.profapp.RanobeReader.Models.Chapter
+import ru.profapp.RanobeReader.Models.Ranobe
+import ru.profapp.RanobeReader.Network.DTO.RanobeHubDTO.RanobeHubBook
+import ru.profapp.RanobeReader.Network.DTO.RanobeHubDTO.RanobeHubReadyGson
 import ru.profapp.RanobeReader.Network.Endpoints.IRanobeHubApiService
 import ru.profapp.RanobeReader.Network.Interceptors.AddCookiesInterceptor
 import ru.profapp.RanobeReader.Network.Interceptors.ReceivedCookiesInterceptor
-import ru.profapp.RanobeReader.Network.DTO.RanobeHubDTO.RanobeHubBook
-import ru.profapp.RanobeReader.Network.DTO.RanobeHubDTO.RanobeHubReadyGson
-import ru.profapp.RanobeReader.Models.Chapter
-import ru.profapp.RanobeReader.Models.Ranobe
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -121,7 +121,7 @@ object RanobeHubRepository : BaseRepository() {
                 textObj.select(".ads-desktop").remove()
                 textObj.select(".ads-mobile").remove()
                 textObj.select(".adsbygoogle").remove()
-                mCurrentChapter.text = textObj.html()
+                mCurrentChapter.text = "<b>" + mCurrentChapter.title + "</b>" + "</br>" + textObj.html()
                 return@map true
             } else
                 return@map false

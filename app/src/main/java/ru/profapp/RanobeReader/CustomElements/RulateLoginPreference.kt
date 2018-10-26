@@ -20,7 +20,7 @@ class RulateLoginPreference(context: Context, attrs: AttributeSet) : BaseLoginPr
         val res = super.auth()
         return res.flatMap { it ->
 
-            if ( it[0].toBoolean())  {
+            if (it[0].toBoolean()) {
                 return@flatMap RulateRepository.login(username, password)
             }
 

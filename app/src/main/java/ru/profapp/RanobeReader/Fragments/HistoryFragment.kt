@@ -108,8 +108,6 @@ class HistoryFragment : Fragment() {
 
     }
 
-
-
     private fun toRanobe(ranobeHistory: RanobeHistory): Ranobe {
 
         val ranobe = Ranobe()

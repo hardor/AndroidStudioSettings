@@ -15,12 +15,6 @@
     android:summary="@string/select_text_size"
     android:title="@string/text_size"/>
 
-  <SwitchPreference
-    android:defaultValue="true"
-    android:key="@string/pref_general_send_reports"
-    android:summaryOff="@string/summary_send_reports_on"
-    android:summaryOn="@string/summary_send_reports_off"
-    android:title="@string/send_crash_reports"/>
 
 
 </PreferenceScreen>

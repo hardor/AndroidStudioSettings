@@ -28,12 +28,13 @@ import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Helpers.LogHelper
 import ru.profapp.RanobeReader.Helpers.ThemeHelper
+import ru.profapp.RanobeReader.Models.*
+import ru.profapp.RanobeReader.MyApp
 import ru.profapp.RanobeReader.Network.Repositories.RanobeHubRepository
 import ru.profapp.RanobeReader.Network.Repositories.RanobeRfRepository
 import ru.profapp.RanobeReader.Network.Repositories.RulateRepository
-import ru.profapp.RanobeReader.Models.*
-import ru.profapp.RanobeReader.MyApp
 import ru.profapp.RanobeReader.R
+import java.net.UnknownHostException
 
 class ChapterTextActivity : AppCompatActivity() {
 
@@ -209,9 +210,13 @@ class ChapterTextActivity : AppCompatActivity() {
 
                 }, { error ->
                     LogHelper.logError(LogHelper.LogType.ERROR, "GetChapterText", "", error.fillInStackTrace())
+                    if (error is UnknownHostException)
+                        Toast.makeText(mContext, R.string.error_connection, Toast.LENGTH_SHORT).show()
+
+
                     val summary = ("<html><style>img{display: inline;height: auto;max-width: 90%;}</style><body "
                             + style + ">" + "<b>" + mCurrentChapter.title + "</b>" + "</br>"
-                            + mCurrentChapter.text + "</body></html>")
+                            + (mCurrentChapter.text ?: "") + "</body></html>")
 
                     mWebView.loadDataWithBaseURL("https:\\\\" + mCurrentChapter.url + "/", summary, "text/html", "UTF-8", null)
 
