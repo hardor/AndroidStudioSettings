@@ -17,6 +17,17 @@
     android:roundIcon="@mipmap/ic_launcher"
     android:supportsRtl="true"
     android:theme="@style/AppTheme">
+
+    <meta-data
+      android:name="io.fabric.ApiKey"
+      android:value="cac79ff615d7eefe4a0287318c94853a3858ee47"/>
+    <meta-data
+      android:name="com.google.android.backup.api_key"
+      android:value="AEdPqrEAAAAIcORPcg1t8lO1zc5q5si6PVokDoSqx9zWn1G_MA"/>
+    <meta-data
+      android:name="com.google.android.gms.ads.APPLICATION_ID"
+      android:value="ca-app-pub-1483315001492731~8531946315"/>
+
     <activity
       android:label="@string/app_name"
       android:name=".Activities.MainActivity"
@@ -43,26 +54,15 @@
       android:label="@string/title_activity_download"
       android:name=".Activities.DownloadActivity"/>
     <activity
-      android:label="BackupActivity"
-      android:name=".Activities.BackupActivity">
+      android:label="@string/backup_restore"
+      android:name=".Activities.BackupActivity"
+      >
       <intent-filter>
         <action android:name="ru.profapp.RanobeReader.Activities.BackupActivity"/>
         <category android:name="android.intent.category.DEFAULT"/>
       </intent-filter>
     </activity>
 
-    <meta-data
-      android:name="io.fabric.ApiKey"
-      android:value="cac79ff615d7eefe4a0287318c94853a3858ee47"/>
-    <meta-data
-      android:name="com.google.android.backup.api_key"
-      android:value="AEdPqrEAAAAIcORPcg1t8lO1zc5q5si6PVokDoSqx9zWn1G_MA"/>
-    <meta-data
-      android:name="com.google.android.gms.ads.APPLICATION_ID"
-      android:value="@string/app_admob_id"/>
-    <meta-data
-      android:name="com.google.android.gms.ads.AD_MANAGER_APP"
-      android:value="true"/>
 
   </application>
 

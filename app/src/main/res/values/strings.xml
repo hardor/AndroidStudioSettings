@@ -75,7 +75,7 @@
   <string name="open_in_browser" translatable="false">Open in browser</string>
   <string name="finish" translatable="false">Finish</string>
   <string name="error_connection">Error Connection</string>
-  <string name="error_connection_to" translatable="false">Error Connection to </string>
+  <string name="no_connection_to">Cannot connection to</string>
   <string name="browser_exist">No browsers found</string>
   <string name="market_exist">No PlayMarket was found</string>
   <string name="history">History</string>
@@ -90,8 +90,8 @@
   <!--Backup-->
 
   <string name="activity_backup_drive_desc">Backing up your data to storage allows you to restore all your readings in case you lose or change devices.</string>
-  <string name="activity_backup_success">Files successfully backed up to storage</string>
-  <string name="backup_restore_success">Successfully restored вфеф from storage</string>
+  <string name="activity_backup_success">Data successfully backed up to storage</string>
+  <string name="backup_restore_success">Successfully restored data from storage</string>
   <string name="backup_restore_nothing">No data found for backup/restore</string>
   <string name="activity_backup_button_backup" translatable="false">Backup now</string>
   <string name="activity_backup_button_restore" translatable="false">Restore backup</string>
@@ -99,13 +99,19 @@
   <string name="allow" translatable="false">Allow</string>
   <string name="error">Error</string>
   <string name="saved_info">We automatically save all downloaded chapters to reduce the load on the sites</string>
-  <string name="ClearReadChapterButton">ClearReadedChapterButton</string>
+  <string name="ClearReadChapterButton" translatable="false">ClearReadedChapterButton</string>
   <string name="clear_last_chapter_summary">Remove information about last read chapter in ranobe</string>
   <string name="clear_last_chapter">Remove the label read</string>
   <string name="volume_scroll">Scroll text using volume buttons</string>
   <string name="summary_volume_scroll_off">Use volume buttons</string>
   <string name="summary_volume_scroll_on">Don\'t use volume buttons</string>
-  <string name="pref_general_volume_scroll">pref_general_volume_scroll</string>
+  <string name="pref_general_volume_scroll" translatable="false">pref_general_volume_scroll</string>
+  <string name="no_access">No access</string>
+  <string name="backup_restore" translatable="false">Backup/Restore</string>
+  <string name="readyToBackup">Are you sure to do backup? Your old one will be rewritten.</string>
+  <string name="readyToRestore">Are you sure to restore your backup? Your app data will be rewritten. After restore app will be automatically restarted.</string>
+  <string name="all_appCrashed">App restarted after crash</string>
+  <string name="all_uncaughtException">Uncaught Exception</string>
 
 
   <!--<string name="show_all_chapter">Show all chapters</string>-->

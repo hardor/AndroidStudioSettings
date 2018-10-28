@@ -66,6 +66,50 @@
         }
       },
       "admob_app_id": "ca-app-pub-1483315001492731~8531946315"
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:789465050624:android:46ffa2f9e979a74a",
+        "android_client_info": {
+          "package_name": "ru.profapp.RanobeReader.paid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "789465050624-sveoh23iatksrbmevv9bggfqphmuag9a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ru.profapp.RanobeReader.paid",
+            "certificate_hash": "0773e75c7f6db3e45865376998b8071ad9badc8e"
+          }
+        },
+        {
+          "client_id": "789465050624-2kim5soh4speopcb8r71oh8o1ib23ns6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDsvE5Ox88Bg1krK5tZpKSnFpAw2TmhLDI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "789465050624-2kim5soh4speopcb8r71oh8o1ib23ns6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
     }
   ],
   "configuration_version": "1"

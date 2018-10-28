@@ -13,11 +13,11 @@ ext {
 }
 buildscript {
     repositories {
-        maven { url 'https://maven.fabric.io/public' }
+
     }
 
     dependencies {
-        classpath 'io.fabric.tools:gradle:1.25.4'
+
     }
 }
 
@@ -30,7 +30,6 @@ apply plugin: 'kotlin-kapt'
 
 
 repositories {
-    maven { url 'https://maven.fabric.io/public' }
     mavenCentral()
 }
 
@@ -40,7 +39,7 @@ android {
         config {
             keyAlias 'ranobereader'
             keyPassword 'gf6ds7fsfs7'
-            storeFile file('C:/Users/rvildanov/Desktop/Android/RanobeReader.keystore')
+            storeFile file('D:/Projects/Keystore/RanobeReader/RanobeReader.keystore')
             storePassword 'gf6ds7fsfs7'
         }
     }
@@ -97,12 +96,12 @@ android {
         free {
             buildConfigField "boolean", "PAID_VERSION", "false"
         }
-        paid {
-
-            applicationIdSuffix ".paid"
-            versionNameSuffix "-paid"
-            buildConfigField "boolean", "PAID_VERSION", "true"
-        }
+//        paid {
+//
+//            applicationIdSuffix ".paid"
+//            versionNameSuffix "-paid"
+//            buildConfigField "boolean", "PAID_VERSION", "true"
+//        }
     }
 
     sourceSets {
@@ -114,7 +113,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.appcompat:appcompat:1.0.0'
-    implementation "androidx.preference:preference:1.0.0"
+    implementation 'androidx.preference:preference:1.0.0'
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
@@ -125,57 +124,42 @@ dependencies {
     //implementation 'androidx.mediarouter:mediarouter:1.0.0'
     //implementation 'androidx.palette:palette:1.0.0'
     implementation 'androidx.annotation:annotation:1.0.0'
-    implementation 'com.google.android.gms:play-services-ads:17.0.0'
     //implementation "androidx.paging:paging-runtime:2.0.0"
     //implementation 'androidx.multidex:multidex:2.0.0'
-
-
+   // implementation 'com.google.android.gms:play-services-ads:17.0.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.0-beta02'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-beta02'
-
     //Room
     implementation 'androidx.room:room-runtime:2.0.0'
-    implementation "androidx.room:room-rxjava2:2.0.0"
-    androidTestImplementation "androidx.room:room-testing:2.0.0"
+    implementation 'androidx.room:room-rxjava2:2.0.0'
+    androidTestImplementation 'androidx.room:room-testing:2.0.0'
     annotationProcessor "androidx.room:room-compiler:2.0.0"
     kapt "androidx.room:room-compiler:2.0.0"
-
     //Glide
     implementation 'com.github.bumptech.glide:glide:4.6.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
     implementation 'com.github.bumptech.glide:okhttp3-integration:4.5.0'
     kapt 'com.github.bumptech.glide:compiler:4.8.0'
-
-
-
-
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.5'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.2.71"
-
-// retrofit
-    implementation "com.squareup.retrofit2:retrofit:2.4.0"
-    implementation "com.squareup.retrofit2:adapter-rxjava2:2.3.0"
-    implementation "com.squareup.retrofit2:converter-gson:2.3.0"
-
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.2.71'
+    // retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     // rxandroid
-    implementation "io.reactivex.rxjava2:rxandroid:2.0.2"
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
     //  implementation 'io.reactivex.rxjava2:rxjava:2.1.10'
-
     //firebase
-    implementation 'com.google.firebase:firebase-ads:17.0.0'
+     implementation 'com.google.firebase:firebase-ads:17.0.0'
     //implementation 'com.google.firebase:firebase-appindexing:16.0.2'
     implementation 'com.google.firebase:firebase-core:16.0.4'
     //implementation 'com.google.firebase:firebase-crash:16.0.1'
-
     // Leakcanary
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.1'
     debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.1'
-
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.1'
-
     // common
-    implementation 'com.google.android.gms:play-services-drive:16.0.0'
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'org.jsoup:jsoup:1.11.3'
 }

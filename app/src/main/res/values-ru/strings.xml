@@ -74,4 +74,16 @@
   <string name="not_history">История пуста</string>
   <string name="activity_backup_drive_desc">Мы автоматически сохраняем все загруженные главы для уменьшения нагрузки на сайты</string>
   <string name="load_ranobes_from_db">"Загрузка избранного из базы "</string>
+  <string name="no_access">Нет доступа</string>
+  <string name="no_connection_to">Не удается подключиться к</string>
+  <string name="summary_volume_scroll_off">Использовать клавиши громкости</string>
+  <string name="summary_volume_scroll_on">Не использовать клавиши громкости</string>
+  <string name="volume_scroll">Прокручивать текст с помощью клавиш громкости</string>
+  <string name="clear_last_chapter">Удалить метки прочитанных глав</string>
+  <string name="clear_last_chapter_summary">Удалить информацию о последней прочитанной главе в ранобэ</string>
+
+  <string name="readyToBackup">Вы действительно хотите сделать резервную копию? Ваши старые сохранения будут перезаписаны</string>
+  <string name="readyToRestore">Вы действительно хотите восстановить резервную копию? Данные вашего приложения будут переписаны.После восстановления приложение будет автоматически перезапущено.</string>
+  <string name="all_uncaughtException">Внезапная ошибка</string>
+  <string name="all_appCrashed">Приложение перезапущено после вылета.</string>
 </resources>

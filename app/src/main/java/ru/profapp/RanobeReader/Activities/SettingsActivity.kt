@@ -19,6 +19,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReader.BuildConfig
 import ru.profapp.RanobeReader.Common.Constants
+import ru.profapp.RanobeReader.Common.MyExceptionHandler
 import ru.profapp.RanobeReader.Helpers.ThemeHelper
 import ru.profapp.RanobeReader.MyApp
 import ru.profapp.RanobeReader.R
@@ -35,7 +36,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
         Fabric.with(this, crashlyticsKit)
         setupActionBar()
         title = resources.getText(R.string.action_settings)
-
+        Thread.setDefaultUncaughtExceptionHandler(MyExceptionHandler(this))
     }
 
     /**

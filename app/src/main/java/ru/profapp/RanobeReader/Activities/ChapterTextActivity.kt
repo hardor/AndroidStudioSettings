@@ -26,6 +26,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReader.Common.Constants
+import ru.profapp.RanobeReader.Common.MyExceptionHandler
 import ru.profapp.RanobeReader.Helpers.LogHelper
 import ru.profapp.RanobeReader.Helpers.ThemeHelper
 import ru.profapp.RanobeReader.Models.*
@@ -78,6 +79,7 @@ class ChapterTextActivity : AppCompatActivity() {
         Fabric.with(this, Crashlytics())
         setupActionBar()
         setContentView(R.layout.activity_chapter_text)
+        Thread.setDefaultUncaughtExceptionHandler(MyExceptionHandler(this))
 
         if (savedInstanceState != null) {
             hChapterUrl = savedInstanceState.getString("ChapterUrl", null)
@@ -90,7 +92,7 @@ class ChapterTextActivity : AppCompatActivity() {
         mContext = this@ChapterTextActivity
 
         currentRanobe = MyApp.ranobe
-        mChapterList = currentRanobe?.chapterList ?: mChapterList
+        mChapterList = currentRanobe?.chapterList?.filter { it -> it.canRead } ?: mChapterList
 
 
         mChapterCount = mChapterList.size
@@ -200,13 +202,13 @@ class ChapterTextActivity : AppCompatActivity() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ result ->
-                    if (result!!) {
+                    if (result) {
                         putToReaded()
                     }
 
                     val summary = ("<html><style>img{display: inline;height: auto;max-width: 90%;}</style><body "
                             + style + ">"
-                            + mCurrentChapter.text + "</body></html>")
+                            +( mCurrentChapter.text?: getString(R.string.no_access)) + "</body></html>")
 
                     mWebView.loadDataWithBaseURL("https:\\\\" + mCurrentChapter.url + "/", summary, "text/html", "UTF-8", null)
 
@@ -217,7 +219,7 @@ class ChapterTextActivity : AppCompatActivity() {
 
                     val summary = ("<html><style>img{display: inline;height: auto;max-width: 90%;}</style><body "
                             + style + ">" + "<b>" + mCurrentChapter.title + "</b>" + "</br>"
-                            + (mCurrentChapter.text ?: "") + "</body></html>")
+                            + (mCurrentChapter.text ?: "Нет доступа") + "</body></html>")
 
                     mWebView.loadDataWithBaseURL("https:\\\\" + mCurrentChapter.url + "/", summary, "text/html", "UTF-8", null)
 
@@ -325,16 +327,18 @@ class ChapterTextActivity : AppCompatActivity() {
     }
 
     private fun saveProgressToDb(pr: Float? = null) {
-        val progress = pr ?: calculateProgression() ?: 0f
-        val request = Completable.fromAction {
-            MyApp.database.ranobeHistoryDao().insertNewChapter(
-                    ChapterHistory(mCurrentChapter.url, mCurrentChapter.title, mCurrentChapter.ranobeName, mCurrentChapter.ranobeUrl, mCurrentChapter.index, progress)
-            )
-        }.subscribeOn(Schedulers.io())
-                .subscribe({}, { error ->
-                    LogHelper.logError(LogHelper.LogType.ERROR, "", "", error, false)
-                })
-        compositeDisposable.add(request)
+        if (!mCurrentChapter.text.isNullOrBlank()) {
+            val progress = pr ?: calculateProgression() ?: 0f
+            val request = Completable.fromAction {
+                MyApp.database.ranobeHistoryDao().insertNewChapter(
+                        ChapterHistory(mCurrentChapter.url, mCurrentChapter.title, mCurrentChapter.ranobeName, mCurrentChapter.ranobeUrl, mCurrentChapter.index, progress)
+                )
+            }.subscribeOn(Schedulers.io())
+                    .subscribe({}, { error ->
+                        LogHelper.logError(LogHelper.LogType.ERROR, "", "", error, false)
+                    })
+            compositeDisposable.add(request)
+        }
     }
 
     private fun OnClicked(i: Int) {
@@ -342,7 +346,6 @@ class ChapterTextActivity : AppCompatActivity() {
         chapterIndex += i
         if (chapterIndex >= 0 && chapterIndex <= mChapterCount - 1) {
             try {
-                saveProgressToDb()
                 mCurrentChapter = mChapterList[chapterIndex]
                 initWebView()
             } catch (e: ArrayIndexOutOfBoundsException) {

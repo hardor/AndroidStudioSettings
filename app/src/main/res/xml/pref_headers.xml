@@ -17,7 +17,6 @@
     android:title="@string/data"/>
 
   <header
-    android:summary="Launches an Intent."
     android:title="@string/export_import">
     <intent
       android:action="ru.profapp.RanobeReader.Activities.BackupActivity"/>

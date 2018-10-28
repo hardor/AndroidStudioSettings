@@ -299,9 +299,9 @@ class RanobeListFragment : Fragment() {
                         if (!isRanobeHubError) newList.addAll(RanobeHub)
 
                         if (isRanobeHubError || isRulateError || isRanobeRfError) {
-                            val errorString: String = if (isRulateError) "Rulate " else "" + if (isRanobeRfError) "Ранобэ.рф " else "" + if (isRanobeHubError) "RanobeHub " else ""
+                            val errorString: String = if (isRulateError) " Rulate " else "" + if (isRanobeRfError) " Ранобэ.рф " else "" + if (isRanobeHubError) " RanobeHub " else ""
                             activity?.runOnUiThread {
-                                Toast.makeText(mContext, getString(R.string.error_connection_to) + errorString, Toast.LENGTH_SHORT).show()
+                                Toast.makeText(mContext, getString(R.string.no_connection_to) + errorString, Toast.LENGTH_SHORT).show()
                             }
                         }
 
@@ -375,6 +375,7 @@ class RanobeListFragment : Fragment() {
         super.onDestroy()
         mContext = null
         request?.dispose()
+        progressDialog?.dismiss()
         MyApp.refWatcher?.watch(this)
     }
 
@@ -407,6 +408,7 @@ class RanobeListFragment : Fragment() {
         super.onDetach()
         mListener = null
         mContext = null
+        progressDialog?.dismiss()
 
     }
 

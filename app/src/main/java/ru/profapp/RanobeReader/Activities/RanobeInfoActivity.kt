@@ -36,6 +36,7 @@ import ru.profapp.RanobeReader.BuildConfig
 import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Common.Constants.is_readed_Pref
 import ru.profapp.RanobeReader.Common.Constants.last_chapter_id_Pref
+import ru.profapp.RanobeReader.Common.MyExceptionHandler
 import ru.profapp.RanobeReader.Helpers.LogHelper
 import ru.profapp.RanobeReader.Helpers.ThemeHelper
 import ru.profapp.RanobeReader.Models.Chapter
@@ -85,6 +86,7 @@ class RanobeInfoActivity : AppCompatActivity() {
 
         Fabric.with(this, crashlyticsKit)
         setContentView(R.layout.activity_ranobe_info)
+        Thread.setDefaultUncaughtExceptionHandler(MyExceptionHandler(this))
 
         mContext = this@RanobeInfoActivity
         currentRanobe = MyApp.ranobe!!

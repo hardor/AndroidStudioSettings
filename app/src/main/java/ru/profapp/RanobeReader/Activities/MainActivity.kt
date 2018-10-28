@@ -7,8 +7,10 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
@@ -26,10 +28,10 @@ import io.fabric.sdk.android.Fabric
 import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReader.BuildConfig
 import ru.profapp.RanobeReader.Common.Constants
+import ru.profapp.RanobeReader.Common.MyExceptionHandler
 import ru.profapp.RanobeReader.Fragments.HistoryFragment
 import ru.profapp.RanobeReader.Fragments.RanobeListFragment
 import ru.profapp.RanobeReader.Fragments.SearchFragment
-import ru.profapp.RanobeReader.Helpers.LogHelper
 import ru.profapp.RanobeReader.Helpers.ThemeHelper
 import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.Models.Ranobe
@@ -44,13 +46,15 @@ class MainActivity : AppCompatActivity(),
 
     private var currentTheme = ThemeHelper.sTheme
 
-    private val ExceptionHandler = Thread.UncaughtExceptionHandler { th, ex ->
-        LogHelper.logError(LogHelper.LogType.WARN, "MainActivity", "Uncaught exception", ex)
-    }
+
     private var adView: AdView? = null
 
     private var currentFragment: String? = null
     private var currentTitle: String? = null
+
+    fun crashMe(v: View) {
+        throw NullPointerException()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initSettingPreference()
@@ -62,9 +66,21 @@ class MainActivity : AppCompatActivity(),
 
         Fabric.with(this, crashlyticsKit, Crashlytics())
 
-        Thread.setDefaultUncaughtExceptionHandler(ExceptionHandler)
         setContentView(R.layout.activity_main)
+        Thread.setDefaultUncaughtExceptionHandler(MyExceptionHandler(this))
+        if (intent.getBooleanExtra("crash", false)) {
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle(getString(R.string.all_uncaughtException))
+                    .setMessage(getString(R.string.all_appCrashed))
+                    .setIcon(R.drawable.ic_info_black_24dp)
+                    .setCancelable(true)
+                    .setPositiveButton("OK") { dialog, id1 ->
+                        dialog.cancel()
+                    }
 
+            val alert = builder.create()
+            alert.show()
+        }
         if (!BuildConfig.PAID_VERSION) {
 
             MobileAds.initialize(this, getString(R.string.app_admob_id))

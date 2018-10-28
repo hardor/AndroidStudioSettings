@@ -18,6 +18,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReader.Adapters.ExpandableDownloadRecyclerViewAdapter
+import ru.profapp.RanobeReader.Common.MyExceptionHandler
 import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.Models.Ranobe
 import ru.profapp.RanobeReader.MyApp
@@ -159,6 +160,7 @@ class DownloadActivity : AppCompatActivity() {
         Fabric.with(this, Crashlytics())
         setupActionBar()
         setContentView(R.layout.activity_download)
+        Thread.setDefaultUncaughtExceptionHandler(MyExceptionHandler(this))
         context = this@DownloadActivity
         val navigation = findViewById<BottomNavigationView>(R.id.navigation)
         navigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
