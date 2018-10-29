@@ -359,8 +359,9 @@ class RanobeListFragment : Fragment() {
                 val newRanobe = Ranobe()
                 newRanobe.url = group.key
                 newRanobe.title = group.value.first().ranobeName
-                var chapterList = mutableListOf<Chapter>()
-                chapterList.addAll(group.value.asSequence().map { it -> Chapter(it) }.sortedByDescending { it -> it.id }.toList())
+                val chapterList = mutableListOf<Chapter>()
+
+                chapterList.addAll(group.value.asSequence().map { it -> Chapter(it) }.sortedWith(MyApp.chapterComparator).toList())
 
                 newRanobe.chapterList = chapterList
                 savedList.add(newRanobe)

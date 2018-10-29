@@ -1,23 +1,20 @@
 ext {
 
-    majVersion = 2
-    minVersion = 35
+    majVersion = 3
+    minVersion = 00
 
     calculateVersionName = {
         return "${majVersion}.${minVersion}"
     }
     calculateVersionCode = {
-
         return 5 * 100000 + (majVersion * 100 + minVersion)
     }
 }
 buildscript {
     repositories {
-
     }
 
     dependencies {
-
     }
 }
 

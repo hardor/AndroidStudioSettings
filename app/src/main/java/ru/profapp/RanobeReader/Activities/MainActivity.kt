@@ -52,9 +52,6 @@ class MainActivity : AppCompatActivity(),
     private var currentFragment: String? = null
     private var currentTitle: String? = null
 
-    fun crashMe(v: View) {
-        throw NullPointerException()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initSettingPreference()
@@ -69,6 +66,7 @@ class MainActivity : AppCompatActivity(),
         setContentView(R.layout.activity_main)
         Thread.setDefaultUncaughtExceptionHandler(MyExceptionHandler(this))
         if (intent.getBooleanExtra("crash", false)) {
+            intent.removeExtra("crash")
             val builder = AlertDialog.Builder(this)
             builder.setTitle(getString(R.string.all_uncaughtException))
                     .setMessage(getString(R.string.all_appCrashed))

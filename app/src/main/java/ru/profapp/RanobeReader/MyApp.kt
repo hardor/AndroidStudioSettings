@@ -10,12 +10,22 @@ import com.squareup.leakcanary.RefWatcher
 import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.DAO.DatabaseDao
 import ru.profapp.RanobeReader.Helpers.LogHelper
+import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.Models.Ranobe
 
 class MyApp : Application() {
 
     companion object {
 
+        val chapterComparator = Comparator { b: Chapter, a: Chapter ->
+
+            if(a.id != null && b.id!=null){
+                return@Comparator a.id!!.compareTo(b.id!!)
+            }else{
+                return@Comparator  (a.title).compareTo(b.title)
+            }
+
+        }
         var ranobeRfToken: String? = null
 
         var chapterTextSize: Int? = null

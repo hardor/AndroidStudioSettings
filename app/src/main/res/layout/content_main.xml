@@ -9,12 +9,6 @@
   tools:context="ru.profapp.RanobeReader.Activities.MainActivity"
   tools:showIn="@layout/app_bar_main">
 
-  <!--<Button-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_centerInParent="true"-->
-    <!--android:text="Crash Me !"-->
-    <!--android:onClick="crashMe"/>-->
 
   <FrameLayout
     android:id="@+id/mainFrame"
