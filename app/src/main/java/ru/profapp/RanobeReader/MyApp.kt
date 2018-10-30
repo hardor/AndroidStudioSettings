@@ -2,6 +2,7 @@ package ru.profapp.RanobeReader
 
 import android.app.Application
 import androidx.annotation.VisibleForTesting
+import androidx.multidex.MultiDexApplication
 import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
@@ -13,7 +14,7 @@ import ru.profapp.RanobeReader.Helpers.LogHelper
 import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.Models.Ranobe
 
-class MyApp : Application() {
+class MyApp : MultiDexApplication() {
 
     companion object {
 

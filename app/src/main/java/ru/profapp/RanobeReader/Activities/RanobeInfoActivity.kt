@@ -57,8 +57,6 @@ class RanobeInfoActivity : AppCompatActivity() {
     private var rfpreferences: SharedPreferences? = null
     private lateinit var currentRanobe: Ranobe
     private var mContext: Context? = null
-    private var notFavImage: Drawable? = null
-    private var favImage: Drawable? = null
     private lateinit var tabHost: TabHost
     private var adapterExpandable: ExpandableChapterRecyclerViewAdapter? = null
     private var sPref: SharedPreferences? = null
@@ -90,9 +88,6 @@ class RanobeInfoActivity : AppCompatActivity() {
 
         mContext = this@RanobeInfoActivity
         currentRanobe = MyApp.ranobe!!
-
-        notFavImage = mContext!!.resources.getDrawable(R.drawable.ic_favorite_border_black_24dp)
-        favImage = mContext!!.resources.getDrawable(R.drawable.ic_favorite_black_24dp)
 
         fab = findViewById<FloatingActionButton>(R.id.fav_button)
         getFavoriteIcon()
@@ -272,7 +267,8 @@ class RanobeInfoActivity : AppCompatActivity() {
 
     private fun getFavoriteIcon() {
         if (currentRanobe.isFavorite || currentRanobe.isFavoriteInWeb) {
-            fab.setImageDrawable(favImage)
+
+            fab.setImageResource(R.drawable.ic_favorite_black_24dp)
 
         } else {
             val request = MyApp.database.ranobeDao().isRanobeFavorite(currentRanobe.url)
@@ -282,18 +278,18 @@ class RanobeInfoActivity : AppCompatActivity() {
                         if (it != null) {
                             currentRanobe.isFavorite = it.isFavorite
                             currentRanobe.isFavoriteInWeb = it.isFavoriteInWeb
-                            fab.setImageDrawable(favImage)
+                            fab.setImageResource(R.drawable.ic_favorite_black_24dp)
                         } else {
                             currentRanobe.isFavorite = false
                             currentRanobe.isFavoriteInWeb = false
-                            fab.setImageDrawable(notFavImage)
+                            fab.setImageResource(R.drawable.ic_favorite_border_black_24dp)
                         }
 
                     }, { error ->
                         LogHelper.logError(LogHelper.LogType.ERROR, "loadChapters", "", error)
                         currentRanobe.isFavorite = false
                         currentRanobe.isFavoriteInWeb = false
-                        fab.setImageDrawable(notFavImage)
+                        fab.setImageResource(R.drawable.ic_favorite_border_black_24dp)
                     })
             compositeDisposable.add(request)
         }
@@ -345,7 +341,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({ result ->
-                        fab.setImageDrawable(favImage)
+                        fab.setImageResource(R.drawable.ic_favorite_black_24dp)
                         if (result)
                             Toast.makeText(mContext, currentRanobe.title + " " + mContext!!.getString(R.string.added_to_web), Toast.LENGTH_SHORT).show()
                         else
@@ -388,9 +384,9 @@ class RanobeInfoActivity : AppCompatActivity() {
                         }.subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({ result ->
-                            if (result.first)
-                                fab.setImageDrawable(notFavImage)
-                            else {
+                            if (result.first) {
+                                fab.setImageResource(R.drawable.ic_favorite_border_black_24dp)
+                            }else {
                                 Toast.makeText(mContext, result.second, Toast.LENGTH_SHORT).show()
                             }
                         }, { error ->
@@ -406,7 +402,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                         .subscribe({
                             currentRanobe.isFavorite = false
                             currentRanobe.isFavoriteInWeb = false
-                            fab.setImageDrawable(notFavImage)
+                            fab.setImageResource(R.drawable.ic_favorite_border_black_24dp)
                         }, { error ->
                             LogHelper.logError(LogHelper.LogType.ERROR, "", "", error, false)
                         })
