@@ -112,6 +112,7 @@
   <string name="readyToRestore">Are you sure to restore your backup? Your app data will be rewritten. After restore app will be automatically restarted.</string>
   <string name="all_appCrashed">App restarted after crash</string>
   <string name="all_uncaughtException">Uncaught Exception</string>
+  <string name="contentDescription_Logo">Logo</string>
 
 
   <!--<string name="show_all_chapter">Show all chapters</string>-->

@@ -13,7 +13,7 @@
   <string name="next">Следующая</string>
   <string name="previous">Предыдущая</string>
   <string name="delete_cache_summary">Удалить скачанные главы</string>
-  <string name="delete_cache_chapters">Очистить кэш ихображений и скачанные главы</string>
+  <string name="delete_cache_chapters">Очистить кэш изображений и скачанные главы</string>
   <string name="select_text_size">Выберите размер текста</string>
   <string name="history_removed">История очищена</string>
   <string name="cache_cremoved">Кеш очищен</string>
