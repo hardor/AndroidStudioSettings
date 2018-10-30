@@ -104,5 +104,5 @@ object FileUtils {
         return false
     }
 
-    fun ensureDirectoryExists(f: File): Boolean = f.exists() || f.mkdir()
+    private fun ensureDirectoryExists(f: File): Boolean = f.exists() || f.mkdir()
 }

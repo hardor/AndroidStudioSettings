@@ -36,7 +36,7 @@ class DownloadActivity : AppCompatActivity() {
     private var context: Context? = null
     var request: Disposable? = null
 
-    lateinit var currentRanobe: Ranobe
+    private lateinit var currentRanobe: Ranobe
 
     private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
 

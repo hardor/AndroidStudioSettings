@@ -25,10 +25,10 @@ open class BaseLoginPreference(context: Context, attrs: AttributeSet) : DialogPr
     // Current value
     //    val mCurrentValue: String? = null
     // View elements
-    lateinit var loginEditor: EditText
-    lateinit var resultTextView: TextView
-    lateinit var passwordEditor: TextInputEditText
-    var compositeDisposable: CompositeDisposable = CompositeDisposable()
+    private lateinit var loginEditor: EditText
+    private lateinit var resultTextView: TextView
+    private lateinit var passwordEditor: TextInputEditText
+    private var compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     var username: String = ""
     var password: String = ""

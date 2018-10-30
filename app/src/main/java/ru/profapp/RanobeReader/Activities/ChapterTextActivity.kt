@@ -52,8 +52,8 @@ class ChapterTextActivity : AppCompatActivity() {
     private lateinit var nextMenu: ImageButton
     private lateinit var prevMenu: ImageButton
 
-    var currentRanobe: Ranobe? = null
-    var compositeDisposable: CompositeDisposable = CompositeDisposable()
+    private var currentRanobe: Ranobe? = null
+    private var compositeDisposable: CompositeDisposable = CompositeDisposable()
     private lateinit var progressBar: ProgressBar
 
     private fun set_web_colors() {

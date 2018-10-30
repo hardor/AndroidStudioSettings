@@ -30,7 +30,7 @@ import ru.profapp.RanobeReader.R
  *
  */
 class HistoryFragment : Fragment() {
-    lateinit var tabHost: TabHost
+    private lateinit var tabHost: TabHost
     private lateinit var chapterRecyclerView: RecyclerView
     private lateinit var ranobeRecyclerView: RecyclerView
     private var chapterHistoryViewAdapter: HistoryRecyclerViewAdapter? = null

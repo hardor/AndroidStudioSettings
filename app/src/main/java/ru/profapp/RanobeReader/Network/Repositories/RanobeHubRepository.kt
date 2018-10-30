@@ -194,7 +194,7 @@ object RanobeHubRepository : BaseRepository() {
     }
 
     var instance: IRanobeHubApiService = create()
-    var instanceHtml: IRanobeHubApiService = createHtml()
+    private var instanceHtml: IRanobeHubApiService = createHtml()
 
     fun create(): IRanobeHubApiService {
 

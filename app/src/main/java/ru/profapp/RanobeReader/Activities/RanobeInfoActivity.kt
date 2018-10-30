@@ -54,12 +54,12 @@ class RanobeInfoActivity : AppCompatActivity() {
     private val recycleChapterList = ArrayList<Chapter>()
     lateinit var chapterRecyclerView: RecyclerView
     var preferences: SharedPreferences? = null
-    var rfpreferences: SharedPreferences? = null
-    lateinit var currentRanobe: Ranobe
-    var mContext: Context? = null
+    private var rfpreferences: SharedPreferences? = null
+    private lateinit var currentRanobe: Ranobe
+    private var mContext: Context? = null
     private var notFavImage: Drawable? = null
     private var favImage: Drawable? = null
-    lateinit var tabHost: TabHost
+    private lateinit var tabHost: TabHost
     private var adapterExpandable: ExpandableChapterRecyclerViewAdapter? = null
     private var sPref: SharedPreferences? = null
     private var lastChapterIdPref: SharedPreferences? = null
@@ -70,10 +70,10 @@ class RanobeInfoActivity : AppCompatActivity() {
     private lateinit var infoCard: CardView
     private lateinit var descriptionCard: CardView
     lateinit var imageView: ImageView
-    lateinit var progressBar: ProgressBar
+    private lateinit var progressBar: ProgressBar
     lateinit var fab: FloatingActionButton
 
-    var compositeDisposable: CompositeDisposable = CompositeDisposable()
+    private var compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         currentTheme = AppCompatDelegate.getDefaultNightMode()

@@ -42,7 +42,7 @@ class SearchFragment : Fragment() {
     private var adapterRanobeList: MutableList<Ranobe> = mutableListOf()
     private var mContext: Context? = null
     lateinit var resultLabel: TextView
-    lateinit var progressBar: ProgressBar
+    private lateinit var progressBar: ProgressBar
     private var searhRequest: Disposable? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
