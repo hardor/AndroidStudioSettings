@@ -109,7 +109,7 @@
   <string name="backup_restore" translatable="false">Backup/Restore</string>
   <string name="readyToBackup">Are you sure to do backup? Your old one will be rewritten.</string>
   <string name="readyToRestore">Are you sure to restore your backup? Your app data will be rewritten. After restore app will be automatically restarted.</string>
-  <string name="all_appCrashed">App restarted after crash</string>
+  <string name="all_appCrashed">App restarted after crash. Try to clean app data if you will get crash again.</string>
   <string name="all_uncaughtException">Uncaught Exception</string>
   <string name="contentDescription_Logo" translatable="false">Logo</string>
 

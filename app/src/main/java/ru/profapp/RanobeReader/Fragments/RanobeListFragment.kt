@@ -202,7 +202,7 @@ class RanobeListFragment : Fragment() {
                     onItemsLoadFinished()
 
                 }, { error ->
-                    LogHelper.logError(LogHelper.LogType.ERROR, "refreshItems", "", error.fillInStackTrace())
+                    LogHelper.logError(LogHelper.LogType.ERROR, "refreshItems", "", error.fillInStackTrace(),false)
                     onItemsLoadFinished(error)
                 })
 
@@ -299,7 +299,7 @@ class RanobeListFragment : Fragment() {
                         if (!isRanobeHubError) newList.addAll(RanobeHub)
 
                         if (isRanobeHubError || isRulateError || isRanobeRfError) {
-                            val errorString: String = if (isRulateError) " Rulate " else "" + if (isRanobeRfError) " Ранобэ.рф " else "" + if (isRanobeHubError) " RanobeHub " else ""
+                            val errorString: String = (if (isRulateError) " Rulate " else "") + (if (isRanobeRfError) " Ранобэ.рф " else "") + (if (isRanobeHubError) " RanobeHub " else "")
                             activity?.runOnUiThread {
                                 Toast.makeText(mContext, getString(R.string.no_connection_to) + errorString, Toast.LENGTH_SHORT).show()
                             }

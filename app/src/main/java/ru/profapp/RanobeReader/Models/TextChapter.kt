@@ -24,25 +24,21 @@ class TextChapter {
     var ranobeUrl: String = ""
     @ColumnInfo(name = "Text")
     var text: String
-    @ColumnInfo(name = "Index")
-    var index: Int = 0
-
-    constructor(@NonNull chapterUrl: String, text: String, chapterName: String, ranobeName: String, ranobeUrl: String, index: Int) {
-        this.chapterUrl = chapterUrl
-        this.text = text
-        this.chapterName = chapterName
-        this.ranobeName = ranobeName
-        this.ranobeUrl = ranobeUrl
-        this.index = index
-    }
 
     constructor(chapter: Chapter) {
         this.chapterUrl = chapter.url
         this.text = chapter.text.toString()
-        this.chapterName = chapter.title
+        this.chapterName = chapter.title.replace("^\\s+", "")
         this.ranobeName = chapter.ranobeName
-        this.index = chapter.index
         this.ranobeUrl = chapter.ranobeUrl
+    }
+
+    constructor(chapterUrl: String, chapterName: String, ranobeName: String, ranobeUrl: String, text: String) {
+        this.chapterUrl = chapterUrl
+        this.chapterName = chapterName.replace("^\\s+", "")
+        this.ranobeName = ranobeName
+        this.ranobeUrl = ranobeUrl
+        this.text = text
     }
 
     override fun equals(other: Any?): Boolean {
@@ -56,7 +52,6 @@ class TextChapter {
         if (ranobeName != other.ranobeName) return false
         if (ranobeUrl != other.ranobeUrl) return false
         if (text != other.text) return false
-        if (index != other.index) return false
 
         return true
     }
@@ -67,7 +62,6 @@ class TextChapter {
         result = 31 * result + ranobeName.hashCode()
         result = 31 * result + ranobeUrl.hashCode()
         result = 31 * result + text.hashCode()
-        result = 31 * result + index
         return result
     }
 

@@ -11,7 +11,7 @@ import ru.profapp.RanobeReader.Models.TextChapter
 @Dao
 interface TextDao {
 
-    @Query("SELECT * FROM textChapter order by RanobeName Asc, `Index` ASC")
+    @Query("SELECT * FROM textChapter order by RanobeName Asc")
     fun allText(): Single<List<TextChapter>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

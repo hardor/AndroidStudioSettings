@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 3,
-    "identityHash": "c10a05d864f79a9a82899daa5e0f90cd",
+    "identityHash": "aeaba8c04b884656fa2e4f88d56d46fe",
     "entities": [
       {
         "tableName": "ranobe",
@@ -235,7 +235,7 @@
       },
       {
         "tableName": "textChapter",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ChapterUrl` TEXT NOT NULL, `ChapterName` TEXT NOT NULL, `RanobeName` TEXT NOT NULL, `RanobeUrl` TEXT NOT NULL, `Text` TEXT NOT NULL, `Index` INTEGER NOT NULL, PRIMARY KEY(`ChapterUrl`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ChapterUrl` TEXT NOT NULL, `ChapterName` TEXT NOT NULL, `RanobeName` TEXT NOT NULL, `RanobeUrl` TEXT NOT NULL, `Text` TEXT NOT NULL, PRIMARY KEY(`ChapterUrl`))",
         "fields": [
           {
             "fieldPath": "chapterUrl",
@@ -265,12 +265,6 @@
             "fieldPath": "text",
             "columnName": "Text",
             "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "index",
-            "columnName": "Index",
-            "affinity": "INTEGER",
             "notNull": true
           }
         ],
@@ -442,7 +436,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"c10a05d864f79a9a82899daa5e0f90cd\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"aeaba8c04b884656fa2e4f88d56d46fe\")"
     ]
   }
 }
