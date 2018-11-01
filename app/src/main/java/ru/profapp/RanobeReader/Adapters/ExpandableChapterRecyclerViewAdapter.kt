@@ -91,7 +91,7 @@ class ExpandableChapterRecyclerViewAdapter(private val context: Context, private
                 }
             }
 
-            if (childItem.canRead && childItem.isRead) {
+            if (childItem.isRead) {
                 currentTextView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimaryDark))
             }
 
