@@ -22,6 +22,9 @@ interface IRanobeRfApiService {
     @GET("/v1/bookmark/index/")
     fun GetFavoriteBooks(@Header("Authorization") token: String): Single<RfFavoriteGson>
 
+    @GET("/v1/user/settings/")
+    fun GetUserStatus(): Single<RfUserGson>
+
     @FormUrlEncoded
     @POST("/v1/auth/login/")
     fun Login(@Field("email") email: String, @Field("password") password: String): Single<RfLoginGson>

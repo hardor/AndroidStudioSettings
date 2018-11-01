@@ -13,6 +13,7 @@ class RulateLoginPreference(context: Context, attrs: AttributeSet) : BaseLoginPr
     init {
         setDialogIcon(R.mipmap.ic_rulate)
         sharedPref = context.getSharedPreferences(Constants.Rulate_Login_Pref, Context.MODE_PRIVATE)
+        ranobeSite = Constants.RanobeSite.Rulate
     }
 
     override fun auth(): Single<Array<String>> {

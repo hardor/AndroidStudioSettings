@@ -20,15 +20,33 @@ import ru.profapp.RanobeReader.Network.DTO.RanoberfDTO.RfBook
 import ru.profapp.RanobeReader.Network.DTO.RanoberfDTO.RfChapter
 import ru.profapp.RanobeReader.Network.DTO.RanoberfDTO.Sequence
 import ru.profapp.RanobeReader.Network.Endpoints.IRanobeRfApiService
+import ru.profapp.RanobeReader.Network.Interceptors.RanobeRfCookiesInterceptor
 import java.util.*
 
 object RanobeRfRepository : BaseRepository() {
 
+    var token: String? = null
+    var paymentStatus: Boolean? = null
     private var sequence: String = ""
     val gson = Gson()
     private val listType = object : TypeToken<List<Sequence>>() {}.type
 
+    private fun getUserStatus() {
+        paymentStatus = instance.GetUserStatus().map {
+            if (it.status == 200) {
+                return@map !it.result?.paymentStatus.isNullOrEmpty()
+            }
+
+            return@map false
+        }.onErrorReturn {
+            return@onErrorReturn false
+        }.subscribeOn(Schedulers.io()).blockingGet()
+    }
+
     fun getBookInfo(ranobe: Ranobe): Single<Boolean> {
+        if (paymentStatus == null) {
+            getUserStatus()
+        }
         var ranobeName = ranobe.url.replace(Constants.RanobeSite.RanobeRf.url, "")
         ranobeName = ranobeName.replace("/", "")
         return instance.GetBookInfo(ranobeName).map {
@@ -42,6 +60,9 @@ object RanobeRfRepository : BaseRepository() {
     }
 
     fun getReadyBooks(page: Int): Single<List<Ranobe>> {
+        if (paymentStatus == null) {
+            getUserStatus()
+        }
         if (page == 1) sequence = ""
         return instance.GetReadyBooks(page, sequence).map {
             sequence = gson.toJson(it.result?.sequence, listType)
@@ -52,6 +73,7 @@ object RanobeRfRepository : BaseRepository() {
     fun login(email: String, password: String): Single<Array<String>> {
         return instance.Login(email, password).map {
             if (it.status == 200) {
+                token = it.result.token
                 return@map arrayOf("true", it.message, it.result.token)
             } else arrayOf("false", it.message, "")
         }
@@ -87,6 +109,7 @@ object RanobeRfRepository : BaseRepository() {
     }
 
     fun getFavoriteBooks(token: String?): Single<List<Ranobe>> {
+
         if (token.isNullOrBlank()) return Single.just(mutableListOf())
         return instance.GetFavoriteBooks("Bearer $token").map {
             val or: MutableList<Ranobe> = mutableListOf()
@@ -108,7 +131,6 @@ object RanobeRfRepository : BaseRepository() {
     }
 
     fun getChapterText(mCurrentChapter: Chapter): Single<Boolean> {
-
         val parts = mCurrentChapter.url.split("/")
 
         return instance.GetChapterText(parts[3], parts[4]).map {
@@ -168,7 +190,7 @@ object RanobeRfRepository : BaseRepository() {
         title = if (title.isBlank()) book.title ?: title else title
         url = if (url.isBlank()) Constants.RanobeSite.RanobeRf.url + book.url else url
         readyDate = readyDate ?: book.lastUpdatedBook?.times(1000)?.let { Date(it) }
-        image = image ?: book.image?.desktop?.image?:book.image?.mobile?.image
+        image = image ?: book.image?.desktop?.image ?: book.image?.mobile?.image
 
         if (!image.isNullOrBlank()) {
             Completable.fromAction {
@@ -199,7 +221,10 @@ object RanobeRfRepository : BaseRepository() {
                 chapter.url = Constants.RanobeSite.RanobeRf.url + chapter.url
             }
 
-            chapter.canRead = !rChapter.partDonate && !rChapter.payment
+            chapter.canRead = (!rChapter.partDonate && !rChapter.payment) ||
+                    (rChapter.partDonate && rChapter.userDonate) ||
+                    (rChapter.payment && paymentStatus == true)
+
             chapter.ranobeUrl = if (chapter.ranobeUrl.isBlank()) url else chapter.ranobeUrl
             chapter.ranobeName = title
             chapter.index = index
@@ -246,15 +271,19 @@ object RanobeRfRepository : BaseRepository() {
         if (!url.contains(Constants.RanobeSite.RanobeRf.url)) {
             url = Constants.RanobeSite.RanobeRf.url + url
         }
-        canRead = !rChapter.partDonate && !rChapter.payment
+        canRead = (!rChapter.partDonate && !rChapter.payment) ||
+                (rChapter.partDonate && rChapter.userDonate) ||
+                (rChapter.payment && paymentStatus == true)
     }
 
     var instance: IRanobeRfApiService = create()
+
     fun create(): IRanobeRfApiService {
+        val httpClient = baseClient.addInterceptor(RanobeRfCookiesInterceptor(this))
         val retrofit = Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
-                .client(baseClient.build())
+                .client(httpClient.build())
                 .baseUrl("https://xn--80ac9aeh6f.xn--p1ai")
                 .build()
         return retrofit.create(IRanobeRfApiService::class.java)

@@ -66,7 +66,7 @@ data class RfChapter(
         @SerializedName("partDonate") val partDonate: Boolean = false,
         @SerializedName("publishedAt") val publishedAt: Long? = null,
         @SerializedName("sponsor") val sponsor: Boolean = false,
-        // @SerializedName("") val userDonate: Boolean?=null,
+        @SerializedName("userDonate") val userDonate: Boolean = false,
         @SerializedName("partNumber") val partNumber: String? = null,
         @SerializedName("view") val view: Int? = null
 )

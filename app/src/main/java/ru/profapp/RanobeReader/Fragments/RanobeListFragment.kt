@@ -364,6 +364,7 @@ class RanobeListFragment : Fragment() {
                 chapterList.addAll(group.value.asSequence().map { it -> Chapter(it) }.sortedWith(MyApp.chapterComparator).toList())
 
                 newRanobe.chapterList = chapterList
+                newRanobe.wasUpdated = true
                 savedList.add(newRanobe)
             }
 

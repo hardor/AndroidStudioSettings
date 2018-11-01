@@ -16,12 +16,14 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReader.Common.Constants
+import ru.profapp.RanobeReader.Network.Repositories.RanobeRfRepository
 import ru.profapp.RanobeReader.R
 
 open class BaseLoginPreference(context: Context, attrs: AttributeSet) : DialogPreference(context, attrs), DialogInterface.OnClickListener {
 
     private val mCurrentValue: String? = null
     lateinit var sharedPref: SharedPreferences
+    lateinit var ranobeSite: Constants.RanobeSite
     // Current value
     //    val mCurrentValue: String? = null
     // View elements
@@ -91,12 +93,20 @@ open class BaseLoginPreference(context: Context, attrs: AttributeSet) : DialogPr
                             alert.dismiss()
                         } else {
                             sharedPref.edit().putString(Constants.KEY_Token, "").apply()
+                            if (ranobeSite == Constants.RanobeSite.RanobeRf) {
+                                RanobeRfRepository.paymentStatus = null
+                                RanobeRfRepository.token = null
+                            }
                             resultTextView.text = result.second
                             resultTextView.visibility = View.VISIBLE
                         }
 
                     }, { error ->
                         sharedPref.edit().putString(Constants.KEY_Token, "").apply()
+                        if (ranobeSite == Constants.RanobeSite.RanobeRf) {
+                            RanobeRfRepository.paymentStatus = null
+                            RanobeRfRepository.token = null
+                        }
                         resultTextView.text = context.getString(R.string.response_error)
                         resultTextView.visibility = View.VISIBLE
                     })

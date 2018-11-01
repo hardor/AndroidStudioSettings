@@ -80,7 +80,7 @@ class Ranobe() {
 
     @ColumnInfo(name = "LastReadChapter")
     var lastReadChapter: Int? = null
-    @ColumnInfo(name = "WasUpdated")
+    @Ignore
     var wasUpdated: Boolean = false
     @ColumnInfo(name = "IsFavorite")
     var isFavorite: Boolean = false

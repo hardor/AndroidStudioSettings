@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
@@ -36,6 +35,7 @@ import ru.profapp.RanobeReader.Helpers.ThemeHelper
 import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.Models.Ranobe
 import ru.profapp.RanobeReader.MyApp
+import ru.profapp.RanobeReader.Network.Repositories.RanobeRfRepository
 import ru.profapp.RanobeReader.R
 
 class MainActivity : AppCompatActivity(),
@@ -46,12 +46,10 @@ class MainActivity : AppCompatActivity(),
 
     private var currentTheme = ThemeHelper.sTheme
 
-
     private var adView: AdView? = null
 
     private var currentFragment: String? = null
     private var currentTitle: String? = null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initSettingPreference()
@@ -173,6 +171,14 @@ class MainActivity : AppCompatActivity(),
         MyApp.useVolumeButtonsToScroll = settingPref.getBoolean(applicationContext.getString(R.string.pref_general_volume_scroll), false)
         ThemeHelper.onActivityCreateSetTheme()
         currentTheme = AppCompatDelegate.getDefaultNightMode()
+
+        val ranobeRfPref = applicationContext.getSharedPreferences(Constants.Ranoberf_Login_Pref, 0)
+        if (ranobeRfPref != null) {
+            val token = ranobeRfPref.getString(Constants.KEY_Token, "")
+            if (token.isNotBlank()) {
+                RanobeRfRepository.token =token
+            }
+        }
     }
 
     override fun onBackPressed() {
