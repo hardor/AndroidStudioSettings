@@ -72,8 +72,8 @@ class MyApp : MultiDexApplication() {
                     database.execSQL("CREATE INDEX index_chapterHistory_ChapterUrl ON chapterHistory (ChapterUrl);")
                     database.execSQL("CREATE TABLE ranobeHistory (RanobeUrl TEXT NOT NULL, RanobeName TEXT NOT NULL, Description TEXT, ReadDate INTEGER NOT NULL, PRIMARY KEY(RanobeUrl))")
                     database.execSQL("CREATE INDEX index_ranobeHistory_RanobeUrl ON ranobeHistory (RanobeUrl)")
-                    database.execSQL("CREATE TABLE IF NOT EXISTS textChapter2 (ChapterUrl TEXT NOT NULL, ChapterName TEXT NOT NULL, RanobeName TEXT NOT NULL,  RanobeUrl TEXT NOT NULL DEFAULT '',Text TEXT NOT NULL,PRIMARY KEY(ChapterUrl));")
-                    database.execSQL("INSERT INTO textChapter2 (ChapterUrl, ChapterName, RanobeName,  Text) SELECT ChapterUrl, ChapterName, RanobeName,  Text FROM textChapter;")
+                    database.execSQL("CREATE TABLE IF NOT EXISTS textChapter2 (ChapterUrl TEXT NOT NULL, ChapterName TEXT NOT NULL, RanobeName TEXT NOT NULL,  RanobeUrl TEXT NOT NULL,Text TEXT NOT NULL,PRIMARY KEY(ChapterUrl));")
+                    //database.execSQL("INSERT INTO textChapter2 (ChapterUrl, ChapterName, RanobeName,RanobeUrl,  Text) SELECT ChapterUrl, ChapterName, RanobeName,'',  Text FROM textChapter;")
                     database.execSQL("DROP TABLE textChapter;")
                     database.execSQL("ALTER TABLE textChapter2 RENAME TO textChapter;")
                     database.execSQL("CREATE INDEX index_textChapter_ChapterUrl ON textChapter (ChapterUrl);")
@@ -87,6 +87,7 @@ class MyApp : MultiDexApplication() {
         var ranobe: Ranobe? = null
         var refWatcher: RefWatcher? = null
         var useVolumeButtonsToScroll: Boolean = false
+        var isApplicationInitialized: Boolean = false
 
     }
 

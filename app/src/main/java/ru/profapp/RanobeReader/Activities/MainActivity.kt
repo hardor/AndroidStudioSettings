@@ -24,9 +24,12 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import io.fabric.sdk.android.Fabric
+import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReader.BuildConfig
 import ru.profapp.RanobeReader.Common.Constants
+import ru.profapp.RanobeReader.Common.Constants.RanobeSite.Error
 import ru.profapp.RanobeReader.Common.MyExceptionHandler
 import ru.profapp.RanobeReader.Fragments.HistoryFragment
 import ru.profapp.RanobeReader.Fragments.RanobeListFragment
@@ -36,6 +39,7 @@ import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.Models.Ranobe
 import ru.profapp.RanobeReader.MyApp
 import ru.profapp.RanobeReader.Network.Repositories.RanobeRfRepository
+import ru.profapp.RanobeReader.Network.Repositories.RulateRepository
 import ru.profapp.RanobeReader.R
 
 class MainActivity : AppCompatActivity(),
@@ -45,15 +49,16 @@ class MainActivity : AppCompatActivity(),
         NavigationView.OnNavigationItemSelectedListener {
 
     private var currentTheme = ThemeHelper.sTheme
-
     private var adView: AdView? = null
 
     private var currentFragment: String? = null
     private var currentTitle: String? = null
 
+    private var alertErrorDialog: AlertDialog? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         initSettingPreference()
         super.onCreate(savedInstanceState)
+        MyApp.isApplicationInitialized = true
         // Set up Crashlytics, disabled for debug builds
         val crashlyticsKit = Crashlytics.Builder()
                 .core(CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build())
@@ -74,8 +79,8 @@ class MainActivity : AppCompatActivity(),
                         dialog.cancel()
                     }
 
-            val alert = builder.create()
-            alert.show()
+            alertErrorDialog = builder.create()
+            alertErrorDialog?.show()
         }
         if (!BuildConfig.PAID_VERSION) {
 
@@ -175,8 +180,8 @@ class MainActivity : AppCompatActivity(),
         val ranobeRfPref = applicationContext.getSharedPreferences(Constants.Ranoberf_Login_Pref, 0)
         if (ranobeRfPref != null) {
             val token = ranobeRfPref.getString(Constants.KEY_Token, "")
-            if (token.isNotBlank()) {
-                RanobeRfRepository.token =token
+            if (!token.isNullOrBlank()) {
+                RanobeRfRepository.token = token
             }
         }
     }
@@ -275,6 +280,7 @@ class MainActivity : AppCompatActivity(),
         }
 
         if (fragment != null) {
+
             if (!BuildConfig.PAID_VERSION) {
                 adView!!.loadAd(AdRequest.Builder().build())
             }
@@ -314,6 +320,8 @@ class MainActivity : AppCompatActivity(),
     override fun onPause() {
         super.onPause()
         adView?.pause()
+        alertErrorDialog?.dismiss()
+        alertErrorDialog = null
     }
 
     companion object {

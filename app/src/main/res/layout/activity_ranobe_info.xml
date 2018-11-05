@@ -7,7 +7,7 @@
   android:fitsSystemWindows="true">
 
   <com.google.android.material.appbar.AppBarLayout
-    android:id="@+id/main.appbar"
+    android:id="@+id/main_appbar"
     android:layout_width="match_parent"
     android:layout_height="256dp"
     android:fitsSystemWindows="true">
@@ -23,7 +23,7 @@
 
 
       <ImageView
-        android:id="@+id/main.logoimage"
+        android:id="@+id/main_logoimage"
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:layout_gravity="center"
@@ -33,7 +33,7 @@
 
 
       <androidx.appcompat.widget.Toolbar
-        android:id="@+id/main.toolbar"
+        android:id="@+id/toolbar_rI"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:layout_collapseMode="pin"/>
@@ -57,7 +57,7 @@
       android:orientation="vertical">
 
       <androidx.cardview.widget.CardView
-        android:id="@+id/ranobe.description.card"
+        android:id="@+id/cV_RI_description"
         style="@style/CardViewStyle">
 
         <LinearLayout
@@ -70,7 +70,7 @@
             android:text="@string/description"/>
 
           <TextView
-            android:id="@+id/text_about"
+            android:id="@+id/tV_rI_about"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="8dp"
@@ -80,7 +80,7 @@
       </androidx.cardview.widget.CardView>
 
       <androidx.cardview.widget.CardView
-        android:id="@+id/ranobe.info.card"
+        android:id="@+id/cV_RI_info"
         style="@style/CardViewStyle"
         android:visibility="gone">
 
@@ -94,7 +94,7 @@
             android:text="@string/additional_information"/>
 
           <TextView
-            android:id="@+id/text_info"
+            android:id="@+id/tV_rI_additionalInfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="8dp"
@@ -113,7 +113,7 @@
         app:adUnitId="@string/banner_ad_unit_id"/>
 
       <TabHost
-        android:id="@+id/tH_history"
+        android:id="@+id/tH_rI_comments"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -143,14 +143,14 @@
                 android:orientation="vertical">
 
                 <ProgressBar
-                  android:id="@+id/progressBar_ranobeInfo"
+                  android:id="@+id/pBar_RanobeInfo"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:padding="10dp"
                   android:visibility="gone"/>
 
                 <androidx.recyclerview.widget.RecyclerView
-                  android:id="@+id/chapter_list"
+                  android:id="@+id/rV_rI_chapters"
                   android:layout_width="match_parent"
                   android:layout_height="match_parent"
                   android:layout_marginLeft="16dp"
@@ -171,7 +171,7 @@
               style="@style/CardViewStyle">
 
               <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/comment.list"
+                android:id="@+id/rV_rI_comments"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="16dp"
@@ -196,17 +196,17 @@
 
 
   <com.google.android.material.floatingactionbutton.FloatingActionButton
-    android:id="@+id/fav_button"
+    android:id="@+id/fab_rI_favorite"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="32dp"
     android:layout_marginEnd="32dp"
-    app:layout_anchor="@id/main.appbar"
+    app:layout_anchor="@id/main_appbar"
     app:layout_anchorGravity="bottom|right|end"
     app:srcCompat="@drawable/ic_favorite_border_black_24dp"/>
 
   <com.google.android.material.floatingactionbutton.FloatingActionButton
-    android:id="@+id/bookmark_fab"
+    android:id="@+id/fabBookmark"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/fab_margin"

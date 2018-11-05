@@ -28,8 +28,8 @@ class ExpandableChapterRecyclerViewAdapter(private val context: Context, private
 
         val numInGroup = 100
         if(mChapters.size >0) {
-            val num = mChapters.size / numInGroup
-            for (i in 0..num) {
+            val num = Math.ceil((mChapters.size).toDouble() / numInGroup).toInt()
+            for (i in 0 until num) {
                 val parentDataItem = ParentDataItem("${mChapters[minOf((i + 1) * numInGroup, mChapters.size - 1)].title} - ${mChapters[minOf(i * numInGroup, mChapters.size - 1)].title}", (mChapters.subList(i * numInGroup, minOf((i + 1) * numInGroup, mChapters.size))))
                 parentDataItem.canRead = parentDataItem.childDataItems.any { it -> it.canRead }
                 parentDataItems.add(parentDataItem)

@@ -86,4 +86,6 @@
   <string name="readyToRestore">Вы действительно хотите восстановить резервную копию? Данные вашего приложения будут переписаны.После восстановления приложение будет автоматически перезапущено.</string>
   <string name="all_uncaughtException">Внезапная ошибка</string>
   <string name="all_appCrashed">Приложение перезапущено после вылета. Если вылеты продолжатся, попробуйте очистить данные приложения.</string>
+  <string name="cant_remove_web_bookmark">Не удалось убрать веб закладку</string>
+  <string name="auth_error">Ошибка авторизации</string>
 </resources>

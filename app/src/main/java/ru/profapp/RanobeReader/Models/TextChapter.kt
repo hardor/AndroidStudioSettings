@@ -27,7 +27,7 @@ class TextChapter {
 
     constructor(chapter: Chapter) {
         this.chapterUrl = chapter.url
-        this.text = chapter.text.toString()
+        this.text = chapter.text?:""
         this.chapterName = chapter.title.replace("^\\s+", "")
         this.ranobeName = chapter.ranobeName
         this.ranobeUrl = chapter.ranobeUrl

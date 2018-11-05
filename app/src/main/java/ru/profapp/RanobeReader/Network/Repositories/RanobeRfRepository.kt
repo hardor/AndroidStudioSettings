@@ -123,6 +123,7 @@ object RanobeRfRepository : BaseRepository() {
                     ranobe.image = result.bookImage
                     ranobe.chapterCount = result.allPartsCount
                     ranobe.isFavoriteInWeb = true
+                    ranobe.isFavorite = true
                     or.add(ranobe)
                 }
             }
@@ -139,7 +140,7 @@ object RanobeRfRepository : BaseRepository() {
                 val response = it.result
                 if (response?.status == 200) {
                     mCurrentChapter.title = response.part!!.title.toString()
-                    mCurrentChapter.text = "<b>" + mCurrentChapter.title + "</b>" + "</br>" + response.part.content
+                    mCurrentChapter.text =  response.part.content
                     mCurrentChapter.url = response.part.url!!
                 }
 

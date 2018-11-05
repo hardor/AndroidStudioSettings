@@ -3,6 +3,7 @@ package ru.profapp.RanobeReader.Activities
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.DialogInterface.BUTTON_NEGATIVE
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -157,6 +158,16 @@ class DownloadActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (!MyApp.isApplicationInitialized ) {
+            val firstIntent = Intent(this, MainActivity::class.java)
+
+            firstIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) // So all other activities will be dumped
+            startActivity(firstIntent)
+
+            // We are done, so finish this activity and get out now
+            finish()
+            return
+        }
         Fabric.with(this, Crashlytics())
         setupActionBar()
         setContentView(R.layout.activity_download)

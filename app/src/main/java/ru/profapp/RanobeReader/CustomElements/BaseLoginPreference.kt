@@ -93,21 +93,24 @@ open class BaseLoginPreference(context: Context, attrs: AttributeSet) : DialogPr
                             alert.dismiss()
                         } else {
                             sharedPref.edit().putString(Constants.KEY_Token, "").apply()
+                            summary = context.getString(R.string.summary_login)
                             if (ranobeSite == Constants.RanobeSite.RanobeRf) {
                                 RanobeRfRepository.paymentStatus = null
                                 RanobeRfRepository.token = null
                             }
                             resultTextView.text = result.second
+
                             resultTextView.visibility = View.VISIBLE
                         }
 
                     }, { error ->
                         sharedPref.edit().putString(Constants.KEY_Token, "").apply()
+                        summary = context.getString(R.string.summary_login)
                         if (ranobeSite == Constants.RanobeSite.RanobeRf) {
                             RanobeRfRepository.paymentStatus = null
                             RanobeRfRepository.token = null
                         }
-                        resultTextView.text = context.getString(R.string.response_error)
+                        resultTextView.text = context.getString(R.string.auth_error)
                         resultTextView.visibility = View.VISIBLE
                     })
             compositeDisposable.add(loginRequest)

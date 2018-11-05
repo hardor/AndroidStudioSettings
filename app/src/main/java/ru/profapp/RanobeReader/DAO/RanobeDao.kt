@@ -34,6 +34,10 @@ interface RanobeDao {
     @Query("DELETE FROM ranobe  WHERE url=:UrlToRanobe AND IsFavoriteInWeb = 1")
     fun deleteWeb(UrlToRanobe: String)
 
+
+    @Query("DELETE FROM ranobe  WHERE url=:UrlToRanobe ")
+    fun deleteByUrl(UrlToRanobe: String)
+
     @Delete
     fun delete(ranobe: Ranobe)
 

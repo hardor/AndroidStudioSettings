@@ -112,7 +112,10 @@
   <string name="all_appCrashed">App restarted after crash. Try to clean app data if you will get crash again.</string>
   <string name="all_uncaughtException">Uncaught Exception</string>
   <string name="contentDescription_Logo" translatable="false">Logo</string>
-
+  <string name="cant_remove_web_bookmark">Can\'t remove web bookmark</string>
+  <string name="auth_error">Error authorization</string>
+  <string name="load_web_bookmarks">Load web bookmarks</string>
+  <string name="load_web_bookmarks_message">Do you want to update bookmarks from web if you logged in any sites?</string>
 
   <!--<string name="show_all_chapter">Show all chapters</string>-->
   <!--<string name="show_only_readable">Show only readable chapters</string>-->
@@ -129,7 +132,7 @@
   <!--<string name="action_bookmark">Bookmark</string>-->
   <!--<string name="bookmark_saved">Bookmark saved</string>-->
   <!--<string name="email" translatable="false">e-mail</string>-->
-  <!--<string name="auth_error">Error authorization</string>-->
+  <!---->
   <!--<string name="auth_succes">Authorization success</string>-->
   <!--<string name="update_to_remove">Please update favorites to remove this bookmark</string>-->
   <!--<string name="add_to_favorite">Add to favorite</string>-->

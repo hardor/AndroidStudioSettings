@@ -13,9 +13,8 @@ import android.view.MenuItem
 import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.ImageButton
-import android.widget.ProgressBar
 import android.widget.Toast
+import android.widget.Toolbar
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import com.crashlytics.android.Crashlytics
@@ -25,6 +24,7 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_chapter_text.*
 import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Common.MyExceptionHandler
 import ru.profapp.RanobeReader.Helpers.LogHelper
@@ -40,7 +40,6 @@ import java.net.UnknownHostException
 class ChapterTextActivity : AppCompatActivity() {
 
     lateinit var mCurrentChapter: Chapter
-    private lateinit var mWebView: WebView
     private var mContext: Context? = null
     private var hChapterUrl: String? = null
     private var chapterIndex: Int = 0
@@ -49,12 +48,8 @@ class ChapterTextActivity : AppCompatActivity() {
     private var mChapterList: List<Chapter> = ArrayList()
 
     private var lastChapterIdPref: SharedPreferences? = null
-    private lateinit var nextMenu: ImageButton
-    private lateinit var prevMenu: ImageButton
-
     private var currentRanobe: Ranobe? = null
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
-    private lateinit var progressBar: ProgressBar
 
     private fun set_web_colors() {
 
@@ -68,14 +63,27 @@ class ChapterTextActivity : AppCompatActivity() {
     }
 
     private fun calculateProgression(): Float {
-        val positionTopView = mWebView.top.toFloat()
-        val contentHeight = mWebView.contentHeight.toFloat()
-        val currentScrollPosition = mWebView.scrollY.toFloat()
+        val positionTopView = textWebview.top.toFloat()
+        val contentHeight = textWebview.contentHeight.toFloat()
+        val currentScrollPosition = textWebview.scrollY.toFloat()
         return (currentScrollPosition - positionTopView) / contentHeight
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (!MyApp.isApplicationInitialized ) {
+            val firstIntent = Intent(this, MainActivity::class.java)
+
+            firstIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) // So all other activities will be dumped
+            startActivity(firstIntent)
+
+            // We are done, so finish this activity and get out now
+            finish()
+            return
+        }
+
+
         Fabric.with(this, Crashlytics())
         setupActionBar()
         setContentView(R.layout.activity_chapter_text)
@@ -104,14 +112,7 @@ class ChapterTextActivity : AppCompatActivity() {
             chapterIndex = mChapterCount - 1
             mCurrentChapter = mChapterList[chapterIndex]
         }
-
-
-
-
-        progressBar = findViewById(R.id.progressBar2)
-
-        mWebView = findViewById(R.id.textWebview)
-        mWebView.webViewClient = object : WebViewClient() {
+        textWebview.webViewClient = object : WebViewClient() {
 
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 super.onPageStarted(view, url, favicon)
@@ -142,17 +143,17 @@ class ChapterTextActivity : AppCompatActivity() {
                     }
                 }, 300)
 
-                progressBar.visibility = View.GONE
+                webViewProgressBar.visibility = View.GONE
                 super.onPageFinished(view, url)
             }
 
         }
-        mWebView.setLayerType(View.LAYER_TYPE_HARDWARE, null)
+        textWebview.setLayerType(View.LAYER_TYPE_HARDWARE, null)
 
-        mWebView.settings.builtInZoomControls = false
-        mWebView.settings.displayZoomControls = false
+        textWebview.settings.builtInZoomControls = false
+        textWebview.settings.displayZoomControls = false
 
-        mWebView.setBackgroundColor(resources.getColor(R.color.webViewBackground))
+        textWebview.setBackgroundColor(resources.getColor(R.color.webViewBackground))
 
         lastChapterIdPref = getSharedPreferences(Constants.last_chapter_id_Pref, Context.MODE_PRIVATE)
 
@@ -169,17 +170,12 @@ class ChapterTextActivity : AppCompatActivity() {
             compositeDisposable.add(request)
         }
 
+        navigation_prev.visibility = if (chapterIndex < mChapterCount - 1) View.VISIBLE else View.INVISIBLE
+        navigation_next.visibility = if (chapterIndex > 0) View.VISIBLE else View.INVISIBLE
 
-        prevMenu = findViewById(R.id.navigation_prev)
-        nextMenu = findViewById(R.id.navigation_next)
+        navigation_next.setOnClickListener { OnClicked(-1) }
 
-
-        prevMenu.visibility = if (chapterIndex < mChapterCount - 1) View.VISIBLE else View.INVISIBLE
-        nextMenu.visibility = if (chapterIndex > 0) View.VISIBLE else View.INVISIBLE
-
-        nextMenu.setOnClickListener { OnClicked(-1) }
-
-        prevMenu.setOnClickListener { OnClicked(+1) }
+        navigation_prev.setOnClickListener { OnClicked(+1) }
 
     }
 
@@ -190,7 +186,7 @@ class ChapterTextActivity : AppCompatActivity() {
         @ColorInt
         val color2 = resources.getColor(R.color.webViewBackground)
 
-        progressBar.visibility = View.VISIBLE
+        webViewProgressBar.visibility = View.VISIBLE
 
         val style = ("style = \"text-align: justify; text-indent: 20px;font-size: "
                 + MyApp.chapterTextSize!!.toString() + "px;"
@@ -208,9 +204,10 @@ class ChapterTextActivity : AppCompatActivity() {
 
                     val summary = ("<html><style>img{display: inline;height: auto;max-width: 90%;}</style><body "
                             + style + ">"
-                            +( mCurrentChapter.text?: getString(R.string.no_access)) + "</body></html>")
+                         //   + "<b>" + mCurrentChapter.title + "</b>"   + "</br>"
+                    +( mCurrentChapter.text?: getString(R.string.no_access)) + "</body></html>")
 
-                    mWebView.loadDataWithBaseURL("https:\\\\" + mCurrentChapter.url + "/", summary, "text/html", "UTF-8", null)
+                    textWebview.loadDataWithBaseURL("https:\\\\" + mCurrentChapter.url + "/", summary, "text/html", "UTF-8", null)
 
                 }, { error ->
                     LogHelper.logError(LogHelper.LogType.ERROR, "GetChapterText", "", error.fillInStackTrace())
@@ -218,10 +215,11 @@ class ChapterTextActivity : AppCompatActivity() {
                         Toast.makeText(mContext, R.string.error_connection, Toast.LENGTH_SHORT).show()
 
                     val summary = ("<html><style>img{display: inline;height: auto;max-width: 90%;}</style><body "
-                            + style + ">" + "<b>" + mCurrentChapter.title + "</b>" + "</br>"
+                            + style + ">"
+                         //   + "<b>" + mCurrentChapter.title + "</b>" + "</br>"
                             + (mCurrentChapter.text ?: "Нет доступа") + "</body></html>")
 
-                    mWebView.loadDataWithBaseURL("https:\\\\" + mCurrentChapter.url + "/", summary, "text/html", "UTF-8", null)
+                    textWebview.loadDataWithBaseURL("https:\\\\" + mCurrentChapter.url + "/", summary, "text/html", "UTF-8", null)
 
                 })
 
@@ -286,14 +284,25 @@ class ChapterTextActivity : AppCompatActivity() {
 
     private fun GetChapterText(): Single<Boolean> {
 
-        return if (mCurrentChapter.text.isNullOrBlank()) {
+        return if (mCurrentChapter.text.isNullOrBlank() || mCurrentChapter.text.equals("null")) {
 
             return MyApp.database.textDao().getTextByChapterUrl(mCurrentChapter.url).map {
-                mCurrentChapter.text = it.text
-                return@map true
+                if(it.text != "null") {
+                    mCurrentChapter.text = it.text
+                    return@map true
+                }else{
+                    Completable.fromAction {
+                        MyApp.database.textDao().delete(mCurrentChapter.url)
+                    }?.subscribeOn(Schedulers.io())?.subscribe({}, { error ->
+                        LogHelper.logError(LogHelper.LogType.ERROR, "", "", error, false)
+                    })
+
+                    return@map false
+                }
+
             }.switchIfEmpty(GetChapterTextFromWeb(mCurrentChapter.ranobeUrl))
                     .map {
-                        if (!mCurrentChapter.text.isNullOrBlank() && it) {
+                        if (!mCurrentChapter.text.isNullOrBlank() && it && !mCurrentChapter.text.equals("null") ) {
                             Completable.fromAction {
                                 MyApp.database.textDao().insert(TextChapter(mCurrentChapter))
                             }?.subscribeOn(Schedulers.io())?.subscribe({}, { error ->
@@ -357,8 +366,8 @@ class ChapterTextActivity : AppCompatActivity() {
             chapterIndex -= i
         }
 
-        prevMenu.visibility = if (chapterIndex < mChapterCount - 1) View.VISIBLE else View.INVISIBLE
-        nextMenu.visibility = if (chapterIndex > 0) View.VISIBLE else View.INVISIBLE
+        navigation_prev.visibility = if (chapterIndex < mChapterCount - 1) View.VISIBLE else View.INVISIBLE
+        navigation_next.visibility = if (chapterIndex > 0) View.VISIBLE else View.INVISIBLE
 
     }
 
@@ -400,13 +409,13 @@ class ChapterTextActivity : AppCompatActivity() {
             return when (keyCode) {
                 KeyEvent.KEYCODE_VOLUME_UP -> {
                     if (action == KeyEvent.ACTION_DOWN) {
-                        mWebView.pageUp(false)
+                        textWebview.pageUp(false)
                     }
                     true
                 }
                 KeyEvent.KEYCODE_VOLUME_DOWN -> {
                     if (action == KeyEvent.ACTION_DOWN) {
-                        mWebView.pageDown(false)
+                        textWebview.pageDown(false)
                     }
                     true
                 }

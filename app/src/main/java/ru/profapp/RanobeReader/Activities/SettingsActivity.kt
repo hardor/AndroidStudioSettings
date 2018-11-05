@@ -2,6 +2,7 @@ package ru.profapp.RanobeReader.Activities
 
 import android.annotation.TargetApi
 import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
@@ -28,6 +29,20 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
+
+        if (!MyApp.isApplicationInitialized ) {
+            val firstIntent = Intent(this, MainActivity::class.java)
+
+            firstIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) // So all other activities will be dumped
+            startActivity(firstIntent)
+
+            // We are done, so finish this activity and get out now
+            finish()
+            return
+        }
+
         // Set up Crashlytics, disabled for debug builds
         val crashlyticsKit = Crashlytics.Builder()
                 .core(CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build())

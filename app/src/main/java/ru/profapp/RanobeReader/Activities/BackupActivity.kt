@@ -33,6 +33,18 @@ class BackupActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (!MyApp.isApplicationInitialized ) {
+            val firstIntent = Intent(this, MainActivity::class.java)
+
+            firstIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) // So all other activities will be dumped
+            startActivity(firstIntent)
+
+            // We are done, so finish this activity and get out now
+            finish()
+            return
+        }
+
         setupActionBar()
         setContentView(R.layout.activity_backup)
         Thread.setDefaultUncaughtExceptionHandler(MyExceptionHandler(this))

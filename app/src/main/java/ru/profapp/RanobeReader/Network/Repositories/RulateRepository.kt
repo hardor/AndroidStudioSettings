@@ -57,6 +57,7 @@ object RulateRepository : BaseRepository() {
 
                     val ranobe = Ranobe(Constants.RanobeSite.Rulate)
                     ranobe.isFavoriteInWeb = true
+                    ranobe.isFavorite = true
                     ranobe.engTitle = response.sTitle
                     ranobe.title = response.tTitle
                     ranobe.lang = response.lang

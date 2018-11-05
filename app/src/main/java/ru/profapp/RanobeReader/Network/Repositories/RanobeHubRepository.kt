@@ -136,7 +136,7 @@ object RanobeHubRepository : BaseRepository() {
                 textObj.select(".ads-desktop").remove()
                 textObj.select(".ads-mobile").remove()
                 textObj.select(".adsbygoogle").remove()
-                mCurrentChapter.text = "<b>" + mCurrentChapter.title + "</b>" + "</br>" + textObj.html()
+                mCurrentChapter.text = textObj.html()
                 return@map true
             } else
                 return@map false
