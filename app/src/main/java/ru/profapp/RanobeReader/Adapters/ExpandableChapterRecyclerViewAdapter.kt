@@ -27,7 +27,7 @@ class ExpandableChapterRecyclerViewAdapter(private val context: Context, private
     constructor(context: Context, mChapters: ArrayList<Chapter>, mRanobe: Ranobe) : this(context, mRanobe) {
 
         val numInGroup = 100
-        if(mChapters.size >0) {
+        if (mChapters.size > 0) {
             val num = Math.ceil((mChapters.size).toDouble() / numInGroup).toInt()
             for (i in 0 until num) {
                 val parentDataItem = ParentDataItem("${mChapters[minOf((i + 1) * numInGroup, mChapters.size - 1)].title} - ${mChapters[minOf(i * numInGroup, mChapters.size - 1)].title}", (mChapters.subList(i * numInGroup, minOf((i + 1) * numInGroup, mChapters.size))))

@@ -102,19 +102,18 @@ android {
     }
 
     sourceSets {
-        androidTest.assets.srcDirs +=
-                files("$projectDir/schemas".toString())
+        androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
     }
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.0.1'
     implementation 'androidx.preference:preference:1.0.0'
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.vectordrawable:vectordrawable:1.0.0'
+    implementation 'androidx.vectordrawable:vectordrawable:1.0.1'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     //implementation 'androidx.gridlayout:gridlayout:1.0.0'
@@ -122,8 +121,8 @@ dependencies {
     //implementation 'androidx.palette:palette:1.0.0'
     implementation 'androidx.annotation:annotation:1.0.0'
     //implementation "androidx.paging:paging-runtime:2.0.0"
-      implementation 'androidx.multidex:multidex:2.0.0'
-   // implementation 'com.google.android.gms:play-services-ads:17.0.0'
+    implementation 'androidx.multidex:multidex:2.0.0'
+    // implementation 'com.google.android.gms:play-services-ads:17.0.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
@@ -136,7 +135,7 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.6.1'
     implementation 'com.github.bumptech.glide:okhttp3-integration:4.5.0'
     kapt 'com.github.bumptech.glide:compiler:4.8.0'
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.5'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.6'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.0'
     // retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
@@ -146,7 +145,7 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
     //  implementation 'io.reactivex.rxjava2:rxjava:2.1.10'
     //firebase
-    implementation 'com.google.firebase:firebase-ads:17.0.0'
+    implementation 'com.google.firebase:firebase-ads:17.1.0'
     //implementation 'com.google.firebase:firebase-appindexing:16.0.2'
     implementation 'com.google.firebase:firebase-core:16.0.4'
     //implementation 'com.google.firebase:firebase-crash:16.0.1'
@@ -157,7 +156,7 @@ dependencies {
     // common
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'org.jsoup:jsoup:1.11.3'
-   // implementation 'com.getkeepsafe.taptargetview:taptargetview:1.12.0'
+    // implementation 'com.getkeepsafe.taptargetview:taptargetview:1.12.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

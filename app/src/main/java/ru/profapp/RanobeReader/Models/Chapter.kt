@@ -71,10 +71,10 @@ class Chapter() {
     var ranobeId: Int? = null
         get() {
             if (field == null && ranobeUrl.isNotBlank()) {
-                try {
-                    return Integer.parseInt(ranobeUrl.substring(ranobeUrl.lastIndexOf("/") + 1))
+                return try {
+                    Integer.parseInt(ranobeUrl.substring(ranobeUrl.lastIndexOf("/") + 1))
                 } catch (ignore: NumberFormatException) {
-                    return field
+                    field
                 }
 
             }

@@ -117,7 +117,8 @@ class HistoryFragment : Fragment() {
         return ranobe
     }
 
-    override fun onAttach(context: Context) {
+
+    override fun onAttach(context: Context?) {
         super.onAttach(context)
         mContext = context
         if (context is OnFragmentInteractionListener) {
@@ -136,7 +137,6 @@ class HistoryFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         compositeDisposable.clear()
-        mContext = null
         MyApp.refWatcher?.watch(this)
     }
 

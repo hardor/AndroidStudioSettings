@@ -11,7 +11,7 @@ import ru.profapp.RanobeReader.Helpers.LogHelper
 class MyExceptionHandler(private val activity: Activity) : Thread.UncaughtExceptionHandler {
 
     override fun uncaughtException(thread: Thread, ex: Throwable) {
-        LogHelper.logError(LogHelper.LogType.WARN, activity.packageName, "Uncaught exception", ex,true)
+        LogHelper.logError(LogHelper.LogType.ERROR, activity.packageName, "Uncaught exception", ex)
         val intent = Intent(activity, MainActivity::class.java)
         intent.putExtra("crash", true)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP

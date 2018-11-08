@@ -3,7 +3,6 @@ package ru.profapp.RanobeReader.Network.Repositories
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
-import okhttp3.OkHttpClient
 import org.jsoup.Jsoup
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -23,7 +22,6 @@ import ru.profapp.RanobeReader.Network.Interceptors.ReceivedCookiesInterceptor
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 object RanobeHubRepository : BaseRepository() {
 
@@ -90,9 +88,9 @@ object RanobeHubRepository : BaseRepository() {
                 ranobe.id = ranobe.url.replace("${Constants.RanobeSite.RanobeHub.url}/ranobe/", "").toInt()
                 ranobe.image = Constants.RanobeSite.RanobeHub.url + item.selectFirst("img").attr("data-src")
 
-                if (! ranobe.image.isNullOrBlank()) {
+                if (!ranobe.image.isNullOrBlank()) {
                     Completable.fromAction {
-                        MyApp.database.ranobeImageDao().insert(RanobeImage( ranobe.url,  ranobe.image!!))
+                        MyApp.database.ranobeImageDao().insert(RanobeImage(ranobe.url, ranobe.image!!))
                     }?.subscribeOn(Schedulers.io())?.subscribe({}, { error ->
                         LogHelper.logError(LogHelper.LogType.ERROR, "", "", error, false)
                     })
@@ -165,24 +163,24 @@ object RanobeHubRepository : BaseRepository() {
 
         url = Constants.RanobeSite.RanobeHub.url + "/ranobe/" + id
 
-        description = description ?: StringHelper.removeTags(book.description!!)
+        description = description ?: StringHelper.removeTags(book.description ?: "")
 
         if (!book.changedAt.isNullOrEmpty()) {
             val df = SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault())
             df.timeZone = TimeZone.getTimeZone("UTC")
 
             try {
-                readyDate = df.parse(book.changedAt!!)
+                readyDate = df.parse(book.changedAt)
             } catch (e: ParseException) {
-                e.printStackTrace()
+                LogHelper.logError(LogHelper.LogType.WARN, "Parse date", "", e, false)
             }
         }
 
         image = image ?: Constants.RanobeSite.RanobeHub.url + "/img/ranobe/posters/" + id + "/0-min.jpg"
 
-        if (! image.isNullOrBlank()) {
+        if (!image.isNullOrBlank()) {
             Completable.fromAction {
-                MyApp.database.ranobeImageDao().insert(RanobeImage( url,  image!!))
+                MyApp.database.ranobeImageDao().insert(RanobeImage(url, image!!))
             }?.subscribeOn(Schedulers.io())?.subscribe({}, { error ->
                 LogHelper.logError(LogHelper.LogType.ERROR, "", "", error, false)
             })
@@ -193,7 +191,7 @@ object RanobeHubRepository : BaseRepository() {
         chapterCount = chapterCount ?: book.chapters
     }
 
-    var instance: IRanobeHubApiService = create()
+    private var instance: IRanobeHubApiService = create()
     private var instanceHtml: IRanobeHubApiService = createHtml()
 
     fun create(): IRanobeHubApiService {

@@ -9,7 +9,7 @@ object Constants {
     const val Rulate_Login_Pref = "preference_rulate_login"
     const val Ranoberf_Login_Pref = "preference_ranoberf_login"
     // Todo:remove is_readed_Pref
-    @Deprecated("Use Last_readed_Pref", ReplaceWith("last_chapter_id_Pref"), DeprecationLevel.WARNING)
+    //@Deprecated("Use Last_readed_Pref", ReplaceWith("last_chapter_id_Pref"), DeprecationLevel.WARNING)
     const val is_readed_Pref = "preference_is_readed"
     const val last_chapter_id_Pref = "preference_last_chapter_id"
 
@@ -40,7 +40,6 @@ object Constants {
 
         companion object {
             fun fromUrl(findValue: String): RanobeSite? = RanobeSite.values().firstOrNull { it.url == findValue }
-            fun fromTitle(findValue: String): RanobeSite? = RanobeSite.values().firstOrNull { it.title == findValue }
         }
     }
 }

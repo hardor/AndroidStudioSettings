@@ -88,8 +88,8 @@ class BackupActivity : AppCompatActivity() {
                             .setMessage(getString(R.string.readyToBackup))
                             .setIcon(R.drawable.ic_info_black_24dp)
                             .setCancelable(true)
-                            .setNegativeButton("Cancel") { dialog, id1 -> dialog.cancel() }
-                            .setPositiveButton("OK") { dialog, id1 ->
+                            .setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
+                            .setPositiveButton("OK") { _, _ ->
                                 FileUtils.copyFile(db, db2)
                                 FileUtils.copyFile(prefLastChapterId, prefLastChapterId2)
                                 FileUtils.copyFile(prefRulateLogin, prefRulateLogin2)
@@ -107,8 +107,8 @@ class BackupActivity : AppCompatActivity() {
                             .setMessage(getString(R.string.readyToRestore))
                             .setIcon(R.drawable.ic_info_black_24dp)
                             .setCancelable(true)
-                            .setNegativeButton("Cancel") { dialog, id1 -> dialog.cancel() }
-                            .setPositiveButton("OK") { dialog, id1 ->
+                            .setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
+                            .setPositiveButton("OK") { _, _ ->
                                 val res1 = FileUtils.copyFile(db2, db)
                                 val res2 = FileUtils.copyFile(prefLastChapterId2, prefLastChapterId)
                                 val res3 = FileUtils.copyFile(prefRulateLogin2, prefRulateLogin)
@@ -152,7 +152,7 @@ class BackupActivity : AppCompatActivity() {
             }
 
         } else {
-            Snackbar.make(findViewById(android.R.id.content), getString(R.string.allow_external_storage), Snackbar.LENGTH_LONG).setAction(getString(R.string.allow)) { view ->
+            Snackbar.make(findViewById(android.R.id.content), getString(R.string.allow_external_storage), Snackbar.LENGTH_LONG).setAction(getString(R.string.allow)) {
                 ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 0)
             }.show()
         }

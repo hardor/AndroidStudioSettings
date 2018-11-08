@@ -103,7 +103,7 @@ open class BaseLoginPreference(context: Context, attrs: AttributeSet) : DialogPr
                             resultTextView.visibility = View.VISIBLE
                         }
 
-                    }, { error ->
+                    }, {
                         sharedPref.edit().putString(Constants.KEY_Token, "").apply()
                         summary = context.getString(R.string.summary_login)
                         if (ranobeSite == Constants.RanobeSite.RanobeRf) {

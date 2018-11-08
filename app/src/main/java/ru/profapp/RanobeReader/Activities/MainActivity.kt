@@ -46,9 +46,9 @@ class MainActivity : AppCompatActivity(),
         NavigationView.OnNavigationItemSelectedListener {
 
     private var currentTheme = ThemeHelper.sTheme
-    private var adView: AdView? = null
+    private lateinit var adView: AdView
 
-    private var currentFragment: String? = null
+    private var currentFragment: String = Constants.FragmentType.Favorite.name
     private var currentTitle: String? = null
 
     private var alertErrorDialog: AlertDialog? = null
@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity(),
                     .setMessage(getString(R.string.all_appCrashed))
                     .setIcon(R.drawable.ic_info_black_24dp)
                     .setCancelable(true)
-                    .setPositiveButton("OK") { dialog, id1 ->
+                    .setPositiveButton("OK") { dialog, _ ->
                         dialog.cancel()
                     }
 
@@ -90,7 +90,7 @@ class MainActivity : AppCompatActivity(),
                 adRequest.addTestDevice("sdfsdf")
             }
 
-            adView!!.loadAd(adRequest.build())
+            adView.loadAd(adRequest.build())
         }
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
@@ -103,7 +103,7 @@ class MainActivity : AppCompatActivity(),
         if (savedInstanceState == null) {
             currentFragment = Constants.FragmentType.Favorite.name
             currentTitle = resources.getText(R.string.favorite).toString()
-            ft.replace(R.id.mainFrame, RanobeListFragment.newInstance(currentFragment!!), MY_FRAGMENT).commit()
+            ft.replace(R.id.mainFrame, RanobeListFragment.newInstance(currentFragment), MY_FRAGMENT).commit()
         } else {
             currentFragment = savedInstanceState.getString("Fragment", Constants.FragmentType.Favorite.name)
             currentTitle = savedInstanceState.getString("Title", resources.getText(R.string.favorite).toString())
@@ -113,7 +113,7 @@ class MainActivity : AppCompatActivity(),
                 if (currentFragment == Constants.FragmentType.Search.name) {
                     ft.replace(R.id.mainFrame, SearchFragment.newInstance(), MY_FRAGMENT)
                 } else {
-                    ft.replace(R.id.mainFrame, RanobeListFragment.newInstance(currentFragment!!), MY_FRAGMENT)
+                    ft.replace(R.id.mainFrame, RanobeListFragment.newInstance(currentFragment), MY_FRAGMENT)
                 }
                 ft.commit()
             }
@@ -122,7 +122,7 @@ class MainActivity : AppCompatActivity(),
         title = currentTitle
 
         val floatingActionButton = findViewById<FloatingActionButton>(R.id.fab)
-        floatingActionButton.setOnClickListener { view ->
+        floatingActionButton.setOnClickListener {
             val chapterHistory = MyApp.database.ranobeHistoryDao().getLastChapter().subscribeOn(Schedulers.io())?.blockingGet()
             if (chapterHistory != null) {
                 if (MyApp.ranobe == null || !MyApp.ranobe!!.url.contains(chapterHistory.ranobeUrl) || !MyApp.ranobe!!.wasUpdated) {
@@ -290,7 +290,7 @@ class MainActivity : AppCompatActivity(),
         if (fragment != null) {
 
             if (!BuildConfig.PAID_VERSION) {
-                adView!!.loadAd(AdRequest.Builder().build())
+                adView.loadAd(AdRequest.Builder().build())
             }
             val ft = supportFragmentManager.beginTransaction()
             ft.replace(R.id.mainFrame, fragment, MY_FRAGMENT)
@@ -313,12 +313,12 @@ class MainActivity : AppCompatActivity(),
 
     override fun onDestroy() {
         super.onDestroy()
-        adView?.destroy()
+        adView.destroy()
     }
 
     override fun onResume() {
         super.onResume()
-        adView?.resume()
+        adView.resume()
         if (currentTheme != AppCompatDelegate.getDefaultNightMode()) {
             recreate()
         }
@@ -327,7 +327,7 @@ class MainActivity : AppCompatActivity(),
 
     override fun onPause() {
         super.onPause()
-        adView?.pause()
+        adView.pause()
         alertErrorDialog?.dismiss()
         alertErrorDialog = null
     }

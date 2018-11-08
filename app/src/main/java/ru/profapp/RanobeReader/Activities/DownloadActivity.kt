@@ -29,12 +29,11 @@ class DownloadActivity : AppCompatActivity() {
 
     private var running: Disposable? = null
 
-    private var progressDialog: ProgressDialog? = null
     private lateinit var progressBar: ProgressBar
     private var chapterList: List<Chapter> = listOf()
-    private var recyclerView: RecyclerView? = null
+    private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: ExpandableDownloadRecyclerViewAdapter
-    private var context: Context? = null
+    private lateinit var context: Context
     var request: Disposable? = null
 
     private lateinit var currentRanobe: Ranobe
@@ -55,8 +54,8 @@ class DownloadActivity : AppCompatActivity() {
                 builder.setMessage(getString(R.string.readyToDownload))
                         .setIcon(R.drawable.ic_info_black_24dp)
                         .setCancelable(true)
-                        .setNegativeButton("Cancel") { dialog, id1 -> dialog.cancel() }
-                        .setPositiveButton("OK") { dialog, id1 ->
+                        .setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
+                        .setPositiveButton("OK") { dialog, _ ->
                             dialog.cancel()
                             download()
                         }
@@ -79,25 +78,25 @@ class DownloadActivity : AppCompatActivity() {
     }
 
     private fun download() {
-        progressDialog = ProgressDialog(this)
-        progressDialog!!.setMessage(resources.getString(R.string.download_chapters_please_wait))
-        progressDialog!!.setTitle(resources.getString(R.string.download_chapters))
-        progressDialog!!.setCancelable(false)
-        progressDialog!!.setButton(BUTTON_NEGATIVE, "Cancel") { dialog, which ->
+        val progressDialog = ProgressDialog(this)
+        progressDialog.setMessage(resources.getString(R.string.download_chapters_please_wait))
+        progressDialog.setTitle(resources.getString(R.string.download_chapters))
+        progressDialog.setCancelable(false)
+        progressDialog.setButton(BUTTON_NEGATIVE, "Cancel") { _, _ ->
             running?.dispose()
-            progressDialog!!.dismiss()
+            progressDialog.dismiss()
             updateList()
         }
 
-        progressDialog!!.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
-        progressDialog!!.progress = 0
-        progressDialog!!.max = chapterList.size
-        progressDialog!!.show()
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
+        progressDialog.progress = 0
+        progressDialog.max = chapterList.size
+        progressDialog.show()
 
         val chapterText = ChapterTextActivity()
 
 
-        progressDialog!!.progress = 0
+        progressDialog.progress = 0
 
         running = Observable.fromIterable(chapterList)
                 .map { chapter ->
@@ -108,23 +107,22 @@ class DownloadActivity : AppCompatActivity() {
                         chapter.downloaded = false
 
                     } else {
-                        chapter.downloaded = chapterText.GetChapterText(chapter, context!!).blockingGet()
+                        chapter.downloaded = chapterText.GetChapterText(chapter, context).blockingGet()
                     }
                     return@map true
                 }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map {
-                    progressDialog!!.incrementProgressBy(1)
+                    progressDialog.incrementProgressBy(1)
                     return@map it
                 }
-                .doOnComplete { progressDialog!!.setMessage(getString(R.string.task_finished)) }
-                .doOnError { progressDialog!!.setMessage(getString(R.string.error)) }
+                .doOnComplete { progressDialog.setMessage(getString(R.string.task_finished)) }
+                .doOnError { progressDialog.setMessage(getString(R.string.error)) }
                 .doFinally {
-                    progressDialog!!.getButton(BUTTON_NEGATIVE).setText(R.string.finish)
+                    progressDialog.getButton(BUTTON_NEGATIVE).setText(R.string.finish)
                 }
                 .subscribe()
-
 
 
     }
@@ -140,7 +138,7 @@ class DownloadActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (!MyApp.isApplicationInitialized ) {
+        if (!MyApp.isApplicationInitialized || MyApp.ranobe == null) {
             val firstIntent = Intent(this, MainActivity::class.java)
 
             firstIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) // So all other activities will be dumped
@@ -197,7 +195,7 @@ class DownloadActivity : AppCompatActivity() {
                 }
                 .subscribe({
                     if (it)
-                        recyclerView!!.adapter = adapter
+                        recyclerView.adapter = adapter
                 }, {
 
                 })

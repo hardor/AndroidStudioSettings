@@ -37,7 +37,7 @@ import ru.profapp.RanobeReader.R
  */
 class SearchFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
-    private var ranobeRecyclerViewAdapter: RanobeRecyclerViewAdapter? = null
+    private lateinit var ranobeRecyclerViewAdapter: RanobeRecyclerViewAdapter
     private var mListener: OnFragmentInteractionListener? = null
     private var adapterRanobeList: MutableList<Ranobe> = mutableListOf()
     private var mContext: Context? = null
@@ -86,7 +86,7 @@ class SearchFragment : Fragment() {
         if (context is OnFragmentInteractionListener) {
             mListener = context
         } else {
-            throw RuntimeException(context!!.toString() + " must implement OnFragmentInteractionListener")
+            throw RuntimeException(context.toString() + " must implement OnFragmentInteractionListener")
         }
 
     }
@@ -103,7 +103,7 @@ class SearchFragment : Fragment() {
 
         val size = adapterRanobeList.size
         adapterRanobeList.clear()
-        ranobeRecyclerViewAdapter!!.notifyItemRangeRemoved(0, size)
+        ranobeRecyclerViewAdapter.notifyItemRangeRemoved(0, size)
 
         searhRequest = Single.zip(findRulateRanobe(searchString), findRanobeRfRanobe(searchString), findRanobeHubRanobe(searchString),
                 io.reactivex.functions.Function3<List<Ranobe>, List<Ranobe>, List<Ranobe>, List<Ranobe>>
@@ -129,7 +129,7 @@ class SearchFragment : Fragment() {
                 .subscribe({ result ->
                     val prevSize = adapterRanobeList.size
                     adapterRanobeList.addAll(result)
-                    ranobeRecyclerViewAdapter!!.notifyItemRangeInserted(prevSize, adapterRanobeList.size)
+                    ranobeRecyclerViewAdapter.notifyItemRangeInserted(prevSize, adapterRanobeList.size)
                     if (adapterRanobeList.size == 0) {
                         resultLabel.visibility = View.VISIBLE
                     }
@@ -137,7 +137,7 @@ class SearchFragment : Fragment() {
                     recyclerView.scrollToPosition(0)
 
                     progressBar.visibility = GONE
-                }, { error ->
+                }, {
                     Toast.makeText(mContext, getString(R.string.error_connection), Toast.LENGTH_SHORT).show()
                     progressBar.visibility = GONE
                 })

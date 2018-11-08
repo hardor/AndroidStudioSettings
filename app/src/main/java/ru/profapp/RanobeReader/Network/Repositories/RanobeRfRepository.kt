@@ -94,7 +94,7 @@ object RanobeRfRepository : BaseRepository() {
                     ranobe.image = book.image
                     if (!book.image.isNullOrBlank()) {
                         Completable.fromAction {
-                            MyApp.database.ranobeImageDao().insert(RanobeImage(ranobe.url, book.image!!))
+                            MyApp.database.ranobeImageDao().insert(RanobeImage(ranobe.url, book.image))
                         }?.subscribeOn(Schedulers.io())?.subscribe({}, { error ->
                             LogHelper.logError(LogHelper.LogType.ERROR, "", "", error, false)
                         })
@@ -139,12 +139,12 @@ object RanobeRfRepository : BaseRepository() {
             if (it.status == 200) {
                 val response = it.result
                 if (response?.status == 200) {
-                    mCurrentChapter.title = response.part!!.title.toString()
-                    mCurrentChapter.text =  response.part.content
-                    mCurrentChapter.url = response.part.url!!
+                    mCurrentChapter.title = response.part?.title.toString()
+                    mCurrentChapter.text = response.part?.content
+                    mCurrentChapter.url = response.part?.url.toString()
                 }
 
-                if (it.result!!.part!!.payment!! && mCurrentChapter.text.isNullOrBlank()) {
+                if (it.result?.part?.payment == true && mCurrentChapter.text.isNullOrBlank()) {
                     mCurrentChapter.text = "Даннная страница находится на платной подписке"
                     return@map false
                 }
@@ -161,8 +161,8 @@ object RanobeRfRepository : BaseRepository() {
         if (token.isNullOrBlank()) return Single.just(Pair(false, "No token found"))
         return instance.AddBookmark("Bearer $token", book_id, part_id).map {
 
-            if (it.status == 200) return@map Pair(true, it.message.toString())
-            else return@map Pair(false, it.message.toString())
+            if (it.status == 200) return@map Pair(true, it.message)
+            else return@map Pair(false, it.message)
         }
     }
 
@@ -171,8 +171,8 @@ object RanobeRfRepository : BaseRepository() {
 
         return instance.RemoveBookmark("Bearer $token", bookmark_id).map {
 
-            if (it.status == 200) return@map Pair(true, it.message.toString())
-            else return@map Pair(false, it.message.toString())
+            if (it.status == 200) return@map Pair(true, it.message)
+            else return@map Pair(false, it.message)
         }
     }
 
@@ -277,7 +277,7 @@ object RanobeRfRepository : BaseRepository() {
                 (rChapter.payment && paymentStatus == true)
     }
 
-    var instance: IRanobeRfApiService = create()
+    private var instance: IRanobeRfApiService = create()
 
     fun create(): IRanobeRfApiService {
         val httpClient = baseClient.addInterceptor(RanobeRfCookiesInterceptor(this))

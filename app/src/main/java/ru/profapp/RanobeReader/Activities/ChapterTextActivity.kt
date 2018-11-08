@@ -39,7 +39,7 @@ import java.net.UnknownHostException
 class ChapterTextActivity : AppCompatActivity() {
 
     lateinit var mCurrentChapter: Chapter
-    private var mContext: Context? = null
+    private lateinit var mContext: Context
     private var hChapterUrl: String? = null
     private var chapterIndex: Int = 0
     var mProgress: Float = -1f
@@ -158,10 +158,10 @@ class ChapterTextActivity : AppCompatActivity() {
 
         initWebView()
 
-        if (!currentRanobe?.url.isNullOrBlank() && !currentRanobe?.title.isNullOrBlank()) {
+        if (currentRanobe != null && !currentRanobe?.url.isNullOrBlank() && !currentRanobe?.title.isNullOrBlank()) {
             val request = Completable.fromAction {
                 MyApp.database.ranobeHistoryDao().insertNewRanobe(
-                        RanobeHistory(currentRanobe?.url!!, currentRanobe?.title!!, currentRanobe?.description)
+                        RanobeHistory(currentRanobe!!.url, currentRanobe!!.title, currentRanobe!!.description)
                 )
             }.subscribeOn(Schedulers.io()).subscribe({}, { error ->
                 LogHelper.logError(LogHelper.LogType.ERROR, "", "", error, false)
@@ -188,7 +188,7 @@ class ChapterTextActivity : AppCompatActivity() {
         webViewProgressBar.visibility = View.VISIBLE
 
         val style = ("style = \"text-align: justify; text-indent: 20px;font-size: "
-                + MyApp.chapterTextSize!!.toString() + "px;"
+                + MyApp.chapterTextSize.toString() + "px;"
                 + "color: " + String.format("#%06X", 0xFFFFFF and color)
                 + "; background-color: " + String.format("#%06X", 0xFFFFFF and color2)
                 + "\"")
@@ -210,9 +210,11 @@ class ChapterTextActivity : AppCompatActivity() {
                     textWebview.loadDataWithBaseURL("https:\\\\" + mCurrentChapter.url + "/", summary, "text/html", "UTF-8", null)
 
                 }, { error ->
-                    LogHelper.logError(LogHelper.LogType.ERROR, "GetChapterText", "", error.fillInStackTrace())
+
                     if (error is UnknownHostException)
                         Toast.makeText(mContext, R.string.error_connection, Toast.LENGTH_SHORT).show()
+                    else
+                        LogHelper.logError(LogHelper.LogType.ERROR, "GetChapterText", "", error.fillInStackTrace())
 
                     val summary = ("<html><style>img{display: inline;height: auto;max-width: 90%;}</style><body "
                             + style + ">"
@@ -328,7 +330,7 @@ class ChapterTextActivity : AppCompatActivity() {
     }
 
     private fun getRulateChapterText(): Single<Boolean> {
-        val preferences = mContext!!.getSharedPreferences(Constants.Rulate_Login_Pref, 0)
+        val preferences = mContext.getSharedPreferences(Constants.Rulate_Login_Pref, 0)
         val token: String = preferences.getString(Constants.KEY_Token, "") ?: ""
 
         return RulateRepository.getChapterText(token, mCurrentChapter)
@@ -383,7 +385,7 @@ class ChapterTextActivity : AppCompatActivity() {
 
         //Todo: add to history table
         if (lastChapterIdPref == null) {
-            lastChapterIdPref = mContext!!.getSharedPreferences(Constants.last_chapter_id_Pref, Context.MODE_PRIVATE)
+            lastChapterIdPref = mContext.getSharedPreferences(Constants.last_chapter_id_Pref, Context.MODE_PRIVATE)
         }
         mCurrentChapter.isRead = true
 

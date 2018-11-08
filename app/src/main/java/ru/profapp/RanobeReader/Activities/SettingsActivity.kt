@@ -32,7 +32,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 
 
 
-        if (!MyApp.isApplicationInitialized ) {
+        if (!MyApp.isApplicationInitialized) {
             val firstIntent = Intent(this, MainActivity::class.java)
 
             firstIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) // So all other activities will be dumped
@@ -213,7 +213,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             }
 
             val favButton = findPreference(getString(R.string.ClearLocalFavButton))
-            favButton.setOnPreferenceClickListener { preference ->
+            favButton.setOnPreferenceClickListener {
                 Completable.fromAction { MyApp.database.ranobeDao().cleanTable() }
                         ?.observeOn(AndroidSchedulers.mainThread())
                         ?.subscribeOn(Schedulers.io())
@@ -228,15 +228,15 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 
             val clearReadChapterButton = findPreference(getString(R.string.ClearReadChapterButton))
             clearReadChapterButton.setOnPreferenceClickListener { preference ->
-                activity!!.getSharedPreferences(Constants.is_readed_Pref, 0).edit().clear().apply()
-                activity!!.getSharedPreferences(Constants.last_chapter_id_Pref, 0).edit().clear().apply()
+                activity.getSharedPreferences(Constants.is_readed_Pref, 0).edit().clear().apply()
+                activity.getSharedPreferences(Constants.last_chapter_id_Pref, 0).edit().clear().apply()
                 true
             }
 
             val prefButton = findPreference(getString(R.string.ClearHistoryButton))
-            prefButton.setOnPreferenceClickListener { preference ->
-                activity!!.getSharedPreferences(Constants.is_readed_Pref, 0).edit().clear().apply()
-                activity!!.getSharedPreferences(Constants.last_chapter_id_Pref, 0).edit().clear().apply()
+            prefButton.setOnPreferenceClickListener {
+                activity.getSharedPreferences(Constants.is_readed_Pref, 0).edit().clear().apply()
+                activity.getSharedPreferences(Constants.last_chapter_id_Pref, 0).edit().clear().apply()
 
                 Completable.fromAction { MyApp.database.ranobeHistoryDao().cleanHistory() }
                         ?.observeOn(AndroidSchedulers.mainThread())
@@ -264,7 +264,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
                     ThemeHelper.onActivityCreateSetTheme()
                 }
                 preference.context.getString(R.string.pref_general_volume_scroll) -> {
-                    MyApp.useVolumeButtonsToScroll =value.toString().toBoolean()
+                    MyApp.useVolumeButtonsToScroll = value.toString().toBoolean()
                 }
             }
 

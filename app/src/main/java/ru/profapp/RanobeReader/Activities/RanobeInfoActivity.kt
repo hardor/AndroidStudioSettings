@@ -11,7 +11,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.TabHost
 import android.widget.Toast
-import android.widget.Toolbar
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -50,10 +49,10 @@ class RanobeInfoActivity : AppCompatActivity() {
 
     private var currentTheme = ThemeHelper.sTheme
     private val recycleChapterList = ArrayList<Chapter>()
-    var preferences: SharedPreferences? = null
-    private var rfpreferences: SharedPreferences? = null
+    private lateinit var preferences: SharedPreferences
+    private lateinit var rfpreferences: SharedPreferences
     private lateinit var currentRanobe: Ranobe
-    private var mContext: Context? = null
+    private lateinit var mContext: Context
     private var adapterExpandable: ExpandableChapterRecyclerViewAdapter? = null
     private var sPref: SharedPreferences? = null
     private var lastChapterIdPref: SharedPreferences? = null
@@ -101,7 +100,7 @@ class RanobeInfoActivity : AppCompatActivity() {
             val intent = Intent(mContext, ChapterTextActivity::class.java)
             intent.putExtra("ChapterUrl", chapterHistory?.chapterUrl)
             intent.putExtra("Progress", chapterHistory?.progress)
-            mContext!!.startActivity(intent)
+            mContext.startActivity(intent)
 
         }
 
@@ -112,9 +111,9 @@ class RanobeInfoActivity : AppCompatActivity() {
 
         supportActionBar?.title = currentRanobe.title
 
-        preferences = mContext!!.getSharedPreferences(Constants.Rulate_Login_Pref, 0)
+        preferences = mContext.getSharedPreferences(Constants.Rulate_Login_Pref, 0)
 
-        rfpreferences = mContext!!.getSharedPreferences(Constants.Ranoberf_Login_Pref, 0)
+        rfpreferences = mContext.getSharedPreferences(Constants.Ranoberf_Login_Pref, 0)
 
         mChapterLayoutManager = LinearLayoutManager(mContext)
         rV_rI_chapters.layoutManager = mChapterLayoutManager
@@ -187,10 +186,10 @@ class RanobeInfoActivity : AppCompatActivity() {
 
     private fun loadChapters() {
         recycleChapterList.clear()
-        sPref = mContext!!.getSharedPreferences(is_readed_Pref, Context.MODE_PRIVATE)
-        lastChapterIdPref = mContext!!.getSharedPreferences(last_chapter_id_Pref, Context.MODE_PRIVATE)
+        sPref = mContext.getSharedPreferences(is_readed_Pref, Context.MODE_PRIVATE)
+        lastChapterIdPref = mContext.getSharedPreferences(last_chapter_id_Pref, Context.MODE_PRIVATE)
 
-        val request = currentRanobe.updateRanobe(mContext!!).map {
+        val request = currentRanobe.updateRanobe(mContext).map {
             var checked = false
             if (lastChapterIdPref != null) {
                 val lastId: Int = lastChapterIdPref?.getInt(currentRanobe.url, -1) ?: -1
@@ -207,7 +206,7 @@ class RanobeInfoActivity : AppCompatActivity() {
             if (sPref != null && !checked) {
                 for (chapter in currentRanobe.chapterList) {
                     if (!chapter.isRead) {
-                        chapter.isRead = sPref?.getBoolean(chapter.url, false)!!
+                        chapter.isRead = sPref!!.getBoolean(chapter.url, false)
                     }
                 }
             }
@@ -215,12 +214,12 @@ class RanobeInfoActivity : AppCompatActivity() {
         }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe({ result ->
+                .subscribe({
 
                     pBar_RanobeInfo.visibility = View.GONE
                     loadData()
                     recycleChapterList.addAll(currentRanobe.chapterList)
-                    adapterExpandable = ExpandableChapterRecyclerViewAdapter(mContext!!, recycleChapterList, currentRanobe)
+                    adapterExpandable = ExpandableChapterRecyclerViewAdapter(mContext, recycleChapterList, currentRanobe)
                     rV_rI_chapters.adapter = adapterExpandable
 
                     if (currentRanobe.comments.isNotEmpty()) {
@@ -234,7 +233,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                             }
                         }
 
-                        rV_rI_comments.adapter = CommentsRecyclerViewAdapter(mContext!!, currentRanobe.comments)
+                        rV_rI_comments.adapter = CommentsRecyclerViewAdapter(mContext, currentRanobe.comments)
 
                         val tabSpec: TabHost.TabSpec = tH_rI_comments.newTabSpec("comments")
                         tabSpec.setContent(R.id.cV_history_chapters)
@@ -294,13 +293,13 @@ class RanobeInfoActivity : AppCompatActivity() {
             when (currentRanobe.ranobeSite) {
 
                 Constants.RanobeSite.Rulate.url -> {
-                    val token = preferences!!.getString(Constants.KEY_Token, "") ?: ""
+                    val token = preferences.getString(Constants.KEY_Token, "") ?: ""
                     if (!token.isBlank()) {
                         fabRequest = RulateRepository.addBookmark(token, currentRanobe.id)
                     }
                 }
                 Constants.RanobeSite.RanobeRf.url -> {
-                    val token = rfpreferences!!.getString(Constants.KEY_Token, "") ?: ""
+                    val token = rfpreferences.getString(Constants.KEY_Token, "") ?: ""
                     if (!token.isBlank()) {
                         fabRequest = RanobeRfRepository.addBookmark(token, currentRanobe.id, currentRanobe.chapterList.firstOrNull()?.id)
                     }
@@ -328,9 +327,9 @@ class RanobeInfoActivity : AppCompatActivity() {
                     .subscribe({ result ->
                         fab_rI_favorite.setImageResource(R.drawable.ic_favorite_black_24dp)
                         if (result)
-                            Toast.makeText(mContext, currentRanobe.title + " " + mContext!!.getString(R.string.added_to_web), Toast.LENGTH_SHORT).show()
+                            Toast.makeText(mContext, currentRanobe.title + " " + mContext.getString(R.string.added_to_web), Toast.LENGTH_SHORT).show()
                         else
-                            Toast.makeText(mContext, currentRanobe.title + " " + mContext!!.getString(R.string.added_to_local), Toast.LENGTH_SHORT).show()
+                            Toast.makeText(mContext, currentRanobe.title + " " + mContext.getString(R.string.added_to_local), Toast.LENGTH_SHORT).show()
                     }, { error ->
                         LogHelper.logError(LogHelper.LogType.ERROR, "setToFavorite", "WEB", error, false)
                     })
@@ -343,13 +342,13 @@ class RanobeInfoActivity : AppCompatActivity() {
                 when (currentRanobe.ranobeSite) {
 
                     Constants.RanobeSite.Rulate.url -> {
-                        val token = preferences!!.getString(Constants.KEY_Token, "") ?: ""
+                        val token = preferences.getString(Constants.KEY_Token, "") ?: ""
                         if (!token.isBlank()) {
                             fabRequest = RulateRepository.removeBookmark(token, currentRanobe.id)
                         }
                     }
                     Constants.RanobeSite.RanobeRf.url -> {
-                        val token = rfpreferences!!.getString(Constants.KEY_Token, "") ?: ""
+                        val token = rfpreferences.getString(Constants.KEY_Token, "") ?: ""
                         if (!token.isBlank()) {
                             fabRequest = RanobeRfRepository.removeBookmark(token, currentRanobe.bookmarkIdRf)
                         }
@@ -425,7 +424,7 @@ class RanobeInfoActivity : AppCompatActivity() {
             R.id.download_chapters -> {
                 val intent = Intent(mContext, DownloadActivity::class.java)
                 if (MyApp.ranobe != null) {
-                    mContext!!.startActivity(intent)
+                    mContext.startActivity(intent)
                 }
             }
             R.id.navigation_open_in_browser -> {

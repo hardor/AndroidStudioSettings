@@ -4,7 +4,6 @@ import com.google.gson.GsonBuilder
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
-import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -48,7 +47,7 @@ object RulateRepository : BaseRepository() {
     fun getFavoriteBooks(token: String?): Single<List<Ranobe>> {
         if (token.isNullOrBlank()) return Single.just(listOf())
 
-        return instance.GetFavoriteBooks(token!!).map {
+        return instance.GetFavoriteBooks(token).map {
             val or: MutableList<Ranobe> = mutableListOf()
 
 
@@ -161,7 +160,7 @@ object RulateRepository : BaseRepository() {
             }
 
         } catch (e: ParseException) {
-            LogHelper.logError(LogHelper.LogType.WARN, Ranobe::class.java.toString(), "", e)
+            LogHelper.logError(LogHelper.LogType.WARN, "updateRanobe", "", e, false)
         }
 
         readyDate = readyDate ?: (if (book.lastActivity != null) Date(book.lastActivity * 1000) else readyDate)
@@ -214,11 +213,11 @@ object RulateRepository : BaseRepository() {
 
     private infix fun Chapter.updateChapter(rChapter: RulateChapter) {
 
-        id = rChapter.id!!
+        id = rChapter.id
         title = rChapter.title.toString()
         status = rChapter.status
-        canRead = rChapter.canRead!!
-        isNew = rChapter.new!!
+        canRead = rChapter.canRead ?: false
+        isNew = rChapter.new ?: false
     }
 
     private infix fun Chapter.updateChapter(response: RulateText) {
@@ -228,7 +227,7 @@ object RulateRepository : BaseRepository() {
     }
 
     val gson = GsonBuilder().registerTypeAdapter(RulateBook::class.java, RulateBookDeserializer()).create()!!
-    var instance: IRulateApiService = create()
+    private var instance: IRulateApiService = create()
 
     fun create(): IRulateApiService {
         val httpClient = baseClient.addInterceptor(ApiKeyInterceptor())

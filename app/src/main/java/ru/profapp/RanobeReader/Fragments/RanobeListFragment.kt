@@ -40,7 +40,7 @@ import java.net.UnknownHostException
 class RanobeListFragment : Fragment() {
 
     private val ranobeList = mutableListOf<Ranobe>()
-    private var progressDialog: ProgressDialog? = null
+    private lateinit var progressDialog: ProgressDialog
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     private var mListener: OnListFragmentInteractionListener? = null
@@ -85,14 +85,14 @@ class RanobeListFragment : Fragment() {
 
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         if (arguments != null && arguments!!.containsKey(fragmentBundle)) {
-            fragmentType = Constants.FragmentType.valueOf(arguments!!.getString(fragmentBundle))
+            fragmentType = Constants.FragmentType.valueOf(arguments!!.getString(fragmentBundle)?:"")
         }
 
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater.inflate(R.layout.fragment_ranobe_list, container, false)
-
+        progressDialog = ProgressDialog(context)
         val recyclerView = view.findViewById<RecyclerView>(R.id.rV_ranobeList_ranobe)
 
         recyclerView.layoutManager = LinearLayoutManager(mContext)
@@ -115,7 +115,7 @@ class RanobeListFragment : Fragment() {
                         .setNegativeButton("Cancel") { dialog, id1 ->
                             dialog.cancel()
                         }
-                        .setPositiveButton("OK") { dialog, id1 ->
+                        .setPositiveButton("OK") { dialog, _ ->
 
                             swipeRefreshLayout.isRefreshing = true
 
@@ -124,14 +124,14 @@ class RanobeListFragment : Fragment() {
 
                             Single.zip(
                                     getRulateWebFavorite().onErrorReturn {
-                                        listOf<Ranobe>(Ranobe(Error))
+                                        listOf(Ranobe(Error))
                                     },
                                     getRanobeRfWebFavorite().onErrorReturn {
-                                        return@onErrorReturn listOf<Ranobe>(Ranobe(Error))
+                                        return@onErrorReturn listOf(Ranobe(Error))
                                     },
 
                                     getRanobeHubWebFavorite().onErrorReturn {
-                                        return@onErrorReturn listOf<Ranobe>(Ranobe(Error))
+                                        return@onErrorReturn listOf(Ranobe(Error))
                                     },
                                     MyApp.database.ranobeDao().getLocalFavoriteRanobes().onErrorReturn {
                                         return@onErrorReturn listOf<Ranobe>()
@@ -159,8 +159,8 @@ class RanobeListFragment : Fragment() {
                                         }
 
                                         for (ranobe in local) {
-                                            if (!newList.any {its-> its.url == ranobe.url }) {
-                                                if (ranobe.isFavoriteInWeb ) {
+                                            if (!newList.any { its -> its.url == ranobe.url }) {
+                                                if (ranobe.isFavoriteInWeb) {
                                                     if ((!isRulateError && ranobe.ranobeSite == Constants.RanobeSite.Rulate.url)
                                                             || (!isRanobeRfError && ranobe.ranobeSite == Constants.RanobeSite.RanobeRf.url)
                                                             || (!isRanobeHubError && ranobe.ranobeSite == Constants.RanobeSite.RanobeHub.url))
@@ -353,18 +353,18 @@ class RanobeListFragment : Fragment() {
 
         ranobeRecyclerViewAdapter.setLoaded()
         swipeRefreshLayout.isRefreshing = false
-        progressDialog?.dismiss()
+        progressDialog.dismiss()
     }
 
     private fun favoriteLoadRanobe(): Observable<List<Ranobe>> {
 
-        progressDialog = ProgressDialog(context)
-        progressDialog!!.setMessage(resources.getString(R.string.load_please_wait))
 
-        progressDialog!!.setCancelable(false)
-        progressDialog!!.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
+        progressDialog.setMessage(resources.getString(R.string.load_please_wait))
+
+        progressDialog.setCancelable(false)
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
         swipeRefreshLayout.isRefreshing = false
-        progressDialog!!.setButton(Dialog.BUTTON_NEGATIVE, "Cancel") { dialog, which ->
+        progressDialog.setButton(Dialog.BUTTON_NEGATIVE, "Cancel") { dialog, which ->
 
             request?.dispose()
             dialog.dismiss()
@@ -373,29 +373,29 @@ class RanobeListFragment : Fragment() {
 
         if (loadFromDatabase) {
 
-            progressDialog!!.setTitle(resources.getString(R.string.load_ranobes_from_db))
-            progressDialog!!.show()
+            progressDialog.setTitle(resources.getString(R.string.load_ranobes_from_db))
+            progressDialog.show()
             return (MyApp.database.ranobeDao().getFavoriteRanobes().map { it ->
 
                 val newRanobeList = mutableListOf<Ranobe>()
-                newRanobeList.addAll(it.map { gr ->
+                newRanobeList.addAll(it.map map1@{ gr ->
                     gr.ranobe.chapterList = gr.chapterList
-                    return@map gr.ranobe
+                    return@map1 gr.ranobe
                 })
                 return@map newRanobeList.toList()
             }?.doOnSuccess { loadFromDatabase = false }?.toObservable()
                     ?: Observable.just(listOf()))
 
         } else {
-            progressDialog!!.setTitle(resources.getString(R.string.Load_from_Rulate))
-            progressDialog!!.show()
+            progressDialog.setTitle(resources.getString(R.string.Load_from_Rulate))
+            progressDialog.show()
 
             return MyApp.database.ranobeDao().getLocalFavoriteRanobes().map { ranobeList ->
-                progressDialog!!.max = ranobeList.size
+                progressDialog.max = ranobeList.size
                 for (ranobe in ranobeList) {
                     activity?.runOnUiThread {
-                        progressDialog!!.setTitle(ranobe.title)
-                        progressDialog!!.incrementProgressBy(1)
+                        progressDialog.setTitle(ranobe.title)
+                        progressDialog.incrementProgressBy(1)
                     }
                     ranobe.updateRanobe(mContext!!).blockingGet()
                 }
@@ -437,7 +437,7 @@ class RanobeListFragment : Fragment() {
             }
 
             return@map savedList.toList()
-        } ?: Single.just(listOf<Ranobe>())
+        } ?: Single.just(listOf())
 
     }
 
@@ -445,7 +445,7 @@ class RanobeListFragment : Fragment() {
         super.onDestroy()
         mContext = null
         request?.dispose()
-        progressDialog?.dismiss()
+        progressDialog.dismiss()
         MyApp.refWatcher?.watch(this)
     }
 
@@ -463,6 +463,7 @@ class RanobeListFragment : Fragment() {
         return RanobeHubRepository.getReadyBooks(page + 1)
     }
 
+
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         mContext = context
@@ -470,7 +471,7 @@ class RanobeListFragment : Fragment() {
             mListener = context
 
         } else {
-            throw RuntimeException(context!!.toString() + " must implement OnListFragmentInteractionListener")
+            throw RuntimeException(context.toString() + " must implement OnListFragmentInteractionListener")
         }
     }
 
@@ -478,7 +479,7 @@ class RanobeListFragment : Fragment() {
         super.onDetach()
         mListener = null
         mContext = null
-        progressDialog?.dismiss()
+        progressDialog.dismiss()
 
     }
 

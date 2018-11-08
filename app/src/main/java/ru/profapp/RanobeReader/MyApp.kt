@@ -1,6 +1,5 @@
 package ru.profapp.RanobeReader
 
-import android.app.Application
 import androidx.annotation.VisibleForTesting
 import androidx.multidex.MultiDexApplication
 import androidx.room.Room
@@ -20,10 +19,10 @@ class MyApp : MultiDexApplication() {
 
         val chapterComparator = Comparator { b: Chapter, a: Chapter ->
 
-            if(a.id != null && b.id!=null){
+            if (a.id != null && b.id != null) {
                 return@Comparator a.id!!.compareTo(b.id!!)
-            }else{
-                return@Comparator  (a.title).compareTo(b.title)
+            } else {
+                return@Comparator (a.title).compareTo(b.title)
             }
 
         }

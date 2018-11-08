@@ -50,7 +50,7 @@ data class RfBook(
 
 data class Image(
         @SerializedName("desktop") val desktop: Desktop? = null,
-        @SerializedName("mobile") val mobile: Desktop?=null
+        @SerializedName("mobile") val mobile: Desktop? = null
 )
 
 data class Desktop(

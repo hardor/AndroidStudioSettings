@@ -18,9 +18,9 @@ class RanobeRfCookiesInterceptor(private val repository: RanobeRfRepository) : I
         for (cookie in cookies) {
             builder.addHeader("Cookie", cookie)
         }
-        if(!repository.token.isNullOrBlank()){
+        if (!repository.token.isNullOrBlank()) {
             builder.addHeader("Cookie", "token=${repository.token}")
-            builder.header("Authorization","Bearer ${repository.token}")
+            builder.header("Authorization", "Bearer ${repository.token}")
         }
         return chain.proceed(builder.build())
     }
