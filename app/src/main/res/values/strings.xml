@@ -40,6 +40,8 @@
   <string name="ago">ago</string>
   <string name="load_ranobes">Loading favorite ranobe</string>
   <string name="load_please_wait">Please wait for the load to complete</string>
+  <string name="download_chapters">Downloading selected chapters</string>
+  <string name="download_chapters_please_wait">Please wait for the download to complete</string>
   <string name="settings">Settings</string>
   <string name="general">General</string>
   <string name="all_notFound">Not found</string>
@@ -116,6 +118,8 @@
   <string name="auth_error">Error authorization</string>
   <string name="load_web_bookmarks">Load web bookmarks</string>
   <string name="load_web_bookmarks_message">Do you want to update bookmarks from web if you logged in any sites?</string>
+  <string name="vk">vk</string>
+  <string name="all_vkUrl">https://vk.com/ranobereader</string>
 
   <!--<string name="show_all_chapter">Show all chapters</string>-->
   <!--<string name="show_only_readable">Show only readable chapters</string>-->

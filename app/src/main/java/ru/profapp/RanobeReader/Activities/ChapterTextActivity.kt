@@ -14,7 +14,6 @@ import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
-import android.widget.Toolbar
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import com.crashlytics.android.Crashlytics
@@ -72,7 +71,7 @@ class ChapterTextActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (!MyApp.isApplicationInitialized ) {
+        if (!MyApp.isApplicationInitialized) {
             val firstIntent = Intent(this, MainActivity::class.java)
 
             firstIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) // So all other activities will be dumped
@@ -204,8 +203,9 @@ class ChapterTextActivity : AppCompatActivity() {
 
                     val summary = ("<html><style>img{display: inline;height: auto;max-width: 90%;}</style><body "
                             + style + ">"
-                         //   + "<b>" + mCurrentChapter.title + "</b>"   + "</br>"
-                    +( mCurrentChapter.text?: getString(R.string.no_access)) + "</body></html>")
+                            //   + "<b>" + mCurrentChapter.title + "</b>"   + "</br>"
+                            + (mCurrentChapter.text
+                            ?: getString(R.string.no_access)) + "</body></html>")
 
                     textWebview.loadDataWithBaseURL("https:\\\\" + mCurrentChapter.url + "/", summary, "text/html", "UTF-8", null)
 
@@ -216,7 +216,7 @@ class ChapterTextActivity : AppCompatActivity() {
 
                     val summary = ("<html><style>img{display: inline;height: auto;max-width: 90%;}</style><body "
                             + style + ">"
-                         //   + "<b>" + mCurrentChapter.title + "</b>" + "</br>"
+                            //   + "<b>" + mCurrentChapter.title + "</b>" + "</br>"
                             + (mCurrentChapter.text ?: "Нет доступа") + "</body></html>")
 
                     textWebview.loadDataWithBaseURL("https:\\\\" + mCurrentChapter.url + "/", summary, "text/html", "UTF-8", null)
@@ -287,10 +287,10 @@ class ChapterTextActivity : AppCompatActivity() {
         return if (mCurrentChapter.text.isNullOrBlank() || mCurrentChapter.text.equals("null")) {
 
             return MyApp.database.textDao().getTextByChapterUrl(mCurrentChapter.url).map {
-                if(it.text != "null") {
+                if (!it.text.isBlank() && it.text != "null") {
                     mCurrentChapter.text = it.text
                     return@map true
-                }else{
+                } else {
                     Completable.fromAction {
                         MyApp.database.textDao().delete(mCurrentChapter.url)
                     }?.subscribeOn(Schedulers.io())?.subscribe({}, { error ->
@@ -300,17 +300,25 @@ class ChapterTextActivity : AppCompatActivity() {
                     return@map false
                 }
 
-            }.switchIfEmpty(GetChapterTextFromWeb(mCurrentChapter.ranobeUrl))
-                    .map {
-                        if (!mCurrentChapter.text.isNullOrBlank() && it && !mCurrentChapter.text.equals("null") ) {
-                            Completable.fromAction {
-                                MyApp.database.textDao().insert(TextChapter(mCurrentChapter))
-                            }?.subscribeOn(Schedulers.io())?.subscribe({}, { error ->
-                                LogHelper.logError(LogHelper.LogType.ERROR, "", "", error, false)
-                            })
+            }.switchIfEmpty(Single.just(false))
+                    .flatMap { itf ->
 
+                        if (!itf) {
+                            return@flatMap GetChapterTextFromWeb(mCurrentChapter.ranobeUrl)
+                                    .map {
+                                        if (!mCurrentChapter.text.isNullOrBlank() && it && !mCurrentChapter.text.equals("null")) {
+                                            Completable.fromAction {
+                                                MyApp.database.textDao().insert(TextChapter(mCurrentChapter))
+                                            }?.subscribeOn(Schedulers.io())?.subscribe({}, { error ->
+                                                LogHelper.logError(LogHelper.LogType.ERROR, "", "", error, false)
+                                            })
+
+                                        }
+                                        return@map it
+                                    }
                         }
-                        return@map it
+
+                        return@flatMap Single.just(itf)
                     }
 
         } else {

@@ -80,8 +80,8 @@ class DownloadActivity : AppCompatActivity() {
 
     private fun download() {
         progressDialog = ProgressDialog(this)
-        progressDialog!!.setMessage(resources.getString(R.string.load_please_wait))
-        progressDialog!!.setTitle(resources.getString(R.string.load_ranobes))
+        progressDialog!!.setMessage(resources.getString(R.string.download_chapters_please_wait))
+        progressDialog!!.setTitle(resources.getString(R.string.download_chapters))
         progressDialog!!.setCancelable(false)
         progressDialog!!.setButton(BUTTON_NEGATIVE, "Cancel") { dialog, which ->
             running?.dispose()
@@ -125,25 +125,7 @@ class DownloadActivity : AppCompatActivity() {
                 }
                 .subscribe()
 
-        //        for (chapter in chapterList) {
-        //            if (running) {
-        //                if (!chapter.isChecked) {
-        //
-        //                    Completable.fromAction {
-        //                        MyApp.database.textDao().delete(chapter.url)
-        //                    }?.doFinally {
-        //                        chapter.text = ""
-        //                        chapter.downloaded = false
-        //                    }?.subscribeOn(Schedulers.io())?.blockingAwait()
-        //
-        //                } else {
-        //                    chapter.downloaded = chapterText.GetChapterText(chapter, context!!).subscribeOn(Schedulers.io()).blockingGet()
-        //                }
-        //                progressDialog!!.incrementProgressBy(1)
-        //            } else {
-        //                break
-        //            }
-        //        }
+
 
     }
 

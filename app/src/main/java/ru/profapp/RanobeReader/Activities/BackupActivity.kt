@@ -28,13 +28,12 @@ import ru.profapp.RanobeReader.R
 import ru.profapp.RanobeReader.Utils.FileUtils
 import java.io.File
 
-
 class BackupActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (!MyApp.isApplicationInitialized ) {
+        if (!MyApp.isApplicationInitialized) {
             val firstIntent = Intent(this, MainActivity::class.java)
 
             firstIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) // So all other activities will be dumped
@@ -66,8 +65,6 @@ class BackupActivity : AppCompatActivity() {
             MyApp.database.close()
 
             val db = getDatabasePath(DB_NAME)
-            //    val dbShm = File(db.parent, "$DB_NAME-shm")
-            //   val dbWal = File(db.parent, "$DB_NAME-wal")
 
             // val prefLastChapterId = File("/data/data/" + packageName + "/shared_prefs/$last_chapter_id_Pref.xml")
             val prefLastChapterId = File("${filesDir.path}/../shared_prefs/$last_chapter_id_Pref.xml")
@@ -79,8 +76,6 @@ class BackupActivity : AppCompatActivity() {
                 folder.mkdirs()
 
             val db2 = File(folder, DB_NAME)
-            //   val dbShm2 = File(folder, "$DB_NAME-shm")
-            //    val dbWal2 = File(folder, "$DB_NAME-wal")
 
             val prefLastChapterId2 = File(folder, "$last_chapter_id_Pref.xml")
             val prefRulateLogin2 = File(folder, "$Rulate_Login_Pref.xml")
@@ -96,8 +91,6 @@ class BackupActivity : AppCompatActivity() {
                             .setNegativeButton("Cancel") { dialog, id1 -> dialog.cancel() }
                             .setPositiveButton("OK") { dialog, id1 ->
                                 FileUtils.copyFile(db, db2)
-                                //    FileUtils.copyFile(dbShm, dbShm2)
-                                //      FileUtils.copyFile(dbWal, dbWal2)
                                 FileUtils.copyFile(prefLastChapterId, prefLastChapterId2)
                                 FileUtils.copyFile(prefRulateLogin, prefRulateLogin2)
                                 FileUtils.copyFile(prefRanobeRfLogin, prefRanobeRfLogin2)
@@ -108,6 +101,7 @@ class BackupActivity : AppCompatActivity() {
                     alert.show()
 
                 } else {
+
                     val builder = AlertDialog.Builder(this@BackupActivity)
                     builder.setTitle(getString(R.string.backup_restore))
                             .setMessage(getString(R.string.readyToRestore))
@@ -120,8 +114,13 @@ class BackupActivity : AppCompatActivity() {
                                 val res3 = FileUtils.copyFile(prefRulateLogin2, prefRulateLogin)
                                 val res4 = FileUtils.copyFile(prefRanobeRfLogin2, prefRanobeRfLogin)
                                 if (res1 || res2 || res3 || res4) {
-                                    Snackbar.make(findViewById(android.R.id.content), getString(R.string.backup_restore_success), Snackbar.LENGTH_LONG).show()
 
+                                    val dbShm = File(db.parent, "$DB_NAME-shm")
+                                    val dbWal = File(db.parent, "$DB_NAME-wal")
+                                    dbShm.delete()
+                                    dbWal.delete()
+
+                                    Snackbar.make(findViewById(android.R.id.content), getString(R.string.backup_restore_success), Snackbar.LENGTH_LONG).show()
 
                                     val intent = Intent(this, MainActivity::class.java)
                                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP

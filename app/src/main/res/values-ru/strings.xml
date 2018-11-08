@@ -88,4 +88,10 @@
   <string name="all_appCrashed">Приложение перезапущено после вылета. Если вылеты продолжатся, попробуйте очистить данные приложения.</string>
   <string name="cant_remove_web_bookmark">Не удалось убрать веб закладку</string>
   <string name="auth_error">Ошибка авторизации</string>
+  <string name="vk">vk</string>
+  <string name="all_vkUrl">https://vk.com/ranobereader</string>
+  <string name="load_web_bookmarks">Загрузка веб закладок</string>
+  <string name="load_web_bookmarks_message">Вы можете синхронизировать веб закладки, если выполнили вход в один из сайтов. Продолжить?</string>
+  <string name="download_chapters">Загрузка выбранных глав</string>
+  <string name="download_chapters_please_wait">Пожалуйста, подождите завершения загрузки</string>
 </resources>

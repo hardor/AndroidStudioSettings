@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
@@ -24,12 +25,9 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import io.fabric.sdk.android.Fabric
-import io.reactivex.Observable
-import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReader.BuildConfig
 import ru.profapp.RanobeReader.Common.Constants
-import ru.profapp.RanobeReader.Common.Constants.RanobeSite.Error
 import ru.profapp.RanobeReader.Common.MyExceptionHandler
 import ru.profapp.RanobeReader.Fragments.HistoryFragment
 import ru.profapp.RanobeReader.Fragments.RanobeListFragment
@@ -39,7 +37,6 @@ import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.Models.Ranobe
 import ru.profapp.RanobeReader.MyApp
 import ru.profapp.RanobeReader.Network.Repositories.RanobeRfRepository
-import ru.profapp.RanobeReader.Network.Repositories.RulateRepository
 import ru.profapp.RanobeReader.R
 
 class MainActivity : AppCompatActivity(),
@@ -160,6 +157,17 @@ class MainActivity : AppCompatActivity(),
         val navigationView = findViewById<NavigationView>(R.id.nav_view)
         navigationView.itemIconTintList = null
         navigationView.setNavigationItemSelectedListener(this)
+
+        val vkButton: ImageButton = navigationView.getHeaderView(0).findViewById(R.id.vkbutton)
+        vkButton.setOnClickListener {
+            val url = getString(R.string.all_vkUrl)
+
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            if (browserIntent.resolveActivity(this.packageManager) != null)
+                startActivity(browserIntent)
+            else
+                Toast.makeText(this, R.string.browser_exist, Toast.LENGTH_SHORT).show()
+        }
 
     }
 
