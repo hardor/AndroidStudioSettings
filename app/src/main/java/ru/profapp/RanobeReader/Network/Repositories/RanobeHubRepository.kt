@@ -32,10 +32,12 @@ object RanobeHubRepository : BaseRepository() {
             ranobe.chapterList.clear()
             var index = 0
             for (volume in it.data) {
-                for (rChapter in volume.chapters.reversed()) {
+                for (rChapter in volume.chapters) {
                     val chapter = Chapter()
 
-                    chapter.title = if (chapter.title.isBlank()) rChapter.name else chapter.title
+                    chapter.title = if (chapter.title.isBlank()){
+                        "Том ${volume.num}. ${rChapter.name}"
+                    }else chapter.title
 
                     chapter.url = if (chapter.url.isBlank()) "${ranobe.url}/${volume.num}/${rChapter.num}" else chapter.url
 
@@ -47,6 +49,7 @@ object RanobeHubRepository : BaseRepository() {
                 }
             }
 
+            ranobe.chapterList.reverse()
             return@map true
         }.onErrorReturn { false }
 

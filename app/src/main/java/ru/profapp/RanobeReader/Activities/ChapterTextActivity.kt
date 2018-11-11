@@ -203,7 +203,7 @@ class ChapterTextActivity : AppCompatActivity() {
 
                     val summary = ("<html><style>img{display: inline;height: auto;max-width: 90%;}</style><body "
                             + style + ">"
-                            //   + "<b>" + mCurrentChapter.title + "</b>"   + "</br>"
+                            + "<b>" + mCurrentChapter.title + "</b>" + "</br>"
                             + (mCurrentChapter.text
                             ?: getString(R.string.no_access)) + "</body></html>")
 
@@ -218,7 +218,7 @@ class ChapterTextActivity : AppCompatActivity() {
 
                     val summary = ("<html><style>img{display: inline;height: auto;max-width: 90%;}</style><body "
                             + style + ">"
-                            //   + "<b>" + mCurrentChapter.title + "</b>" + "</br>"
+                            + "<b>" + mCurrentChapter.title + "</b>" + "</br>"
                             + (mCurrentChapter.text ?: "Нет доступа") + "</body></html>")
 
                     textWebview.loadDataWithBaseURL("https:\\\\" + mCurrentChapter.url + "/", summary, "text/html", "UTF-8", null)
