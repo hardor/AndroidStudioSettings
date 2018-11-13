@@ -7,11 +7,16 @@ import android.content.Context
 import android.content.Intent
 import ru.profapp.RanobeReader.Activities.MainActivity
 import ru.profapp.RanobeReader.Helpers.LogHelper
+import ru.profapp.RanobeReader.MyApp
 
 class MyExceptionHandler(private val activity: Activity) : Thread.UncaughtExceptionHandler {
 
     override fun uncaughtException(thread: Thread, ex: Throwable) {
-        LogHelper.logError(LogHelper.LogType.ERROR, activity.packageName, "Uncaught exception", ex)
+        var message = "Uncaught exception"
+        if(MyApp.ranobe?.url !=null)
+            message = MyApp.ranobe!!.url
+
+        LogHelper.logError(LogHelper.LogType.ERROR, activity.packageName, message, ex)
         val intent = Intent(activity, MainActivity::class.java)
         intent.putExtra("crash", true)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP

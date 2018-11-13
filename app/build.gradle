@@ -1,7 +1,7 @@
 ext {
 
     majVersion = 3
-    minVersion = 04
+    minVersion = 05
 
     calculateVersionName = {
         return "${majVersion}.${minVersion}"
@@ -90,6 +90,11 @@ android {
     flavorDimensions "default"
 
     productFlavors {
+        beta{
+            buildConfigField "boolean", "PAID_VERSION", "false"
+            applicationIdSuffix ".beta"
+            versionNameSuffix "-beta"
+        }
         free {
             buildConfigField "boolean", "PAID_VERSION", "false"
         }
@@ -108,7 +113,7 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'androidx.appcompat:appcompat:1.0.1'
+    implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.preference:preference:1.0.0'
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'

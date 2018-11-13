@@ -34,6 +34,7 @@ import ru.profapp.RanobeReader.Network.Repositories.RanobeHubRepository
 import ru.profapp.RanobeReader.Network.Repositories.RanobeRfRepository
 import ru.profapp.RanobeReader.Network.Repositories.RulateRepository
 import ru.profapp.RanobeReader.R
+import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
 class ChapterTextActivity : AppCompatActivity() {
@@ -211,7 +212,7 @@ class ChapterTextActivity : AppCompatActivity() {
 
                 }, { error ->
 
-                    if (error is UnknownHostException)
+                    if (error is UnknownHostException || error is SocketTimeoutException)
                         Toast.makeText(mContext, R.string.error_connection, Toast.LENGTH_SHORT).show()
                     else
                         LogHelper.logError(LogHelper.LogType.ERROR, "GetChapterText", "", error.fillInStackTrace())

@@ -16,10 +16,12 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.fabric.sdk.android.Fabric
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReader.Adapters.ExpandableDownloadRecyclerViewAdapter
 import ru.profapp.RanobeReader.Common.MyExceptionHandler
+import ru.profapp.RanobeReader.Helpers.LogHelper
 import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.Models.Ranobe
 import ru.profapp.RanobeReader.MyApp
@@ -27,14 +29,13 @@ import ru.profapp.RanobeReader.R
 
 class DownloadActivity : AppCompatActivity() {
 
-    private var running: Disposable? = null
-
     private lateinit var progressBar: ProgressBar
     private var chapterList: List<Chapter> = listOf()
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: ExpandableDownloadRecyclerViewAdapter
     private lateinit var context: Context
-    var request: Disposable? = null
+
+    private var compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     private lateinit var currentRanobe: Ranobe
 
@@ -83,7 +84,7 @@ class DownloadActivity : AppCompatActivity() {
         progressDialog.setTitle(resources.getString(R.string.download_chapters))
         progressDialog.setCancelable(false)
         progressDialog.setButton(BUTTON_NEGATIVE, "Cancel") { _, _ ->
-            running?.dispose()
+            compositeDisposable.dispose()
             progressDialog.dismiss()
             updateList()
         }
@@ -98,7 +99,7 @@ class DownloadActivity : AppCompatActivity() {
 
         progressDialog.progress = 0
 
-        running = Observable.fromIterable(chapterList)
+        val running = Observable.fromIterable(chapterList)
                 .map { chapter ->
                     if (!chapter.isChecked) {
 
@@ -107,7 +108,7 @@ class DownloadActivity : AppCompatActivity() {
                         chapter.downloaded = false
 
                     } else {
-                        chapter.downloaded = chapterText.GetChapterText(chapter, context).blockingGet()
+                        chapter.downloaded = chapterText.GetChapterText(chapter, context).onErrorReturn { false }.blockingGet()
                     }
                     return@map true
                 }
@@ -122,8 +123,10 @@ class DownloadActivity : AppCompatActivity() {
                 .doFinally {
                     progressDialog.getButton(BUTTON_NEGATIVE).setText(R.string.finish)
                 }
-                .subscribe()
-
+                .subscribe({},{error->
+                     LogHelper.logError(LogHelper.LogType.ERROR, "download", "", error)
+                })
+        compositeDisposable.add(running)
 
     }
 
@@ -166,7 +169,7 @@ class DownloadActivity : AppCompatActivity() {
 
         progressBar.visibility = View.VISIBLE
 
-        request = MyApp.database.textDao().getTextByRanobeUrl(currentRanobe.url)
+      val  request = MyApp.database.textDao().getTextByRanobeUrl(currentRanobe.url)
                 .map { result ->
                     for (chapter in chapterList) {
                         if (!chapter.downloaded) {
@@ -199,7 +202,7 @@ class DownloadActivity : AppCompatActivity() {
                 }, {
 
                 })
-
+        compositeDisposable.add(request)
     }
 
     private fun setupActionBar() {
@@ -214,9 +217,12 @@ class DownloadActivity : AppCompatActivity() {
         return true
     }
 
+    override fun onStop() {
+        super.onStop()
+        compositeDisposable.dispose()
+    }
     override fun onDestroy() {
         super.onDestroy()
-        request?.dispose()
-        running?.dispose()
+        compositeDisposable.dispose()
     }
 }
