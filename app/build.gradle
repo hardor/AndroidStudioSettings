@@ -66,9 +66,9 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             buildConfigField "boolean", "USE_LOG", "false"
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.config
             android.applicationVariants.all { variant ->
                 variant.outputs.all {
@@ -84,26 +84,6 @@ android {
         }
     }
     compileOptions {
-        // sourceCompatibility JavaVersion.VERSION_1_8
-        // targetCompatibility JavaVersion.VERSION_1_8
-    }
-    flavorDimensions "default"
-
-    productFlavors {
-        beta{
-            buildConfigField "boolean", "PAID_VERSION", "false"
-            applicationIdSuffix ".beta"
-            versionNameSuffix "-beta"
-        }
-        free {
-            buildConfigField "boolean", "PAID_VERSION", "false"
-        }
-//        paid {
-//
-//            applicationIdSuffix ".paid"
-//            versionNameSuffix "-paid"
-//            buildConfigField "boolean", "PAID_VERSION", "true"
-//        }
     }
 
     sourceSets {

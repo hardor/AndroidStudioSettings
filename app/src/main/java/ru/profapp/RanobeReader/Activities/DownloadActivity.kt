@@ -17,7 +17,6 @@ import io.fabric.sdk.android.Fabric
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReader.Adapters.ExpandableDownloadRecyclerViewAdapter
 import ru.profapp.RanobeReader.Common.MyExceptionHandler
@@ -99,7 +98,7 @@ class DownloadActivity : AppCompatActivity() {
 
         progressDialog.progress = 0
 
-        val running = Observable.fromIterable(chapterList)
+        val running = Observable.fromIterable(chapterList.asReversed())
                 .map { chapter ->
                     if (!chapter.isChecked) {
 
@@ -108,7 +107,10 @@ class DownloadActivity : AppCompatActivity() {
                         chapter.downloaded = false
 
                     } else {
-                        chapter.downloaded = chapterText.GetChapterText(chapter, context).onErrorReturn { false }.subscribeOn(Schedulers.io()).blockingGet()
+                        chapter.downloaded = chapterText.GetChapterText(chapter, context).onErrorReturn { error ->
+                            LogHelper.logError(LogHelper.LogType.ERROR, "download", "", error, false)
+                            return@onErrorReturn false
+                        }.subscribeOn(Schedulers.io()).blockingGet()
                     }
                     return@map true
                 }
@@ -123,8 +125,8 @@ class DownloadActivity : AppCompatActivity() {
                 .doFinally {
                     progressDialog.getButton(BUTTON_NEGATIVE).setText(R.string.finish)
                 }
-                .subscribe({},{error->
-                     LogHelper.logError(LogHelper.LogType.ERROR, "download", "", error)
+                .subscribe({}, { error ->
+                    LogHelper.logError(LogHelper.LogType.ERROR, "download", "", error)
                 })
         compositeDisposable.add(running)
 
@@ -169,7 +171,7 @@ class DownloadActivity : AppCompatActivity() {
 
         progressBar.visibility = View.VISIBLE
 
-      val  request = MyApp.database.textDao().getTextByRanobeUrl(currentRanobe.url)
+        val request = MyApp.database.textDao().getTextByRanobeUrl(currentRanobe.url)
                 .map { result ->
                     for (chapter in chapterList) {
                         if (!chapter.downloaded) {
@@ -221,6 +223,7 @@ class DownloadActivity : AppCompatActivity() {
         super.onStop()
         compositeDisposable.dispose()
     }
+
     override fun onDestroy() {
         super.onDestroy()
         compositeDisposable.dispose()

@@ -16,3 +16,4 @@
 /gradlew.bat
 /app/free/release/*
 /app/free/
+/app/debug/

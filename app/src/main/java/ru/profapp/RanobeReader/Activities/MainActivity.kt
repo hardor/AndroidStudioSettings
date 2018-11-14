@@ -79,7 +79,6 @@ class MainActivity : AppCompatActivity(),
             alertErrorDialog = builder.create()
             alertErrorDialog?.show()
         }
-        if (!BuildConfig.PAID_VERSION) {
 
             MobileAds.initialize(this, getString(R.string.app_admob_id))
             adView = findViewById(R.id.adView)
@@ -91,7 +90,6 @@ class MainActivity : AppCompatActivity(),
             }
 
             adView.loadAd(adRequest.build())
-        }
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -289,9 +287,9 @@ class MainActivity : AppCompatActivity(),
 
         if (fragment != null) {
 
-            if (!BuildConfig.PAID_VERSION) {
+
                 adView.loadAd(AdRequest.Builder().build())
-            }
+
             val ft = supportFragmentManager.beginTransaction()
             ft.replace(R.id.mainFrame, fragment, MY_FRAGMENT)
             ft.commit()
