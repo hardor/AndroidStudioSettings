@@ -108,7 +108,7 @@ class DownloadActivity : AppCompatActivity() {
                         chapter.downloaded = false
 
                     } else {
-                        chapter.downloaded = chapterText.GetChapterText(chapter, context).onErrorReturn { false }.blockingGet()
+                        chapter.downloaded = chapterText.GetChapterText(chapter, context).onErrorReturn { false }.subscribeOn(Schedulers.io()).blockingGet()
                     }
                     return@map true
                 }
