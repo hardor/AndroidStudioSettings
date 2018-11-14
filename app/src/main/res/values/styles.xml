@@ -45,6 +45,4 @@
     <item name="android:layout_height">1dp</item>
     <item name="android:background">@color/colorPrimary</item>
   </style>
-
-
 </resources>

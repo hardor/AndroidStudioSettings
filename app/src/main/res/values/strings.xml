@@ -120,6 +120,7 @@
   <string name="load_web_bookmarks_message">Do you want to update bookmarks from web if you logged in any sites?</string>
   <string name="vk">vk</string>
   <string name="all_vkUrl">https://vk.com/ranobereader</string>
+  <string name="all_Expand">expand</string>
 
   <!--<string name="show_all_chapter">Show all chapters</string>-->
   <!--<string name="show_only_readable">Show only readable chapters</string>-->
