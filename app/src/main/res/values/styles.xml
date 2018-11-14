@@ -5,6 +5,7 @@
     <item name="colorPrimary">@color/colorPrimary</item>
     <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
     <item name="colorAccent">@color/colorAccent</item>
+    <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
   </style>
 
   <style name="AppTheme.NoActionBar">
@@ -45,4 +46,10 @@
     <item name="android:layout_height">1dp</item>
     <item name="android:background">@color/colorPrimary</item>
   </style>
+
+  <style name="WindowAnimationTransition">
+    <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+    <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+  </style>
+
 </resources>

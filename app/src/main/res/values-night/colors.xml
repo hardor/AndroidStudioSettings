@@ -2,8 +2,6 @@
 <resources>
   <color name="colorPrimary">#B3B3B3</color>
   <color name="colorPrimaryDark">#05375e</color>
-  <color name="colorAccent">#FFADAD</color>
-
   <color name="webViewText">#B3B3B3</color>
   <color name="webViewBackground">#131319</color>
 </resources>

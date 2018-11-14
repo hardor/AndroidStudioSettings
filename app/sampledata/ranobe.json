@@ -1,0 +1,37 @@
+{
+   "book":{
+      "id":28,
+      "url":"/bozhestvenniy-mech-haosa/",
+      "fullTitle":"Божественный Меч Хаоса / Chaotic Sword God / CSG",
+      "author":"Xin Xing Xiao Yao",
+      "title":"Божественный Меч Хаоса",
+      "description":"<p>Цзянь Чен – всеми признанный эксперт номер один в подземном мире. Его техника Быстрого Меча достигла идеала, поэтому никто не мог победить его. После битвы с выдающимся экспертом, Дугу Кьюбеем, которого не видели в течение сотни лет, тело Цзянь Чена погибло, а сам он отошел в мир иной. После смерти душа Цзянь Чена переселилась в другой мир. Он испытал множество приключений: жизнь, смерть и все, что между ними. </p><p>Присоединяйтесь к нашему путешествию!<br></p>",
+      "info":"<p>Статус произведения: \r\nВ процессе выхода<br></p><p>Статус перевода: \r\nАктивен</p><p>Количество глав: более 2500</p>",
+      "image":{
+         "desktop":{
+            "image":"https://xn--80ac9aeh6f.xn--p1ai/statics/images/book/28/bozhestvenniy-mech-haosa-1537222618.jpg",
+            "svg":"https://xn--80ac9aeh6f.xn--p1ai/statics/images/book/28/svg/bozhestvenniy-mech-haosa-1537222618.svg"
+         },
+         "mobile":{
+            "image":"https://xn--80ac9aeh6f.xn--p1ai/statics/images/book/28/mobile/bozhestvenniy-mech-haosa-1516627709.png",
+            "svg":"https://xn--80ac9aeh6f.xn--p1ai/statics/images/book/28/mobile/svg/bozhestvenniy-mech-haosa-1516627709.svg"
+         }
+      },
+      "priceDonatePart":6,
+      "donate":1,
+      "donateNeed":550,
+      "donateCurrent":185,
+      "likes":891,
+      "dislikes":65,
+      "publishedAt":1486726817000,
+      "user":{
+         "like":1,
+         "dislike":0
+      },
+      "country":{
+         "title":"Китай",
+         "alias":"china",
+         "image":"china-1.png"
+      }
+   }
+}
