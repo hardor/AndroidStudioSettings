@@ -24,6 +24,9 @@ class ExpandableChapterRecyclerViewAdapter(private val context: Context, private
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
 
+    val dp2 = Helper.convertDpToPixel(2, context)
+    val dp6 = Helper.convertDpToPixel(6, context)
+
     constructor(context: Context, mChapters: ArrayList<Chapter>, mRanobe: Ranobe) : this(context, mRanobe) {
 
         val numInGroup = 100
@@ -118,8 +121,6 @@ class ExpandableChapterRecyclerViewAdapter(private val context: Context, private
             for (indexView in 0 until intMaxNoOfChild) {
                 val textView = TextView(context)
                 textView.id = indexView
-                val dp2 = Helper.convertDpToPixel(2, context)
-                val dp6 = Helper.convertDpToPixel(6, context)
                 textView.setPadding(dp2, dp6, dp2, dp6)
                 textView.textSize = 14.0F
                 textView.ellipsize = android.text.TextUtils.TruncateAt.END
