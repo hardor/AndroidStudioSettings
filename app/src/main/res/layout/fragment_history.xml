@@ -1,57 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.widget.ConstraintLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   tools:context=".Fragments.HistoryFragment">
-
-  <TabHost
-    android:id="@+id/tH_history"
+  <androidx.viewpager.widget.ViewPager
+    android:id="@+id/pager"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="0dp"
+    app:layout_constraintBottom_toTopOf="@id/btN_CleanData"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
 
-    <LinearLayout
+    <androidx.viewpager.widget.PagerTitleStrip
+      android:id="@+id/pagerTitleStrip"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:orientation="vertical">
+      android:layout_height="wrap_content"
+      android:layout_gravity="top"
+      android:textColor="@color/colorAccent"
+      android:textSize="@dimen/title_text_size"
+      >
+    </androidx.viewpager.widget.PagerTitleStrip>
+  </androidx.viewpager.widget.ViewPager>
 
-      <TabWidget
-        android:id="@android:id/tabs"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-      <FrameLayout
-        android:id="@android:id/tabcontent"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-
-        <androidx.recyclerview.widget.RecyclerView
-          android:id="@+id/rV_history_ranobe"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:layout_marginLeft="16dp"
-          android:layout_marginRight="16dp"
-          android:scrollbars="vertical"
-          app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-          tools:listitem="@layout/item_ranobe"/>
-
-
-        <androidx.recyclerview.widget.RecyclerView
-          android:id="@+id/rV_history_chapters"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:layout_marginLeft="16dp"
-          android:layout_marginRight="16dp"
-          android:scrollbars="vertical"
-          app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-          tools:listitem="@layout/item_history"/>
-
-
-      </FrameLayout>
-    </LinearLayout>
-  </TabHost>
-
-
-</FrameLayout>
+  <Button
+    android:id="@+id/btN_CleanData"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/clear_history"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/pager"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,7 +11,7 @@ import ru.profapp.RanobeReader.R
 import java.text.DateFormat
 import java.util.*
 
-class HistoryRecyclerViewAdapter(private val context: Context, private val mValues: List<ChapterHistory>) : RecyclerView.Adapter<HistoryRecyclerViewAdapter.MyViewHolder>() {
+class HistoryChaptersRecyclerViewAdapter(private val context: Context, private val mValues: List<ChapterHistory>) : RecyclerView.Adapter<HistoryChaptersRecyclerViewAdapter.MyViewHolder>() {
     private val inflater: LayoutInflater = LayoutInflater.from(context)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = inflater.inflate(R.layout.item_history, parent, false)

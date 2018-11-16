@@ -5,18 +5,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TabHost
+import android.widget.Button
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.ViewPager
+import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import ru.profapp.RanobeReader.Adapters.HistoryRecyclerViewAdapter
-import ru.profapp.RanobeReader.Adapters.RanobeRecyclerViewAdapter
-import ru.profapp.RanobeReader.Helpers.LogHelper
-import ru.profapp.RanobeReader.Models.Ranobe
-import ru.profapp.RanobeReader.Models.RanobeHistory
+import ru.profapp.RanobeReader.Adapters.HistoryFragmentPagerAdapter
 import ru.profapp.RanobeReader.MyApp
 import ru.profapp.RanobeReader.R
 
@@ -30,14 +27,8 @@ import ru.profapp.RanobeReader.R
  *
  */
 class HistoryFragment : Fragment() {
-    private lateinit var tabHost: TabHost
-    private lateinit var chapterRecyclerView: RecyclerView
-    private lateinit var ranobeRecyclerView: RecyclerView
-    private var chapterHistoryViewAdapter: HistoryRecyclerViewAdapter? = null
-    private var ranobeHistoryViewAdapter: RanobeRecyclerViewAdapter? = null
     private var listener: OnFragmentInteractionListener? = null
     private var mContext: Context? = null
-    private var compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,75 +39,39 @@ class HistoryFragment : Fragment() {
 
         val view = inflater.inflate(R.layout.fragment_history, container, false)
 
-        chapterRecyclerView = view.findViewById(R.id.rV_history_chapters)
-        ranobeRecyclerView = view.findViewById(R.id.rV_history_ranobe)
-        tabHost = view.findViewById(R.id.tH_history)
+        val pager: ViewPager = view.findViewById(R.id.pager)
+        val pagerAdapter = HistoryFragmentPagerAdapter(childFragmentManager, context!!)
+        pager.adapter = pagerAdapter
 
-        chapterRecyclerView.layoutManager = LinearLayoutManager(mContext)
+        val btnCleanData:Button = view.findViewById(R.id.btN_CleanData)
 
-
-        ranobeRecyclerView.layoutManager = LinearLayoutManager(mContext)
-
-        val chapterRequest = MyApp.database.ranobeHistoryDao().allChapters().subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).subscribe({
-                    chapterHistoryViewAdapter = HistoryRecyclerViewAdapter(mContext!!, it)
-                    chapterRecyclerView.adapter = chapterHistoryViewAdapter
-                }, { error ->
-                    LogHelper.logError(LogHelper.LogType.ERROR, "HistoryFragment", "", error)
-                })
-
-        val ranobeRequest = MyApp.database.ranobeHistoryDao().allRanobes().map {
-            val ranobeList = it.map { r -> toRanobe(r) }
-            for (ranobe in ranobeList) {
-                if (ranobe.image.isNullOrBlank()) {
-                    MyApp.database.ranobeImageDao().getImageByUrl(ranobe.url).subscribeOn(Schedulers.io()).subscribe { it2 ->
-                        ranobe.image = it2.image
+        btnCleanData.setOnClickListener {
+            val builder = AlertDialog.Builder(context!!)
+            builder.setTitle(getString(R.string.clear_history))
+                    .setMessage(getString(R.string.clear_history_summary))
+                    .setIcon(R.drawable.ic_info_black_24dp)
+                    .setCancelable(true)
+                    .setPositiveButton("OK") { dialog, _ ->
+                        Completable.fromAction { MyApp.database.ranobeHistoryDao().cleanHistory() }
+                                ?.observeOn(AndroidSchedulers.mainThread())
+                                ?.subscribeOn(Schedulers.io())
+                                ?.subscribe({
+                                    Toast.makeText(context, resources.getText(R.string.history_removed), Toast.LENGTH_SHORT).show()
+                                    pagerAdapter.notifyDataSetChanged()
+                                }, {
+                                    Toast.makeText(context, resources.getText(R.string.error), Toast.LENGTH_SHORT).show()
+                                })
+                        // dialog.cancel()
+                    }.setNegativeButton("Cancel") { dialog, _ ->
+                        dialog.cancel()
                     }
-                }
-            }
-            return@map ranobeList
 
-        }.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    ranobeHistoryViewAdapter = RanobeRecyclerViewAdapter(mContext!!, ranobeRecyclerView, it)
-                    ranobeRecyclerView.adapter = ranobeHistoryViewAdapter
-                }, { error ->
-                    LogHelper.logError(LogHelper.LogType.ERROR, "HistoryFragment", "", error)
-                })
-        compositeDisposable.add(chapterRequest)
-        compositeDisposable.add(ranobeRequest)
+            builder.create().show()
 
-
-
-        tabHost.setup()
-
-        val tabSpec: TabHost.TabSpec = tabHost.newTabSpec("Ranobes")
-        tabSpec.setContent(R.id.rV_history_ranobe)
-        tabSpec.setIndicator(resources.getString(R.string.ranobes))
-        tabHost.addTab(tabSpec)
-
-        val tabSpec2: TabHost.TabSpec = tabHost.newTabSpec("Chapters")
-        tabSpec2.setContent(R.id.rV_history_chapters)
-        tabSpec2.setIndicator(resources.getString(R.string.chapters))
-        tabHost.addTab(tabSpec2)
-
-
-        tabHost.currentTab = 0
-
+        }
         return view
 
     }
-
-    private fun toRanobe(ranobeHistory: RanobeHistory): Ranobe {
-
-        val ranobe = Ranobe()
-        ranobe.url = ranobeHistory.ranobeUrl
-        ranobe.title = ranobeHistory.ranobeName
-        ranobe.description = ranobeHistory.description
-        return ranobe
-    }
-
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -136,7 +91,8 @@ class HistoryFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        compositeDisposable.clear()
+        listener = null
+        mContext = null
         MyApp.refWatcher?.watch(this)
     }
 
@@ -151,3 +107,5 @@ class HistoryFragment : Fragment() {
         }
     }
 }
+
+

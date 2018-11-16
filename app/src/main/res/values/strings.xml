@@ -82,7 +82,7 @@
   <string name="market_exist">No PlayMarket was found</string>
   <string name="history">History</string>
   <string name="load_ranobes_from_db">Loading favorite ranobe from database</string>
-  <string name="ranobes" translatable="false">Ranobes</string>
+  <string name="ranobes">Ranobes</string>
   <string name="cache_cremoved">Cache was removed</string>
   <string name="not_history">History is empty</string>
   <string name="response_error">Response error</string>
