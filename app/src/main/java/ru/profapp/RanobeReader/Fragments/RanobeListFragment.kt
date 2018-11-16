@@ -4,13 +4,14 @@ import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.Context
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,7 +25,7 @@ import io.reactivex.exceptions.CompositeException
 import io.reactivex.schedulers.Schedulers
 import ru.profapp.RanobeReader.Adapters.RanobeRecyclerViewAdapter
 import ru.profapp.RanobeReader.Common.Constants
-import ru.profapp.RanobeReader.Common.Constants.RanobeSite.*
+import ru.profapp.RanobeReader.Common.Constants.RanobeSite.Error
 import ru.profapp.RanobeReader.Common.Constants.fragmentBundle
 import ru.profapp.RanobeReader.Common.OnLoadMoreListener
 import ru.profapp.RanobeReader.Helpers.LogHelper
@@ -51,6 +52,8 @@ class RanobeListFragment : Fragment() {
     private var loadFromDatabase: Boolean = false
     private var oldListSize: Int = 0
     private var request: Disposable? = null
+
+    private var checkedSortItemName: String = Constants.SortOrder.default.name
 
     private fun getRulateWebFavorite(): Single<List<Ranobe>> {
         val mPreferences = mContext!!.getSharedPreferences(Constants.Rulate_Login_Pref, 0)
@@ -83,9 +86,9 @@ class RanobeListFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         if (arguments != null && arguments!!.containsKey(fragmentBundle)) {
-            fragmentType = Constants.FragmentType.valueOf(arguments!!.getString(fragmentBundle)?:"")
+            fragmentType = Constants.FragmentType.valueOf(arguments!!.getString(fragmentBundle)
+                    ?: "")
         }
 
     }
@@ -101,11 +104,12 @@ class RanobeListFragment : Fragment() {
 
         recyclerView.adapter = ranobeRecyclerViewAdapter
 
-        val iB_rL_fragment_sync: ImageButton = view.findViewById(R.id.iB_rL_fragment_sync)
+        val iBrLFragmentSync: ImageButton = view.findViewById(R.id.iB_rL_fragment_sync)
+        val tVSortOrder: TextView = view.findViewById(R.id.tV_SortOrder)
         if (fragmentType == Constants.FragmentType.Favorite && mContext != null) {
 
-            iB_rL_fragment_sync.visibility = View.VISIBLE
-            iB_rL_fragment_sync.setOnClickListener {
+            iBrLFragmentSync.visibility = View.VISIBLE
+            iBrLFragmentSync.setOnClickListener {
 
                 val builder = AlertDialog.Builder(mContext!!)
                 builder.setTitle(getString(R.string.load_web_bookmarks))
@@ -153,9 +157,9 @@ class RanobeListFragment : Fragment() {
 
                                         if (isRanobeHubError || isRulateError || isRanobeRfError) {
                                             val errorString: String = (if (isRulateError) " Rulate " else "") + (if (isRanobeRfError) " Ранобэ.рф " else "") + (if (isRanobeHubError) " RanobeHub " else "")
-//                                           runOnUiThread {
-//                                                Toast.makeText(this, getString(R.string.no_connection_to) + errorString, Toast.LENGTH_SHORT).show()
-//                                            }
+                                            //                                           runOnUiThread {
+                                            //                                                Toast.makeText(this, getString(R.string.no_connection_to) + errorString, Toast.LENGTH_SHORT).show()
+                                            //                                            }
                                         }
 
                                         for (ranobe in local) {
@@ -198,9 +202,45 @@ class RanobeListFragment : Fragment() {
 
                 builder.create()?.show()
             }
+
+            val settingPref = PreferenceManager.getDefaultSharedPreferences(context)
+            checkedSortItemName = settingPref.getString(resources.getString(R.string.pref_general_sort_order), null) ?: Constants.SortOrder.default.name
+            tVSortOrder.visibility = View.VISIBLE
+            tVSortOrder.setOnClickListener {
+
+                val items = Constants.SortOrder.toArray(context!!)
+                val stringItems = items.map {
+                    return@map resources.getString(it)
+                }.toTypedArray()
+                val currentItem = items.indexOf(Constants.SortOrder.valueOf(checkedSortItemName).resId)
+
+                val builder = AlertDialog.Builder(mContext!!)
+                builder.setTitle(getString(R.string.load_web_bookmarks))
+                        //.setMessage(getString(R.string.load_web_bookmarks_message))
+                        .setIcon(R.drawable.ic_info_black_24dp)
+                        .setSingleChoiceItems(stringItems, currentItem) { dialog, which ->
+                            checkedSortItemName = Constants.SortOrder.fromResId(items[which]).name
+
+                            swipeRefreshLayout.isRefreshing = true
+                            loadFromDatabase = true
+                            refreshItems(true)
+
+                            settingPref.edit().putString(resources.getString(R.string.pref_general_sort_order), checkedSortItemName).apply()
+                            dialog.dismiss()
+                        }
+                        .setCancelable(true)
+                        .setNegativeButton("Cancel") { dialog, id1 ->
+                            dialog.cancel()
+                        }
+
+                builder.create()?.show()
+            }
+
         } else {
-            iB_rL_fragment_sync.visibility = View.GONE
-            iB_rL_fragment_sync.setOnClickListener(null)
+            iBrLFragmentSync.visibility = View.GONE
+            tVSortOrder.visibility = View.GONE
+            iBrLFragmentSync.setOnClickListener(null)
+            tVSortOrder.setOnClickListener(null)
         }
 
         //set load more listener for the RecyclerView adapterExpandable
@@ -265,45 +305,90 @@ class RanobeListFragment : Fragment() {
                     }
                     return@map ranobeList
 
-                }  //Add titles
-                .map {
-                    val newRanobeList = mutableListOf<Ranobe>()
-                    val groupList = it.asSequence().sortedByDescending { s -> s.readyDate }.groupBy { g -> g.ranobeSite }
-                    for (siteGroup in groupList) {
-                        val webGroupList = siteGroup.value.groupBy { g -> g.isFavoriteInWeb }
-                        for (webGroup in webGroupList) {
-                            if (page == 0) {
-                                val titleRanobe = Ranobe(Title)
-                                titleRanobe.title = (Constants.RanobeSite.fromUrl(siteGroup.key)?.title
-                                        ?: None.title).plus(
-                                        if (fragmentType == Constants.FragmentType.Favorite) {
-                                            if (webGroup.key) " Web" else " Local"
-                                        } else ""
-                                )
-                                newRanobeList.add(titleRanobe)
+                } //Check lastReaded
+                .map { ranobes ->
+                    val sPref = mContext?.getSharedPreferences(Constants.is_readed_Pref, Context.MODE_PRIVATE)
+                    for (ranobe in ranobes) {
+                        ranobe.newChapters = 0
+                        val chapterList = ranobe.chapterList
+
+                        if (chapterList.isNotEmpty()) {
+                            var templist = chapterList.filter { it.canRead }
+                            if (!templist.any()) {
+                                templist = chapterList.take(Constants.chaptersNum)
                             }
-                            newRanobeList.addAll(webGroup.value.map { gr ->
-                                gr.chapterList = gr.chapterList
-                                return@map gr
-                            })
+                            val chapterlist2 = templist.take(Constants.chaptersNum)
+                            var checked = false
+                            val lastChapterIdPref = mContext?.getSharedPreferences(Constants.last_chapter_id_Pref, Context.MODE_PRIVATE)
+                            if (lastChapterIdPref != null && lastChapterIdPref.contains(chapterlist2.first().ranobeUrl)) {
+                                val lastId = lastChapterIdPref.getInt(chapterlist2.first().ranobeUrl, -1)
+                                if (lastId > 0) {
+                                    checked = true
+                                    for (chapter in chapterlist2) {
+                                        if (chapter.id != null) {
+                                            chapter.isRead = chapter.id!! <= lastId
+                                            ranobe.newChapters += if (chapter.isRead) 0 else 1
+                                        }
+                                    }
+                                }
+
+                            }
+
+                            if (sPref != null && !checked) {
+                                for (chapter in chapterlist2) {
+                                    if (!chapter.isRead) {
+                                        chapter.isRead = sPref.getBoolean(chapter.url, false)
+                                        ranobe.newChapters += if (chapter.isRead) 0 else 1
+                                    }
+                                }
+                            }
                         }
-
                     }
+                    return@map ranobes
+                }
 
-                    return@map newRanobeList.toList()
-                }      // Check if favorite
-//                .map { ranobeList ->
-//                    for (ranobe in ranobeList) {
-//                        if (!ranobe.isFavorite) {
-//                            MyApp.database.ranobeDao().isRanobeFavorite(ranobe.url).subscribeOn(Schedulers.io())?.subscribe { it ->
-//                                ranobe.isFavorite = it.isFavorite
-//                                ranobe.isFavoriteInWeb = it.isFavoriteInWeb
-//                            }
-//                        }
-//                    }
-//                    return@map ranobeList
-//
-//                }
+                // Groups
+                .map {
+
+                    return@map if (fragmentType == Constants.FragmentType.Favorite) {
+                        when (checkedSortItemName) {
+                            Constants.SortOrder.ByTitle.name -> it.sortedBy { r -> r.title }
+                            Constants.SortOrder.ByDate.name -> it.sortedByDescending { r -> r.readyDate }
+                            Constants.SortOrder.ByUpdates.name -> it.sortedByDescending { r -> r.newChapters }
+                            else -> it.sortedBy { r -> r.ranobeSite }
+
+                        }
+                    } else
+                        it
+
+                }
+                //Add titles
+                //                .map {
+                //                    val newRanobeList = mutableListOf<Ranobe>()
+                //                    val groupList = it.asSequence().sortedByDescending { s -> s.readyDate }.groupBy { g -> g.ranobeSite }
+                //                    for (siteGroup in groupList) {
+                //                        val webGroupList = siteGroup.value.groupBy { g -> g.isFavoriteInWeb }
+                //                        for (webGroup in webGroupList) {
+                //                            if (page == 0) {
+                //                                val titleRanobe = Ranobe(Title)
+                //                                titleRanobe.title = (Constants.RanobeSite.fromUrl(siteGroup.key)?.title
+                //                                        ?: None.title).plus(
+                //                                        if (fragmentType == Constants.FragmentType.Favorite) {
+                //                                            if (webGroup.key) " Web" else " Local"
+                //                                        } else ""
+                //                                )
+                //                                newRanobeList.add(titleRanobe)
+                //                            }
+                //                            newRanobeList.addAll(webGroup.value.map { gr ->
+                //                                gr.chapterList = gr.chapterList
+                //                                return@map gr
+                //                            })
+                //                        }
+                //
+                //                    }
+
+                //                    return@map newRanobeList.toList()
+                //                }
 
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
@@ -357,7 +442,6 @@ class RanobeListFragment : Fragment() {
     }
 
     private fun favoriteLoadRanobe(): Observable<List<Ranobe>> {
-
 
         progressDialog.setMessage(resources.getString(R.string.load_please_wait))
 
@@ -462,7 +546,6 @@ class RanobeListFragment : Fragment() {
     private fun ranobeHubLoadRanobe(): Single<List<Ranobe>> {
         return RanobeHubRepository.getReadyBooks(page + 1)
     }
-
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)

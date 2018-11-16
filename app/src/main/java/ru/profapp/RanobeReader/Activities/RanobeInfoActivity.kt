@@ -76,7 +76,6 @@ class RanobeInfoActivity : AppCompatActivity() {
             return
         }
 
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         // Set up Crashlytics, disabled for debug builds
         val crashlyticsKit = Crashlytics.Builder()
                 .core(CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build())

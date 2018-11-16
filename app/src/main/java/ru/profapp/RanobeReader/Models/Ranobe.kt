@@ -103,6 +103,9 @@ class Ranobe() {
     @Ignore
     var bookmarkIdRf: Int = 0
 
+    @Ignore
+    var newChapters: Int = 0
+
     fun updateRanobe(mContext: Context): Single<Boolean> {
 
         val bookInfo: Single<Boolean>

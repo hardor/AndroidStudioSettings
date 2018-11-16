@@ -1,5 +1,8 @@
 package ru.profapp.RanobeReader.Common
 
+import android.content.Context
+import ru.profapp.RanobeReader.R
+
 /**
  * Created by Ruslan on 12.02.2018.
  */
@@ -42,5 +45,26 @@ object Constants {
             fun fromUrl(findValue: String): RanobeSite? = RanobeSite.values().firstOrNull { it.url == findValue }
         }
     }
+
+    enum class SortOrder(val resId: Int) {
+        ByTitle(R.string.byTitle),
+        ByDate(R.string.byDate),
+        ByUpdates(R.string.byUpdates),
+        ByRanobeSite(R.string.byRanobeSite);
+
+        companion object {
+            val default:SortOrder = ByTitle
+            fun toArray(context: Context): Array<Int> {
+                return SortOrder.values().map {
+                    return@map it.resId
+                }.toTypedArray()
+            }
+
+            fun fromResId(findValue: Int): SortOrder = SortOrder.values().firstOrNull { it.resId == findValue }
+                    ?: SortOrder.default
+        }
+
+    }
+
 }
 
