@@ -25,7 +25,7 @@ import java.util.*
  * [RecyclerView.Adapter] that can display a [Ranobe] and makes a call to the specified
  * [OnListFragmentInteractionListener].
  */
-class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: RecyclerView, private val mValues: List<Ranobe>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: RecyclerView, private var mValues: List<Ranobe>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val VIEW_TYPE_ITEM = 0
     private val VIEW_TYPE_GROUP_TITLE = 2
     private val glide: RequestManager = GlideApp.with(context)
@@ -41,7 +41,6 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
     private val inflater: LayoutInflater = LayoutInflater.from(context)
 
     init {
-
         val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
@@ -66,7 +65,6 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
                 }
             }
         })
-
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -95,6 +93,11 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
 
     }
 
+    fun notifyDataSetChanged(sortOrderName: String) {
+        sortValues(sortOrderName)
+        this.notifyDataSetChanged()
+    }
+
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is RanobeViewHolder -> {
@@ -116,9 +119,14 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
                 holder.imageView.visibility = View.VISIBLE
                 glide.load(mValues[position].image).into(holder.imageView)
 
+                when(holder.mItem.ranobeSite){
+                    Constants.RanobeSite.Rulate.url ->  holder.ranobeSiteLogo.setImageResource(R.mipmap.ic_rulate)
+                    Constants.RanobeSite.RanobeHub.url ->  holder.ranobeSiteLogo.setImageResource(R.mipmap.ic_ranobehub)
+                    Constants.RanobeSite.RanobeRf.url ->  holder.ranobeSiteLogo.setImageResource(R.mipmap.ic_ranoberf)
+                   else-> holder.ranobeSiteLogo.visibility = View.GONE
+
+                }
                 val chapterList = holder.mItem.chapterList
-
-
                 if (chapterList.isNotEmpty()) {
 
                     var templist = chapterList.filter { it.canRead }
@@ -164,6 +172,16 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
         }
     }
 
+    private fun sortValues(sortOrderName: String) {
+
+        mValues = when (sortOrderName) {
+            Constants.SortOrder.ByTitle.name -> mValues.sortedBy { r -> r.title }
+            Constants.SortOrder.ByDate.name -> mValues.sortedByDescending { r -> r.readyDate }
+            Constants.SortOrder.ByUpdates.name -> mValues.sortedByDescending { r -> r.newChapters }
+            else -> mValues.sortedBy { r -> r.ranobeSite }.sortedBy { h -> h.title }
+        }
+    }
+
     override fun getItemCount(): Int {
         return mValues.size
     }
@@ -187,6 +205,7 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
     inner class RanobeViewHolder(mView: View) : RecyclerView.ViewHolder(mView), View.OnClickListener {
 
         val imageView: ImageView = mView.findViewById(R.id.imageView)
+        val ranobeSiteLogo: ImageView = mView.findViewById(R.id.iV_ranobe_siteLogo)
         val chaptersListView: RecyclerView = mView.findViewById(R.id.list_chapter_list)
         val titleView: TextView = mView.findViewById(R.id.ranobeTitle)
         val updateTime: TextView = mView.findViewById(R.id.ranobeUpdateTime)

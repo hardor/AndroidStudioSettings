@@ -121,9 +121,9 @@
   <string name="vk">vk</string>
   <string name="all_vkUrl">https://vk.com/ranobereader</string>
   <string name="all_Expand">expand</string>
-  <string name="byTitle">By Title</string>
-  <string name="byDate">By Date</string>
-  <string name="byUpdates">By Updates</string>
+  <string name="byTitle">By title</string>
+  <string name="byDate">By date</string>
+  <string name="byUpdates">By updates</string>
   <string name="byRanobeSite">By site</string>
   <string name="pref_general_sort_order" translatable="false">pref_general_sort_order</string>
 

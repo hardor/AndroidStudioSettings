@@ -25,18 +25,18 @@
         android:id="@+id/tV_SortOrder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:clickable="true"
+        android:drawableStart="@drawable/ic_sort_by_alpha_black_24dp"
         android:focusable="true"
-        android:text="click"/>
+        />
 
       <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rV_ranobeList_ranobe"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="0dp"
-        android:layout_marginBottom="0dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:name="ru.profapp.RanobeReader.FavoriteFragment"
         android:scrollbars="vertical"
         tools:context="ru.profapp.RanobeReader.Fragments.RanobeListFragment"

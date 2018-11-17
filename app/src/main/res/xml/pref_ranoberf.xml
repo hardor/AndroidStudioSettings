@@ -1,7 +1,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
   <PreferenceCategory android:title="@string/ranobe_rf"/>
   <ru.profapp.RanobeReader.CustomElements.RanoberfLoginPreference
-    android:icon="@mipmap/ic_action_ranoberf"
+    android:icon="@mipmap/ic_ranoberf"
     android:key="@string/ranoberf_authorization_pref"
     android:persistent="true"
     android:summary="@string/summary_login"

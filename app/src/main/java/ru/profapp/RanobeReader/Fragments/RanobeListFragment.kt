@@ -107,7 +107,7 @@ class RanobeListFragment : Fragment() {
         val iBrLFragmentSync: ImageButton = view.findViewById(R.id.iB_rL_fragment_sync)
         val tVSortOrder: TextView = view.findViewById(R.id.tV_SortOrder)
         if (fragmentType == Constants.FragmentType.Favorite && mContext != null) {
-
+            val tVSortOrder: TextView = view.findViewById(R.id.tV_SortOrder)
             iBrLFragmentSync.visibility = View.VISIBLE
             iBrLFragmentSync.setOnClickListener {
 
@@ -188,7 +188,7 @@ class RanobeListFragment : Fragment() {
                                         if (result.any()) {
                                             ranobeList.clear()
                                             ranobeList.addAll(result)
-                                            ranobeRecyclerViewAdapter.notifyDataSetChanged()
+                                            ranobeRecyclerViewAdapter.notifyDataSetChanged(checkedSortItemName)
 
                                         }
                                         onItemsLoadFinished()
@@ -205,6 +205,7 @@ class RanobeListFragment : Fragment() {
 
             val settingPref = PreferenceManager.getDefaultSharedPreferences(context)
             checkedSortItemName = settingPref.getString(resources.getString(R.string.pref_general_sort_order), null) ?: Constants.SortOrder.default.name
+            tVSortOrder.text = getString(Constants.SortOrder.valueOf(checkedSortItemName).resId)
             tVSortOrder.visibility = View.VISIBLE
             tVSortOrder.setOnClickListener {
 
@@ -216,15 +217,13 @@ class RanobeListFragment : Fragment() {
 
                 val builder = AlertDialog.Builder(mContext!!)
                 builder.setTitle(getString(R.string.load_web_bookmarks))
-                        //.setMessage(getString(R.string.load_web_bookmarks_message))
                         .setIcon(R.drawable.ic_info_black_24dp)
                         .setSingleChoiceItems(stringItems, currentItem) { dialog, which ->
-                            checkedSortItemName = Constants.SortOrder.fromResId(items[which]).name
+                            val selectItem = items[which]
+                            checkedSortItemName = Constants.SortOrder.fromResId(selectItem).name
 
-                            swipeRefreshLayout.isRefreshing = true
-                            loadFromDatabase = true
-                            refreshItems(true)
-
+                            tVSortOrder.text = getString(selectItem)
+                            ranobeRecyclerViewAdapter.notifyDataSetChanged(checkedSortItemName)
                             settingPref.edit().putString(resources.getString(R.string.pref_general_sort_order), checkedSortItemName).apply()
                             dialog.dismiss()
                         }
@@ -348,20 +347,20 @@ class RanobeListFragment : Fragment() {
                 }
 
                 // Groups
-                .map {
-
-                    return@map if (fragmentType == Constants.FragmentType.Favorite) {
-                        when (checkedSortItemName) {
-                            Constants.SortOrder.ByTitle.name -> it.sortedBy { r -> r.title }
-                            Constants.SortOrder.ByDate.name -> it.sortedByDescending { r -> r.readyDate }
-                            Constants.SortOrder.ByUpdates.name -> it.sortedByDescending { r -> r.newChapters }
-                            else -> it.sortedBy { r -> r.ranobeSite }
-
-                        }
-                    } else
-                        it
-
-                }
+//                .map {
+//
+//                    return@map if (fragmentType == Constants.FragmentType.Favorite) {
+//                        when (checkedSortItemName) {
+//                            Constants.SortOrder.ByTitle.name -> it.sortedBy { r -> r.title }
+//                            Constants.SortOrder.ByDate.name -> it.sortedByDescending { r -> r.readyDate }
+//                            Constants.SortOrder.ByUpdates.name -> it.sortedByDescending { r -> r.newChapters }
+//                            else -> it.sortedBy { r -> r.ranobeSite }
+//
+//                        }
+//                    } else
+//                        it
+//
+//                }
                 //Add titles
                 //                .map {
                 //                    val newRanobeList = mutableListOf<Ranobe>()

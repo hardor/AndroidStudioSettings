@@ -96,4 +96,8 @@
   <string name="download_chapters_please_wait">Пожалуйста, подождите завершения загрузки</string>
   <string name="all_Expand">expand</string>
   <string name="ranobes">Ранобэ</string>
+  <string name="byTitle">По названию</string>
+  <string name="byDate">По дате</string>
+  <string name="byRanobeSite">По источнику</string>
+  <string name="byUpdates">По обновлениям</string>
 </resources>

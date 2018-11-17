@@ -3,8 +3,7 @@ package ru.profapp.RanobeReader.Models
 import androidx.annotation.NonNull
 import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
-import ru.profapp.RanobeReader.Common.Constants.RanobeSite.RanobeRf
-import ru.profapp.RanobeReader.Common.Constants.RanobeSite.Rulate
+import ru.profapp.RanobeReader.Common.Constants.RanobeSite.*
 import java.util.*
 
 /**
@@ -47,8 +46,16 @@ class Chapter() {
     var id: Int? = null
         get() {
             if (field == null) {
+                val value: String =
+                        if (url.contains(RanobeHub.url)) {
+                            val arr = url.replace(ranobeUrl, "").split("/").takeLast(2)
+                            (arr[1].toInt() + (arr[0].toInt() * 1000)).toString()
+                        } else {
+                            url.substring(url.lastIndexOf("/") + 1)
+                        }
+
                 return try {
-                    Integer.parseInt(url.substring(url.lastIndexOf("/") + 1))
+                    Integer.parseInt(value)
                 } catch (ignore: NumberFormatException) {
                     field
                 }

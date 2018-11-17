@@ -35,9 +35,9 @@ object RanobeHubRepository : BaseRepository() {
                 for (rChapter in volume.chapters) {
                     val chapter = Chapter()
 
-                    chapter.title = if (chapter.title.isBlank()){
+                    chapter.title = if (chapter.title.isBlank()) {
                         "Том ${volume.num}. ${rChapter.name}"
-                    }else chapter.title
+                    } else chapter.title
 
                     chapter.url = if (chapter.url.isBlank()) "${ranobe.url}/${volume.num}/${rChapter.num}" else chapter.url
 
@@ -137,6 +137,17 @@ object RanobeHubRepository : BaseRepository() {
                 textObj.select(".ads-desktop").remove()
                 textObj.select(".ads-mobile").remove()
                 textObj.select(".adsbygoogle").remove()
+                textObj.select("img").forEach { it ->
+                    val img = it.attr("data-src")
+
+                    var newAttr = Constants.RanobeSite.RanobeHub.url
+                    if (img.contains("/img/ranobe"))
+                        newAttr += img
+                    else
+                        newAttr = "$newAttr/img/ranobe/content/${mCurrentChapter.ranobeUrl.split("/").takeLast(1).get(0)}/$img.jpg"
+
+                    it.attr("src", newAttr)
+                }
                 mCurrentChapter.text = textObj.html()
                 return@map true
             } else

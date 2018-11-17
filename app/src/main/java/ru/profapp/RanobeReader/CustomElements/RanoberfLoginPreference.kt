@@ -11,7 +11,7 @@ class RanoberfLoginPreference(context: Context, attrs: AttributeSet) : BaseLogin
 
 
     init {
-        setDialogIcon(R.mipmap.ic_action_ranoberf)
+        setDialogIcon(R.mipmap.ic_ranoberf)
         sharedPref = context.getSharedPreferences(Constants.Ranoberf_Login_Pref, Context.MODE_PRIVATE)
         ranobeSite = Constants.RanobeSite.RanobeRf
     }
