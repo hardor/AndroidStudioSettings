@@ -30,7 +30,6 @@ import ru.profapp.RanobeReader.R
 /**
  * A simple [Fragment] subclass.
  * Activities that contain this fragment must implement the
- * [SearchFragment.OnFragmentInteractionListener] interface
  * to handle interaction events.
  * Use the [SearchFragment.newInstance] factory method to
  * create an instance of this fragment.
@@ -38,7 +37,7 @@ import ru.profapp.RanobeReader.R
 class SearchFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var ranobeRecyclerViewAdapter: RanobeRecyclerViewAdapter
-    private var mListener: OnFragmentInteractionListener? = null
+
     private var adapterRanobeList: MutableList<Ranobe> = mutableListOf()
     private var mContext: Context? = null
     lateinit var resultLabel: TextView
@@ -83,17 +82,11 @@ class SearchFragment : Fragment() {
 
         super.onAttach(context)
         mContext = context
-        if (context is OnFragmentInteractionListener) {
-            mListener = context
-        } else {
-            throw RuntimeException(context.toString() + " must implement OnFragmentInteractionListener")
-        }
 
     }
 
     override fun onDetach() {
         super.onDetach()
-        mListener = null
         mContext = null
     }
 
@@ -194,8 +187,6 @@ class SearchFragment : Fragment() {
         }
 
     }
-
-    interface OnFragmentInteractionListener
 
     companion object {
         fun newInstance() = SearchFragment().apply {

@@ -100,8 +100,9 @@ object RanobeHubRepository : BaseRepository() {
 
                 }
                 ranobe.description = item.selectFirst("div.description").ownText()
-                ranobe.title = item.selectFirst("div.grid_item_header").selectFirst("a").text()
-                ranobe.engTitle = item.selectFirst("div.grid_item_header").selectFirst("h5").text()
+                ranobe.title = item.selectFirst("div.header").selectFirst("a").text()
+                ranobe.engTitle = item.selectFirst("div.header").selectFirst("h5").text()
+
                 or.add(ranobe)
             }
         }

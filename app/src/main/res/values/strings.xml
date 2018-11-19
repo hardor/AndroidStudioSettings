@@ -126,7 +126,8 @@
   <string name="byUpdates">By updates</string>
   <string name="byRanobeSite">By site</string>
   <string name="pref_general_sort_order" translatable="false">pref_general_sort_order</string>
-
+  <string name="action_bookmark" translatable="false">bookmark</string>
+  <string name="bookmark_added">Bookmark added</string>
   <!--<string name="show_all_chapter">Show all chapters</string>-->
   <!--<string name="show_only_readable">Show only readable chapters</string>-->
   <!--<string name="hide_unavailable_chapters">Hide unavailable (paid) chapters</string>-->
@@ -140,7 +141,7 @@
   <!--<string name="summary_save_text_on">Save text when opening chapter</string>-->
   <!--<string name="summary_save_text_off">Save text only manually</string>-->
   <!--<string name="action_bookmark">Bookmark</string>-->
-  <!--<string name="bookmark_saved">Bookmark saved</string>-->
+
   <!--<string name="email" translatable="false">e-mail</string>-->
   <!---->
   <!--<string name="auth_succes">Authorization success</string>-->

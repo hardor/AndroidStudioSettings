@@ -6,7 +6,7 @@
   <group android:checkableBehavior="single">
     <item
       android:id="@+id/nav_favorite"
-      android:icon="@drawable/ic_favorite_black_24dp"
+      android:icon="@drawable/ic_favorite_black_24dp_nav"
       android:title="@string/favorite"/>
     <item
       android:id="@+id/nav_rulate"
@@ -27,7 +27,7 @@
       android:title="@string/search"/>
     <item
       android:id="@+id/nav_chapters"
-      android:icon="@drawable/ic_file_download_black_24dp"
+      android:icon="@drawable/ic_file_download_black_24dp_nav"
       android:title="@string/saved_chapters"/>
     <item
       android:id="@+id/nav_history"

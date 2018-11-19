@@ -177,6 +177,11 @@ class ChapterTextActivity : AppCompatActivity() {
 
         navigation_prev.setOnClickListener { OnClicked(+1) }
 
+        navigation_bookmark.setOnClickListener {
+            saveProgressToDb()
+            Toast.makeText(mContext, getString(R.string.bookmark_added), Toast.LENGTH_SHORT).show()
+        }
+
     }
 
     private fun initWebView() {
@@ -392,7 +397,7 @@ class ChapterTextActivity : AppCompatActivity() {
 
         mCurrentChapter.id?.let { lastChapterIdPref!!.edit().putInt(mCurrentChapter.ranobeUrl, it).apply() }
 
-        saveProgressToDb(0f)
+        //saveProgressToDb(0f)
 
     }
 
@@ -437,7 +442,7 @@ class ChapterTextActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        saveProgressToDb()
+        //saveProgressToDb()
     }
 
     override fun onDestroy() {

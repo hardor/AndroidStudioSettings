@@ -20,14 +20,13 @@ import ru.profapp.RanobeReader.R
 /**
  * A simple [Fragment] subclass.
  * Activities that contain this fragment must implement the
- * [HistoryFragment.OnFragmentInteractionListener] interface
  * to handle interaction events.
  * Use the [HistoryFragment.newInstance] factory method to
  * create an instance of this fragment.
  *
  */
 class HistoryFragment : Fragment() {
-    private var listener: OnFragmentInteractionListener? = null
+
     private var mContext: Context? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,27 +75,21 @@ class HistoryFragment : Fragment() {
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         mContext = context
-        if (context is OnFragmentInteractionListener) {
-            listener = context
-        } else {
-            throw RuntimeException(context.toString() + " must implement OnFragmentInteractionListener")
-        }
+
     }
 
     override fun onDetach() {
         super.onDetach()
-        listener = null
+
         mContext = null
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        listener = null
+
         mContext = null
         MyApp.refWatcher?.watch(this)
     }
-
-    interface OnFragmentInteractionListener
 
     companion object {
 
