@@ -20,12 +20,12 @@ import ru.profapp.RanobeReader.Models.Ranobe
 import ru.profapp.RanobeReader.MyApp
 import ru.profapp.RanobeReader.R
 
-class ExpandableChapterRecyclerViewAdapter(private val context: Context, private val mRanobe: Ranobe) : RecyclerView.Adapter<ExpandableChapterRecyclerViewAdapter.GroupViewHolder>() {
+class ExpandableChapterRecyclerViewAdapter(private val mContext: Context, private val mRanobe: Ranobe) : RecyclerView.Adapter<ExpandableChapterRecyclerViewAdapter.GroupViewHolder>() {
 
-    private val inflater: LayoutInflater = LayoutInflater.from(context)
+    private val inflater: LayoutInflater = LayoutInflater.from(mContext)
 
-    val dp2 = Helper.convertDpToPixel(2, context)
-    val dp6 = Helper.convertDpToPixel(6, context)
+    val dp2 = Helper.convertDpToPixel(2, mContext)
+    val dp6 = Helper.convertDpToPixel(6, mContext)
 
     constructor(context: Context, mChapters: ArrayList<Chapter>, mRanobe: Ranobe) : this(context, mRanobe) {
 
@@ -75,7 +75,7 @@ class ExpandableChapterRecyclerViewAdapter(private val context: Context, private
                         val ranobe = Ranobe()
                         ranobe.url = childItem.ranobeUrl
                         if (MyApp.fragmentType != null && MyApp.fragmentType != Constants.FragmentType.Saved) {
-                            if (ranobe.updateRanobe(context).subscribeOn(Schedulers.io()).blockingGet())
+                            if (ranobe.updateRanobe(mContext).subscribeOn(Schedulers.io()).blockingGet())
                                 MyApp.ranobe = ranobe
                             else {
                                 MyApp.ranobe = mRanobe
@@ -86,16 +86,16 @@ class ExpandableChapterRecyclerViewAdapter(private val context: Context, private
                         }
                     }
                     if (MyApp.ranobe != null) {
-                        val intent = Intent(context, ChapterTextActivity::class.java)
+                        val intent = Intent(mContext, ChapterTextActivity::class.java)
                         intent.putExtra("ChapterUrl", childItem.url)
 
-                        context.startActivity(intent)
+                        mContext.startActivity(intent)
                     }
                 }
             }
 
             if (childItem.isRead) {
-                currentTextView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimaryDark))
+                currentTextView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.colorPrimaryDark))
             }
 
         }
@@ -119,7 +119,7 @@ class ExpandableChapterRecyclerViewAdapter(private val context: Context, private
                 if (intMaxSizeTemp > intMaxNoOfChild) intMaxNoOfChild = intMaxSizeTemp
             }
             for (indexView in 0 until intMaxNoOfChild) {
-                val textView = TextView(context)
+                val textView = TextView(mContext)
                 textView.id = indexView
                 textView.setPadding(dp2, dp6, dp2, dp6)
                 textView.textSize = 14.0F
@@ -129,6 +129,7 @@ class ExpandableChapterRecyclerViewAdapter(private val context: Context, private
                 layoutParams.setMargins(0, dp2, 0, dp2)
                 linearLayoutChildItems.addView(textView, layoutParams)
             }
+            Helper.setVectorForPreLollipop( textViewParentName, R.drawable.ic_expand_more_black_24dp, mContext, Constants.ApplicationConstants.DRAWABLE_RIGHT);
             textViewParentName.setOnClickListener(this)
         }
 

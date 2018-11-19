@@ -66,5 +66,16 @@ object Constants {
 
     }
 
+    enum class ApplicationConstants {
+        DRAWABLE_LEFT,
+
+        DRAWABLE_RIGHT,
+
+        DRAWABLE_TOP,
+
+        DRAWABLE_BOTTOM
+
+    }
+
 }
 

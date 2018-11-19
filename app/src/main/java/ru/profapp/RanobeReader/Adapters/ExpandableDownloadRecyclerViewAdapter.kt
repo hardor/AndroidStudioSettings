@@ -10,12 +10,14 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.NonNull
 import androidx.recyclerview.widget.RecyclerView
+import ru.profapp.RanobeReader.Common.Constants
+import ru.profapp.RanobeReader.Helpers.Helper
 import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.R
 
-class ExpandableDownloadRecyclerViewAdapter(private val context: Context) : RecyclerView.Adapter<ExpandableDownloadRecyclerViewAdapter.GroupViewHolder>() {
+class ExpandableDownloadRecyclerViewAdapter(private val mContext: Context) : RecyclerView.Adapter<ExpandableDownloadRecyclerViewAdapter.GroupViewHolder>() {
 
-    private val inflater: LayoutInflater = LayoutInflater.from(context)
+    private val inflater: LayoutInflater = LayoutInflater.from(mContext)
     var selectAll: Boolean? = null
 
     constructor(context: Context, mChapters: List<Chapter>) : this(context) {
@@ -65,9 +67,9 @@ class ExpandableDownloadRecyclerViewAdapter(private val context: Context) : Recy
                 currentCheckBox.isEnabled = true
                 currentCheckBox.isChecked = childItem.isChecked
                 if (childItem.downloaded) {
-                    currentCheckBox.setTextColor(context.resources.getColor(R.color.colorAccent))
+                    currentCheckBox.setTextColor(mContext.resources.getColor(R.color.colorAccent))
                 } else {
-                    currentCheckBox.setTextColor(context.resources.getColor(R.color.webViewText))
+                    currentCheckBox.setTextColor(mContext.resources.getColor(R.color.webViewText))
                 }
 
                 currentCheckBox.setOnClickListener {
@@ -83,7 +85,7 @@ class ExpandableDownloadRecyclerViewAdapter(private val context: Context) : Recy
             }
 
             if (childItem.canRead && childItem.isRead) {
-                currentCheckBox.setBackgroundColor(context.resources.getColor(R.color.colorPrimaryDark))
+                currentCheckBox.setBackgroundColor(mContext.resources.getColor(R.color.colorPrimaryDark))
             }
 
         }
@@ -108,7 +110,7 @@ class ExpandableDownloadRecyclerViewAdapter(private val context: Context) : Recy
                 if (intMaxSizeTemp > intMaxNoOfChild) intMaxNoOfChild = intMaxSizeTemp
             }
             for (indexView in 0 until intMaxNoOfChild) {
-                val checkBox = CheckBox(context)
+                val checkBox = CheckBox(mContext)
                 checkBox.id = indexView
                 val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
                 linearLayoutChildItems.addView(checkBox, layoutParams)

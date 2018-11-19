@@ -14,7 +14,7 @@ import com.bumptech.glide.RequestManager
 import ru.profapp.RanobeReader.Activities.RanobeInfoActivity
 import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Common.OnLoadMoreListener
-import ru.profapp.RanobeReader.Fragments.RanobeListFragment.OnListFragmentInteractionListener
+
 import ru.profapp.RanobeReader.Models.Ranobe
 import ru.profapp.RanobeReader.MyApp
 import ru.profapp.RanobeReader.R
@@ -23,7 +23,6 @@ import java.util.*
 
 /**
  * [RecyclerView.Adapter] that can display a [Ranobe] and makes a call to the specified
- * [OnListFragmentInteractionListener].
  */
 class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: RecyclerView, private var mValues: List<Ranobe>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val VIEW_TYPE_ITEM = 0

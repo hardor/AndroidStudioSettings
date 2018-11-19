@@ -27,7 +27,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:clickable="true"
-        android:drawableStart="@drawable/ic_sort_by_alpha_black_24dp"
         android:focusable="true"
         />
 

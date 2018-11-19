@@ -28,6 +28,7 @@ import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Common.Constants.RanobeSite.Error
 import ru.profapp.RanobeReader.Common.Constants.fragmentBundle
 import ru.profapp.RanobeReader.Common.OnLoadMoreListener
+import ru.profapp.RanobeReader.Helpers.Helper
 import ru.profapp.RanobeReader.Helpers.LogHelper
 import ru.profapp.RanobeReader.Models.Chapter
 import ru.profapp.RanobeReader.Models.Ranobe
@@ -44,7 +45,6 @@ class RanobeListFragment : Fragment() {
     private lateinit var progressDialog: ProgressDialog
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
-    private var mListener: OnListFragmentInteractionListener? = null
     private lateinit var ranobeRecyclerViewAdapter: RanobeRecyclerViewAdapter
     private var mContext: Context? = null
     private var fragmentType: Constants.FragmentType? = null
@@ -107,7 +107,6 @@ class RanobeListFragment : Fragment() {
         val iBrLFragmentSync: ImageButton = view.findViewById(R.id.iB_rL_fragment_sync)
         val tVSortOrder: TextView = view.findViewById(R.id.tV_SortOrder)
         if (fragmentType == Constants.FragmentType.Favorite && mContext != null) {
-            val tVSortOrder: TextView = view.findViewById(R.id.tV_SortOrder)
             iBrLFragmentSync.visibility = View.VISIBLE
             iBrLFragmentSync.setOnClickListener {
 
@@ -206,6 +205,7 @@ class RanobeListFragment : Fragment() {
             val settingPref = PreferenceManager.getDefaultSharedPreferences(context)
             checkedSortItemName = settingPref.getString(resources.getString(R.string.pref_general_sort_order), null) ?: Constants.SortOrder.default.name
             tVSortOrder.text = getString(Constants.SortOrder.valueOf(checkedSortItemName).resId)
+            Helper.setVectorForPreLollipop(tVSortOrder, R.drawable.ic_sort_by_alpha_black_24dp, mContext!!, Constants.ApplicationConstants.DRAWABLE_LEFT);
             tVSortOrder.visibility = View.VISIBLE
             tVSortOrder.setOnClickListener {
 
@@ -347,20 +347,20 @@ class RanobeListFragment : Fragment() {
                 }
 
                 // Groups
-//                .map {
-//
-//                    return@map if (fragmentType == Constants.FragmentType.Favorite) {
-//                        when (checkedSortItemName) {
-//                            Constants.SortOrder.ByTitle.name -> it.sortedBy { r -> r.title }
-//                            Constants.SortOrder.ByDate.name -> it.sortedByDescending { r -> r.readyDate }
-//                            Constants.SortOrder.ByUpdates.name -> it.sortedByDescending { r -> r.newChapters }
-//                            else -> it.sortedBy { r -> r.ranobeSite }
-//
-//                        }
-//                    } else
-//                        it
-//
-//                }
+                //                .map {
+                //
+                //                    return@map if (fragmentType == Constants.FragmentType.Favorite) {
+                //                        when (checkedSortItemName) {
+                //                            Constants.SortOrder.ByTitle.name -> it.sortedBy { r -> r.title }
+                //                            Constants.SortOrder.ByDate.name -> it.sortedByDescending { r -> r.readyDate }
+                //                            Constants.SortOrder.ByUpdates.name -> it.sortedByDescending { r -> r.newChapters }
+                //                            else -> it.sortedBy { r -> r.ranobeSite }
+                //
+                //                        }
+                //                    } else
+                //                        it
+                //
+                //                }
                 //Add titles
                 //                .map {
                 //                    val newRanobeList = mutableListOf<Ranobe>()
@@ -549,23 +549,16 @@ class RanobeListFragment : Fragment() {
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         mContext = context
-        if (context is OnListFragmentInteractionListener) {
-            mListener = context
 
-        } else {
-            throw RuntimeException(context.toString() + " must implement OnListFragmentInteractionListener")
-        }
     }
 
     override fun onDetach() {
         super.onDetach()
-        mListener = null
+
         mContext = null
         progressDialog.dismiss()
 
     }
-
-    interface OnListFragmentInteractionListener
 
     companion object {
 

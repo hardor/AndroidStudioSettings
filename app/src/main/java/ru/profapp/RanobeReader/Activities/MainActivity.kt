@@ -40,9 +40,6 @@ import ru.profapp.RanobeReader.Network.Repositories.RanobeRfRepository
 import ru.profapp.RanobeReader.R
 
 class MainActivity : AppCompatActivity(),
-        RanobeListFragment.OnListFragmentInteractionListener,
-        SearchFragment.OnFragmentInteractionListener,
-        HistoryFragment.OnFragmentInteractionListener,
         NavigationView.OnNavigationItemSelectedListener {
 
     private var currentTheme = ThemeHelper.sTheme

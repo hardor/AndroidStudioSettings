@@ -2,7 +2,12 @@ package ru.profapp.RanobeReader.Helpers
 
 import android.content.Context
 import android.content.res.Resources
+import android.graphics.drawable.Drawable
+import android.os.Build
 import android.util.DisplayMetrics
+import android.widget.TextView
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
+import ru.profapp.RanobeReader.Common.Constants
 
 object Helper {
 
@@ -51,4 +56,48 @@ object Helper {
         return px / (Resources.getSystem().displayMetrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT)
     }
 
+    //region Helper method for PreLollipop TextView & Buttons Vector Images
+
+    fun setVectorForPreLollipop(resourceId: Int, activity: Context): Drawable? {
+        val icon: Drawable?
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            icon = VectorDrawableCompat.create(activity.resources, resourceId, activity.theme)
+        } else {
+            icon = activity.resources.getDrawable(resourceId, activity.theme)
+        }
+
+        return icon
+    }
+
+    fun setVectorForPreLollipop(textView: TextView, resourceId: Int, activity: Context, position: Constants.ApplicationConstants) {
+        val icon: Drawable?
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            icon = VectorDrawableCompat.create(activity.resources, resourceId,
+                    activity.theme)
+        } else {
+            icon = activity.resources.getDrawable(resourceId, activity.theme)
+        }
+        when (position) {
+            Constants.ApplicationConstants.DRAWABLE_LEFT -> textView.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null)
+
+            Constants.ApplicationConstants.DRAWABLE_RIGHT -> textView.setCompoundDrawablesWithIntrinsicBounds(null, null, icon, null)
+
+            Constants.ApplicationConstants.DRAWABLE_TOP -> textView.setCompoundDrawablesWithIntrinsicBounds(null, icon, null, null)
+
+            Constants.ApplicationConstants.DRAWABLE_BOTTOM -> textView.setCompoundDrawablesWithIntrinsicBounds(null, null, null, icon)
+        }
+    }
+
+    fun setVectorForPreLollipop(textView: TextView, icon: Drawable, activity: Context, position: Constants.ApplicationConstants) {
+
+        when (position) {
+            Constants.ApplicationConstants.DRAWABLE_LEFT -> textView.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null)
+
+            Constants.ApplicationConstants.DRAWABLE_RIGHT -> textView.setCompoundDrawablesWithIntrinsicBounds(null, null, icon, null)
+
+            Constants.ApplicationConstants.DRAWABLE_TOP -> textView.setCompoundDrawablesWithIntrinsicBounds(null, icon, null, null)
+
+            Constants.ApplicationConstants.DRAWABLE_BOTTOM -> textView.setCompoundDrawablesWithIntrinsicBounds(null, null, null, icon)
+        }
+    }
 }
