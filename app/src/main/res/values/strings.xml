@@ -128,6 +128,10 @@
   <string name="pref_general_sort_order" translatable="false">pref_general_sort_order</string>
   <string name="action_bookmark" translatable="false">bookmark</string>
   <string name="bookmark_added">Bookmark added</string>
+  <string name="pref_general_auto_bookmark" translatable="false">pref_general_auto_bookmark</string>
+  <string name="auto_bookmark">Automatic bookmarks</string>
+  <string name="summary_auto_bookmark_on">Automatic add bookmarks</string>
+  <string name="summary_auto_bookmark_off">Add bookmarks manually</string>
   <!--<string name="show_all_chapter">Show all chapters</string>-->
   <!--<string name="show_only_readable">Show only readable chapters</string>-->
   <!--<string name="hide_unavailable_chapters">Hide unavailable (paid) chapters</string>-->

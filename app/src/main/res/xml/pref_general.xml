@@ -16,12 +16,18 @@
     android:summaryOn="@string/summary_volume_scroll_off"
     android:title="@string/volume_scroll"/>
 
+  <SwitchPreference
+    android:defaultValue="false"
+    android:key="@string/pref_general_auto_bookmark"
+    android:summaryOff="@string/summary_auto_bookmark_on"
+    android:summaryOn="@string/summary_auto_bookmark_off"
+    android:title="@string/auto_bookmark"/>
+
   <ru.profapp.RanobeReader.CustomElements.NumberPickerPreference
     android:defaultValue="16"
     android:key="@string/pref_general_text_size"
     android:summary="@string/select_text_size"
     android:title="@string/text_size"/>
-
 
 
 </PreferenceScreen>

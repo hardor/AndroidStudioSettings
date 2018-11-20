@@ -87,6 +87,7 @@ class MyApp : MultiDexApplication() {
         var ranobe: Ranobe? = null
         var refWatcher: RefWatcher? = null
         var useVolumeButtonsToScroll: Boolean = false
+        var autoAddBookmark: Boolean = false
         var isApplicationInitialized: Boolean = false
 
     }

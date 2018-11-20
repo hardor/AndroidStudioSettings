@@ -101,4 +101,7 @@
   <string name="byRanobeSite">По источнику</string>
   <string name="byUpdates">По обновлениям</string>
   <string name="bookmark_added">Закладка добавлена</string>
+  <string name="auto_bookmark">Авто закладки</string>
+  <string name="summary_auto_bookmark_on">Автоматически добавлять позицию в закладки</string>
+  <string name="summary_auto_bookmark_off">Добавлять позицию в закладки вручную</string>
 </resources>

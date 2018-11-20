@@ -177,10 +177,16 @@ class ChapterTextActivity : AppCompatActivity() {
 
         navigation_prev.setOnClickListener { OnClicked(+1) }
 
-        navigation_bookmark.setOnClickListener {
-            saveProgressToDb()
-            Toast.makeText(mContext, getString(R.string.bookmark_added), Toast.LENGTH_SHORT).show()
-        }
+//        if (MyApp.autoAddBookmark) {
+//            navigation_bookmark.visibility = View.GONE
+//        } else {
+//            navigation_bookmark.visibility = View.VISIBLE
+//            navigation_bookmark.setOnClickListener {
+//                saveProgressToDb()
+//                Toast.makeText(mContext, getString(R.string.bookmark_added), Toast.LENGTH_SHORT).show()
+//            }
+//        }
+
 
     }
 
@@ -397,8 +403,9 @@ class ChapterTextActivity : AppCompatActivity() {
 
         mCurrentChapter.id?.let { lastChapterIdPref!!.edit().putInt(mCurrentChapter.ranobeUrl, it).apply() }
 
-        //saveProgressToDb(0f)
-
+        if (MyApp.autoAddBookmark) {
+            saveProgressToDb(0f)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -440,9 +447,23 @@ class ChapterTextActivity : AppCompatActivity() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        if (MyApp.autoAddBookmark) {
+            navigation_bookmark.visibility = View.GONE
+        } else {
+            navigation_bookmark.visibility = View.VISIBLE
+            navigation_bookmark.setOnClickListener {
+                saveProgressToDb()
+                Toast.makeText(mContext, getString(R.string.bookmark_added), Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
     override fun onPause() {
         super.onPause()
-        //saveProgressToDb()
+        if (MyApp.autoAddBookmark) {
+            saveProgressToDb()
+        }
     }
 
     override fun onDestroy() {

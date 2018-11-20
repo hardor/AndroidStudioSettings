@@ -177,6 +177,7 @@ class MainActivity : AppCompatActivity(),
 
         ThemeHelper.setTheme(settingPref.getBoolean(applicationContext.getString(R.string.pref_general_app_theme), false))
         MyApp.useVolumeButtonsToScroll = settingPref.getBoolean(applicationContext.getString(R.string.pref_general_volume_scroll), false)
+        MyApp.autoAddBookmark = settingPref.getBoolean(applicationContext.getString(R.string.pref_general_auto_bookmark), false)
         ThemeHelper.onActivityCreateSetTheme()
         currentTheme = AppCompatDelegate.getDefaultNightMode()
 

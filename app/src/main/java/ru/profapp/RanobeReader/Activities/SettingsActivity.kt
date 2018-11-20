@@ -112,6 +112,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             setHasOptionsMenu(true)
             findPreference(getString(R.string.pref_general_app_theme)).onPreferenceChangeListener = sChangePreferenceListener
             findPreference(getString(R.string.pref_general_volume_scroll)).onPreferenceChangeListener = sChangePreferenceListener
+            findPreference(getString(R.string.pref_general_auto_bookmark)).onPreferenceChangeListener = sChangePreferenceListener
         }
 
         override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -265,6 +266,9 @@ class SettingsActivity : AppCompatPreferenceActivity() {
                 }
                 preference.context.getString(R.string.pref_general_volume_scroll) -> {
                     MyApp.useVolumeButtonsToScroll = value.toString().toBoolean()
+                }
+                preference.context.getString(R.string.pref_general_auto_bookmark) -> {
+                    MyApp.autoAddBookmark = value.toString().toBoolean()
                 }
             }
 
