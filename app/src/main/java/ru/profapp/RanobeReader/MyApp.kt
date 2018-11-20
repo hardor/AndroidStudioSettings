@@ -89,6 +89,7 @@ class MyApp : MultiDexApplication() {
         var useVolumeButtonsToScroll: Boolean = false
         var autoAddBookmark: Boolean = false
         var isApplicationInitialized: Boolean = false
+        var hidePaymentChapter: Boolean= false
 
     }
 

@@ -139,7 +139,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+                <LinearLayout
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:paddingTop="10dp"
+                  android:gravity="end"
+                  android:orientation="horizontal">
+                  <ImageButton
+                    android:id="@+id/hideButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:background="@null"
+                    android:contentDescription="@string/hide_unavailable_chapters"
+                    app:srcCompat="@drawable/ic_visibility_black_24dp"/>
 
+                </LinearLayout>
                 <ProgressBar
                   android:id="@+id/pBar_RanobeInfo"
                   android:layout_width="match_parent"

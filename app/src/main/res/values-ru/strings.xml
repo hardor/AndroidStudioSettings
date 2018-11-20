@@ -104,4 +104,7 @@
   <string name="auto_bookmark">Авто закладки</string>
   <string name="summary_auto_bookmark_on">Автоматически добавлять позицию в закладки</string>
   <string name="summary_auto_bookmark_off">Добавлять позицию в закладки вручную</string>
+  <string name="hide_unavailable_chapters">Скрыть недоступные (платные) главы</string>
+  <string name="show_all_chapter">Показывать все главы</string>
+  <string name="show_only_readable">Показывать только доступные главы</string>
 </resources>

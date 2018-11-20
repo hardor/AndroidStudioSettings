@@ -113,6 +113,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             findPreference(getString(R.string.pref_general_app_theme)).onPreferenceChangeListener = sChangePreferenceListener
             findPreference(getString(R.string.pref_general_volume_scroll)).onPreferenceChangeListener = sChangePreferenceListener
             findPreference(getString(R.string.pref_general_auto_bookmark)).onPreferenceChangeListener = sChangePreferenceListener
+
         }
 
         override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -270,6 +271,11 @@ class SettingsActivity : AppCompatPreferenceActivity() {
                 preference.context.getString(R.string.pref_general_auto_bookmark) -> {
                     MyApp.autoAddBookmark = value.toString().toBoolean()
                 }
+
+                preference.context.getString(R.string.pref_general_hide_chapter) -> {
+                    MyApp.hidePaymentChapter = value.toString().toBoolean()
+                }
+
             }
 
             true
