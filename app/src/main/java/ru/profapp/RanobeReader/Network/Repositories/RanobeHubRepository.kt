@@ -8,6 +8,7 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.profapp.RanobeReader.Common.Constants
+import ru.profapp.RanobeReader.Helpers.Helper
 import ru.profapp.RanobeReader.Helpers.LogHelper
 import ru.profapp.RanobeReader.Helpers.StringHelper
 import ru.profapp.RanobeReader.Models.Chapter
@@ -99,10 +100,11 @@ object RanobeHubRepository : BaseRepository() {
                     })
 
                 }
-                ranobe.description = item.selectFirst("div.description").ownText()
+                val desc = item.selectFirst("div.description")
+                ranobe.description = desc.ownText()
                 ranobe.title = item.selectFirst("div.header").selectFirst("a").text()
                 ranobe.engTitle = item.selectFirst("div.header").selectFirst("h5").text()
-
+                ranobe.readyDate = Helper.dateFromString(desc.selectFirst("span").text())
                 or.add(ranobe)
             }
         }

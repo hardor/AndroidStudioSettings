@@ -93,6 +93,21 @@ class RanobeListFragment : Fragment() {
 
     }
 
+    private fun sortValuesAndNotify(sortOrderName: String) {
+
+
+        val tempList = when (sortOrderName) {
+            Constants.SortOrder.ByTitle.name -> ranobeList.sortedBy { r -> r.title }
+            Constants.SortOrder.ByDate.name -> ranobeList.sortedByDescending { r -> r.readyDate }
+            Constants.SortOrder.ByUpdates.name -> ranobeList.sortedByDescending { r -> r.newChapters }
+            else -> ranobeList.sortedBy { r -> r.ranobeSite }.sortedBy { h -> h.title }
+        }
+        ranobeList.clear()
+        ranobeList.addAll(tempList)
+
+        ranobeRecyclerViewAdapter.notifyDataSetChanged()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater.inflate(R.layout.fragment_ranobe_list, container, false)
         progressDialog = ProgressDialog(context)
@@ -187,7 +202,7 @@ class RanobeListFragment : Fragment() {
                                         if (result.any()) {
                                             ranobeList.clear()
                                             ranobeList.addAll(result)
-                                            ranobeRecyclerViewAdapter.notifyDataSetChanged(checkedSortItemName)
+                                            sortValuesAndNotify(checkedSortItemName)
 
                                         }
                                         onItemsLoadFinished()
@@ -223,7 +238,8 @@ class RanobeListFragment : Fragment() {
                             checkedSortItemName = Constants.SortOrder.fromResId(selectItem).name
 
                             tVSortOrder.text = getString(selectItem)
-                            ranobeRecyclerViewAdapter.notifyDataSetChanged(checkedSortItemName)
+                            sortValuesAndNotify(checkedSortItemName)
+                            recyclerView.scrollToPosition(0)
                             settingPref.edit().putString(resources.getString(R.string.pref_general_sort_order), checkedSortItemName).apply()
                             dialog.dismiss()
                         }
@@ -399,7 +415,8 @@ class RanobeListFragment : Fragment() {
 
                     if (result.any()) {
                         ranobeList.addAll(result)
-                        ranobeRecyclerViewAdapter.notifyItemRangeInserted(oldListSize, ranobeList.size)
+                        if (fragmentType == Constants.FragmentType.Favorite) sortValuesAndNotify(checkedSortItemName)
+                        else ranobeRecyclerViewAdapter.notifyItemRangeInserted(oldListSize, ranobeList.size)
                         oldListSize = ranobeList.size
                     }
                     page++

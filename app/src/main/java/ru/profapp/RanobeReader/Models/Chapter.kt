@@ -47,7 +47,7 @@ class Chapter() {
     @ColumnInfo(name = "Id")
     var id: Int? = null
         get() {
-            if (field == null && !url.contains(RanobeRf.url)) {
+            if (field == null && !url.isNullOrBlank() && !url.contains(RanobeRf.url)) {
                 return try {
                     val value: String =
                             if (url.contains(RanobeHub.url)) {

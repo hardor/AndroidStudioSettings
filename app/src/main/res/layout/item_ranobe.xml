@@ -48,13 +48,14 @@
     android:layout_width="0dp"
     android:layout_height="match_parent"
     android:layout_marginStart="8dp"
-    android:visibility="gone"
     android:ellipsize="end"
     android:maxLines="6"
+    android:visibility="gone"
+    app:layout_constraintBottom_toTopOf="@+id/ranobeUpdateTime"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toEndOf="@+id/imageView"
     app:layout_constraintTop_toBottomOf="@+id/list_chapter_list"
-    app:layout_constraintBottom_toTopOf="@+id/ranobeUpdateTime"
+    app:layout_constraintVertical_bias="0.0"
     tools:text="@tools:sample/lorem/random"
     tools:visibility="gone"/>
 
@@ -70,7 +71,7 @@
     android:textSize="@dimen/last_updated_text_size"
     android:visibility="gone"
     app:layout_constraintBottom_toBottomOf="@id/view"
-    app:layout_constraintTop_toBottomOf="@+id/ranobe_description"
+
     app:layout_constraintVertical_bias="0.0"
     tools:text="@tools:sample/date/ddmmyy"
     tools:visibility="visible"/>

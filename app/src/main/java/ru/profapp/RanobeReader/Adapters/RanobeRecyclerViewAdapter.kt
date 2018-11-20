@@ -92,11 +92,6 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
 
     }
 
-    fun notifyDataSetChanged(sortOrderName: String) {
-        sortValues(sortOrderName)
-        this.notifyDataSetChanged()
-    }
-
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is RanobeViewHolder -> {
@@ -158,11 +153,13 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
                     val adapter = ChapterRecyclerViewAdapter(context, chapterlist2, holder.mItem)
                     holder.chaptersListView.adapter = adapter
                     holder.chaptersListView.visibility = View.VISIBLE
+                    holder.description.visibility = View.GONE
                 } else {
+                    holder.chaptersListView.visibility = View.GONE
                     if (!holder.mItem.description.isNullOrBlank()) {
                         holder.description.text = holder.mItem.description
                         holder.description.visibility = View.VISIBLE
-                    }
+                    }else{ holder.description.visibility = View.GONE}
                 }
 
             }
@@ -171,15 +168,7 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
         }
     }
 
-    private fun sortValues(sortOrderName: String) {
 
-        mValues = when (sortOrderName) {
-            Constants.SortOrder.ByTitle.name -> mValues.sortedBy { r -> r.title }
-            Constants.SortOrder.ByDate.name -> mValues.sortedByDescending { r -> r.readyDate }
-            Constants.SortOrder.ByUpdates.name -> mValues.sortedByDescending { r -> r.newChapters }
-            else -> mValues.sortedBy { r -> r.ranobeSite }.sortedBy { h -> h.title }
-        }
-    }
 
     override fun getItemCount(): Int {
         return mValues.size

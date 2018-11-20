@@ -8,6 +8,7 @@ import android.util.DisplayMetrics
 import android.widget.TextView
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import ru.profapp.RanobeReader.Common.Constants
+import java.util.*
 
 object Helper {
 
@@ -99,5 +100,23 @@ object Helper {
 
             Constants.ApplicationConstants.DRAWABLE_BOTTOM -> textView.setCompoundDrawablesWithIntrinsicBounds(null, null, null, icon)
         }
+    }
+
+    fun dateFromString(text: String?): Date? {
+        if (text.isNullOrBlank()) return null
+
+        val dig = text.replace("[^0-9]".toRegex(), "").toInt()
+        if (text.contains("минут"))
+            return Date().addMinutes(-1*dig)
+        else if (text.contains("час"))
+            return Date().addHours(-1*dig)
+        else if (text.contains("день") || text.contains("дн"))
+            return Date().addDays(-1*dig)
+        else if (text.contains("недел"))
+            return Date().addDays(-7*dig)
+        else if (text.contains("месяц"))
+            return Date().addMonths(-1*dig)
+
+        return null
     }
 }
