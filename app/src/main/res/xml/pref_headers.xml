@@ -3,23 +3,23 @@
   <!-- These settings headers are only used on tablets. -->
 
   <header
-    android:fragment="ru.profapp.RanobeReader.Activities.SettingsActivity$GeneralPreferenceFragment"
+    android:fragment="ru.profapp.ranobe.Activities.SettingsActivity$GeneralPreferenceFragment"
     android:title="@string/pref_header_general"/>
 
   <header
-    android:fragment="ru.profapp.RanobeReader.Activities.SettingsActivity$RulatePreferenceFragment"
+    android:fragment="ru.profapp.ranobe.Activities.SettingsActivity$RulatePreferenceFragment"
     android:title="@string/tl_rulate_name"/>
   <header
-    android:fragment="ru.profapp.RanobeReader.Activities.SettingsActivity$RanobeRfPreferenceFragment"
+    android:fragment="ru.profapp.ranobe.Activities.SettingsActivity$RanobeRfPreferenceFragment"
     android:title="@string/ranobe_rf"/>
   <header
-    android:fragment="ru.profapp.RanobeReader.Activities.SettingsActivity$DataPreferenceFragment"
+    android:fragment="ru.profapp.ranobe.Activities.SettingsActivity$DataPreferenceFragment"
     android:title="@string/data"/>
 
   <header
     android:title="@string/export_import">
     <intent
-      android:action="ru.profapp.RanobeReader.Activities.BackupActivity"/>
+      android:action="ru.profapp.ranobe.Activities.BackupActivity"/>
   </header>
 
 

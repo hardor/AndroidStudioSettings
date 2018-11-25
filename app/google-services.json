@@ -1,51 +1,27 @@
 {
   "project_info": {
-    "project_number": "789465050624",
-    "firebase_url": "https://ranobereader-42ce6.firebaseio.com",
-    "project_id": "ranobereader-42ce6",
-    "storage_bucket": "ranobereader-42ce6.appspot.com"
+    "project_number": "510986481056",
+    "firebase_url": "https://ranobe-c0bd5.firebaseio.com",
+    "project_id": "ranobe-c0bd5",
+    "storage_bucket": "ranobe-c0bd5.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:789465050624:android:8963db1a3ed5ecd4",
+        "mobilesdk_app_id": "1:510986481056:android:a49277cdd4df14e6",
         "android_client_info": {
-          "package_name": "ru.profapp.RanobeReader"
+          "package_name": "ru.profapp.ranobe"
         }
       },
       "oauth_client": [
         {
-          "client_id": "789465050624-6igvetr5d4c4acmi0vceaan8imuepd24.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "ru.profapp.RanobeReader",
-            "certificate_hash": "2aecd9426c6bbfa4137a2eb8c0d589838107c809"
-          }
-        },
-        {
-          "client_id": "789465050624-drcqnaln1020atvpom4h49k4smo15740.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "ru.profapp.RanobeReader",
-            "certificate_hash": "0773e75c7f6db3e45865376998b8071ad9badc8e"
-          }
-        },
-        {
-          "client_id": "789465050624-t6p3k6lrpe6eb4tla1a9f832816hpqbs.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "ru.profapp.RanobeReader",
-            "certificate_hash": "85ffaaeca8854006d7893769c2bae22c12542507"
-          }
-        },
-        {
-          "client_id": "789465050624-udtuutiq9uepm3hohc0d1khruq96afu0.apps.googleusercontent.com",
+          "client_id": "510986481056-d66ckbuvn93ktc7n8shqj8qqhdtij421.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDsvE5Ox88Bg1krK5tZpKSnFpAw2TmhLDI"
+          "current_key": "AIzaSyCkOUGsGUpUA7RBzCYBikv85VMOFtB2SHg"
         }
       ],
       "services": {
@@ -53,19 +29,14 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "789465050624-udtuutiq9uepm3hohc0d1khruq96afu0.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "status": 1,
+          "other_platform_oauth_client": []
         },
         "ads_service": {
           "status": 2
         }
       },
-      "admob_app_id": "ca-app-pub-1483315001492731~8531946315"
+      "admob_app_id": "ca-app-pub-1483315001492731~6790511196"
     }
   ],
   "configuration_version": "1"

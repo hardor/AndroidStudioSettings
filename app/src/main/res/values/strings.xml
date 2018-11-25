@@ -35,7 +35,7 @@
   <string name="clear_history_summary">Remove information about read ranobes and chapters</string>
   <string name="ClearHistoryButton" translatable="false">ClearHistoryButton</string>
   <string name="search">Search</string>
-  <string name="banner_ad_unit_id" translatable="false">ca-app-pub-1483315001492731/3353494026</string>
+  <string name="banner_ad_unit_id" translatable="false">ca-app-pub-1483315001492731/8766185269</string>
   <string name="Updated">Updated</string>
   <string name="ago">ago</string>
   <string name="load_ranobes">Loading favorite ranobe</string>
@@ -46,8 +46,8 @@
   <string name="general">General</string>
   <string name="all_notFound">Not found</string>
   <string name="enter_user_pass">Please enter username and password</string>
-  <string name="banner_ad_unit_main" translatable="false">ca-app-pub-1483315001492731/3861883619</string>
-  <string name="app_admob_id" translatable="false">ca-app-pub-1483315001492731~8531946315</string>
+  <string name="banner_ad_unit_main" translatable="false">ca-app-pub-1483315001492731/7756355928</string>
+  <string name="app_admob_id" translatable="false">ca-app-pub-1483315001492731~6790511196</string>
   <string name="added_to_local">was added to local bookmarks.</string>
   <string name="added_to_web">was added to web bookmarks.</string>
   <string name="rulate_authorization_pref" translatable="false">rulate_authorization_pref</string>

@@ -1,13 +1,13 @@
 ext {
 
-    majVersion = 3
-    minVersion = 11
+    majVersion = 1
+    minVersion = 1
 
     calculateVersionName = {
         return "${majVersion}.${minVersion}"
     }
     calculateVersionCode = {
-        return 5 * 100000 + (majVersion * 100 + minVersion)
+        return 1 * 100000 + (majVersion * 100 + minVersion)
     }
 }
 buildscript {
@@ -33,12 +33,6 @@ repositories {
 
 android {
     signingConfigs {
-        config {
-            keyAlias 'ranobereader'
-            keyPassword 'gf6ds7fsfs7'
-            storeFile file('D:/Projects/Keystore/RanobeReader/RanobeReader.keystore')
-            storePassword 'gf6ds7fsfs7'
-        }
     }
     lintOptions {
         checkReleaseBuilds false
@@ -46,7 +40,7 @@ android {
 
     compileSdkVersion 28
     defaultConfig {
-        applicationId "ru.profapp.RanobeReader"
+        applicationId "ru.profapp.ranobe"
         minSdkVersion 19
         targetSdkVersion 28
         multiDexEnabled true
@@ -69,7 +63,6 @@ android {
             minifyEnabled false
             buildConfigField "boolean", "USE_LOG", "false"
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.config
             android.applicationVariants.all { variant ->
                 variant.outputs.all {
                     def date = new Date()
@@ -142,7 +135,6 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'org.jsoup:jsoup:1.11.3'
     // implementation 'com.getkeepsafe.taptargetview:taptargetview:1.12.0'
-
     //stetho
     implementation 'com.facebook.stetho:stetho:1.5.0'
     implementation 'com.facebook.stetho:stetho-okhttp3:1.5.0'

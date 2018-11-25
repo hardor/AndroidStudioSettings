@@ -48,9 +48,9 @@
       android:layout_height="wrap_content"
       android:layout_marginStart="8dp"
       android:layout_marginEnd="8dp"
-      android:name="ru.profapp.RanobeReader.FavoriteFragment"
+      android:name="ru.profapp.ranobe.FavoriteFragment"
       android:scrollbars="vertical"
-      tools:context="ru.profapp.RanobeReader.Fragments.RanobeListFragment"
+      tools:context="ru.profapp.ranobe.Fragments.RanobeListFragment"
       tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
       tools:listitem="@layout/item_ranobe">
     </androidx.recyclerview.widget.RecyclerView>
