@@ -468,6 +468,7 @@ class ChapterTextActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        Thread.setDefaultUncaughtExceptionHandler(null)
         compositeDisposable.clear()
     }
 

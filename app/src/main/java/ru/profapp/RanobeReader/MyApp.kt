@@ -6,6 +6,7 @@ import androidx.multidex.MultiDexApplication
 import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.facebook.stetho.Stetho
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
 import ru.profapp.RanobeReader.Common.Constants
@@ -89,7 +90,7 @@ class MyApp : MultiDexApplication() {
         var useVolumeButtonsToScroll: Boolean = false
         var autoAddBookmark: Boolean = false
         var isApplicationInitialized: Boolean = false
-        var hidePaymentChapter: Boolean= false
+//        var hidePaymentChapter: Boolean= false
 
     }
 
@@ -103,6 +104,25 @@ class MyApp : MultiDexApplication() {
                 return
             }
             refWatcher = LeakCanary.install(this)
+
+            // Create an InitializerBuilder
+            val initializerBuilder = Stetho.newInitializerBuilder(this)
+
+            // Enable Chrome DevTools
+
+            initializerBuilder.enableWebKitInspector(
+                    Stetho.defaultInspectorModulesProvider(this)
+            )
+            // Enable command line interface
+            initializerBuilder.enableDumpapp(
+                    Stetho.defaultDumperPluginsProvider(this)
+            )
+
+            // Use the InitializerBuilder to generate an Initializer
+            val initializer = initializerBuilder.build()
+
+            // Initialize Stetho with the Initializer
+            Stetho.initialize(initializer)
         }
         MyApp.database = Room.databaseBuilder(this, DatabaseDao::class.java, DB_NAME).addMigrations(MIGRATION_2_3).fallbackToDestructiveMigration().build()
     }

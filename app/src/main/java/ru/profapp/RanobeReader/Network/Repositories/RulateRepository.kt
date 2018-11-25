@@ -222,7 +222,7 @@ object RulateRepository : BaseRepository() {
 
     private infix fun Chapter.updateChapter(response: RulateText) {
         title = response.title.toString()
-        text = response.text
+        text = response.text?.replace("style=\"[^\"]*\"".toRegex(), "")
 
     }
 

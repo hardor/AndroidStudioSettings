@@ -1,7 +1,7 @@
 ext {
 
     majVersion = 3
-    minVersion = 10
+    minVersion = 11
 
     calculateVersionName = {
         return "${majVersion}.${minVersion}"
@@ -142,6 +142,10 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'org.jsoup:jsoup:1.11.3'
     // implementation 'com.getkeepsafe.taptargetview:taptargetview:1.12.0'
+
+    //stetho
+    implementation 'com.facebook.stetho:stetho:1.5.0'
+    implementation 'com.facebook.stetho:stetho-okhttp3:1.5.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

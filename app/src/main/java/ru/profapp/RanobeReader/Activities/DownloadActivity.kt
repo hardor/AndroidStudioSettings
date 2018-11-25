@@ -226,6 +226,7 @@ class DownloadActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        Thread.setDefaultUncaughtExceptionHandler(null)
         compositeDisposable.dispose()
     }
 }

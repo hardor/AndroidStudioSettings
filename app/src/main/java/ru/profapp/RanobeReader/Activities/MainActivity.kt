@@ -26,6 +26,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import io.fabric.sdk.android.Fabric
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_ranobe_info.*
 import ru.profapp.RanobeReader.BuildConfig
 import ru.profapp.RanobeReader.Common.Constants
 import ru.profapp.RanobeReader.Common.MyExceptionHandler
@@ -77,7 +78,7 @@ class MainActivity : AppCompatActivity(),
             alertErrorDialog?.show()
         }
 
-        MobileAds.initialize(this, getString(R.string.app_admob_id))
+        MobileAds.initialize(applicationContext, getString(R.string.app_admob_id))
         adView = findViewById(R.id.adView)
 
         val adRequest = AdRequest.Builder()
@@ -178,7 +179,7 @@ class MainActivity : AppCompatActivity(),
         ThemeHelper.setTheme(settingPref.getBoolean(applicationContext.getString(R.string.pref_general_app_theme), false))
         MyApp.useVolumeButtonsToScroll = settingPref.getBoolean(applicationContext.getString(R.string.pref_general_volume_scroll), false)
         MyApp.autoAddBookmark = settingPref.getBoolean(applicationContext.getString(R.string.pref_general_auto_bookmark), false)
-        MyApp.hidePaymentChapter = settingPref.getBoolean(applicationContext.getString(R.string.pref_general_hide_chapter), false)
+//        MyApp.hidePaymentChapter = settingPref.getBoolean(applicationContext.getString(R.string.pref_general_hide_chapter), false)
 
         ThemeHelper.onActivityCreateSetTheme()
         currentTheme = AppCompatDelegate.getDefaultNightMode()
@@ -311,7 +312,10 @@ class MainActivity : AppCompatActivity(),
 
     override fun onDestroy() {
         super.onDestroy()
+        adView.adListener = null
+        adView.removeAllViews()
         adView.destroy()
+        Thread.setDefaultUncaughtExceptionHandler(null)
     }
 
     override fun onResume() {

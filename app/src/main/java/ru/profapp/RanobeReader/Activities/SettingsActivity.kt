@@ -272,9 +272,9 @@ class SettingsActivity : AppCompatPreferenceActivity() {
                     MyApp.autoAddBookmark = value.toString().toBoolean()
                 }
 
-                preference.context.getString(R.string.pref_general_hide_chapter) -> {
-                    MyApp.hidePaymentChapter = value.toString().toBoolean()
-                }
+//                preference.context.getString(R.string.pref_general_hide_chapter) -> {
+//                    MyApp.hidePaymentChapter = value.toString().toBoolean()
+//                }
 
             }
 
@@ -284,6 +284,11 @@ class SettingsActivity : AppCompatPreferenceActivity() {
         private fun isXLargeTablet(context: Context): Boolean {
             return context.resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK >= Configuration.SCREENLAYOUT_SIZE_XLARGE
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Thread.setDefaultUncaughtExceptionHandler(null)
     }
 
 }

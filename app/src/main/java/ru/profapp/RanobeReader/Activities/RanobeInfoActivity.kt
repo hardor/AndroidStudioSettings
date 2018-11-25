@@ -140,28 +140,28 @@ class RanobeInfoActivity : AppCompatActivity() {
         tH_rI_comments.currentTab = 0
 
 
-        if (MyApp.autoAddBookmark) {
-            hideButton.setImageResource(R.drawable.ic_visibility_black_24dp)
-        } else {
-            hideButton.setImageResource(R.drawable.ic_visibility_off_black_24dp)
-        }
-        hideButton.setOnClickListener { v ->
-
-            mCurrentRanobe.hidePaymentChapters = !mCurrentRanobe.hidePaymentChapters
-
-            if (mCurrentRanobe.hidePaymentChapters) {
-                hideButton.setImageResource(R.drawable.ic_visibility_off_black_24dp)
-            } else {
-                hideButton.setImageResource(R.drawable.ic_visibility_black_24dp)
-            }
-        }
+//        if (MyApp.hidePaymentChapter) {
+//            hideButton.setImageResource(R.drawable.ic_visibility_black_24dp)
+//        } else {
+//            hideButton.setImageResource(R.drawable.ic_visibility_off_black_24dp)
+//        }
+//        hideButton.setOnClickListener { v ->
+//
+//            mCurrentRanobe.hidePaymentChapters = !mCurrentRanobe.hidePaymentChapters
+//
+//            if (mCurrentRanobe.hidePaymentChapters) {
+//                hideButton.setImageResource(R.drawable.ic_visibility_off_black_24dp)
+//            } else {
+//                hideButton.setImageResource(R.drawable.ic_visibility_black_24dp)
+//            }
+//        }
         initAds()
 
     }
 
 
     private fun initAds() {
-        MobileAds.initialize(this, getString(R.string.app_admob_id))
+        MobileAds.initialize(applicationContext, getString(R.string.app_admob_id))
         val adRequest = AdRequest.Builder()
 
         if (BuildConfig.DEBUG) {
@@ -416,8 +416,11 @@ class RanobeInfoActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        adView?.adListener = null
+        adView?.removeAllViews()
         adView?.destroy()
         compositeDisposable.clear()
+        Thread.setDefaultUncaughtExceptionHandler(null)
 
     }
 

@@ -106,8 +106,8 @@ class Ranobe() {
     @Ignore
     var newChapters: Int = 0
 
-    @Ignore
-    var hidePaymentChapters: Boolean = MyApp.hidePaymentChapter
+//    @Ignore
+//    var hidePaymentChapters: Boolean = MyApp.hidePaymentChapter
 
     fun updateRanobe(mContext: Context): Single<Boolean> {
 

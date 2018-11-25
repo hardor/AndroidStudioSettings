@@ -19,16 +19,16 @@
   <SwitchPreference
     android:defaultValue="false"
     android:key="@string/pref_general_auto_bookmark"
-    android:summaryOff="@string/summary_auto_bookmark_on"
-    android:summaryOn="@string/summary_auto_bookmark_off"
+    android:summaryOff="@string/summary_auto_bookmark_off"
+    android:summaryOn="@string/summary_auto_bookmark_on"
     android:title="@string/auto_bookmark"/>
 
-  <SwitchPreference
-    android:defaultValue="false"
-    android:key="@string/pref_general_hide_chapter"
-    android:summaryOff="@string/show_all_chapter"
-    android:summaryOn="@string/show_only_readable"
-    android:title="@string/hide_unavailable_chapters" />
+  <!--<SwitchPreference-->
+    <!--android:defaultValue="false"-->
+    <!--android:key="@string/pref_general_hide_chapter"-->
+    <!--android:summaryOff="@string/show_all_chapter"-->
+    <!--android:summaryOn="@string/show_only_readable"-->
+    <!--android:title="@string/hide_unavailable_chapters" />-->
 
   <ru.profapp.RanobeReader.CustomElements.NumberPickerPreference
     android:defaultValue="16"
