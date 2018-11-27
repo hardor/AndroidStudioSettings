@@ -32,12 +32,13 @@ object RanobeHubRepository : BaseRepository() {
         return instance.GetChapters(ranobe.id).map {
             ranobe.chapterList.clear()
             var index = 0
+            val volumesNum=it.data.size
             for (volume in it.data) {
                 for (rChapter in volume.chapters) {
                     val chapter = Chapter()
 
                     chapter.title = if (chapter.title.isBlank()) {
-                        "Том ${volume.num}. ${rChapter.name}"
+                        if(volumesNum>1) {"Том ${volume.num}. ${rChapter.name}"} else rChapter.name
                     } else chapter.title
 
                     chapter.url = if (chapter.url.isBlank()) "${ranobe.url}/${volume.num}/${rChapter.num}" else chapter.url

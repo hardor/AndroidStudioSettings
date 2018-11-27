@@ -11,3 +11,5 @@
 /gradle/wrapper/gradle-wrapper.properties
 /gradlew
 /gradlew.bat
+/app/build.gradle.orig
+/app/debug/output.json

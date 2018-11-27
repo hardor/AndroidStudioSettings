@@ -292,7 +292,6 @@ class RanobeListFragment : Fragment() {
             ranobeRecyclerViewAdapter.notifyItemRangeRemoved(0, oldListSize)
             oldListSize = 0
         }
-        //Todo: remove sPref. Move to lastChapterIdPref
 
         val loader: Observable<List<Ranobe>> = when (fragmentType) {
             Constants.FragmentType.Rulate -> rulateLoadRanobe().toObservable()
@@ -322,7 +321,7 @@ class RanobeListFragment : Fragment() {
 
                 } //Check lastReaded
                 .map { ranobes ->
-                    val sPref = mContext?.getSharedPreferences(Constants.is_readed_Pref, Context.MODE_PRIVATE)
+                    val lastChapterIdPref = mContext?.getSharedPreferences(Constants.last_chapter_id_Pref, Context.MODE_PRIVATE)
                     for (ranobe in ranobes) {
                         ranobe.newChapters = 0
                         val chapterList = ranobe.chapterList
@@ -333,12 +332,11 @@ class RanobeListFragment : Fragment() {
                                 templist = chapterList.take(Constants.chaptersNum)
                             }
                             val chapterlist2 = templist.take(Constants.chaptersNum)
-                            var checked = false
-                            val lastChapterIdPref = mContext?.getSharedPreferences(Constants.last_chapter_id_Pref, Context.MODE_PRIVATE)
+
+
                             if (lastChapterIdPref != null && lastChapterIdPref.contains(chapterlist2.first().ranobeUrl)) {
                                 val lastId = lastChapterIdPref.getInt(chapterlist2.first().ranobeUrl, -1)
                                 if (lastId > 0) {
-                                    checked = true
                                     for (chapter in chapterlist2) {
                                         if (chapter.id != null) {
                                             chapter.isRead = chapter.id!! <= lastId
@@ -349,14 +347,6 @@ class RanobeListFragment : Fragment() {
 
                             }
 
-                            if (sPref != null && !checked) {
-                                for (chapter in chapterlist2) {
-                                    if (!chapter.isRead) {
-                                        chapter.isRead = sPref.getBoolean(chapter.url, false)
-                                        ranobe.newChapters += if (chapter.isRead) 0 else 1
-                                    }
-                                }
-                            }
                         }
                     }
                     return@map ranobes
@@ -409,7 +399,7 @@ class RanobeListFragment : Fragment() {
                 .subscribeOn(Schedulers.io())
                 .subscribe({ result ->
                     if (fragmentType == Constants.FragmentType.Saved) {
-                        //Todo::
+
                         Snackbar.make(swipeRefreshLayout, R.string.saved_info, Snackbar.LENGTH_SHORT).show()
                     }
 
@@ -469,6 +459,7 @@ class RanobeListFragment : Fragment() {
             request?.dispose()
             dialog.dismiss()
         }
+        progressDialog.progress = 0
 
 
         if (loadFromDatabase) {

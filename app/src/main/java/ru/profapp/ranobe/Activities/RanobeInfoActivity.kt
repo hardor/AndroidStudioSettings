@@ -31,7 +31,6 @@ import ru.profapp.ranobe.Adapters.CommentsRecyclerViewAdapter
 import ru.profapp.ranobe.Adapters.ExpandableChapterRecyclerViewAdapter
 import ru.profapp.ranobe.BuildConfig
 import ru.profapp.ranobe.Common.Constants
-import ru.profapp.ranobe.Common.Constants.is_readed_Pref
 import ru.profapp.ranobe.Common.Constants.last_chapter_id_Pref
 import ru.profapp.ranobe.Common.MyExceptionHandler
 import ru.profapp.ranobe.Helpers.LogHelper
@@ -139,26 +138,24 @@ class RanobeInfoActivity : AppCompatActivity() {
         tH_rI_comments.addTab(tabSpec)
         tH_rI_comments.currentTab = 0
 
-
-//        if (MyApp.hidePaymentChapter) {
-//            hideButton.setImageResource(R.drawable.ic_visibility_black_24dp)
-//        } else {
-//            hideButton.setImageResource(R.drawable.ic_visibility_off_black_24dp)
-//        }
-//        hideButton.setOnClickListener { v ->
-//
-//            mCurrentRanobe.hidePaymentChapters = !mCurrentRanobe.hidePaymentChapters
-//
-//            if (mCurrentRanobe.hidePaymentChapters) {
-//                hideButton.setImageResource(R.drawable.ic_visibility_off_black_24dp)
-//            } else {
-//                hideButton.setImageResource(R.drawable.ic_visibility_black_24dp)
-//            }
-//        }
+        //        if (MyApp.hidePaymentChapter) {
+        //            hideButton.setImageResource(R.drawable.ic_visibility_black_24dp)
+        //        } else {
+        //            hideButton.setImageResource(R.drawable.ic_visibility_off_black_24dp)
+        //        }
+        //        hideButton.setOnClickListener { v ->
+        //
+        //            mCurrentRanobe.hidePaymentChapters = !mCurrentRanobe.hidePaymentChapters
+        //
+        //            if (mCurrentRanobe.hidePaymentChapters) {
+        //                hideButton.setImageResource(R.drawable.ic_visibility_off_black_24dp)
+        //            } else {
+        //                hideButton.setImageResource(R.drawable.ic_visibility_black_24dp)
+        //            }
+        //        }
         initAds()
 
     }
-
 
     private fun initAds() {
         MobileAds.initialize(applicationContext, getString(R.string.app_admob_id))
@@ -201,15 +198,14 @@ class RanobeInfoActivity : AppCompatActivity() {
 
     private fun loadChapters() {
         recycleChapterList.clear()
-        sPref = mContext.getSharedPreferences(is_readed_Pref, Context.MODE_PRIVATE)
         lastChapterIdPref = mContext.getSharedPreferences(last_chapter_id_Pref, Context.MODE_PRIVATE)
 
         val request = mCurrentRanobe.updateRanobe(mContext).map {
-            var checked = false
+
             if (lastChapterIdPref != null) {
                 val lastId: Int = lastChapterIdPref?.getInt(mCurrentRanobe.url, -1) ?: -1
                 if (lastId > 0) {
-                    checked = true
+
                     for (chapter in mCurrentRanobe.chapterList) {
                         if (chapter.id != null)
                             chapter.isRead = chapter.id!! <= lastId
@@ -217,17 +213,8 @@ class RanobeInfoActivity : AppCompatActivity() {
 
                 }
             }
-
-            if (sPref != null && !checked) {
-                for (chapter in mCurrentRanobe.chapterList) {
-                    if (!chapter.isRead) {
-                        chapter.isRead = sPref!!.getBoolean(chapter.url, false)
-                    }
-                }
-            }
             return@map it
-        }
-                .observeOn(AndroidSchedulers.mainThread())
+        }.observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
 

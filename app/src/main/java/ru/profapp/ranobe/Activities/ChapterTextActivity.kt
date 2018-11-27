@@ -395,7 +395,6 @@ class ChapterTextActivity : AppCompatActivity() {
 
     private fun putToReaded() {
 
-        //Todo: add to history table
         if (lastChapterIdPref == null) {
             lastChapterIdPref = mContext.getSharedPreferences(Constants.last_chapter_id_Pref, Context.MODE_PRIVATE)
         }

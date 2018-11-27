@@ -29,8 +29,6 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
     private val VIEW_TYPE_GROUP_TITLE = 2
     private val glide: RequestManager = GlideApp.with(context)
 
-    private val sPref = context.getSharedPreferences(Constants.is_readed_Pref, Context.MODE_PRIVATE)
-
     var onLoadMoreListener: OnLoadMoreListener? = null
 
     var isLoading: Boolean = false
@@ -128,12 +126,12 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
                         templist = chapterList.take(Constants.chaptersNum)
                     }
                     val chapterlist2 = templist.take(Constants.chaptersNum)
-                    var checked = false
+
                     val lastChapterIdPref = context.getSharedPreferences(Constants.last_chapter_id_Pref, Context.MODE_PRIVATE)
                     if (lastChapterIdPref != null && lastChapterIdPref.contains(chapterlist2.first().ranobeUrl)) {
                         val lastId = lastChapterIdPref.getInt(chapterlist2.first().ranobeUrl, -1)
                         if (lastId > 0) {
-                            checked = true
+
                             for (chapter in chapterlist2) {
                                 if (chapter.id != null)
                                     chapter.isRead = chapter.id!! <= lastId
@@ -142,13 +140,7 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
 
                     }
 
-                    if (sPref != null && !checked) {
-                        for (chapter in chapterlist2) {
-                            if (!chapter.isRead) {
-                                chapter.isRead = sPref.getBoolean(chapter.url, false)
-                            }
-                        }
-                    }
+
 
                     val adapter = ChapterRecyclerViewAdapter(context, chapterlist2, holder.mItem)
                     holder.chaptersListView.adapter = adapter

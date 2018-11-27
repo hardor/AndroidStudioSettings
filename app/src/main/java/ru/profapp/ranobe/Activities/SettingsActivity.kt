@@ -230,14 +230,12 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 
             val clearReadChapterButton = findPreference(getString(R.string.ClearReadChapterButton))
             clearReadChapterButton.setOnPreferenceClickListener { preference ->
-                activity.getSharedPreferences(Constants.is_readed_Pref, 0).edit().clear().apply()
                 activity.getSharedPreferences(Constants.last_chapter_id_Pref, 0).edit().clear().apply()
                 true
             }
 
             val prefButton = findPreference(getString(R.string.ClearHistoryButton))
             prefButton.setOnPreferenceClickListener {
-                activity.getSharedPreferences(Constants.is_readed_Pref, 0).edit().clear().apply()
                 activity.getSharedPreferences(Constants.last_chapter_id_Pref, 0).edit().clear().apply()
 
                 Completable.fromAction { MyApp.database.ranobeHistoryDao().cleanHistory() }
