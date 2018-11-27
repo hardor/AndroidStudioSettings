@@ -6,6 +6,7 @@ import androidx.room.ForeignKey.CASCADE
 import ru.profapp.ranobe.Common.Constants.RanobeSite.*
 import ru.profapp.ranobe.Helpers.LogHelper
 import java.util.*
+import kotlin.math.roundToInt
 import kotlin.math.roundToLong
 
 /**
@@ -47,12 +48,12 @@ class Chapter() {
     @ColumnInfo(name = "Id")
     var id: Int? = null
         get() {
-            if (field == null && !url.isNullOrBlank() && !url.contains(RanobeRf.url)) {
+            if (field == null && !url.isBlank() && !url.contains(RanobeRf.url)) {
                 return try {
                     val value: String =
                             if (url.contains(RanobeHub.url)) {
                                 val arr = url.replace(ranobeUrl, "").split("/").takeLast(2)
-                                (arr[1].toDouble()*100 + (arr[0].toDouble() * 1000)).roundToLong().toString()
+                                (arr[1].replace(".","").toInt() + (arr[0].replace(".","").toInt() * 10000)).toString()
                             } else {
                                 url.substring(url.lastIndexOf("/") + 1)
                             }
