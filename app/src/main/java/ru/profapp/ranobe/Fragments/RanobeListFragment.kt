@@ -37,6 +37,7 @@ import ru.profapp.ranobe.Network.Repositories.RanobeHubRepository
 import ru.profapp.ranobe.Network.Repositories.RanobeRfRepository
 import ru.profapp.ranobe.Network.Repositories.RulateRepository
 import ru.profapp.ranobe.R
+import ru.profapp.ranobe.Utils.GlideApp
 import java.net.UnknownHostException
 
 class RanobeListFragment : Fragment() {
@@ -110,12 +111,12 @@ class RanobeListFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater.inflate(R.layout.fragment_ranobe_list, container, false)
-        progressDialog = ProgressDialog(context)
+        progressDialog = ProgressDialog(mContext)
         val recyclerView = view.findViewById<RecyclerView>(R.id.rV_ranobeList_ranobe)
 
         recyclerView.layoutManager = LinearLayoutManager(mContext)
 
-        ranobeRecyclerViewAdapter = RanobeRecyclerViewAdapter(mContext!!, recyclerView, ranobeList)
+        ranobeRecyclerViewAdapter = RanobeRecyclerViewAdapter(GlideApp.with(mContext!!), recyclerView, ranobeList)
 
         recyclerView.adapter = ranobeRecyclerViewAdapter
 
@@ -217,14 +218,14 @@ class RanobeListFragment : Fragment() {
                 builder.create()?.show()
             }
 
-            val settingPref = PreferenceManager.getDefaultSharedPreferences(context)
+            val settingPref = PreferenceManager.getDefaultSharedPreferences(mContext)
             checkedSortItemName = settingPref.getString(resources.getString(R.string.pref_general_sort_order), null) ?: Constants.SortOrder.default.name
             tVSortOrder.text = getString(Constants.SortOrder.valueOf(checkedSortItemName).resId)
-            Helper.setVectorForPreLollipop(tVSortOrder, R.drawable.ic_sort_by_alpha_black_24dp, mContext!!, Constants.ApplicationConstants.DRAWABLE_LEFT);
+            Helper.setVectorForPreLollipop(tVSortOrder, R.drawable.ic_sort_by_alpha_black_24dp, mContext!!, Constants.ApplicationConstants.DRAWABLE_LEFT)
             tVSortOrder.visibility = View.VISIBLE
-            tVSortOrder.setOnClickListener {
+            tVSortOrder.setOnClickListener { it ->
 
-                val items = Constants.SortOrder.toArray(context!!)
+                val items = Constants.SortOrder.toArray(mContext!!)
                 val stringItems = items.map {
                     return@map resources.getString(it)
                 }.toTypedArray()
@@ -557,12 +558,10 @@ class RanobeListFragment : Fragment() {
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         mContext = context
-
     }
 
     override fun onDetach() {
         super.onDetach()
-
         mContext = null
         progressDialog.dismiss()
 

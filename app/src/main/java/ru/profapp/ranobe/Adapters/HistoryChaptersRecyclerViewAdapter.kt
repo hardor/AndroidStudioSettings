@@ -1,6 +1,5 @@
 package ru.profapp.ranobe.Adapters
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,10 +10,12 @@ import ru.profapp.ranobe.R
 import java.text.DateFormat
 import java.util.*
 
-class HistoryChaptersRecyclerViewAdapter(private val context: Context, private val mValues: List<ChapterHistory>) : RecyclerView.Adapter<HistoryChaptersRecyclerViewAdapter.MyViewHolder>() {
-    private val inflater: LayoutInflater = LayoutInflater.from(context)
+class HistoryChaptersRecyclerViewAdapter(private val mValues: List<ChapterHistory>) : RecyclerView.Adapter<HistoryChaptersRecyclerViewAdapter.MyViewHolder>() {
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val view = inflater.inflate(R.layout.item_history, parent, false)
+        val view =  LayoutInflater
+                .from(parent.context)
+                .inflate(R.layout.item_history, parent, false)
         return MyViewHolder(view)
     }
 

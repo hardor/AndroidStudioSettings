@@ -18,12 +18,10 @@ import ru.profapp.ranobe.Models.Ranobe
 import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.R
 
-class ChapterRecyclerViewAdapter(private val context: Context, private val mValues: List<Chapter>, private val mRanobe: Ranobe) : RecyclerView.Adapter<ChapterRecyclerViewAdapter.ViewHolder>() {
-
-    private val inflater: LayoutInflater = LayoutInflater.from(context)
+class ChapterRecyclerViewAdapter(private val mValues: List<Chapter>, private val mRanobe: Ranobe) : RecyclerView.Adapter<ChapterRecyclerViewAdapter.ViewHolder>() {
 
     private val clickListener = object : OnItemClickListener {
-        override fun onItemClick(item: Chapter) {
+        override fun onItemClick(mContext: Context, item: Chapter) {
             if (item.canRead) {
                 if (MyApp.ranobe?.wasUpdated != true || !MyApp.ranobe!!.url.contains(item.ranobeUrl)) {
 
@@ -31,7 +29,7 @@ class ChapterRecyclerViewAdapter(private val context: Context, private val mValu
                     ranobe.url = item.ranobeUrl
                     if (MyApp.fragmentType != null && MyApp.fragmentType != Constants.FragmentType.Saved) {
 
-                        if (ranobe.updateRanobe(context).subscribeOn(Schedulers.io()).blockingGet())
+                        if (ranobe.updateRanobe(mContext).subscribeOn(Schedulers.io()).blockingGet())
                             MyApp.ranobe = ranobe
                         else {
                             MyApp.ranobe = mRanobe
@@ -43,9 +41,9 @@ class ChapterRecyclerViewAdapter(private val context: Context, private val mValu
 
                 }
                 if (MyApp.ranobe != null) {
-                    val intent = Intent(context, ChapterTextActivity::class.java)
+                    val intent = Intent(mContext, ChapterTextActivity::class.java)
                     intent.putExtra("ChapterUrl", item.url)
-                    context.startActivity(intent)
+                    mContext.startActivity(intent)
                 }
             }
 
@@ -54,18 +52,22 @@ class ChapterRecyclerViewAdapter(private val context: Context, private val mValu
     }
 
     interface OnItemClickListener {
-        fun onItemClick(item: Chapter)
+        fun onItemClick(mContext: Context, item: Chapter)
     }
 
     @NonNull
     override fun onCreateViewHolder(@NonNull parent: ViewGroup, viewType: Int): ChapterRecyclerViewAdapter.ViewHolder {
 
-        val view = inflater.inflate(R.layout.item_chapter, parent, false)
+        val view = LayoutInflater
+                .from(parent.context)
+                .inflate(R.layout.item_chapter, parent, false)
         return ViewHolder(view)
 
     }
 
-    override fun onBindViewHolder(@NonNull holder: ChapterRecyclerViewAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ChapterRecyclerViewAdapter.ViewHolder, position: Int) {
+
+        val mContext = holder.itemView.context
 
         holder.mChapterItem = mValues[position]
         holder.mTextView.text = mValues[position].title
@@ -75,7 +77,7 @@ class ChapterRecyclerViewAdapter(private val context: Context, private val mValu
         }
 
         if (holder.mChapterItem.isRead) {
-            holder.mView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimaryDark))
+            holder.mView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.colorPrimaryDark))
         }
 
     }
@@ -92,7 +94,7 @@ class ChapterRecyclerViewAdapter(private val context: Context, private val mValu
 
             itemView.setOnClickListener {
                 if (adapterPosition != RecyclerView.NO_POSITION) {
-                    clickListener.onItemClick(mChapterItem)
+                    clickListener.onItemClick(mView.context, mChapterItem)
                 }
             }
 

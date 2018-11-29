@@ -29,20 +29,15 @@ class HistoryFragment : Fragment() {
 
     private var mContext: Context? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let { }
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         val view = inflater.inflate(R.layout.fragment_history, container, false)
 
         val pager: ViewPager = view.findViewById(R.id.pager)
-        val pagerAdapter = HistoryFragmentPagerAdapter(childFragmentManager, context!!)
+        val pagerAdapter = HistoryFragmentPagerAdapter(childFragmentManager, mContext!!.applicationContext)
         pager.adapter = pagerAdapter
 
-        val btnCleanData:Button = view.findViewById(R.id.btN_CleanData)
+        val btnCleanData: Button = view.findViewById(R.id.btN_CleanData)
 
         btnCleanData.setOnClickListener {
             val builder = AlertDialog.Builder(context!!)
@@ -80,24 +75,17 @@ class HistoryFragment : Fragment() {
 
     override fun onDetach() {
         super.onDetach()
-
         mContext = null
     }
 
     override fun onDestroy() {
         super.onDestroy()
-
         mContext = null
         MyApp.refWatcher?.watch(this)
     }
 
     companion object {
-
-        fun newInstance() = HistoryFragment().apply {
-            arguments = Bundle().apply {
-
-            }
-        }
+        fun newInstance() = HistoryFragment()
     }
 }
 

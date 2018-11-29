@@ -6,8 +6,6 @@ import androidx.room.ForeignKey.CASCADE
 import ru.profapp.ranobe.Common.Constants.RanobeSite.*
 import ru.profapp.ranobe.Helpers.LogHelper
 import java.util.*
-import kotlin.math.roundToInt
-import kotlin.math.roundToLong
 
 /**
  * Created by Ruslan on 09.02.2018.

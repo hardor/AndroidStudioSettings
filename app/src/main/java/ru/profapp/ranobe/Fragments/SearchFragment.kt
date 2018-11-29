@@ -26,6 +26,7 @@ import ru.profapp.ranobe.Network.Repositories.RanobeHubRepository
 import ru.profapp.ranobe.Network.Repositories.RanobeRfRepository
 import ru.profapp.ranobe.Network.Repositories.RulateRepository
 import ru.profapp.ranobe.R
+import ru.profapp.ranobe.Utils.GlideApp
 
 /**
  * A simple [Fragment] subclass.
@@ -76,16 +77,14 @@ class SearchFragment : Fragment() {
 
         recyclerView.layoutManager = LinearLayoutManager(mContext)
 
-        ranobeRecyclerViewAdapter = RanobeRecyclerViewAdapter(mContext!!, recyclerView, adapterRanobeList)
+        ranobeRecyclerViewAdapter = RanobeRecyclerViewAdapter(GlideApp.with(mContext!!), recyclerView, adapterRanobeList)
         recyclerView.adapter = ranobeRecyclerViewAdapter
         return view
     }
 
     override fun onAttach(context: Context?) {
-
         super.onAttach(context)
         mContext = context
-
     }
 
     override fun onDetach() {

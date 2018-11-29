@@ -42,6 +42,7 @@ import ru.profapp.ranobe.Network.Repositories.RanobeRfRepository
 import ru.profapp.ranobe.Network.Repositories.RulateRepository
 import ru.profapp.ranobe.R
 import ru.profapp.ranobe.Utils.GlideApp
+import ru.profapp.ranobe.Utils.GlideRequests
 import java.util.*
 
 class RanobeInfoActivity : AppCompatActivity() {
@@ -53,11 +54,12 @@ class RanobeInfoActivity : AppCompatActivity() {
     private lateinit var mCurrentRanobe: Ranobe
     private lateinit var mContext: Context
     private var adapterExpandable: ExpandableChapterRecyclerViewAdapter? = null
-    private var sPref: SharedPreferences? = null
     private var lastChapterIdPref: SharedPreferences? = null
     private var mChapterLayoutManager: LinearLayoutManager? = null
 
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
+
+    private val mGlide: GlideRequests = GlideApp.with(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -105,7 +107,7 @@ class RanobeInfoActivity : AppCompatActivity() {
         setSupportActionBar(toolbar_rI)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        GlideApp.with(this).load(mCurrentRanobe.image).into(main_logoimage)
+        mGlide.load(mCurrentRanobe.image).into(main_logoimage)
 
         supportActionBar?.title = mCurrentRanobe.title
 
@@ -182,7 +184,7 @@ class RanobeInfoActivity : AppCompatActivity() {
         }
 
 
-        GlideApp.with(this).load(mCurrentRanobe.image).into(main_logoimage)
+        mGlide.load(mCurrentRanobe.image).into(main_logoimage)
 
         var aboutText = String.format("%s / %s \n\n%s", mCurrentRanobe.title, mCurrentRanobe.engTitle, mCurrentRanobe.description)
         if (!mCurrentRanobe.rating.isNullOrBlank())
@@ -221,7 +223,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                     pBar_RanobeInfo.visibility = View.GONE
                     loadData()
                     recycleChapterList.addAll(mCurrentRanobe.chapterList)
-                    adapterExpandable = ExpandableChapterRecyclerViewAdapter(mContext, recycleChapterList, mCurrentRanobe)
+                    adapterExpandable = ExpandableChapterRecyclerViewAdapter(applicationContext, recycleChapterList, mCurrentRanobe)
                     rV_rI_chapters.adapter = adapterExpandable
 
                     if (mCurrentRanobe.comments.isNotEmpty()) {
@@ -235,7 +237,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                             }
                         }
 
-                        rV_rI_comments.adapter = CommentsRecyclerViewAdapter(mContext, mCurrentRanobe.comments)
+                        rV_rI_comments.adapter = CommentsRecyclerViewAdapter(mGlide, mCurrentRanobe.comments)
 
                         val tabSpec: TabHost.TabSpec = tH_rI_comments.newTabSpec("comments")
                         tabSpec.setContent(R.id.cV_history_chapters)

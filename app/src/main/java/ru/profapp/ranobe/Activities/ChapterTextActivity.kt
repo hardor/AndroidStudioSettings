@@ -374,18 +374,21 @@ class ChapterTextActivity : AppCompatActivity() {
 
     private fun OnClicked(i: Int) {
 
+        val prevChapterIndex = chapterIndex
         chapterIndex += i
         if (chapterIndex >= 0 && chapterIndex <= mChapterCount - 1) {
             try {
                 mCurrentChapter = mChapterList[chapterIndex]
                 initWebView()
+                mChapterList[prevChapterIndex].text = null
+
             } catch (e: ArrayIndexOutOfBoundsException) {
-                chapterIndex -= i
+                chapterIndex =prevChapterIndex
             }
 
         } else {
             Toast.makeText(mContext, R.string.not_exist, Toast.LENGTH_SHORT).show()
-            chapterIndex -= i
+            chapterIndex = prevChapterIndex
         }
 
         navigation_prev.visibility = if (chapterIndex < mChapterCount - 1) View.VISIBLE else View.INVISIBLE

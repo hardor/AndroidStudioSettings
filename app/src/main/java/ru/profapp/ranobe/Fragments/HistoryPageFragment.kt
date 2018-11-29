@@ -1,5 +1,6 @@
 package ru.profapp.ranobe.Fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,13 +18,16 @@ import ru.profapp.ranobe.Models.Ranobe
 import ru.profapp.ranobe.Models.RanobeHistory
 import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.R
+import ru.profapp.ranobe.Utils.GlideApp
 
 class HistoryPageFragment : Fragment() {
 
+    private var mContext: Context? = null
+
     private var pageNumber: Int = 0
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
-    var ranobeRecyclerView: RecyclerView? = null
-    var chapterRecyclerView: RecyclerView? = null
+    private var ranobeRecyclerView: RecyclerView? = null
+    private var chapterRecyclerView: RecyclerView? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         pageNumber = arguments!!.getInt(ARGUMENT_PAGE_NUMBER)
@@ -40,10 +44,10 @@ class HistoryPageFragment : Fragment() {
             1 -> {
                 view = inflater.inflate(R.layout.fragment_history_chapters, container, false)
                 chapterRecyclerView = view.findViewById(R.id.rV_history_chapters)
-                chapterRecyclerView!!.layoutManager = LinearLayoutManager(context)
+                chapterRecyclerView!!.layoutManager = LinearLayoutManager(mContext)
                 val chapterRequest = MyApp.database.ranobeHistoryDao().allChapters().subscribeOn(Schedulers.io())
                         .observeOn(mainThread()).subscribe({
-                            chapterRecyclerView!!.adapter = HistoryChaptersRecyclerViewAdapter(context!!, it)
+                            chapterRecyclerView!!.adapter = HistoryChaptersRecyclerViewAdapter(it)
                         }, { error ->
                             LogHelper.logError(LogHelper.LogType.ERROR, "HistoryFragment", "", error)
                         })
@@ -53,7 +57,7 @@ class HistoryPageFragment : Fragment() {
                 pageNumber = 0
                 view = inflater.inflate(R.layout.fragment_history_ranobe, container, false)
                 ranobeRecyclerView = view.findViewById(R.id.rV_history_ranobe)
-                ranobeRecyclerView!!.layoutManager = LinearLayoutManager(context)
+                ranobeRecyclerView!!.layoutManager = LinearLayoutManager(mContext)
 
                 val ranobeRequest = MyApp.database.ranobeHistoryDao().allRanobes().map {
                     val ranobeList = it.map { r -> toRanobe(r) }
@@ -69,7 +73,7 @@ class HistoryPageFragment : Fragment() {
                 }.subscribeOn(Schedulers.io())
                         .observeOn(mainThread())
                         .subscribe({
-                            ranobeRecyclerView!!.adapter = RanobeRecyclerViewAdapter(context!!, ranobeRecyclerView!!, it)
+                            ranobeRecyclerView!!.adapter = RanobeRecyclerViewAdapter(GlideApp.with(mContext!!), ranobeRecyclerView!!, it)
                         }, { error ->
                             LogHelper.logError(LogHelper.LogType.ERROR, "HistoryFragment", "", error)
                         })
@@ -83,8 +87,13 @@ class HistoryPageFragment : Fragment() {
 
     }
 
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        mContext = context
+    }
     override fun onDestroy() {
         super.onDestroy()
+        mContext = null
         compositeDisposable.dispose()
     }
 
@@ -99,12 +108,12 @@ class HistoryPageFragment : Fragment() {
 
     fun update() {
         ranobeRecyclerView?.let { it ->
-            it.adapter = RanobeRecyclerViewAdapter(context!!, ranobeRecyclerView!!, listOf())
+            it.adapter = RanobeRecyclerViewAdapter( GlideApp.with(context!!), ranobeRecyclerView!!, listOf())
             it.adapter?.notifyDataSetChanged()
         }
 
         chapterRecyclerView?.let { it ->
-            it.adapter = HistoryChaptersRecyclerViewAdapter(context!!, listOf())
+            it.adapter = HistoryChaptersRecyclerViewAdapter(listOf())
             it.adapter?.notifyDataSetChanged()
         }
     }

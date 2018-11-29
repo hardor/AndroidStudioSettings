@@ -60,23 +60,21 @@ object Helper {
     //region Helper method for PreLollipop TextView & Buttons Vector Images
 
     fun setVectorForPreLollipop(resourceId: Int, activity: Context): Drawable? {
-        val icon: Drawable?
-        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            icon = VectorDrawableCompat.create(activity.resources, resourceId, activity.theme)
+        val icon: Drawable? = if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            VectorDrawableCompat.create(activity.resources, resourceId, activity.theme)
         } else {
-            icon = activity.resources.getDrawable(resourceId, activity.theme)
+            activity.resources.getDrawable(resourceId, activity.theme)
         }
 
         return icon
     }
 
     fun setVectorForPreLollipop(textView: TextView, resourceId: Int, activity: Context, position: Constants.ApplicationConstants) {
-        val icon: Drawable?
-        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            icon = VectorDrawableCompat.create(activity.resources, resourceId,
+        val icon: Drawable? = if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            VectorDrawableCompat.create(activity.resources, resourceId,
                     activity.theme)
         } else {
-            icon = activity.resources.getDrawable(resourceId, activity.theme)
+            activity.resources.getDrawable(resourceId, activity.theme)
         }
         when (position) {
             Constants.ApplicationConstants.DRAWABLE_LEFT -> textView.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null)

@@ -135,7 +135,7 @@
   <string name="show_all_chapter">Show all chapters</string>
   <string name="show_only_readable">Show only readable chapters</string>
   <string name="hide_unavailable_chapters">Hide unavailable (paid) chapters</string>
-  <string name="pref_general_hide_chapter">pref_general_hide_chapter</string>
+  <string name="pref_general_hide_chapter" translatable="false">pref_general_hide_chapter</string>
   <!--<string name="tl_rulate_web" translatable="false">Rulate Web</string>-->
   <!--<string name="ranoberf_web" translatable="false">Ранобэ.рф Web</string>-->
   <!--<string name="pref_general_hide_chapter" translatable="false">        preference_hide_unavailable_chapters    </string>-->

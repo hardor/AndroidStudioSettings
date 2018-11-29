@@ -148,7 +148,7 @@ object RanobeHubRepository : BaseRepository() {
                     if (img.contains("/img/ranobe"))
                         newAttr += img
                     else
-                        newAttr = "$newAttr/img/ranobe/content/${mCurrentChapter.ranobeUrl.split("/").takeLast(1).get(0)}/$img.jpg"
+                        newAttr = "$newAttr/img/ranobe/content/${mCurrentChapter.ranobeUrl.split("/").takeLast(1)[0]}/$img.jpg"
 
                     it.attr("src", newAttr)
                 }

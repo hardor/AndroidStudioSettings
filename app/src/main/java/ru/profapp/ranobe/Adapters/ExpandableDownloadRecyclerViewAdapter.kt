@@ -1,6 +1,5 @@
 package ru.profapp.ranobe.Adapters
 
-import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -13,12 +12,12 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.profapp.ranobe.Models.Chapter
 import ru.profapp.ranobe.R
 
-class ExpandableDownloadRecyclerViewAdapter(private val mContext: Context) : RecyclerView.Adapter<ExpandableDownloadRecyclerViewAdapter.GroupViewHolder>() {
+class ExpandableDownloadRecyclerViewAdapter() : RecyclerView.Adapter<ExpandableDownloadRecyclerViewAdapter.GroupViewHolder>() {
 
-    private val inflater: LayoutInflater = LayoutInflater.from(mContext)
+
     var selectAll: Boolean? = null
 
-    constructor(context: Context, mChapters: List<Chapter>) : this(context) {
+    constructor(mChapters: List<Chapter>) : this() {
 
         val numInGroup = 100
         if (mChapters.isNotEmpty()) {
@@ -34,11 +33,15 @@ class ExpandableDownloadRecyclerViewAdapter(private val mContext: Context) : Rec
     private val parentDataItems: ArrayList<ParentDataItem> = ArrayList()
 
     override fun onCreateViewHolder(@NonNull parent: ViewGroup, viewType: Int): ExpandableDownloadRecyclerViewAdapter.GroupViewHolder {
-        val view = inflater.inflate(R.layout.item_parent_child_checkbox, parent, false)
+        val view = LayoutInflater
+                .from(parent.context)
+                .inflate(R.layout.item_parent_child_checkbox, parent, false)
         return GroupViewHolder(view)
     }
 
-    override fun onBindViewHolder(@NonNull holder: ExpandableDownloadRecyclerViewAdapter.GroupViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ExpandableDownloadRecyclerViewAdapter.GroupViewHolder, position: Int) {
+
+        val mContext = holder.itemView.context
 
         val parentDataItem = parentDataItems[position]
         holder.textViewParentName.text = parentDataItem.parentName
@@ -108,7 +111,7 @@ class ExpandableDownloadRecyclerViewAdapter(private val mContext: Context) : Rec
                 if (intMaxSizeTemp > intMaxNoOfChild) intMaxNoOfChild = intMaxSizeTemp
             }
             for (indexView in 0 until intMaxNoOfChild) {
-                val checkBox = CheckBox(mContext)
+                val checkBox = CheckBox(itemView.context)
                 checkBox.id = indexView
                 val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
                 linearLayoutChildItems.addView(checkBox, layoutParams)

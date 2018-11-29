@@ -14,20 +14,17 @@ import com.bumptech.glide.RequestManager
 import ru.profapp.ranobe.Activities.RanobeInfoActivity
 import ru.profapp.ranobe.Common.Constants
 import ru.profapp.ranobe.Common.OnLoadMoreListener
-
 import ru.profapp.ranobe.Models.Ranobe
 import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.R
-import ru.profapp.ranobe.Utils.GlideApp
 import java.util.*
 
 /**
  * [RecyclerView.Adapter] that can display a [Ranobe] and makes a call to the specified
  */
-class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: RecyclerView, private var mValues: List<Ranobe>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class RanobeRecyclerViewAdapter(private val glide: RequestManager, recyclerView: RecyclerView, private var mValues: List<Ranobe>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val VIEW_TYPE_ITEM = 0
     private val VIEW_TYPE_GROUP_TITLE = 2
-    private val glide: RequestManager = GlideApp.with(context)
 
     var onLoadMoreListener: OnLoadMoreListener? = null
 
@@ -35,7 +32,6 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
     var pastVisibleItems: Int = 0
     var lastVisibleItem: Int = 0
     var totalItemCount: Int = 0
-    private val inflater: LayoutInflater = LayoutInflater.from(context)
 
     init {
         val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager
@@ -75,15 +71,18 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             VIEW_TYPE_ITEM -> {
-                val view = inflater.inflate(R.layout.item_ranobe, parent, false)
+                val view = LayoutInflater
+                        .from(parent.context).inflate(R.layout.item_ranobe, parent, false)
                 RanobeViewHolder(view)
             }
             VIEW_TYPE_GROUP_TITLE -> {
-                val view = inflater.inflate(R.layout.item_title, parent, false)
+                val view = LayoutInflater
+                        .from(parent.context).inflate(R.layout.item_title, parent, false)
                 TitleViewHolder(view)
             }
             else -> {
-                val view = inflater.inflate(R.layout.item_loading, parent, false)
+                val view = LayoutInflater
+                        .from(parent.context).inflate(R.layout.item_loading, parent, false)
                 LoadingViewHolder(view)
             }
         }
@@ -91,8 +90,10 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val mContext = holder.itemView.context
         when (holder) {
             is RanobeViewHolder -> {
+
                 holder.mItem = mValues[position]
                 holder.titleView.text = mValues[position].title
 
@@ -102,7 +103,7 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
                     val hours = (diff / 60 - numOfDays * 24).toInt()
                     val minutes = (diff % 60).toInt()
 
-                    val updateTime = "${context.getString(R.string.Updated)} ${context.resources.getQuantityString(R.plurals.numberOfDays, numOfDays, numOfDays)} ${context.resources.getQuantityString(R.plurals.numberOfHours, hours, hours)} ${context.resources.getQuantityString(R.plurals.numberOfMinutes, minutes, minutes)} ${context.getString(R.string.ago)}"
+                    val updateTime = "${mContext.getString(R.string.Updated)} ${mContext.resources.getQuantityString(R.plurals.numberOfDays, numOfDays, numOfDays)} ${mContext.resources.getQuantityString(R.plurals.numberOfHours, hours, hours)} ${mContext.resources.getQuantityString(R.plurals.numberOfMinutes, minutes, minutes)} ${mContext.getString(R.string.ago)}"
 
                     holder.updateTime.text = updateTime
                     holder.updateTime.visibility = View.VISIBLE
@@ -111,11 +112,11 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
                 holder.imageView.visibility = View.VISIBLE
                 glide.load(mValues[position].image).into(holder.imageView)
 
-                when(holder.mItem.ranobeSite){
-                    Constants.RanobeSite.Rulate.url ->  holder.ranobeSiteLogo.setImageResource(R.mipmap.ic_rulate)
-                    Constants.RanobeSite.RanobeHub.url ->  holder.ranobeSiteLogo.setImageResource(R.mipmap.ic_ranobehub)
-                    Constants.RanobeSite.RanobeRf.url ->  holder.ranobeSiteLogo.setImageResource(R.mipmap.ic_ranoberf)
-                   else-> holder.ranobeSiteLogo.visibility = View.GONE
+                when (holder.mItem.ranobeSite) {
+                    Constants.RanobeSite.Rulate.url -> holder.ranobeSiteLogo.setImageResource(R.mipmap.ic_rulate)
+                    Constants.RanobeSite.RanobeHub.url -> holder.ranobeSiteLogo.setImageResource(R.mipmap.ic_ranobehub)
+                    Constants.RanobeSite.RanobeRf.url -> holder.ranobeSiteLogo.setImageResource(R.mipmap.ic_ranoberf)
+                    else -> holder.ranobeSiteLogo.visibility = View.GONE
 
                 }
                 val chapterList = holder.mItem.chapterList
@@ -127,7 +128,7 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
                     }
                     val chapterlist2 = templist.take(Constants.chaptersNum)
 
-                    val lastChapterIdPref = context.getSharedPreferences(Constants.last_chapter_id_Pref, Context.MODE_PRIVATE)
+                    val lastChapterIdPref = mContext.getSharedPreferences(Constants.last_chapter_id_Pref, Context.MODE_PRIVATE)
                     if (lastChapterIdPref != null && lastChapterIdPref.contains(chapterlist2.first().ranobeUrl)) {
                         val lastId = lastChapterIdPref.getInt(chapterlist2.first().ranobeUrl, -1)
                         if (lastId > 0) {
@@ -140,9 +141,7 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
 
                     }
 
-
-
-                    val adapter = ChapterRecyclerViewAdapter(context, chapterlist2, holder.mItem)
+                    val adapter = ChapterRecyclerViewAdapter(chapterlist2, holder.mItem)
                     holder.chaptersListView.adapter = adapter
                     holder.chaptersListView.visibility = View.VISIBLE
                     holder.description.visibility = View.GONE
@@ -151,7 +150,9 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
                     if (!holder.mItem.description.isNullOrBlank()) {
                         holder.description.text = holder.mItem.description
                         holder.description.visibility = View.VISIBLE
-                    }else{ holder.description.visibility = View.GONE}
+                    } else {
+                        holder.description.visibility = View.GONE
+                    }
                 }
 
             }
@@ -159,8 +160,6 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
             is TitleViewHolder -> holder.mTextView.text = mValues[position].title
         }
     }
-
-
 
     override fun getItemCount(): Int {
         return mValues.size
@@ -194,17 +193,17 @@ class RanobeRecyclerViewAdapter(private val context: Context, recyclerView: Recy
 
         init {
             chaptersListView.setHasFixedSize(true)
-            chaptersListView.layoutManager = LinearLayoutManager(context)
+            chaptersListView.layoutManager = LinearLayoutManager(mView.context)
             mView.setOnClickListener(this)
         }
 
         override fun onClick(v: View) {
             if (adapterPosition != RecyclerView.NO_POSITION) {
 
-                val intent = Intent(context, RanobeInfoActivity::class.java)
+                val intent = Intent(v.context, RanobeInfoActivity::class.java)
                 MyApp.ranobe = mItem
                 if (MyApp.ranobe != null) {
-                    context.startActivity(intent)
+                    v.context.startActivity(intent)
                 }
 
             }

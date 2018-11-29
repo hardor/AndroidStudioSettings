@@ -189,7 +189,7 @@ class DownloadActivity : AppCompatActivity() {
                         }
                     }
 
-                    adapter = ExpandableDownloadRecyclerViewAdapter(this@DownloadActivity, chapterList)
+                    adapter = ExpandableDownloadRecyclerViewAdapter(chapterList)
                     return@map true
                 }.onErrorReturn { false }
 
