@@ -249,6 +249,22 @@ class SettingsActivity : AppCompatPreferenceActivity() {
                 true
             }
 
+
+            val clearProgressButton = findPreference(getString(R.string.ClearProgressButton))
+            clearProgressButton.setOnPreferenceClickListener {
+
+                Completable.fromAction { MyApp.database.chapterProgressDao().cleanTable() }
+                        ?.observeOn(AndroidSchedulers.mainThread())
+                        ?.subscribeOn(Schedulers.io())
+                        ?.subscribe({
+                            Toast.makeText(activity, resources.getText(R.string.history_removed), Toast.LENGTH_SHORT).show()
+                        }, { })
+
+
+                true
+            }
+
+
             setHasOptionsMenu(true)
         }
     }

@@ -14,6 +14,11 @@
     android:title="@string/clear_history"/>
 
   <Preference
+    android:key="@string/ClearProgressButton"
+    android:summary="@string/clear_progress_summary"
+    android:title="@string/clear_progress"/>
+
+  <Preference
     android:key="@string/ClearReadChapterButton"
     android:summary="@string/clear_last_chapter_summary"
     android:title="@string/clear_last_chapter"/>

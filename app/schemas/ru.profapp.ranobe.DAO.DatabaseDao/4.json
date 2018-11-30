@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 3,
-    "identityHash": "fb4805e64fb9d6be005f494e3862f043",
+    "version": 4,
+    "identityHash": "6b04a7deb5b68f854d213f1a16c2f402",
     "entities": [
       {
         "tableName": "ranobe",
@@ -317,8 +317,14 @@
       },
       {
         "tableName": "chapterHistory",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ChapterUrl` TEXT NOT NULL, `ChapterName` TEXT NOT NULL, `RanobeName` TEXT NOT NULL, `RanobeUrl` TEXT NOT NULL, `Index` INTEGER NOT NULL, `ReadDate` INTEGER NOT NULL, `Progress` REAL NOT NULL, PRIMARY KEY(`ChapterUrl`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ReadDate` INTEGER NOT NULL, `ChapterUrl` TEXT NOT NULL, `ChapterName` TEXT NOT NULL, `RanobeName` TEXT NOT NULL, `RanobeUrl` TEXT NOT NULL, `Index` INTEGER NOT NULL, PRIMARY KEY(`ChapterUrl`))",
         "fields": [
+          {
+            "fieldPath": "readDate",
+            "columnName": "ReadDate",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
           {
             "fieldPath": "chapterUrl",
             "columnName": "ChapterUrl",
@@ -348,18 +354,6 @@
             "columnName": "Index",
             "affinity": "INTEGER",
             "notNull": true
-          },
-          {
-            "fieldPath": "readDate",
-            "columnName": "ReadDate",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "progress",
-            "columnName": "Progress",
-            "affinity": "REAL",
-            "notNull": true
           }
         ],
         "primaryKey": {
@@ -382,8 +376,14 @@
       },
       {
         "tableName": "ranobeHistory",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`RanobeUrl` TEXT NOT NULL, `RanobeName` TEXT NOT NULL, `Description` TEXT, `ReadDate` INTEGER NOT NULL, PRIMARY KEY(`RanobeUrl`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ReadDate` INTEGER NOT NULL, `RanobeUrl` TEXT NOT NULL, `RanobeName` TEXT NOT NULL, `Description` TEXT, PRIMARY KEY(`RanobeUrl`))",
         "fields": [
+          {
+            "fieldPath": "readDate",
+            "columnName": "ReadDate",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
           {
             "fieldPath": "ranobeUrl",
             "columnName": "RanobeUrl",
@@ -401,12 +401,6 @@
             "columnName": "Description",
             "affinity": "TEXT",
             "notNull": false
-          },
-          {
-            "fieldPath": "readDate",
-            "columnName": "ReadDate",
-            "affinity": "INTEGER",
-            "notNull": true
           }
         ],
         "primaryKey": {
@@ -426,11 +420,58 @@
           }
         ],
         "foreignKeys": []
+      },
+      {
+        "tableName": "chapterProgress",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ReadDate` INTEGER NOT NULL, `ChapterUrl` TEXT NOT NULL, `RanobeUrl` TEXT NOT NULL, `Progress` REAL NOT NULL, PRIMARY KEY(`ChapterUrl`))",
+        "fields": [
+          {
+            "fieldPath": "readDate",
+            "columnName": "ReadDate",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "chapterUrl",
+            "columnName": "ChapterUrl",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ranobeUrl",
+            "columnName": "RanobeUrl",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "progress",
+            "columnName": "Progress",
+            "affinity": "REAL",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "ChapterUrl"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_chapterProgress_ChapterUrl",
+            "unique": false,
+            "columnNames": [
+              "ChapterUrl"
+            ],
+            "createSql": "CREATE  INDEX `index_chapterProgress_ChapterUrl` ON `${TABLE_NAME}` (`ChapterUrl`)"
+          }
+        ],
+        "foreignKeys": []
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"fb4805e64fb9d6be005f494e3862f043\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"6b04a7deb5b68f854d213f1a16c2f402\")"
     ]
   }
 }

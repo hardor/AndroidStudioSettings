@@ -177,17 +177,6 @@ class ChapterTextActivity : AppCompatActivity() {
 
         navigation_prev.setOnClickListener { OnClicked(+1) }
 
-//        if (MyApp.autoAddBookmark) {
-//            navigation_bookmark.visibility = View.GONE
-//        } else {
-//            navigation_bookmark.visibility = View.VISIBLE
-//            navigation_bookmark.setOnClickListener {
-//                saveProgressToDb()
-//                Toast.makeText(mContext, getString(R.string.bookmark_added), Toast.LENGTH_SHORT).show()
-//            }
-//        }
-
-
     }
 
     private fun initWebView() {
@@ -361,12 +350,26 @@ class ChapterTextActivity : AppCompatActivity() {
         if (!mCurrentChapter.text.isNullOrBlank()) {
             val progress = pr ?: calculateProgression() ?: 0f
             val request = Completable.fromAction {
-                MyApp.database.ranobeHistoryDao().insertNewChapter(
-                        ChapterHistory(mCurrentChapter.url, mCurrentChapter.title, mCurrentChapter.ranobeName, mCurrentChapter.ranobeUrl, mCurrentChapter.index, progress)
+                MyApp.database.chapterProgressDao().insert(
+                        ChapterProgress(mCurrentChapter.url, mCurrentChapter.ranobeUrl, progress)
                 )
             }.subscribeOn(Schedulers.io())
                     .subscribe({}, { error ->
-                        LogHelper.logError(LogHelper.LogType.ERROR, "", "", error, false)
+                        LogHelper.logError(LogHelper.LogType.ERROR, "saveProgressToDb", "", error, false)
+                    })
+            compositeDisposable.add(request)
+        }
+    }
+
+    private fun saveHistoryToDb() {
+        if (!mCurrentChapter.text.isNullOrBlank()) {
+            val request = Completable.fromAction {
+                MyApp.database.ranobeHistoryDao().insertNewChapter(
+                        ChapterHistory(mCurrentChapter.url, mCurrentChapter.title, mCurrentChapter.ranobeName, mCurrentChapter.ranobeUrl, mCurrentChapter.index)
+                )
+            }.subscribeOn(Schedulers.io())
+                    .subscribe({}, { error ->
+                        LogHelper.logError(LogHelper.LogType.ERROR, "saveHistoryToDb", "", error, false)
                     })
             compositeDisposable.add(request)
         }
@@ -404,6 +407,8 @@ class ChapterTextActivity : AppCompatActivity() {
         mCurrentChapter.isRead = true
 
         mCurrentChapter.id?.let { lastChapterIdPref!!.edit().putInt(mCurrentChapter.ranobeUrl, it).apply() }
+
+        saveHistoryToDb()
 
         if (MyApp.autoAddBookmark) {
             saveProgressToDb(0f)

@@ -4,7 +4,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import ru.profapp.ranobe.Models.*
 
-@androidx.room.Database(entities = [Ranobe::class, Chapter::class, TextChapter::class, RanobeImage::class, ChapterHistory::class, RanobeHistory::class], version = 3)
+@androidx.room.Database(entities = [Ranobe::class, Chapter::class, TextChapter::class, RanobeImage::class, ChapterHistory::class, RanobeHistory::class,ChapterProgress::class], version = 4)
 @TypeConverters(DateConverter::class)
 abstract class DatabaseDao : RoomDatabase() {
 
@@ -17,6 +17,8 @@ abstract class DatabaseDao : RoomDatabase() {
     abstract fun ranobeImageDao(): RanobeImageDao
 
     abstract fun ranobeHistoryDao(): RanobeHistoryDao
+
+    abstract fun chapterProgressDao(): ChapterProgressDao
 
 }
 

@@ -107,4 +107,6 @@
   <string name="hide_unavailable_chapters">Скрыть недоступные (платные) главы</string>
   <string name="show_all_chapter">Показывать все главы</string>
   <string name="show_only_readable">Показывать только доступные главы</string>
+  <string name="clear_progress_summary">Удалить закладки на главах ( позиция текста)</string>
+  <string name="clear_progress">Закладки на главах</string>
 </resources>

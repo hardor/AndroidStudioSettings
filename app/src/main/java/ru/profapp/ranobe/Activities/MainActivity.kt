@@ -118,24 +118,23 @@ class MainActivity : AppCompatActivity(),
 
         val floatingActionButton = findViewById<FloatingActionButton>(R.id.fab)
         floatingActionButton.setOnClickListener {
-            val chapterHistory = MyApp.database.ranobeHistoryDao().getLastChapter().subscribeOn(Schedulers.io())?.blockingGet()
-            if (chapterHistory != null) {
-                if (MyApp.ranobe == null || !MyApp.ranobe!!.url.contains(chapterHistory.ranobeUrl) || !MyApp.ranobe!!.wasUpdated) {
+            val chapterProgress = MyApp.database.chapterProgressDao().getLastChapter().subscribeOn(Schedulers.io())?.blockingGet()
+            if (chapterProgress != null) {
+                if (MyApp.ranobe == null || !MyApp.ranobe!!.url.contains(chapterProgress.ranobeUrl) || !MyApp.ranobe!!.wasUpdated) {
 
                     val ranobe = Ranobe()
-                    ranobe.url = chapterHistory.ranobeUrl
-                    ranobe.title = chapterHistory.ranobeName
+                    ranobe.url = chapterProgress.ranobeUrl
 
                     ranobe.updateRanobe(this).subscribeOn(Schedulers.io()).blockingGet()
                     if (!ranobe.chapterList.any()) {
-                        ranobe.chapterList.add(Chapter(chapterHistory))
+                        ranobe.chapterList.add(Chapter(chapterProgress))
                     }
                     MyApp.ranobe = ranobe
                 }
-                if (MyApp.ranobe != null && MyApp.ranobe!!.url.contains(chapterHistory.ranobeUrl)) {
+                if (MyApp.ranobe != null && MyApp.ranobe!!.url.contains(chapterProgress.ranobeUrl)) {
                     val intent = Intent(this@MainActivity, ChapterTextActivity::class.java)
-                    intent.putExtra("ChapterUrl", chapterHistory.chapterUrl)
-                    intent.putExtra("Progress", chapterHistory.progress)
+                    intent.putExtra("ChapterUrl", chapterProgress.chapterUrl)
+                    intent.putExtra("Progress", chapterProgress.progress)
                     startActivity(intent)
                 }
 

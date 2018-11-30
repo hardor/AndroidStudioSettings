@@ -59,7 +59,7 @@ class RanobeInfoActivity : AppCompatActivity() {
 
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
 
-    private val mGlide: GlideRequests = GlideApp.with(this)
+    private lateinit var mGlide: GlideRequests
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -88,6 +88,9 @@ class RanobeInfoActivity : AppCompatActivity() {
 
         mContext = this@RanobeInfoActivity
 
+
+        mGlide = GlideApp.with(this@RanobeInfoActivity)
+
         mCurrentRanobe = MyApp.ranobe!!
 
         getFavoriteIcon()
@@ -96,10 +99,10 @@ class RanobeInfoActivity : AppCompatActivity() {
 
         fabBookmark.setOnClickListener {
 
-            val chapterHistory = MyApp.database.ranobeHistoryDao().getLastChapterByName(mCurrentRanobe.title).subscribeOn(Schedulers.io())?.blockingGet()
+            val chapterProgress = MyApp.database.chapterProgressDao().getLastChapterByRanobeUrl(mCurrentRanobe.url).subscribeOn(Schedulers.io())?.blockingGet()
             val intent = Intent(mContext, ChapterTextActivity::class.java)
-            intent.putExtra("ChapterUrl", chapterHistory?.chapterUrl)
-            intent.putExtra("Progress", chapterHistory?.progress)
+            intent.putExtra("ChapterUrl", chapterProgress?.chapterUrl)
+            intent.putExtra("Progress", chapterProgress?.progress)
             mContext.startActivity(intent)
 
         }
@@ -223,7 +226,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                     pBar_RanobeInfo.visibility = View.GONE
                     loadData()
                     recycleChapterList.addAll(mCurrentRanobe.chapterList)
-                    adapterExpandable = ExpandableChapterRecyclerViewAdapter(applicationContext, recycleChapterList, mCurrentRanobe)
+                    adapterExpandable = ExpandableChapterRecyclerViewAdapter(mContext, recycleChapterList, mCurrentRanobe)
                     rV_rI_chapters.adapter = adapterExpandable
 
                     if (mCurrentRanobe.comments.isNotEmpty()) {

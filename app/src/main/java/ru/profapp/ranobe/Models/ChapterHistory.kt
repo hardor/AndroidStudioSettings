@@ -13,7 +13,7 @@ import java.util.*
 @Entity(tableName = "chapterHistory", indices = [Index(value = ["ChapterUrl"])])
 class ChapterHistory(@PrimaryKey
                      @NonNull
-                     @ColumnInfo(name = "ChapterUrl") var chapterUrl: String, @ColumnInfo(name = "ChapterName") var chapterName: String, @ColumnInfo(name = "RanobeName") var ranobeName: String, @ColumnInfo(name = "RanobeUrl") var ranobeUrl: String, @ColumnInfo(name = "Index") var index: Int, @ColumnInfo(name = "Progress") var progress: Float) {
+                     @ColumnInfo(name = "ChapterUrl") var chapterUrl: String, @ColumnInfo(name = "ChapterName") var chapterName: String, @ColumnInfo(name = "RanobeName") var ranobeName: String, @ColumnInfo(name = "RanobeUrl") var ranobeUrl: String, @ColumnInfo(name = "Index") var index: Int) {
 
     @ColumnInfo(name = "ReadDate")
     var readDate: Date = Date()

@@ -117,4 +117,9 @@ class Chapter() {
         ranobeUrl = chapterHistory.ranobeUrl
         index = chapterHistory.index
     }
+
+    constructor(chapterProgress: ChapterProgress) : this() {
+        url = chapterProgress.chapterUrl
+        ranobeUrl = chapterProgress.ranobeUrl
+    }
 }

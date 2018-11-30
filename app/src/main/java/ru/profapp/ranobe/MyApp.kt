@@ -84,6 +84,28 @@ class MyApp : MultiDexApplication() {
 
             }
         }
+
+        val MIGRATION_3_4: Migration = object : Migration(3, 4) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                //Change ranobe
+                try {
+                    database.execSQL("CREATE TABLE chapterHistory_temp (ChapterUrl TEXT NOT NULL, ChapterName TEXT NOT NULL, RanobeName TEXT NOT NULL,  RanobeUrl TEXT NOT NULL,[Index] INTEGER NOT NULL, ReadDate INTEGER NOT NULL,  PRIMARY KEY(ChapterUrl));")
+                    database.execSQL("CREATE TABLE chapterProgress (ChapterUrl TEXT NOT NULL, RanobeUrl TEXT NOT NULL, ReadDate INTEGER NOT NULL, Progress REAL NOT NULL,  PRIMARY KEY(ChapterUrl));")
+
+                    database.execSQL("INSERT INTO chapterProgress (ChapterUrl, RanobeUrl, ReadDate, Progress) SELECT ChapterUrl, RanobeUrl, ReadDate, Progress FROM chapterHistory;")
+                    database.execSQL("INSERT INTO chapterHistory_temp (ChapterUrl,ChapterName, RanobeName,RanobeUrl,[Index], ReadDate) SELECT ChapterUrl,ChapterName, RanobeName,RanobeUrl,[Index], ReadDate FROM chapterHistory;")
+
+                    database.execSQL("DROP TABLE chapterHistory;")
+                    database.execSQL("ALTER TABLE chapterHistory_temp RENAME TO chapterHistory;")
+
+
+                } catch (e: Exception) {
+                    LogHelper.logError(LogHelper.LogType.ERROR, "MIGRATION_3_4", "MIGRATION_3_4 failed", e)
+                }
+
+            }
+        }
+
         lateinit var database: DatabaseDao
         var ranobe: Ranobe? = null
         var refWatcher: RefWatcher? = null
@@ -124,7 +146,7 @@ class MyApp : MultiDexApplication() {
             // Initialize Stetho with the Initializer
             Stetho.initialize(initializer)
         }
-        MyApp.database = Room.databaseBuilder(this, DatabaseDao::class.java, DB_NAME).addMigrations(MIGRATION_2_3).fallbackToDestructiveMigration().build()
+        MyApp.database = Room.databaseBuilder(this, DatabaseDao::class.java, DB_NAME).addMigrations(MIGRATION_2_3,MIGRATION_3_4).fallbackToDestructiveMigration().build()
     }
 }
 
