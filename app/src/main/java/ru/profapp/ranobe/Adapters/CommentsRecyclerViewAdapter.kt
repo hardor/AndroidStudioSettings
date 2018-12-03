@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import ru.profapp.ranobe.Common.Constants
-import ru.profapp.ranobe.Helpers.Helper
+import ru.profapp.ranobe.Helpers.setVectorForPreLollipop
 import ru.profapp.ranobe.Network.DTO.RulateDTO.RulateComment
 import ru.profapp.ranobe.R
 import ru.profapp.ranobe.Utils.GlideRequests
@@ -37,7 +37,7 @@ class CommentsRecyclerViewAdapter(private val glide: GlideRequests, private val 
         val dp50 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50f, mContext.resources.displayMetrics).toInt()
         glide.load(mValues[position].avatar).into(object : SimpleTarget<Drawable>(dp50, dp50) {
             override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                Helper.setVectorForPreLollipop(holder.bodyTextView, resource, mContext, Constants.ApplicationConstants.DRAWABLE_LEFT)
+                setVectorForPreLollipop(holder.bodyTextView, resource, mContext, Constants.ApplicationConstants.DRAWABLE_LEFT)
             }
         })
     }

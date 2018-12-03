@@ -13,7 +13,9 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import ru.profapp.ranobe.Adapters.HistoryChaptersRecyclerViewAdapter
 import ru.profapp.ranobe.Adapters.RanobeRecyclerViewAdapter
-import ru.profapp.ranobe.Helpers.LogHelper
+import ru.profapp.ranobe.Helpers.LogType
+import ru.profapp.ranobe.Helpers.logError
+
 import ru.profapp.ranobe.Models.Ranobe
 import ru.profapp.ranobe.Models.RanobeHistory
 import ru.profapp.ranobe.MyApp
@@ -49,7 +51,7 @@ class HistoryPageFragment : Fragment() {
                         .observeOn(mainThread()).subscribe({
                             chapterRecyclerView!!.adapter = HistoryChaptersRecyclerViewAdapter(it)
                         }, { error ->
-                            LogHelper.logError(LogHelper.LogType.ERROR, "HistoryFragment", "", error)
+                            logError(LogType.ERROR, "HistoryFragment", "", error)
                         })
                 compositeDisposable.add(chapterRequest)
             }
@@ -75,7 +77,7 @@ class HistoryPageFragment : Fragment() {
                         .subscribe({
                             ranobeRecyclerView!!.adapter = RanobeRecyclerViewAdapter(GlideApp.with(mContext!!), ranobeRecyclerView!!, it)
                         }, { error ->
-                            LogHelper.logError(LogHelper.LogType.ERROR, "HistoryFragment", "", error)
+                            logError(LogType.ERROR, "HistoryFragment", "", error)
                         })
 
                 compositeDisposable.add(ranobeRequest)

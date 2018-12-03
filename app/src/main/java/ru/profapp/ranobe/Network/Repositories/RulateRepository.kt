@@ -8,7 +8,9 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.profapp.ranobe.Common.Constants
-import ru.profapp.ranobe.Helpers.LogHelper
+import ru.profapp.ranobe.Helpers.LogType
+import ru.profapp.ranobe.Helpers.logError
+
 import ru.profapp.ranobe.Models.Chapter
 import ru.profapp.ranobe.Models.Ranobe
 import ru.profapp.ranobe.Models.RanobeImage
@@ -142,7 +144,7 @@ object RulateRepository : BaseRepository() {
             Completable.fromAction {
                 MyApp.database.ranobeImageDao().insert(RanobeImage(url, image!!))
             }?.subscribeOn(Schedulers.io())?.subscribe({}, { error ->
-                LogHelper.logError(LogHelper.LogType.ERROR, "", "", error, false)
+                logError(LogType.ERROR, "", "", error, false)
             })
 
         }
@@ -160,7 +162,7 @@ object RulateRepository : BaseRepository() {
             }
 
         } catch (e: ParseException) {
-            LogHelper.logError(LogHelper.LogType.WARN, "updateRanobe", "", e, false)
+            logError(LogType.WARN, "updateRanobe", "", e, false)
         }
 
         readyDate = readyDate ?: (if (book.lastActivity != null) Date(book.lastActivity * 1000) else readyDate)
@@ -205,7 +207,7 @@ object RulateRepository : BaseRepository() {
             Completable.fromAction {
                 MyApp.database.ranobeImageDao().insert(RanobeImage(url, image!!))
             }?.subscribeOn(Schedulers.io())?.subscribe({}, { error ->
-                LogHelper.logError(LogHelper.LogType.ERROR, "", "", error, false)
+                logError(LogType.ERROR, "", "", error, false)
             })
 
         }

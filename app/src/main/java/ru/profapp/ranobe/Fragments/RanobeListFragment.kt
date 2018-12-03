@@ -28,8 +28,10 @@ import ru.profapp.ranobe.Common.Constants
 import ru.profapp.ranobe.Common.Constants.RanobeSite.Error
 import ru.profapp.ranobe.Common.Constants.fragmentBundle
 import ru.profapp.ranobe.Common.OnLoadMoreListener
-import ru.profapp.ranobe.Helpers.Helper
-import ru.profapp.ranobe.Helpers.LogHelper
+import ru.profapp.ranobe.Helpers.LogType
+import ru.profapp.ranobe.Helpers.logError
+import ru.profapp.ranobe.Helpers.setVectorForPreLollipop
+
 import ru.profapp.ranobe.Models.Chapter
 import ru.profapp.ranobe.Models.Ranobe
 import ru.profapp.ranobe.MyApp
@@ -208,7 +210,7 @@ class RanobeListFragment : Fragment() {
                                         }
                                         onItemsLoadFinished()
                                     }, { error ->
-                                        LogHelper.logError(LogHelper.LogType.ERROR, "sync favorite", "", error.fillInStackTrace(), true)
+                                        logError(LogType.ERROR, "sync favorite", "", error.fillInStackTrace(), true)
                                         onItemsLoadFinished(error)
                                     })
 
@@ -221,7 +223,7 @@ class RanobeListFragment : Fragment() {
             val settingPref = PreferenceManager.getDefaultSharedPreferences(mContext)
             checkedSortItemName = settingPref.getString(resources.getString(R.string.pref_general_sort_order), null) ?: Constants.SortOrder.default.name
             tVSortOrder.text = getString(Constants.SortOrder.valueOf(checkedSortItemName).resId)
-            Helper.setVectorForPreLollipop(tVSortOrder, R.drawable.ic_sort_by_alpha_black_24dp, mContext!!, Constants.ApplicationConstants.DRAWABLE_LEFT)
+            setVectorForPreLollipop(tVSortOrder, R.drawable.ic_sort_by_alpha_black_24dp, mContext!!, Constants.ApplicationConstants.DRAWABLE_LEFT)
             tVSortOrder.visibility = View.VISIBLE
             tVSortOrder.setOnClickListener { it ->
 
@@ -414,7 +416,7 @@ class RanobeListFragment : Fragment() {
                     onItemsLoadFinished()
 
                 }, { error ->
-                    LogHelper.logError(LogHelper.LogType.ERROR, "refreshItems", "", error.fillInStackTrace(), false)
+                    logError(LogType.ERROR, "refreshItems", "", error.fillInStackTrace(), false)
                     onItemsLoadFinished(error)
                 })
 

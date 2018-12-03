@@ -8,9 +8,11 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.profapp.ranobe.Common.Constants
-import ru.profapp.ranobe.Helpers.Helper
-import ru.profapp.ranobe.Helpers.LogHelper
-import ru.profapp.ranobe.Helpers.StringHelper
+import ru.profapp.ranobe.Helpers.LogType
+import ru.profapp.ranobe.Helpers.dateFromString
+import ru.profapp.ranobe.Helpers.logError
+import ru.profapp.ranobe.Helpers.removeTags
+
 import ru.profapp.ranobe.Models.Chapter
 import ru.profapp.ranobe.Models.Ranobe
 import ru.profapp.ranobe.Models.RanobeImage
@@ -32,16 +34,18 @@ object RanobeHubRepository : BaseRepository() {
         return instance.GetChapters(ranobe.id).map {
             ranobe.chapterList.clear()
             var index = 0
-            val volumesNum=it.data.size
+            val volumesNum = it.data.size
             for (volume in it.data) {
-                for (rChapter in volume.chapters) {
+                for (tChapter in volume.chapters) {
                     val chapter = Chapter()
 
                     chapter.title = if (chapter.title.isBlank()) {
-                        if(volumesNum>1) {"Том ${volume.num}. ${rChapter.name}"} else rChapter.name
+                        if (volumesNum > 1) {
+                            "Том ${volume.num}. ${tChapter.name}"
+                        } else tChapter.name
                     } else chapter.title
 
-                    chapter.url = if (chapter.url.isBlank()) "${ranobe.url}/${volume.num}/${rChapter.num}" else chapter.url
+                    chapter.url = tChapter.url ?: chapter.url
 
                     chapter.ranobeUrl = ranobe.url
                     chapter.ranobeName = ranobe.title
@@ -97,7 +101,7 @@ object RanobeHubRepository : BaseRepository() {
                     Completable.fromAction {
                         MyApp.database.ranobeImageDao().insert(RanobeImage(ranobe.url, ranobe.image!!))
                     }?.subscribeOn(Schedulers.io())?.subscribe({}, { error ->
-                        LogHelper.logError(LogHelper.LogType.ERROR, "", "", error, false)
+                        logError(LogType.ERROR, "", "", error, false)
                     })
 
                 }
@@ -105,7 +109,7 @@ object RanobeHubRepository : BaseRepository() {
                 ranobe.description = desc.ownText()
                 ranobe.title = item.selectFirst("div.header").selectFirst("a").text()
                 ranobe.engTitle = item.selectFirst("div.header").selectFirst("h5").text()
-                ranobe.readyDate = Helper.dateFromString(desc.selectFirst("span").text())
+                ranobe.readyDate = dateFromString(desc.selectFirst("span").text())
                 or.add(ranobe)
             }
         }
@@ -181,7 +185,7 @@ object RanobeHubRepository : BaseRepository() {
 
         url = Constants.RanobeSite.RanobeHub.url + "/ranobe/" + id
 
-        description = description ?: StringHelper.removeTags(book.description ?: "")
+        description = description ?: book.description?.removeTags() ?: ""
 
         if (!book.changedAt.isNullOrEmpty()) {
             val df = SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault())
@@ -190,7 +194,7 @@ object RanobeHubRepository : BaseRepository() {
             try {
                 readyDate = df.parse(book.changedAt)
             } catch (e: ParseException) {
-                LogHelper.logError(LogHelper.LogType.WARN, "Parse date", "", e, false)
+                logError(LogType.WARN, "Parse date", "", e, false)
             }
         }
 
@@ -200,7 +204,7 @@ object RanobeHubRepository : BaseRepository() {
             Completable.fromAction {
                 MyApp.database.ranobeImageDao().insert(RanobeImage(url, image!!))
             }?.subscribeOn(Schedulers.io())?.subscribe({}, { error ->
-                LogHelper.logError(LogHelper.LogType.ERROR, "", "", error, false)
+                logError(LogType.ERROR, "", "", error, false)
             })
 
         }

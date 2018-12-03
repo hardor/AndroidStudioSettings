@@ -1,6 +1,8 @@
 package ru.profapp.ranobe.Utils
 
-import ru.profapp.ranobe.Helpers.LogHelper
+
+import ru.profapp.ranobe.Helpers.LogType
+import ru.profapp.ranobe.Helpers.logError
 import java.io.*
 
 object FileUtils {
@@ -10,7 +12,7 @@ object FileUtils {
             return FileUtils.copyStream(FileInputStream(toCopy),
                     FileOutputStream(destFile))
         } catch (e: FileNotFoundException) {
-            LogHelper.logError(LogHelper.LogType.ERROR, "CopyFile", "", e, false)
+            logError(LogType.ERROR, "CopyFile", "", e, false)
         }
 
         return false
@@ -28,7 +30,7 @@ object FileUtils {
             os.close()
             return true
         } catch (e: IOException) {
-            LogHelper.logError(LogHelper.LogType.ERROR, "copyStream", "", e, false)
+            logError(LogType.ERROR, "copyStream", "", e, false)
         }
         return false
     }

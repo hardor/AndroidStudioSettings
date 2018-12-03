@@ -14,7 +14,8 @@ import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.schedulers.Schedulers
 import ru.profapp.ranobe.Activities.ChapterTextActivity
 import ru.profapp.ranobe.Common.Constants
-import ru.profapp.ranobe.Helpers.Helper
+import ru.profapp.ranobe.Helpers.convertDpToPixel
+import ru.profapp.ranobe.Helpers.setVectorForPreLollipop
 import ru.profapp.ranobe.Models.Chapter
 import ru.profapp.ranobe.Models.Ranobe
 import ru.profapp.ranobe.MyApp
@@ -23,8 +24,8 @@ import ru.profapp.ranobe.R
 class ExpandableChapterRecyclerViewAdapter(private val mContext: Context, private val mRanobe: Ranobe) : RecyclerView.Adapter<ExpandableChapterRecyclerViewAdapter.GroupViewHolder>() {
 
 
-    val dp2 = Helper.convertDpToPixel(2, mContext)
-    val dp6 = Helper.convertDpToPixel(6, mContext)
+    val dp2 = convertDpToPixel(2, mContext)
+    val dp6 = convertDpToPixel(6, mContext)
 
     constructor(context: Context, mChapters: ArrayList<Chapter>, mRanobe: Ranobe) : this(context, mRanobe) {
 
@@ -130,7 +131,7 @@ class ExpandableChapterRecyclerViewAdapter(private val mContext: Context, privat
                 layoutParams.setMargins(0, dp2, 0, dp2)
                 linearLayoutChildItems.addView(textView, layoutParams)
             }
-            Helper.setVectorForPreLollipop( textViewParentName, R.drawable.ic_expand_more_black_24dp, mContext, Constants.ApplicationConstants.DRAWABLE_RIGHT)
+            setVectorForPreLollipop( textViewParentName, R.drawable.ic_expand_more_black_24dp, mContext, Constants.ApplicationConstants.DRAWABLE_RIGHT)
             textViewParentName.setOnClickListener(this)
         }
 

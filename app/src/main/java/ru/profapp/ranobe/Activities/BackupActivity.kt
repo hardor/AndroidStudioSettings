@@ -21,7 +21,8 @@ import ru.profapp.ranobe.Common.Constants.Rulate_Login_Pref
 import ru.profapp.ranobe.Common.Constants.last_chapter_id_Pref
 import ru.profapp.ranobe.Common.MyExceptionHandler
 import ru.profapp.ranobe.DAO.DatabaseDao
-import ru.profapp.ranobe.Helpers.LogHelper
+import ru.profapp.ranobe.Helpers.LogType
+import ru.profapp.ranobe.Helpers.logError
 import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.MyApp.Companion.DB_NAME
 import ru.profapp.ranobe.R
@@ -146,7 +147,7 @@ class BackupActivity : AppCompatActivity() {
                 }
             } catch (e: Exception) {
                 Snackbar.make(findViewById(android.R.id.content), "Error", Snackbar.LENGTH_LONG).show()
-                LogHelper.logError(LogHelper.LogType.ERROR, "SAVEDB", "Error", e, false)
+                logError(LogType.ERROR, "SAVEDB", "Error", e, false)
             } finally {
                 MyApp.database = Room.databaseBuilder(this, DatabaseDao::class.java, DB_NAME).addMigrations(MyApp.MIGRATION_2_3).build()
             }

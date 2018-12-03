@@ -20,7 +20,9 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import ru.profapp.ranobe.Adapters.ExpandableDownloadRecyclerViewAdapter
 import ru.profapp.ranobe.Common.MyExceptionHandler
-import ru.profapp.ranobe.Helpers.LogHelper
+import ru.profapp.ranobe.Helpers.LogType
+import ru.profapp.ranobe.Helpers.logError
+
 import ru.profapp.ranobe.Models.Chapter
 import ru.profapp.ranobe.Models.Ranobe
 import ru.profapp.ranobe.MyApp
@@ -108,7 +110,7 @@ class DownloadActivity : AppCompatActivity() {
 
                     } else {
                         chapter.downloaded = chapterText.GetChapterText(chapter, context).onErrorReturn { error ->
-                            LogHelper.logError(LogHelper.LogType.ERROR, "download", "", error, false)
+                            logError(LogType.ERROR, "download", "", error, false)
                             return@onErrorReturn false
                         }.subscribeOn(Schedulers.io()).blockingGet()
                     }
@@ -126,7 +128,7 @@ class DownloadActivity : AppCompatActivity() {
                     progressDialog.getButton(BUTTON_NEGATIVE).setText(R.string.finish)
                 }
                 .subscribe({}, { error ->
-                    LogHelper.logError(LogHelper.LogType.ERROR, "download", "", error)
+                    logError(LogType.ERROR, "download", "", error)
                 })
         compositeDisposable.add(running)
 

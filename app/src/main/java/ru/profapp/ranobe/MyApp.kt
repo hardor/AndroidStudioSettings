@@ -11,7 +11,9 @@ import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
 import ru.profapp.ranobe.Common.Constants
 import ru.profapp.ranobe.DAO.DatabaseDao
-import ru.profapp.ranobe.Helpers.LogHelper
+import ru.profapp.ranobe.Helpers.LogType
+import ru.profapp.ranobe.Helpers.logError
+
 import ru.profapp.ranobe.Models.Chapter
 import ru.profapp.ranobe.Models.Ranobe
 
@@ -79,7 +81,7 @@ class MyApp : MultiDexApplication() {
                     database.execSQL("ALTER TABLE textChapter2 RENAME TO textChapter;")
                     database.execSQL("CREATE INDEX index_textChapter_ChapterUrl ON textChapter (ChapterUrl);")
                 } catch (e: Exception) {
-                    LogHelper.logError(LogHelper.LogType.ERROR, "MIGRATION_2_3", "MIGRATION_2_3 failed", e)
+                    logError(LogType.ERROR, "MIGRATION_2_3", "MIGRATION_2_3 failed", e)
                 }
 
             }
@@ -100,7 +102,7 @@ class MyApp : MultiDexApplication() {
 
 
                 } catch (e: Exception) {
-                    LogHelper.logError(LogHelper.LogType.ERROR, "MIGRATION_3_4", "MIGRATION_3_4 failed", e)
+                    logError(LogType.ERROR, "MIGRATION_3_4", "MIGRATION_3_4 failed", e)
                 }
 
             }

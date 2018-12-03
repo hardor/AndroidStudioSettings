@@ -26,8 +26,9 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_chapter_text.*
 import ru.profapp.ranobe.Common.Constants
 import ru.profapp.ranobe.Common.MyExceptionHandler
-import ru.profapp.ranobe.Helpers.LogHelper
+import ru.profapp.ranobe.Helpers.LogType
 import ru.profapp.ranobe.Helpers.ThemeHelper
+import ru.profapp.ranobe.Helpers.logError
 import ru.profapp.ranobe.Models.*
 import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.Network.Repositories.RanobeHubRepository
@@ -165,7 +166,7 @@ class ChapterTextActivity : AppCompatActivity() {
                         RanobeHistory(currentRanobe!!.url, currentRanobe!!.title, currentRanobe!!.description)
                 )
             }.subscribeOn(Schedulers.io()).subscribe({}, { error ->
-                LogHelper.logError(LogHelper.LogType.ERROR, "", "", error, false)
+                logError(LogType.ERROR, "", "", error, false)
             })
             compositeDisposable.add(request)
         }
@@ -215,7 +216,7 @@ class ChapterTextActivity : AppCompatActivity() {
                     if (error is UnknownHostException || error is SocketTimeoutException)
                         Toast.makeText(mContext, R.string.error_connection, Toast.LENGTH_SHORT).show()
                     else
-                        LogHelper.logError(LogHelper.LogType.ERROR, "GetChapterText", "", error.fillInStackTrace())
+                        logError(LogType.ERROR, "GetChapterText", "", error.fillInStackTrace())
 
                     val summary = ("<html><style>img{display: inline;height: auto;max-width: 90%;}</style><body "
                             + style + ">"
@@ -297,7 +298,7 @@ class ChapterTextActivity : AppCompatActivity() {
                     Completable.fromAction {
                         MyApp.database.textDao().delete(mCurrentChapter.url)
                     }?.subscribeOn(Schedulers.io())?.subscribe({}, { error ->
-                        LogHelper.logError(LogHelper.LogType.ERROR, "", "", error, false)
+                        logError(LogType.ERROR, "", "", error, false)
                     })
 
                     return@map false
@@ -313,7 +314,7 @@ class ChapterTextActivity : AppCompatActivity() {
                                             Completable.fromAction {
                                                 MyApp.database.textDao().insert(TextChapter(mCurrentChapter))
                                             }?.subscribeOn(Schedulers.io())?.subscribe({}, { error ->
-                                                LogHelper.logError(LogHelper.LogType.ERROR, "", "", error, false)
+                                                logError(LogType.ERROR, "", "", error, false)
                                             })
 
                                         }
@@ -355,7 +356,7 @@ class ChapterTextActivity : AppCompatActivity() {
                 )
             }.subscribeOn(Schedulers.io())
                     .subscribe({}, { error ->
-                        LogHelper.logError(LogHelper.LogType.ERROR, "saveProgressToDb", "", error, false)
+                        logError(LogType.ERROR, "saveProgressToDb", "", error, false)
                     })
             compositeDisposable.add(request)
         }
@@ -369,7 +370,7 @@ class ChapterTextActivity : AppCompatActivity() {
                 )
             }.subscribeOn(Schedulers.io())
                     .subscribe({}, { error ->
-                        LogHelper.logError(LogHelper.LogType.ERROR, "saveHistoryToDb", "", error, false)
+                        logError(LogType.ERROR, "saveHistoryToDb", "", error, false)
                     })
             compositeDisposable.add(request)
         }

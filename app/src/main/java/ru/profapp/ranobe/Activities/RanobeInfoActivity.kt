@@ -33,8 +33,10 @@ import ru.profapp.ranobe.BuildConfig
 import ru.profapp.ranobe.Common.Constants
 import ru.profapp.ranobe.Common.Constants.last_chapter_id_Pref
 import ru.profapp.ranobe.Common.MyExceptionHandler
-import ru.profapp.ranobe.Helpers.LogHelper
+import ru.profapp.ranobe.Helpers.LogType
+
 import ru.profapp.ranobe.Helpers.ThemeHelper
+import ru.profapp.ranobe.Helpers.logError
 import ru.profapp.ranobe.Models.Chapter
 import ru.profapp.ranobe.Models.Ranobe
 import ru.profapp.ranobe.MyApp
@@ -249,7 +251,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                     }
 
                 }, { error ->
-                    LogHelper.logError(LogHelper.LogType.ERROR, "loadChapters", "", error)
+                    logError(LogType.ERROR, "loadChapters", "", error)
                     pBar_RanobeInfo.visibility = View.GONE
                 })
 
@@ -277,7 +279,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                         }
 
                     }, { error ->
-                        LogHelper.logError(LogHelper.LogType.ERROR, "loadChapters", "", error)
+                        logError(LogType.ERROR, "loadChapters", "", error)
                         mCurrentRanobe.isFavorite = false
                         mCurrentRanobe.isFavoriteInWeb = false
                         fab_rI_favorite.setImageResource(R.drawable.ic_favorite_border_black_24dp)
@@ -338,7 +340,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                         else
                             Toast.makeText(mContext, mCurrentRanobe.title + " " + mContext.getString(R.string.added_to_local), Toast.LENGTH_SHORT).show()
                     }, { error ->
-                        LogHelper.logError(LogHelper.LogType.ERROR, "setToFavorite", "WEB", error, false)
+                        logError(LogType.ERROR, "setToFavorite", "WEB", error, false)
                     })
             compositeDisposable.add(request)
 
@@ -382,7 +384,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                             }
                         }, { error ->
                             Toast.makeText(mContext, getString(R.string.cant_remove_web_bookmark), Toast.LENGTH_SHORT).show()
-                            LogHelper.logError(LogHelper.LogType.ERROR, "", "", error, false)
+                            logError(LogType.ERROR, "", "", error, false)
                         })
                 compositeDisposable.add(request)
             } else {
@@ -396,7 +398,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                             mCurrentRanobe.isFavoriteInWeb = false
                             fab_rI_favorite.setImageResource(R.drawable.ic_favorite_border_black_24dp)
                         }, { error ->
-                            LogHelper.logError(LogHelper.LogType.ERROR, "", "", error, false)
+                            logError(LogType.ERROR, "", "", error, false)
                         })
 
                 compositeDisposable.add(request)

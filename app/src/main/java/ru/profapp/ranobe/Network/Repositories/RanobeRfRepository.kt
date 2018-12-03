@@ -9,8 +9,10 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.profapp.ranobe.Common.Constants
-import ru.profapp.ranobe.Helpers.LogHelper
-import ru.profapp.ranobe.Helpers.StringHelper
+import ru.profapp.ranobe.Helpers.LogType
+import ru.profapp.ranobe.Helpers.logError
+
+import ru.profapp.ranobe.Helpers.removeTags
 import ru.profapp.ranobe.Models.Chapter
 import ru.profapp.ranobe.Models.Ranobe
 import ru.profapp.ranobe.Models.RanobeImage
@@ -100,7 +102,7 @@ object RanobeRfRepository : BaseRepository() {
                         Completable.fromAction {
                             MyApp.database.ranobeImageDao().insert(RanobeImage(ranobe.url, book.image))
                         }?.subscribeOn(Schedulers.io())?.subscribe({}, { error ->
-                            LogHelper.logError(LogHelper.LogType.ERROR, "", "", error, false)
+                            logError(LogType.ERROR, "", "", error, false)
                         })
 
                     }
@@ -201,7 +203,7 @@ object RanobeRfRepository : BaseRepository() {
             Completable.fromAction {
                 MyApp.database.ranobeImageDao().insert(RanobeImage(url, image!!))
             }?.subscribeOn(Schedulers.io())?.subscribe({}, { error ->
-                LogHelper.logError(LogHelper.LogType.ERROR, "", "", error, false)
+                logError(LogType.ERROR, "", "", error, false)
             })
 
         }
@@ -212,8 +214,8 @@ object RanobeRfRepository : BaseRepository() {
 
         engTitle = book.fullTitle?.replace("$title / ", "")
         //      url = book.alias
-        description = book.description?.let { StringHelper.removeTags(it) }
-        additionalInfo = book.info?.let { StringHelper.removeTags(it) }
+        description = book.description?.removeTags()
+        additionalInfo = book.info?.removeTags()
 
         chapterList.clear()
         for ((index, rChapter) in book.parts.withIndex()) {

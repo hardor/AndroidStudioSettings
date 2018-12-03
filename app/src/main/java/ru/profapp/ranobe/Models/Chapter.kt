@@ -4,7 +4,9 @@ import androidx.annotation.NonNull
 import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
 import ru.profapp.ranobe.Common.Constants.RanobeSite.*
-import ru.profapp.ranobe.Helpers.LogHelper
+import ru.profapp.ranobe.Helpers.LogType
+import ru.profapp.ranobe.Helpers.logError
+
 import java.util.*
 
 /**
@@ -58,7 +60,7 @@ class Chapter() {
 
                     Integer.parseInt(value)
                 } catch (error: NumberFormatException) {
-                    LogHelper.logError(LogHelper.LogType.ERROR, "ChapterId", url, error)
+                    logError(LogType.ERROR, "ChapterId", url, error)
                     field
                 }
             }

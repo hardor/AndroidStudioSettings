@@ -5,20 +5,22 @@ import android.text.Html
 /**
  * Created by Ruslan on 08.02.2018.
  */
-class StringHelper {
-    companion object {
 
-        fun cleanJson(string: String): String {
-            return string.substring(0, string.lastIndexOf("}") + 1)
-        }
+fun String.cleanJson(): String {
+    return this.substring(0, this.lastIndexOf("}") + 1)
+}
 
-        fun removeTags(string: String): String {
-            return Html.fromHtml(string).toString().replace("\n\n", "\n")
-        }
+fun String.removeTags(): String {
+    return Html.fromHtml(this).toString().replace("\n\n", "\n")
+}
 
-        fun CleanString(ranobeUrl: String): String {
-            return ranobeUrl.replace("[^a-zA-Z0-9]".toRegex(), "")
-        }
+fun String.CleanString(): String {
+    return this.replace("[^a-zA-Z0-9]".toRegex(), "")
+}
 
-    }
+fun Double.pretty(): String {
+    return if (this == this.toLong().toDouble())
+        String.format("%d", this.toLong())
+    else
+        String.format("%s", this)
 }
