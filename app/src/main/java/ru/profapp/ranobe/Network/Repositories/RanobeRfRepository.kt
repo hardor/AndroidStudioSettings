@@ -34,7 +34,11 @@ object RanobeRfRepository : BaseRepository() {
     private fun getUserStatus() {
         paymentStatus = instance.GetUserStatus().map {
             if (it.status == 200) {
-                return@map !it.result?.paymentStatus.isNullOrEmpty()
+                if (it.result?.paymentStatus.isNullOrEmpty()) {
+                    return@map false
+                } else {
+                    return@map it.result!!.paymentContinue ?: 0 > (Date().time / 1000)
+                }
             }
 
             return@map false
