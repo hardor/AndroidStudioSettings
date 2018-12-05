@@ -13,7 +13,7 @@ import java.util.*
 class HistoryChaptersRecyclerViewAdapter(private val mValues: List<ChapterHistory>) : RecyclerView.Adapter<HistoryChaptersRecyclerViewAdapter.MyViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val view =  LayoutInflater
+        val view = LayoutInflater
                 .from(parent.context)
                 .inflate(R.layout.item_history, parent, false)
         return MyViewHolder(view)

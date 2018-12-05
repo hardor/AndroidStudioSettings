@@ -106,8 +106,8 @@ class Ranobe() {
     @Ignore
     var newChapters: Int = 0
 
-//    @Ignore
-//    var hidePaymentChapters: Boolean = MyApp.hidePaymentChapter
+    //    @Ignore
+    //    var hidePaymentChapters: Boolean = MyApp.hidePaymentChapter
 
     fun updateRanobe(mContext: Context): Single<Boolean> {
 
@@ -115,7 +115,7 @@ class Ranobe() {
 
         bookInfo = if (!wasUpdated) {
             if (ranobeSite == Rulate.url || url.contains(Rulate.url)) {
-                val mPreferences = mContext.getSharedPreferences(Constants.Rulate_Login_Pref, 0)
+                val mPreferences = mContext.applicationContext.getSharedPreferences(Constants.Rulate_Login_Pref, 0)
                 val token = mPreferences.getString(Constants.KEY_Token, "") ?: ""
                 RulateRepository.getBookInfo(this, token, id)
             } else if (ranobeSite == RanobeRf.url || url.contains(RanobeRf.url)) {

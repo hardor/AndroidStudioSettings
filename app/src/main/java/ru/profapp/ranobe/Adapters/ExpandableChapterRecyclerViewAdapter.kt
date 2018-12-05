@@ -23,7 +23,6 @@ import ru.profapp.ranobe.R
 
 class ExpandableChapterRecyclerViewAdapter(private val mContext: Context, private val mRanobe: Ranobe) : RecyclerView.Adapter<ExpandableChapterRecyclerViewAdapter.GroupViewHolder>() {
 
-
     val dp2 = convertDpToPixel(2, mContext)
     val dp6 = convertDpToPixel(6, mContext)
 
@@ -49,7 +48,7 @@ class ExpandableChapterRecyclerViewAdapter(private val mContext: Context, privat
         return GroupViewHolder(view)
     }
 
-    override fun onBindViewHolder( holder: ExpandableChapterRecyclerViewAdapter.GroupViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ExpandableChapterRecyclerViewAdapter.GroupViewHolder, position: Int) {
 
         val parentDataItem = parentDataItems[position]
         holder.textViewParentName.text = parentDataItem.parentName
@@ -131,7 +130,7 @@ class ExpandableChapterRecyclerViewAdapter(private val mContext: Context, privat
                 layoutParams.setMargins(0, dp2, 0, dp2)
                 linearLayoutChildItems.addView(textView, layoutParams)
             }
-            setVectorForPreLollipop( textViewParentName, R.drawable.ic_expand_more_black_24dp, mContext, Constants.ApplicationConstants.DRAWABLE_RIGHT)
+            setVectorForPreLollipop(textViewParentName, R.drawable.ic_expand_more_black_24dp, mContext, Constants.ApplicationConstants.DRAWABLE_RIGHT)
             textViewParentName.setOnClickListener(this)
         }
 

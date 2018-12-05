@@ -13,7 +13,7 @@ open class BaseRepository {
     var Cookie: MutableList<String> = mutableListOf()
 
     init {
-        if(BuildConfig.DEBUG){
+        if (BuildConfig.DEBUG) {
             baseClient.addNetworkInterceptor(StethoInterceptor())
         }
     }

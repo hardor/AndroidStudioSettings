@@ -116,9 +116,9 @@ class RanobeInfoActivity : AppCompatActivity() {
 
         supportActionBar?.title = mCurrentRanobe.title
 
-        preferences = mContext.getSharedPreferences(Constants.Rulate_Login_Pref, 0)
+        preferences = applicationContext.getSharedPreferences(Constants.Rulate_Login_Pref, 0)
 
-        rfpreferences = mContext.getSharedPreferences(Constants.Ranoberf_Login_Pref, 0)
+        rfpreferences = applicationContext.getSharedPreferences(Constants.Ranoberf_Login_Pref, 0)
 
         mChapterLayoutManager = LinearLayoutManager(mContext)
         rV_rI_chapters.layoutManager = mChapterLayoutManager
@@ -205,7 +205,7 @@ class RanobeInfoActivity : AppCompatActivity() {
 
     private fun loadChapters() {
         recycleChapterList.clear()
-        lastChapterIdPref = mContext.getSharedPreferences(last_chapter_id_Pref, Context.MODE_PRIVATE)
+        lastChapterIdPref = applicationContext.getSharedPreferences(last_chapter_id_Pref, Context.MODE_PRIVATE)
 
         val request = mCurrentRanobe.updateRanobe(mContext).map {
 

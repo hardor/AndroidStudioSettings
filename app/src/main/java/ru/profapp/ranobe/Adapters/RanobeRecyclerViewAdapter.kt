@@ -128,7 +128,7 @@ class RanobeRecyclerViewAdapter(private val glide: RequestManager, recyclerView:
                     }
                     val chapterlist2 = templist.take(Constants.chaptersNum)
 
-                    val lastChapterIdPref = mContext.getSharedPreferences(Constants.last_chapter_id_Pref, Context.MODE_PRIVATE)
+                    val lastChapterIdPref = mContext.applicationContext.getSharedPreferences(Constants.last_chapter_id_Pref, Context.MODE_PRIVATE)
                     if (lastChapterIdPref != null && lastChapterIdPref.contains(chapterlist2.first().ranobeUrl)) {
                         val lastId = lastChapterIdPref.getInt(chapterlist2.first().ranobeUrl, -1)
                         if (lastId > 0) {

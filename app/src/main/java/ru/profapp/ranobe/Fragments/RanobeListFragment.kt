@@ -59,7 +59,7 @@ class RanobeListFragment : Fragment() {
     private var checkedSortItemName: String = Constants.SortOrder.default.name
 
     private fun getRulateWebFavorite(): Single<List<Ranobe>> {
-        val mPreferences = mContext!!.getSharedPreferences(Constants.Rulate_Login_Pref, 0)
+        val mPreferences = mContext!!.applicationContext.getSharedPreferences(Constants.Rulate_Login_Pref, 0)
         val token = mPreferences.getString(Constants.KEY_Token, "")
         if (token.isNullOrBlank())
             return Single.just(listOf())
@@ -68,7 +68,7 @@ class RanobeListFragment : Fragment() {
 
     private fun getRanobeRfWebFavorite(): Single<List<Ranobe>> {
 
-        val mPreferences = mContext!!.getSharedPreferences(Constants.Ranoberf_Login_Pref, 0)
+        val mPreferences = mContext!!.applicationContext.getSharedPreferences(Constants.Ranoberf_Login_Pref, 0)
 
         val token = mPreferences.getString(Constants.KEY_Token, "")
         if (token.isNullOrBlank())
@@ -97,7 +97,6 @@ class RanobeListFragment : Fragment() {
     }
 
     private fun sortValuesAndNotify(sortOrderName: String) {
-
 
         val tempList = when (sortOrderName) {
             Constants.SortOrder.ByTitle.name -> ranobeList.sortedBy { r -> r.title }
@@ -324,7 +323,7 @@ class RanobeListFragment : Fragment() {
 
                 } //Check lastReaded
                 .map { ranobes ->
-                    val lastChapterIdPref = mContext?.getSharedPreferences(Constants.last_chapter_id_Pref, Context.MODE_PRIVATE)
+                    val lastChapterIdPref = mContext?.applicationContext?.getSharedPreferences(Constants.last_chapter_id_Pref, Context.MODE_PRIVATE)
                     for (ranobe in ranobes) {
                         ranobe.newChapters = 0
                         val chapterList = ranobe.chapterList

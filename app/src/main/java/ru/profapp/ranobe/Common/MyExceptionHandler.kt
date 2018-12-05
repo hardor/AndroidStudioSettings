@@ -15,7 +15,7 @@ class MyExceptionHandler(private val activity: Activity) : Thread.UncaughtExcept
 
     override fun uncaughtException(thread: Thread, ex: Throwable) {
         var message = "Uncaught exception"
-        if(MyApp.ranobe?.url !=null)
+        if (MyApp.ranobe?.url != null)
             message = MyApp.ranobe!!.url
 
         logError(LogType.ERROR, activity.packageName, message, ex)

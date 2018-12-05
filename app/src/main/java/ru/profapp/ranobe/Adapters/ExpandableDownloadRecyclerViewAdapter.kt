@@ -14,7 +14,6 @@ import ru.profapp.ranobe.R
 
 class ExpandableDownloadRecyclerViewAdapter() : RecyclerView.Adapter<ExpandableDownloadRecyclerViewAdapter.GroupViewHolder>() {
 
-
     var selectAll: Boolean? = null
 
     constructor(mChapters: List<Chapter>) : this() {

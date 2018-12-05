@@ -18,14 +18,11 @@ interface ChapterProgressDao {
     @Query("SELECT * FROM chapterProgress ORDER BY ReadDate DESC LIMIT 1")
     fun getLastChapter(): Maybe<ChapterProgress>
 
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(chapterProgress: ChapterProgress)
 
-
     @Query("DELETE FROM chapterProgress")
     fun cleanTable()
-
 
 }
 

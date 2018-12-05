@@ -93,6 +93,7 @@ class HistoryPageFragment : Fragment() {
         super.onAttach(context)
         mContext = context
     }
+
     override fun onDestroy() {
         super.onDestroy()
         mContext = null
@@ -110,7 +111,7 @@ class HistoryPageFragment : Fragment() {
 
     fun update() {
         ranobeRecyclerView?.let { it ->
-            it.adapter = RanobeRecyclerViewAdapter( GlideApp.with(context!!), ranobeRecyclerView!!, listOf())
+            it.adapter = RanobeRecyclerViewAdapter(GlideApp.with(context!!), ranobeRecyclerView!!, listOf())
             it.adapter?.notifyDataSetChanged()
         }
 

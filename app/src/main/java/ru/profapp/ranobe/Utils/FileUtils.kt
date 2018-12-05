@@ -1,6 +1,5 @@
 package ru.profapp.ranobe.Utils
 
-
 import ru.profapp.ranobe.Helpers.LogType
 import ru.profapp.ranobe.Helpers.logError
 import java.io.*

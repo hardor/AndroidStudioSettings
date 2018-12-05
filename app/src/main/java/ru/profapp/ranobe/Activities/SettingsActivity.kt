@@ -138,7 +138,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             super.onCreate(savedInstanceState)
             addPreferencesFromResource(R.xml.pref_rulate)
             val prefLogin = findPreference(getString(R.string.rulate_authorization_pref))
-            val mPreferences = activity?.getSharedPreferences(Constants.Rulate_Login_Pref, 0)
+            val mPreferences = activity?.applicationContext?.getSharedPreferences(Constants.Rulate_Login_Pref, 0)
 
             val token = mPreferences?.getString(Constants.KEY_Token, "") ?: ""
 
@@ -168,7 +168,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             addPreferencesFromResource(R.xml.pref_ranoberf)
             val prefLogin = findPreference(getString(R.string.ranoberf_authorization_pref))
 
-            val mPreferences = activity.getSharedPreferences(Constants.Ranoberf_Login_Pref, 0)
+            val mPreferences = activity.applicationContext.getSharedPreferences(Constants.Ranoberf_Login_Pref, 0)
 
             val token = mPreferences?.getString(Constants.KEY_Token, "") ?: ""
 
@@ -230,13 +230,13 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 
             val clearReadChapterButton = findPreference(getString(R.string.ClearReadChapterButton))
             clearReadChapterButton.setOnPreferenceClickListener { preference ->
-                activity.getSharedPreferences(Constants.last_chapter_id_Pref, 0).edit().clear().apply()
+                activity.applicationContext.getSharedPreferences(Constants.last_chapter_id_Pref, 0).edit().clear().apply()
                 true
             }
 
             val prefButton = findPreference(getString(R.string.ClearHistoryButton))
             prefButton.setOnPreferenceClickListener {
-                activity.getSharedPreferences(Constants.last_chapter_id_Pref, 0).edit().clear().apply()
+                activity.applicationContext.getSharedPreferences(Constants.last_chapter_id_Pref, 0).edit().clear().apply()
 
                 Completable.fromAction { MyApp.database.ranobeHistoryDao().cleanHistory() }
                         ?.observeOn(AndroidSchedulers.mainThread())
@@ -248,7 +248,6 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 
                 true
             }
-
 
             val clearProgressButton = findPreference(getString(R.string.ClearProgressButton))
             clearProgressButton.setOnPreferenceClickListener {
@@ -286,9 +285,9 @@ class SettingsActivity : AppCompatPreferenceActivity() {
                     MyApp.autoAddBookmark = value.toString().toBoolean()
                 }
 
-//                preference.context.getString(R.string.pref_general_hide_chapter) -> {
-//                    MyApp.hidePaymentChapter = value.toString().toBoolean()
-//                }
+                //                preference.context.getString(R.string.pref_general_hide_chapter) -> {
+                //                    MyApp.hidePaymentChapter = value.toString().toBoolean()
+                //                }
 
             }
 

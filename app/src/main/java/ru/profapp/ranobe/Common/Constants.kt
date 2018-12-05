@@ -50,7 +50,7 @@ object Constants {
         ByRanobeSite(R.string.byRanobeSite);
 
         companion object {
-            val default:SortOrder = ByTitle
+            val default: SortOrder = ByTitle
             fun toArray(context: Context): Array<Int> {
                 return SortOrder.values().map {
                     return@map it.resId

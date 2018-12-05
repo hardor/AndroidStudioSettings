@@ -61,7 +61,7 @@ class SearchFragment : Fragment() {
         simpleSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 resultLabel.visibility = View.GONE
-                if(query.isNotBlank())
+                if (query.isNotBlank())
                     findRanobe(query)
 
                 simpleSearchView.clearFocus()

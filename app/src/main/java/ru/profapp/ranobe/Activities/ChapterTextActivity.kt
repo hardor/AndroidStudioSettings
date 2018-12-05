@@ -156,7 +156,7 @@ class ChapterTextActivity : AppCompatActivity() {
 
         textWebview.setBackgroundColor(resources.getColor(R.color.webViewBackground))
 
-        lastChapterIdPref = getSharedPreferences(Constants.last_chapter_id_Pref, Context.MODE_PRIVATE)
+        lastChapterIdPref = applicationContext.getSharedPreferences(Constants.last_chapter_id_Pref, Context.MODE_PRIVATE)
 
         initWebView()
 
@@ -332,7 +332,7 @@ class ChapterTextActivity : AppCompatActivity() {
     }
 
     private fun getRulateChapterText(): Single<Boolean> {
-        val preferences = mContext.getSharedPreferences(Constants.Rulate_Login_Pref, 0)
+        val preferences = applicationContext.getSharedPreferences(Constants.Rulate_Login_Pref, 0)
         val token: String = preferences.getString(Constants.KEY_Token, "") ?: ""
 
         return RulateRepository.getChapterText(token, mCurrentChapter)
@@ -387,7 +387,7 @@ class ChapterTextActivity : AppCompatActivity() {
                 mChapterList[prevChapterIndex].text = null
 
             } catch (e: ArrayIndexOutOfBoundsException) {
-                chapterIndex =prevChapterIndex
+                chapterIndex = prevChapterIndex
             }
 
         } else {
@@ -403,7 +403,7 @@ class ChapterTextActivity : AppCompatActivity() {
     private fun putToReaded() {
 
         if (lastChapterIdPref == null) {
-            lastChapterIdPref = mContext.getSharedPreferences(Constants.last_chapter_id_Pref, Context.MODE_PRIVATE)
+            lastChapterIdPref = applicationContext.getSharedPreferences(Constants.last_chapter_id_Pref, Context.MODE_PRIVATE)
         }
         mCurrentChapter.isRead = true
 
@@ -467,6 +467,7 @@ class ChapterTextActivity : AppCompatActivity() {
             }
         }
     }
+
     override fun onPause() {
         super.onPause()
         if (MyApp.autoAddBookmark) {

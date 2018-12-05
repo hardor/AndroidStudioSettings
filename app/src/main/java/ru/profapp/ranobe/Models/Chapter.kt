@@ -53,7 +53,7 @@ class Chapter() {
                     val value: String =
                             if (url.contains(RanobeHub.url)) {
                                 val arr = url.replace(ranobeUrl, "").split("/").takeLast(2)
-                                (arr[1].replace(".","").toInt() + (arr[0].replace(".","").toInt() * 10000)).toString()
+                                (arr[1].replace(".", "").toInt() + (arr[0].replace(".", "").toInt() * 10000)).toString()
                             } else {
                                 url.substring(url.lastIndexOf("/") + 1)
                             }

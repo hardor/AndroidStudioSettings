@@ -100,7 +100,6 @@ class MyApp : MultiDexApplication() {
                     database.execSQL("DROP TABLE chapterHistory;")
                     database.execSQL("ALTER TABLE chapterHistory_temp RENAME TO chapterHistory;")
 
-
                 } catch (e: Exception) {
                     logError(LogType.ERROR, "MIGRATION_3_4", "MIGRATION_3_4 failed", e)
                 }
@@ -114,7 +113,7 @@ class MyApp : MultiDexApplication() {
         var useVolumeButtonsToScroll: Boolean = false
         var autoAddBookmark: Boolean = false
         var isApplicationInitialized: Boolean = false
-//        var hidePaymentChapter: Boolean= false
+        //        var hidePaymentChapter: Boolean= false
 
     }
 
@@ -148,7 +147,7 @@ class MyApp : MultiDexApplication() {
             // Initialize Stetho with the Initializer
             Stetho.initialize(initializer)
         }
-        MyApp.database = Room.databaseBuilder(this, DatabaseDao::class.java, DB_NAME).addMigrations(MIGRATION_2_3,MIGRATION_3_4).fallbackToDestructiveMigration().build()
+        MyApp.database = Room.databaseBuilder(this, DatabaseDao::class.java, DB_NAME).addMigrations(MIGRATION_2_3, MIGRATION_3_4).fallbackToDestructiveMigration().build()
     }
 }
 

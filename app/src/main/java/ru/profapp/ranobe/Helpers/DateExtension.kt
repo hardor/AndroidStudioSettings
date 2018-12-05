@@ -3,7 +3,6 @@ package ru.profapp.ranobe.Helpers
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 /**
  * Pattern: yyyy-MM-dd HH:mm:ss
  */

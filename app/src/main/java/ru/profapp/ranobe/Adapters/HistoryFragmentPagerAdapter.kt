@@ -7,8 +7,6 @@ import androidx.fragment.app.FragmentPagerAdapter
 import ru.profapp.ranobe.Fragments.HistoryPageFragment
 import ru.profapp.ranobe.R
 
-
-
 class HistoryFragmentPagerAdapter(fm: FragmentManager, val context: Context) : FragmentPagerAdapter(fm) {
 
     override fun getItem(position: Int): Fragment {
