@@ -13,6 +13,7 @@ import ru.profapp.ranobe.Common.Constants
 import ru.profapp.ranobe.DAO.DatabaseDao
 import ru.profapp.ranobe.Helpers.LogType
 import ru.profapp.ranobe.Helpers.logError
+import ru.profapp.ranobe.Helpers.logMessage
 
 import ru.profapp.ranobe.Models.Chapter
 import ru.profapp.ranobe.Models.Ranobe
@@ -89,9 +90,12 @@ class MyApp : MultiDexApplication() {
 
         val MIGRATION_3_4: Migration = object : Migration(3, 4) {
             override fun migrate(database: SupportSQLiteDatabase) {
+
+                logMessage(LogType.ERROR, "MIGRATION", "MIGRATION start")
                 //Change ranobe
                 try {
                     database.execSQL("CREATE TABLE chapterHistory_temp (ChapterUrl TEXT NOT NULL, ChapterName TEXT NOT NULL, RanobeName TEXT NOT NULL,  RanobeUrl TEXT NOT NULL,[Index] INTEGER NOT NULL, ReadDate INTEGER NOT NULL,  PRIMARY KEY(ChapterUrl));")
+
                     database.execSQL("CREATE TABLE chapterProgress (ChapterUrl TEXT NOT NULL, RanobeUrl TEXT NOT NULL, ReadDate INTEGER NOT NULL, Progress REAL NOT NULL,  PRIMARY KEY(ChapterUrl));")
 
                     database.execSQL("INSERT INTO chapterProgress (ChapterUrl, RanobeUrl, ReadDate, Progress) SELECT ChapterUrl, RanobeUrl, ReadDate, Progress FROM chapterHistory;")
@@ -99,7 +103,8 @@ class MyApp : MultiDexApplication() {
 
                     database.execSQL("DROP TABLE chapterHistory;")
                     database.execSQL("ALTER TABLE chapterHistory_temp RENAME TO chapterHistory;")
-
+                    database.execSQL("CREATE INDEX index_chapterProgress_ChapterUrl ON chapterProgress (ChapterUrl);")
+                    database.execSQL("CREATE INDEX index_chapterHistory_ChapterUrl ON chapterHistory (ChapterUrl);")
                 } catch (e: Exception) {
                     logError(LogType.ERROR, "MIGRATION_3_4", "MIGRATION_3_4 failed", e)
                 }

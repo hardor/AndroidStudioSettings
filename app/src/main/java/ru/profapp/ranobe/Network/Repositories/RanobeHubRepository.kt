@@ -94,7 +94,7 @@ object RanobeHubRepository : BaseRepository() {
             for (item in items) {
                 val ranobe = Ranobe(Constants.RanobeSite.RanobeHub)
                 ranobe.url = item.selectFirst("a.image").attr("href")
-                ranobe.id = ranobe.url.replace("${Constants.RanobeSite.RanobeHub.url}/ranobe/", "").toInt()
+                ranobe.id =  item.selectFirst("div.__item_set_rating").attr("data-id").toInt()
                 ranobe.image = Constants.RanobeSite.RanobeHub.url + item.selectFirst("img").attr("data-src")
 
                 if (!ranobe.image.isNullOrBlank()) {
@@ -230,7 +230,7 @@ object RanobeHubRepository : BaseRepository() {
     }
 
     private fun createHtml(): IRanobeHubApiService {
-        val httpClient = baseClient.addInterceptor(AddCookiesInterceptor(this))
+        val httpClient = baseClient.addInterceptor (AddCookiesInterceptor(this))
                 .addInterceptor(ReceivedCookiesInterceptor(this))
 
         val retrofit = Retrofit.Builder()
