@@ -44,6 +44,10 @@ android {
         checkReleaseBuilds false
     }
 
+    dataBinding {
+        enabled = true
+    }
+
     compileSdkVersion 28
     defaultConfig {
         applicationId "ru.profapp.ranobe"
@@ -145,6 +149,16 @@ dependencies {
     //stetho
     implementation 'com.facebook.stetho:stetho:1.5.0'
     implementation 'com.facebook.stetho:stetho-okhttp3:1.5.0'
+
+    //dagger2
+    //implementation 'com.google.dagger:dagger:2.13'
+    //kapt 'com.google.dagger:dagger-compiler:2.13'
+
+    // data binding
+   // kapt "androidx.databinding:databinding-compiler:3.2.1"
+    implementation "androidx.lifecycle:lifecycle-extensions:2.0.0"
+    kapt "androidx.lifecycle:lifecycle-compiler:2.0.0"
+    kapt "androidx.databinding:databinding-compiler:3.2.1"
 }
 
 apply plugin: 'com.google.gms.google-services'

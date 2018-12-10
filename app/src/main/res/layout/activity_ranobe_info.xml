@@ -172,7 +172,7 @@
                   android:isScrollContainer="false"
                   android:nestedScrollingEnabled="false"
                   app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                  tools:context="ru.profapp.ranobe.Activities.RanobeInfoActivity"
+                  tools:context="ru.profapp.ranobe.activities.RanobeInfoActivity"
                   tools:listitem="@layout/item_title"/>
               </LinearLayout>
 
@@ -193,7 +193,7 @@
                 android:isScrollContainer="false"
                 android:nestedScrollingEnabled="false"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:context="ru.profapp.ranobe.Activities.RanobeInfoActivity"
+                tools:context="ru.profapp.ranobe.activities.RanobeInfoActivity"
                 tools:listitem="@layout/item_comment"/>
 
             </androidx.cardview.widget.CardView>

@@ -2,7 +2,7 @@ package ru.profapp.ranobe.DAO
 
 import androidx.room.*
 import io.reactivex.Single
-import ru.profapp.ranobe.Models.Chapter
+import ru.profapp.ranobe.models.Chapter
 
 /**
  * Created by Ruslan on 09.02.2018.

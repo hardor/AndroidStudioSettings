@@ -50,7 +50,7 @@
       android:layout_marginEnd="8dp"
       android:name="ru.profapp.ranobe.FavoriteFragment"
       android:scrollbars="vertical"
-      tools:context="ru.profapp.ranobe.Fragments.RanobeListFragment"
+      tools:context="ru.profapp.ranobe.fragments.RanobeListFragment"
       tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
       tools:listitem="@layout/item_ranobe">
     </androidx.recyclerview.widget.RecyclerView>

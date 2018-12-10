@@ -6,7 +6,7 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  tools:context="ru.profapp.ranobe.Activities.DownloadActivity"
+  tools:context="ru.profapp.ranobe.activities.DownloadActivity"
   >
 
 
@@ -35,7 +35,7 @@
       android:isScrollContainer="false"
       android:scrollbars="vertical"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-      tools:context="ru.profapp.ranobe.Activities.DownloadActivity"
+      tools:context="ru.profapp.ranobe.activities.DownloadActivity"
       tools:listitem="@layout/item_chapter_download"/>
 
 

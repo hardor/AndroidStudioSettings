@@ -5,7 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import io.reactivex.Maybe
-import ru.profapp.ranobe.Models.ChapterProgress
+import ru.profapp.ranobe.models.ChapterProgress
 
 /**
  * Created by Ruslan on 21.02.2018.
