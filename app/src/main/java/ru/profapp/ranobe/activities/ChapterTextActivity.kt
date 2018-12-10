@@ -205,8 +205,8 @@ class ChapterTextActivity : AppCompatActivity() {
             }
         }
 
-        bottomNavigationView.menu.findItem(R.id.navigation_prev).isVisible = (chapterIndex < mChapterCount - 1)
-        bottomNavigationView.menu.findItem(R.id.navigation_next).isVisible = (chapterIndex > 0)
+        bottomNavigationView.menu.findItem(R.id.navigation_prev).isEnabled = (chapterIndex < mChapterCount - 1)
+        bottomNavigationView.menu.findItem(R.id.navigation_next).isEnabled = (chapterIndex > 0)
 
     }
 
@@ -425,8 +425,8 @@ class ChapterTextActivity : AppCompatActivity() {
             chapterIndex = prevChapterIndex
         }
 
-        bottomNavigationView.menu.findItem(R.id.navigation_prev).isVisible = (chapterIndex < mChapterCount - 1)
-        bottomNavigationView.menu.findItem(R.id.navigation_next).isVisible = (chapterIndex > 0)
+        bottomNavigationView.menu.findItem(R.id.navigation_prev).isEnabled = (chapterIndex < mChapterCount - 1)
+        bottomNavigationView.menu.findItem(R.id.navigation_next).isEnabled = (chapterIndex > 0)
 
     }
 

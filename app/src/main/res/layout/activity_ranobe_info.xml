@@ -225,7 +225,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/fab_margin"
     android:layout_gravity="bottom|end"
-    app:srcCompat="@drawable/ic_library_books_black_24dp"/>
+    app:srcCompat="@drawable/ic_import_contacts_black_24dp"/>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -93,8 +93,9 @@ object RanobeHubRepository : BaseRepository() {
             val items = Jsoup.parse(it.content).select("div.grid_item")
             for (item in items) {
                 val ranobe = Ranobe(Constants.RanobeSite.RanobeHub)
-                ranobe.url = item.selectFirst("a.image").attr("href")
-                ranobe.id =  item.selectFirst("div.__item_set_rating").attr("data-id").toInt()
+
+                ranobe.id = item.selectFirst("div.__item_set_rating").attr("data-id").toInt()
+                ranobe.url = "${Constants.RanobeSite.RanobeHub.url}/ranobe/${ranobe.id}"
                 ranobe.image = Constants.RanobeSite.RanobeHub.url + item.selectFirst("img").attr("data-src")
 
                 if (!ranobe.image.isNullOrBlank()) {

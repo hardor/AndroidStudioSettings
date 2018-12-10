@@ -32,6 +32,6 @@
     android:layout_gravity="bottom|end"
     android:clickable="true"
     android:focusable="true"
-    app:srcCompat="@drawable/ic_library_books_black_24dp"/>
+    app:srcCompat="@drawable/ic_import_contacts_black_24dp"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
