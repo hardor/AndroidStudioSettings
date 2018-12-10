@@ -47,7 +47,8 @@
     </activity>
     <activity
       android:configChanges="orientation"
-      android:label="@string/title_activity_chapter_text"
+      android:theme="@style/AppTheme.NoActionBar"
+      android:label="Chapter"
       android:name=".activities.ChapterTextActivity"/>
 
     <activity

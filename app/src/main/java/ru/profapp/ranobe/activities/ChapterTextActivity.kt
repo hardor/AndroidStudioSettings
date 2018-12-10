@@ -17,6 +17,7 @@ import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import com.crashlytics.android.Crashlytics
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.fabric.sdk.android.Fabric
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -24,17 +25,17 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_chapter_text.*
+import ru.profapp.ranobe.MyApp
+import ru.profapp.ranobe.R
 import ru.profapp.ranobe.common.Constants
 import ru.profapp.ranobe.common.MyExceptionHandler
 import ru.profapp.ranobe.helpers.LogType
 import ru.profapp.ranobe.helpers.ThemeHelper
 import ru.profapp.ranobe.helpers.logError
 import ru.profapp.ranobe.models.*
-import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.network.repositories.RanobeHubRepository
 import ru.profapp.ranobe.network.repositories.RanobeRfRepository
 import ru.profapp.ranobe.network.repositories.RulateRepository
-import ru.profapp.ranobe.R
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
@@ -51,6 +52,8 @@ class ChapterTextActivity : AppCompatActivity() {
     private var lastChapterIdPref: SharedPreferences? = null
     private var currentRanobe: Ranobe? = null
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
+
+    lateinit var bottomNavigationView: BottomNavigationView
 
     private fun set_web_colors() {
 
@@ -86,8 +89,11 @@ class ChapterTextActivity : AppCompatActivity() {
 
 
         Fabric.with(this, Crashlytics())
-        setupActionBar()
+
         setContentView(R.layout.activity_chapter_text)
+
+        setupActionBar()
+
         Thread.setDefaultUncaughtExceptionHandler(MyExceptionHandler(this))
 
         if (savedInstanceState != null) {
@@ -117,7 +123,7 @@ class ChapterTextActivity : AppCompatActivity() {
 
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 super.onPageStarted(view, url, favicon)
-                title = mCurrentChapter.title
+                supportActionBar?.title = mCurrentChapter.title
             }
 
             override fun onPageFinished(view: WebView, url: String) {
@@ -171,12 +177,36 @@ class ChapterTextActivity : AppCompatActivity() {
             compositeDisposable.add(request)
         }
 
-        navigation_prev.visibility = if (chapterIndex < mChapterCount - 1) View.VISIBLE else View.INVISIBLE
-        navigation_next.visibility = if (chapterIndex > 0) View.VISIBLE else View.INVISIBLE
+        bottomNavigationView = findViewById(R.id.button_layout);
 
-        navigation_next.setOnClickListener { OnClicked(-1) }
+        bottomNavigationView.setOnNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.navigation_prev -> {
+                    OnClicked(+1)
+                    return@setOnNavigationItemSelectedListener true
+                }
 
-        navigation_prev.setOnClickListener { OnClicked(+1) }
+                R.id.navigation_next -> {
+                    OnClicked(-1)
+                    return@setOnNavigationItemSelectedListener true
+
+                }
+
+                R.id.navigation_bookmark -> {
+                    saveProgressToDb()
+                    Toast.makeText(mContext, getString(R.string.bookmark_added), Toast.LENGTH_SHORT).show()
+
+                    return@setOnNavigationItemSelectedListener true
+                }
+                else -> {
+                    return@setOnNavigationItemSelectedListener false
+                }
+
+            }
+        }
+
+        bottomNavigationView.menu.findItem(R.id.navigation_prev).isVisible = (chapterIndex < mChapterCount - 1)
+        bottomNavigationView.menu.findItem(R.id.navigation_next).isVisible = (chapterIndex > 0)
 
     }
 
@@ -266,8 +296,8 @@ class ChapterTextActivity : AppCompatActivity() {
     }
 
     private fun setupActionBar() {
-        val actionBar = supportActionBar
-        actionBar?.setDisplayHomeAsUpEnabled(true)
+        setSupportActionBar(toolbar_chT)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     fun GetChapterText(chapter: Chapter, context: Context): Single<Boolean> {
@@ -395,8 +425,8 @@ class ChapterTextActivity : AppCompatActivity() {
             chapterIndex = prevChapterIndex
         }
 
-        navigation_prev.visibility = if (chapterIndex < mChapterCount - 1) View.VISIBLE else View.INVISIBLE
-        navigation_next.visibility = if (chapterIndex > 0) View.VISIBLE else View.INVISIBLE
+        bottomNavigationView.menu.findItem(R.id.navigation_prev).isVisible = (chapterIndex < mChapterCount - 1)
+        bottomNavigationView.menu.findItem(R.id.navigation_next).isVisible = (chapterIndex > 0)
 
     }
 
@@ -416,8 +446,7 @@ class ChapterTextActivity : AppCompatActivity() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.chaptermain, menu)
         return true
     }
@@ -457,15 +486,7 @@ class ChapterTextActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        if (MyApp.autoAddBookmark) {
-            navigation_bookmark.visibility = View.GONE
-        } else {
-            navigation_bookmark.visibility = View.VISIBLE
-            navigation_bookmark.setOnClickListener {
-                saveProgressToDb()
-                Toast.makeText(mContext, getString(R.string.bookmark_added), Toast.LENGTH_SHORT).show()
-            }
-        }
+        bottomNavigationView.menu.findItem(R.id.navigation_bookmark).isVisible = !MyApp.autoAddBookmark
     }
 
     override fun onPause() {
