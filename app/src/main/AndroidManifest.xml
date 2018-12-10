@@ -30,7 +30,7 @@
 
     <activity
       android:label="@string/app_name"
-      android:name=".Activities.MainActivity"
+      android:name=".activities.MainActivity"
       android:theme="@style/AppTheme.NoActionBar">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
@@ -39,23 +39,23 @@
     </activity>
     <activity
       android:label="@string/title_activity_settings"
-      android:name=".Activities.SettingsActivity"/>
+      android:name=".activities.SettingsActivity"/>
     <activity
       android:label="@string/title_activity_ranobe_info"
-      android:name=".Activities.RanobeInfoActivity"
+      android:name=".activities.RanobeInfoActivity"
       android:theme="@style/AppTheme.NoActionBar">
     </activity>
     <activity
       android:configChanges="orientation"
       android:label="@string/title_activity_chapter_text"
-      android:name=".Activities.ChapterTextActivity"/>
+      android:name=".activities.ChapterTextActivity"/>
 
     <activity
       android:label="@string/title_activity_download"
-      android:name=".Activities.DownloadActivity"/>
+      android:name=".activities.DownloadActivity"/>
     <activity
       android:label="@string/backup_restore"
-      android:name=".Activities.BackupActivity"
+      android:name=".activities.BackupActivity"
       >
       <intent-filter>
         <action android:name="ru.profapp.ranobe.Activities.BackupActivity"/>

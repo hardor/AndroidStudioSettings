@@ -9,14 +9,13 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.facebook.stetho.Stetho
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
-import ru.profapp.ranobe.Common.Constants
 import ru.profapp.ranobe.DAO.DatabaseDao
-import ru.profapp.ranobe.Helpers.LogType
-import ru.profapp.ranobe.Helpers.logError
-import ru.profapp.ranobe.Helpers.logMessage
-
-import ru.profapp.ranobe.Models.Chapter
-import ru.profapp.ranobe.Models.Ranobe
+import ru.profapp.ranobe.common.Constants
+import ru.profapp.ranobe.helpers.LogType
+import ru.profapp.ranobe.helpers.logError
+import ru.profapp.ranobe.helpers.logMessage
+import ru.profapp.ranobe.models.Chapter
+import ru.profapp.ranobe.models.Ranobe
 
 class MyApp : MultiDexApplication() {
 

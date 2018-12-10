@@ -30,7 +30,7 @@
     <!--android:summaryOn="@string/show_only_readable"-->
     <!--android:title="@string/hide_unavailable_chapters" />-->
 
-  <ru.profapp.ranobe.CustomElements.NumberPickerPreference
+  <ru.profapp.ranobe.customElements.NumberPickerPreference
     android:defaultValue="16"
     android:key="@string/pref_general_text_size"
     android:summary="@string/select_text_size"

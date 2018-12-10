@@ -16,6 +16,8 @@ import ru.profapp.ranobe.DAO.DatabaseDao
 
 import ru.profapp.ranobe.MyApp.Companion.MIGRATION_2_3
 import ru.profapp.ranobe.MyApp.Companion.MIGRATION_3_4
+import ru.profapp.ranobe.helpers.LogType
+import ru.profapp.ranobe.helpers.logError
 import java.io.IOException
 import java.util.*
 

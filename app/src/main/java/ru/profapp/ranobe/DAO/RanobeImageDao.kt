@@ -2,7 +2,7 @@ package ru.profapp.ranobe.DAO
 
 import androidx.room.*
 import io.reactivex.Maybe
-import ru.profapp.ranobe.Models.RanobeImage
+import ru.profapp.ranobe.models.RanobeImage
 
 /**
  * Created by Ruslan on 09.02.2018.

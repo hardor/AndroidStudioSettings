@@ -2,8 +2,8 @@ package ru.profapp.ranobe.DAO
 
 import androidx.room.*
 import io.reactivex.Single
-import ru.profapp.ranobe.Models.ChapterHistory
-import ru.profapp.ranobe.Models.RanobeHistory
+import ru.profapp.ranobe.models.ChapterHistory
+import ru.profapp.ranobe.models.RanobeHistory
 
 /**
  * Created by Ruslan on 21.02.2018.

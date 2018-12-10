@@ -3,8 +3,8 @@ package ru.profapp.ranobe.DAO
 import androidx.room.*
 import io.reactivex.Maybe
 import io.reactivex.Single
-import ru.profapp.ranobe.Models.Ranobe
-import ru.profapp.ranobe.Models.RanobeWithChapters
+import ru.profapp.ranobe.models.Ranobe
+import ru.profapp.ranobe.models.RanobeWithChapters
 
 /**
  * Created by Ruslan on 09.02.2018.

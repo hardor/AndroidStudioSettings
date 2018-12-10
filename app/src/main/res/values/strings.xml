@@ -139,6 +139,8 @@
   <string name="ClearProgressButton" translatable="false">ClearProgressButton</string>
   <string name="clear_progress_summary">Remove chapter\'s progress (text position)</string>
   <string name="clear_progress">Remove chapter\'s progress</string>
+  <string name="site">Site</string>
+  <string name="genre">Genre</string>
   <!--<string name="tl_rulate_web" translatable="false">Rulate Web</string>-->
   <!--<string name="ranoberf_web" translatable="false">Ранобэ.рф Web</string>-->
   <!--<string name="pref_general_hide_chapter" translatable="false">        preference_hide_unavailable_chapters    </string>-->
