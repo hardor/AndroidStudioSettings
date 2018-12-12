@@ -8,6 +8,7 @@ import android.view.View
 import android.view.animation.DecelerateInterpolator
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import kotlin.math.max
 import kotlin.math.min
@@ -99,5 +100,20 @@ class BottomNavigationBehavior<V : View>(context: Context, attrs: AttributeSet) 
             params.gravity = Gravity.TOP
             snackbarLayout.layoutParams = params
         }
+    }
+
+    fun hideBottomNavigationView(view: BottomNavigationView) {
+        view.animate().translationY(view.height.toFloat())
+    }
+
+    fun showBottomNavigationView(view: BottomNavigationView) {
+        view.animate().translationY(0f)
+    }
+
+    fun updateView(view: BottomNavigationView, fullyExpanded: Boolean) {
+        if (fullyExpanded)
+            hideBottomNavigationView(view)
+        else
+            showBottomNavigationView(view)
     }
 }

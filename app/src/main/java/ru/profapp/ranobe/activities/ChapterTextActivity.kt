@@ -55,6 +55,22 @@ class ChapterTextActivity : AppCompatActivity() {
 
     lateinit var bottomNavigationView: BottomNavigationView
 
+    private fun hideSystemUI() {
+        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_LOW_PROFILE
+                or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+    }
+
+    private fun showSystemUI() {
+        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+    }
+
     private fun set_web_colors() {
 
         val settingPref = PreferenceManager.getDefaultSharedPreferences(applicationContext)
@@ -90,8 +106,10 @@ class ChapterTextActivity : AppCompatActivity() {
 
         Fabric.with(this, Crashlytics())
 
-        setContentView(R.layout.activity_chapter_text)
+        hideSystemUI()
 
+        setContentView(R.layout.activity_chapter_text)
+        bottomNavigationView = findViewById(R.id.button_layout);
         setupActionBar()
 
         Thread.setDefaultUncaughtExceptionHandler(MyExceptionHandler(this))
@@ -162,6 +180,9 @@ class ChapterTextActivity : AppCompatActivity() {
 
         textWebview.setBackgroundColor(resources.getColor(R.color.webViewBackground))
 
+        textWebview.appbar = appbar_chT
+        textWebview.bottomNavigationView = bottomNavigationView
+
         lastChapterIdPref = applicationContext.getSharedPreferences(Constants.last_chapter_id_Pref, Context.MODE_PRIVATE)
 
         initWebView()
@@ -177,7 +198,7 @@ class ChapterTextActivity : AppCompatActivity() {
             compositeDisposable.add(request)
         }
 
-        bottomNavigationView = findViewById(R.id.button_layout);
+
 
         bottomNavigationView.setOnNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
