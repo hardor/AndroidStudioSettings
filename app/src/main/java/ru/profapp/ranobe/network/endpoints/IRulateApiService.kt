@@ -11,7 +11,7 @@ interface IRulateApiService {
     fun GetReadyBooks(@Query("page") page: Int): Single<ReadyGson>
 
     @GET("/api/searchBooks")
-    fun SearchBooks(@Query("search") search: String): Single<ReadyGson>
+    fun SearchBooks(@Query("search") search: String): Single<SearchGson>
 
     @GET("/api/bookmarks")
     fun GetFavoriteBooks(@Query("token") token: String): Single<FavoriteGson>

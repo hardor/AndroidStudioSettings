@@ -131,7 +131,7 @@ class ChapterTextActivity : AppCompatActivity() {
         mChapterCount = mChapterList.size
 
         if (hChapterUrl != null) {
-            mCurrentChapter = mChapterList.first { it.url == hChapterUrl }
+            mCurrentChapter = mChapterList.firstOrNull { it.url == hChapterUrl } ?: mChapterList[0]
             chapterIndex = mChapterList.indexOf(mCurrentChapter)
         } else {
             chapterIndex = mChapterCount - 1

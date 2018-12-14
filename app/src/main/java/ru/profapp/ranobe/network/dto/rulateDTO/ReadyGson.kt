@@ -2,13 +2,13 @@ package ru.profapp.ranobe.network.dto.rulateDTO
 
 import com.google.gson.annotations.SerializedName
 
-data class ReadyGson(
+data class ReadyGson (
         @SerializedName("status") val status: String,
         //   val msg: String,
-        @SerializedName("response") val books: List<RulateBook> = listOf()
+        @SerializedName("response") val books: List<RulateReadyBook> = listOf()
 )
 
-data class RulateBook(
+data class RulateReadyBook(
 
         @SerializedName("id") val id: Int? = null,
         @SerializedName("book_id") val bookId: Int? = null,
@@ -20,36 +20,23 @@ data class RulateBook(
         @SerializedName("img") val img: String? = null,
         @SerializedName("ready_date") val readyDate: String? = null,
 
+        @SerializedName("lang") val lang: String? = null
+)
+
+data class RulateBook(
+
+        @SerializedName("id") val id: Int? = null,
+        @SerializedName("s_title") val sTitle: String? = null,
+        @SerializedName("t_title") val tTitle: String? = null,
+       // @SerializedName("n_chapters")           val nChapters: Int? = null,
         @SerializedName("lang") val lang: String? = null,
-
-        //   @SerializedName("n_chapters")
-        //   val nChapters: Int? = null,
-
         @SerializedName("last_activity") val lastActivity: Long? = null,
-
         @SerializedName("status") val status: String? = null,
-
         @SerializedName("rating") val rating: String? = null,
-
-        //   val author: String? = null,
-
-        //   val writer: String? = null,
-
-        //   val publisher: String? = null,
-
-        //   val year: String? = null,
+        @SerializedName("img") val img: String? = null,
         @SerializedName("chapters_total") val chaptersTotal: Int? = null,
-
-        //  val adult: Int? = null,
-
-        //  val team: String? = null,
-
         @SerializedName("chapters") val chapters: List<RulateChapter> = listOf(),
-
         @SerializedName("comments") val comments: List<RulateComment> = listOf()
-
-        //  val bookmark: Int? = null
-
 )
 
 data class RulateChapter(

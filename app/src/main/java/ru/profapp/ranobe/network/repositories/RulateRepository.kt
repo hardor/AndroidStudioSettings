@@ -7,19 +7,15 @@ import io.reactivex.schedulers.Schedulers
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.common.Constants
 import ru.profapp.ranobe.helpers.LogType
 import ru.profapp.ranobe.helpers.logError
-
 import ru.profapp.ranobe.models.Chapter
 import ru.profapp.ranobe.models.Ranobe
 import ru.profapp.ranobe.models.RanobeImage
-import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.network.customDeserializer.RulateBookDeserializer
-import ru.profapp.ranobe.network.dto.rulateDTO.ReadyGson
-import ru.profapp.ranobe.network.dto.rulateDTO.RulateBook
-import ru.profapp.ranobe.network.dto.rulateDTO.RulateChapter
-import ru.profapp.ranobe.network.dto.rulateDTO.RulateText
+import ru.profapp.ranobe.network.dto.rulateDTO.*
 import ru.profapp.ranobe.network.endpoints.IRulateApiService
 import ru.profapp.ranobe.network.interceptors.ApiKeyInterceptor
 import java.text.ParseException
@@ -42,6 +38,7 @@ object RulateRepository : BaseRepository() {
 
     fun getReadyBooks(page: Int): Single<List<Ranobe>> {
         return instance.GetReadyBooks(page).map {
+
             return@map getRanobeList(it)
         }
     }
@@ -123,13 +120,32 @@ object RulateRepository : BaseRepository() {
             for (book in it.books) {
                 val ranobe = Ranobe(Constants.RanobeSite.Rulate)
                 ranobe.updateRanobe(book)
+
+                val existRanobe = or.firstOrNull { b -> b.url == ranobe.url }
+                if (existRanobe != null) {
+                    existRanobe.chapterList.addAll(ranobe.chapterList)
+                } else {
+                    or.add(ranobe)
+                }
+
+            }
+        }
+        return or
+    }
+
+    private fun getRanobeList(it: SearchGson): List<Ranobe> {
+        val or: MutableList<Ranobe> = mutableListOf()
+        if (it.status == "success") {
+            for (book in it.books) {
+                val ranobe = Ranobe(Constants.RanobeSite.Rulate)
+                ranobe.updateRanobe(book)
                 or.add(ranobe)
             }
         }
         return or
     }
 
-    private infix fun Ranobe.updateRanobe(book: RulateBook) {
+    private infix fun Ranobe.updateRanobe(book: RulateReadyBook) {
 
         val mCalendar = Calendar.getInstance()
         val format = SimpleDateFormat("MM-dd HH:mm", Locale.getDefault())
@@ -165,15 +181,48 @@ object RulateRepository : BaseRepository() {
             logError(LogType.WARN, "updateRanobe", "", e, false)
         }
 
+        url = if (url.isBlank()) (Constants.RanobeSite.Rulate.url + "/book/" + id) else url
+
+        chapterList.clear()
+        val chapter = Chapter()
+        chapter.ranobeId = id
+        chapter.ranobeUrl = url
+        chapter.url = url + "/" + book.id
+        chapter.ranobeName = title
+        chapter.title = book.title ?: ""
+        chapterList.add(chapter)
+
+    }
+
+    private infix fun Ranobe.updateRanobe(book: RulateBook) {
+
+        val mCalendar = Calendar.getInstance()
+        val format = SimpleDateFormat("MM-dd HH:mm", Locale.getDefault())
+        id = id?: book.id
+
+        engTitle = engTitle ?: book.sTitle
+        title = if (title.isBlank()) book.tTitle ?: title else title
+        image = image ?: book.img
+
+        if (!image.isNullOrBlank()) {
+            Completable.fromAction {
+                MyApp.database.ranobeImageDao().insert(RanobeImage(url, image!!))
+            }?.subscribeOn(Schedulers.io())?.subscribe({}, { error ->
+                logError(LogType.ERROR, "", "", error, false)
+            })
+
+        }
+
+        lang = lang ?: book.lang
+
         readyDate = readyDate ?: (if (book.lastActivity != null) Date(book.lastActivity * 1000) else readyDate)
 
         url = if (url.isBlank()) (Constants.RanobeSite.Rulate.url + "/book/" + id) else url
 
-        chapterCount = chapterCount ?: book.chaptersTotal ?: chapterCount
+        chapterCount = chapterCount ?: book.chaptersTotal
 
-        status = status ?: book.status ?: status
-        rating = rating ?: book.rating ?: rating
-
+        status = status ?: book.status
+        rating = rating ?: book.rating
 
         chapterList.clear()
         val size = book.chapters.size
@@ -201,15 +250,36 @@ object RulateRepository : BaseRepository() {
         if (chapterCount != null) {
             description = (description ?: "") + ("\nКоличество глав: $chapterCount")
         }
+    }
 
+    private infix fun Ranobe.updateRanobe(book: RulateSearchBook) {
+        engTitle = engTitle ?: book.sTitle
 
-        if (!image.isNullOrBlank()) {
-            Completable.fromAction {
-                MyApp.database.ranobeImageDao().insert(RanobeImage(url, image!!))
-            }?.subscribeOn(Schedulers.io())?.subscribe({}, { error ->
-                logError(LogType.ERROR, "", "", error, false)
-            })
+        title = if (title.isBlank()) book.tTitle ?: title else title
 
+        lang = lang ?: book.lang
+
+        readyDate = readyDate ?: (if (book.lastActivity != null) Date(book.lastActivity * 1000) else readyDate)
+
+        url = if (url.isBlank()) (Constants.RanobeSite.Rulate.url + "/book/" + id) else url
+
+        chapterCount = chapterCount ?: book.nChapters ?: chapterCount
+
+        status = status ?: book.status ?: status
+        rating = rating ?: book.rating ?: rating
+
+        description = null
+        if (status != null) {
+            description = (description ?: "") + ("Статус: $status")
+        }
+        if (lang != null) {
+            description = (description ?: "") + ("\nПеревод: $lang")
+        }
+        if (chapterCount != null) {
+            description = (description ?: "") + ("\nКоличество глав: $chapterCount")
+        }
+        if (book.ready != null) {
+            description = (description ?: "") + ("\nГотовность: $book.ready")
         }
     }
 
