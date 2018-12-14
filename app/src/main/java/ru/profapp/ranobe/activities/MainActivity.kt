@@ -27,6 +27,8 @@ import com.google.android.material.navigation.NavigationView
 import io.fabric.sdk.android.Fabric
 import io.reactivex.schedulers.Schedulers
 import ru.profapp.ranobe.BuildConfig
+import ru.profapp.ranobe.MyApp
+import ru.profapp.ranobe.R
 import ru.profapp.ranobe.common.Constants
 import ru.profapp.ranobe.common.MyExceptionHandler
 import ru.profapp.ranobe.fragments.HistoryFragment
@@ -35,9 +37,7 @@ import ru.profapp.ranobe.fragments.SearchFragment
 import ru.profapp.ranobe.helpers.ThemeHelper
 import ru.profapp.ranobe.models.Chapter
 import ru.profapp.ranobe.models.Ranobe
-import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.network.repositories.RanobeRfRepository
-import ru.profapp.ranobe.R
 
 class MainActivity : AppCompatActivity(),
         NavigationView.OnNavigationItemSelectedListener {
@@ -62,6 +62,21 @@ class MainActivity : AppCompatActivity(),
 
         setContentView(R.layout.activity_main)
         Thread.setDefaultUncaughtExceptionHandler(MyExceptionHandler(this))
+
+        Thread {
+
+            val getPrefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+
+            val isFirstStart = getPrefs.getBoolean(BuildConfig.INTRO_KEY, true)
+
+            if (isFirstStart) {
+                val i = Intent(this@MainActivity, IntroActivity::class.java)
+                startActivity(i)
+            }
+        }.start()
+
+
+
         if (intent.getBooleanExtra("crash", false)) {
             intent.removeExtra("crash")
             val builder = AlertDialog.Builder(this)

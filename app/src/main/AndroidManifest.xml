@@ -64,6 +64,9 @@
       </intent-filter>
     </activity>
 
+    <activity android:name=".activities.IntroActivity"
+      android:label="@string/app_intro" />
+
 
   </application>
 

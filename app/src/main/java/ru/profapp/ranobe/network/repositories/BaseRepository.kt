@@ -1,6 +1,5 @@
 package ru.profapp.ranobe.network.repositories
 
-import com.facebook.stetho.okhttp3.StethoInterceptor
 import okhttp3.OkHttpClient
 import ru.profapp.ranobe.BuildConfig
 import java.util.concurrent.TimeUnit
@@ -14,7 +13,7 @@ open class BaseRepository {
 
     init {
         if (BuildConfig.DEBUG) {
-            baseClient.addNetworkInterceptor(StethoInterceptor())
+            baseClient.addNetworkInterceptor(com.facebook.stetho.okhttp3.StethoInterceptor())
         }
     }
 }
