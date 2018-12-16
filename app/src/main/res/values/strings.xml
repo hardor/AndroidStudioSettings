@@ -84,7 +84,7 @@
   <string name="load_ranobes_from_db">Loading favorite ranobe from database</string>
   <string name="ranobes">Ranobes</string>
   <string name="cache_cremoved">Cache was removed</string>
-  <string name="not_history">History is empty</string>
+  <string name="not_history">Bookmarks not found</string>
   <string name="response_error">Response error</string>
   <string name="export_import" translatable="false">Backup/Restore</string>
 
@@ -144,6 +144,14 @@
 
   <!-- TODO: Remove or change this placeholder text -->
   <string name="app_intro">Introduction</string>
+
+
+  <string name="rate_dialog_title">Rate this app</string>
+  <string name="rate_dialog_message">If you enjoy playing this app, would you mind taking a moment to rate it? It won\'t take more than a minute. Thanks for your support!</string>
+  <string name="rate_dialog_ok">Rate It Now</string>
+  <string name="rate_dialog_cancel">Remind Me Later</string>
+  <string name="rate_dialog_no">No, Thanks</string>
+
   <!--<string name="tl_rulate_web" translatable="false">Rulate Web</string>-->
   <!--<string name="ranoberf_web" translatable="false">Ранобэ.рф Web</string>-->
   <!--<string name="pref_general_hide_chapter" translatable="false">        preference_hide_unavailable_chapters    </string>-->

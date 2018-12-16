@@ -30,9 +30,7 @@ class IntroFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
-       return  inflater.inflate(param1!!, container, false)
-
-
+        return inflater.inflate(param1!!, container, false)
     }
 
     companion object {

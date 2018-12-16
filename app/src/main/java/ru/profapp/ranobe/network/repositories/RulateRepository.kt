@@ -124,6 +124,7 @@ object RulateRepository : BaseRepository() {
                 val existRanobe = or.firstOrNull { b -> b.url == ranobe.url }
                 if (existRanobe != null) {
                     existRanobe.chapterList.addAll(ranobe.chapterList)
+                    existRanobe.chapterList.sortByDescending { it.id }
                 } else {
                     or.add(ranobe)
                 }

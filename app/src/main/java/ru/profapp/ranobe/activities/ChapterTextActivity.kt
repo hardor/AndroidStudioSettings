@@ -1,6 +1,7 @@
 package ru.profapp.ranobe.activities
 
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Bitmap
@@ -17,7 +18,12 @@ import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import com.crashlytics.android.Crashlytics
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.vorlonsoft.android.rate.AppRate
+import com.vorlonsoft.android.rate.StoreType
+import com.vorlonsoft.android.rate.Time
 import io.fabric.sdk.android.Fabric
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -32,6 +38,7 @@ import ru.profapp.ranobe.common.MyExceptionHandler
 import ru.profapp.ranobe.helpers.LogType
 import ru.profapp.ranobe.helpers.ThemeHelper
 import ru.profapp.ranobe.helpers.logError
+import ru.profapp.ranobe.helpers.logMessage
 import ru.profapp.ranobe.models.*
 import ru.profapp.ranobe.network.repositories.RanobeHubRepository
 import ru.profapp.ranobe.network.repositories.RanobeRfRepository
@@ -71,7 +78,7 @@ class ChapterTextActivity : AppCompatActivity() {
                 or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
     }
 
-    private fun set_web_colors() {
+    private fun setWebColors() {
 
         val settingPref = PreferenceManager.getDefaultSharedPreferences(applicationContext)
         val oldColor = settingPref.getBoolean(resources.getString(R.string.pref_general_app_theme), false)
@@ -104,11 +111,46 @@ class ChapterTextActivity : AppCompatActivity() {
         }
 
 
+
         Fabric.with(this, Crashlytics())
 
         hideSystemUI()
 
         setContentView(R.layout.activity_chapter_text)
+
+
+        AppRate.with(this)
+                .setStoreType(StoreType.GOOGLEPLAY)
+                .setTimeToWait(Time.DAY, 10) // default is 10 days, 0 means install millisecond, 10 means app is launched 10 or more time units later than installation
+                .setLaunchTimes(10)           // default is 10, 3 means app is launched 3 or more times
+                .setRemindTimeToWait(Time.DAY, 2) // default is 1 day, 1 means app is launched 1 or more time units after neutral button clicked
+                .setRemindLaunchesNumber(1)  // default is 0, 1 means app is launched 1 or more times after neutral button clicked
+                .setSelectedAppLaunches(1)   // default is 1, 1 means each launch, 2 means every 2nd launch, 3 means every 3rd launch, etc
+                .setShowLaterButton(true)           // default is true, true means to show the Neutral button ("Remind me later").
+                .set365DayPeriodMaxNumberDialogLaunchTimes(3) // default is unlimited, 3 means 3 or less occurrences of the display of the Rate Dialog within a 365-day period
+                .setVersionCodeCheck(true)          // default is false, true means to re-enable the Rate Dialog if a new version of app with different version code is installed
+                .setVersionNameCheck(true)          // default is false, true means to re-enable the Rate Dialog if a new version of app with different version name is installed
+                .setDebug(false)                    // default is false, true is for development only, true ensures that the Rate Dialog will be shown each time the app is launched
+                .setOnClickButtonListener { it ->
+                    when (it.toInt()) {
+                        DialogInterface.BUTTON_NEGATIVE -> logMessage(LogType.INFO, "Rate", "NEGATIVE")
+                        DialogInterface.BUTTON_NEUTRAL -> logMessage(LogType.INFO, "Rate", "NEUTRAL")
+                        DialogInterface.BUTTON_POSITIVE -> logMessage(LogType.INFO, "Rate", "POSITIVE")
+                        else -> logMessage(LogType.INFO, "Rate", "ELSE$ it")
+                    }
+                }
+                .monitor()                         // Monitors the app launch times
+
+        if (AppRate.with(this).storeType == StoreType.GOOGLEPLAY) { // Checks that current app store type from library options is StoreType.GOOGLEPLAY
+            if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this) != ConnectionResult.SERVICE_MISSING) { // Checks that Google Play is available
+                AppRate.showRateDialogIfMeetsConditions(this) // Shows the Rate Dialog when conditions are met
+            }
+        } else {
+            AppRate.showRateDialogIfMeetsConditions(this)     // Shows the Rate Dialog when conditions are met
+        }
+
+        //   AppRate.with(this).showRateDialog(this)
+
         bottomNavigationView = findViewById(R.id.button_layout);
         setupActionBar()
 
@@ -267,7 +309,7 @@ class ChapterTextActivity : AppCompatActivity() {
                     if (error is UnknownHostException || error is SocketTimeoutException)
                         Toast.makeText(mContext, R.string.error_connection, Toast.LENGTH_SHORT).show()
                     else
-                        logError(LogType.ERROR, "GetChapterText", "", error.fillInStackTrace())
+                        logError(LogType.ERROR, "GetChapterText", mCurrentChapter.url, error.fillInStackTrace())
 
                     val summary = ("<html><style>img{display: inline;height: auto;max-width: 90%;}</style><body "
                             + style + ">"
@@ -291,7 +333,7 @@ class ChapterTextActivity : AppCompatActivity() {
 
                 startActivity(intent)
             }
-            R.id.navigation_day_night -> set_web_colors()
+            R.id.navigation_day_night -> setWebColors()
             R.id.navigation_open_in_browser -> {
                 var url = mCurrentChapter.url
 

@@ -22,7 +22,7 @@ class ExpandableDownloadRecyclerViewAdapter() : RecyclerView.Adapter<ExpandableD
         if (mChapters.isNotEmpty()) {
             val num = Math.ceil((mChapters.size).toDouble() / numInGroup).toInt()
             for (i in 0 until num) {
-                val parentDataItem = ParentDataItem("${mChapters[minOf((i + 1) * numInGroup, mChapters.size - 1)].title} - ${mChapters[minOf(i * numInGroup, mChapters.size - 1)].title}", (mChapters.subList(i * numInGroup, minOf((i + 1) * numInGroup, mChapters.size))))
+                val parentDataItem = ParentDataItem("${mChapters[minOf(i * numInGroup, mChapters.size - 1)].title} - ${mChapters[minOf((i + 1) * numInGroup - 1, mChapters.size - 1)].title}", (mChapters.subList(i * numInGroup, minOf((i + 1) * numInGroup, mChapters.size))))
                 parentDataItem.canRead = parentDataItem.childDataItems.any { it -> it.canRead }
                 parentDataItems.add(parentDataItem)
             }

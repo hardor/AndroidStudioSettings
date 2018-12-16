@@ -71,7 +71,7 @@
   <string name="backup_restore_success">Данные успешно восстановлены</string>
   <string name="activity_backup_success">Данные успешно сохранены в память телефона</string>
   <string name="response_error">Ошибка ответа сервера</string>
-  <string name="not_history">История пуста</string>
+  <string name="not_history">Закладки для глав не найдены</string>
   <string name="activity_backup_drive_desc">Бэкап на диск позволит вам восстановить данные если вы потеряли или сменили устройство.</string>
   <string name="load_ranobes_from_db">"Загрузка избранного из базы "</string>
   <string name="no_access">Нет доступа</string>

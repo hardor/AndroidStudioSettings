@@ -24,6 +24,7 @@ import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
+import com.webianks.easy_feedback.EasyFeedback
 import io.fabric.sdk.android.Fabric
 import io.reactivex.schedulers.Schedulers
 import ru.profapp.ranobe.BuildConfig
@@ -293,9 +294,15 @@ class MainActivity : AppCompatActivity(),
                 currentTitle = resources.getText(R.string.history).toString()
             }
             R.id.nav_send -> {
-                val marketIntent = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName"))
-                if (marketIntent.resolveActivity(this.packageManager) != null) startActivity(marketIntent)
-                else Toast.makeText(this, R.string.market_exist, Toast.LENGTH_SHORT).show()
+                EasyFeedback.Builder(this)
+                        .withEmail("admin@profapp.ru")
+                        .withSystemInfo()
+                        .build()
+                        .start();
+
+//                val marketIntent = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName"))
+//                if (marketIntent.resolveActivity(this.packageManager) != null) startActivity(marketIntent)
+//                else Toast.makeText(this, R.string.market_exist, Toast.LENGTH_SHORT).show()
             }
         }
 

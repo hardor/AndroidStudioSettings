@@ -36,7 +36,7 @@ android {
         config {
             keyAlias 'ranobe'
             keyPassword 'gf6ds7fsfs7 '
-            storeFile file('C:/Users/rvildanov/Desktop/Android/ranobe.keystore')
+            storeFile file('D:/Projects/Keystore/RanobeReader/ranobe.keystore')
             storePassword 'gf6ds7fsfs7 '
         }
     }
@@ -68,7 +68,7 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             buildConfigField "boolean", "USE_LOG", "false"
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             android.applicationVariants.all { variant ->
@@ -86,6 +86,8 @@ android {
         }
     }
     compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
     }
 
     sourceSets {
@@ -150,6 +152,12 @@ dependencies {
 
     // intro
     implementation 'com.github.paolorotolo:appintro:v5.1.0'
+
+    //rate
+    implementation "com.vorlonsoft:androidrate:1.2.1"
+
+    //EasyFeedback
+    implementation 'com.webianks.library:easy-feedback:1.0.5'
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -49,19 +49,18 @@ class Chapter() {
     var id: Int? = null
         get() {
             if (field == null && !url.isBlank() && !url.contains(RanobeRf.url)) {
-                return try {
-                    val value: String =
-                            if (url.contains(RanobeHub.url)) {
-                                val arr = url.replace(ranobeUrl, "").split("/").takeLast(2)
-                                (arr[1].replace(".", "").toInt() + (arr[0].replace(".", "").toInt() * 10000)).toString()
-                            } else {
-                                url.substring(url.lastIndexOf("/") + 1)
-                            }
 
-                    Integer.parseInt(value)
-                } catch (error: NumberFormatException) {
-                    logError(LogType.ERROR, "ChapterId", url, error)
-                    field
+                if (url.contains(RanobeHub.url)) {
+                    val arr = url.replace(ranobeUrl, "").split("/").takeLast(2)
+                    return arr[1].replace(".", "").toInt() + (arr[0].replace(".", "").toInt() * 10000)
+                } else {
+                    val value: String = url.substring(url.lastIndexOf("/") + 1)
+                    return try {
+                        Integer.parseInt(value)
+                    } catch (error: NumberFormatException) {
+                        logError(LogType.ERROR, "ChapterId", url, error)
+                        field
+                    }
                 }
             }
             return field

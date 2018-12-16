@@ -1,5 +1,6 @@
 package ru.profapp.ranobe.activities
 
+import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
@@ -17,6 +18,14 @@ class IntroActivity : AppIntro() {
         addSlide(IntroFragment.newInstance(R.layout.fragment_intro_2))
         addSlide(IntroFragment.newInstance(R.layout.fragment_intro_3))
         addSlide(IntroFragment.newInstance(R.layout.fragment_intro_4))
+        addSlide(IntroFragment.newInstance(R.layout.fragment_intro_5))
+        addSlide(IntroFragment.newInstance(R.layout.fragment_intro_6))
+
+        setColorSkipButton(resources.getColor(R.color.colorAccent))
+        setColorDoneText(resources.getColor(R.color.colorAccent))
+        setNextArrowColor(resources.getColor(R.color.colorAccent))
+        setSeparatorColor(resources.getColor(R.color.colorAccent))
+        setIndicatorColor(resources.getColor(R.color.colorAccent), resources.getColor(R.color.colorPrimary))
     }
 
     override fun onSkipPressed(currentFragment: Fragment?) {

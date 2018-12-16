@@ -4,19 +4,19 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Element
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.common.Constants
 import ru.profapp.ranobe.helpers.LogType
 import ru.profapp.ranobe.helpers.dateFromString
 import ru.profapp.ranobe.helpers.logError
 import ru.profapp.ranobe.helpers.removeTags
-
 import ru.profapp.ranobe.models.Chapter
 import ru.profapp.ranobe.models.Ranobe
 import ru.profapp.ranobe.models.RanobeImage
-import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.network.dto.ranobeHubDTO.RanobeHubBook
 import ru.profapp.ranobe.network.dto.ranobeHubDTO.RanobeHubReadyGson
 import ru.profapp.ranobe.network.endpoints.IRanobeHubApiService
@@ -140,13 +140,14 @@ object RanobeHubRepository : BaseRepository() {
                 }
 
                 val body = jsObject.body()
-                mCurrentChapter.title = body.selectFirst(".__ranobe_read_container h1").text()
-                val textObj = body.selectFirst(".__ranobe_read_container")
-                textObj.selectFirst("h1").remove()
-                textObj.select(".ads-desktop").remove()
-                textObj.select(".ads-mobile").remove()
-                textObj.select(".adsbygoogle").remove()
-                textObj.select("img").forEach { it ->
+                if (mCurrentChapter.title.isBlank()) mCurrentChapter.title = body.selectFirst(".__ranobe_read_container h1").text()
+
+                val textObj: Element? = body.selectFirst(".__ranobe_read_container")
+                textObj?.selectFirst("h1")?.remove()
+                textObj?.select(".ads-desktop")?.remove()
+                textObj?.select(".ads-mobile")?.remove()
+                textObj?.select(".adsbygoogle")?.remove()
+                textObj?.select("img")?.forEach { it ->
                     val img = it.attr("data-src")
 
                     var newAttr = Constants.RanobeSite.RanobeHub.url
@@ -157,7 +158,7 @@ object RanobeHubRepository : BaseRepository() {
 
                     it.attr("src", newAttr)
                 }
-                mCurrentChapter.text = textObj.html()
+                mCurrentChapter.text = textObj?.html()
                 return@map true
             } else
                 return@map false
@@ -231,7 +232,7 @@ object RanobeHubRepository : BaseRepository() {
     }
 
     private fun createHtml(): IRanobeHubApiService {
-        val httpClient = baseClient.addInterceptor (AddCookiesInterceptor(this))
+        val httpClient = baseClient.addInterceptor(AddCookiesInterceptor(this))
                 .addInterceptor(ReceivedCookiesInterceptor(this))
 
         val retrofit = Retrofit.Builder()

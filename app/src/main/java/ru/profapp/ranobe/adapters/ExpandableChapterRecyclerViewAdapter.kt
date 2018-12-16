@@ -26,13 +26,13 @@ class ExpandableChapterRecyclerViewAdapter(private val mContext: Context, privat
     val dp2 = convertDpToPixel(2, mContext)
     val dp6 = convertDpToPixel(6, mContext)
 
-    constructor(context: Context, mChapters: ArrayList<Chapter>, mRanobe: Ranobe) : this(context, mRanobe) {
+    constructor(context: Context, mChapters: List<Chapter>, mRanobe: Ranobe) : this(context, mRanobe) {
 
         val numInGroup = 100
         if (mChapters.size > 0) {
             val num = Math.ceil((mChapters.size).toDouble() / numInGroup).toInt()
             for (i in 0 until num) {
-                val parentDataItem = ParentDataItem("${mChapters[minOf((i + 1) * numInGroup, mChapters.size - 1)].title} - ${mChapters[minOf(i * numInGroup, mChapters.size - 1)].title}", (mChapters.subList(i * numInGroup, minOf((i + 1) * numInGroup, mChapters.size))))
+                val parentDataItem = ParentDataItem("${mChapters[minOf(i * numInGroup, mChapters.size - 1)].title} - ${mChapters[minOf((i + 1) * numInGroup - 1, mChapters.size - 1)].title}", (mChapters.subList(i * numInGroup, minOf((i + 1) * numInGroup, mChapters.size))))
                 parentDataItem.canRead = parentDataItem.childDataItems.any { it -> it.canRead }
                 parentDataItems.add(parentDataItem)
             }
