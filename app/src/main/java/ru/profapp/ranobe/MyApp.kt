@@ -15,6 +15,7 @@ import ru.profapp.ranobe.helpers.logError
 import ru.profapp.ranobe.helpers.logMessage
 import ru.profapp.ranobe.models.Chapter
 import ru.profapp.ranobe.models.Ranobe
+import ru.profapp.ranobe.utils.StethoUtils
 
 class MyApp : MultiDexApplication() {
 
@@ -130,25 +131,8 @@ class MyApp : MultiDexApplication() {
                 return
             }
             refWatcher = LeakCanary.install(this)
+            StethoUtils.install(this)
 
-            // Create an InitializerBuilder
-            val initializerBuilder = com.facebook.stetho.Stetho.newInitializerBuilder(this)
-
-            // Enable Chrome DevTools
-
-            initializerBuilder.enableWebKitInspector(
-                    com.facebook.stetho.Stetho.defaultInspectorModulesProvider(this)
-            )
-            // Enable command line interface
-            initializerBuilder.enableDumpapp(
-                    com.facebook.stetho.Stetho.defaultDumperPluginsProvider(this)
-            )
-
-            // Use the InitializerBuilder to generate an Initializer
-            val initializer = initializerBuilder.build()
-
-            // Initialize Stetho with the Initializer
-            com.facebook.stetho.Stetho.initialize(initializer)
         }
         MyApp.database = Room.databaseBuilder(this, DatabaseDao::class.java, DB_NAME).addMigrations(MIGRATION_2_3, MIGRATION_3_4).fallbackToDestructiveMigration().build()
     }
