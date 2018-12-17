@@ -43,19 +43,15 @@ android {
     lintOptions {
         checkReleaseBuilds false
     }
-
     compileSdkVersion 28
     defaultConfig {
         applicationId "ru.profapp.ranobe"
         minSdkVersion 19
         targetSdkVersion 28
         multiDexEnabled true
-
         versionCode = calculateVersionCode()
         versionName = calculateVersionName()
-
         buildConfigField "String", "INTRO_KEY", "\"firstStart_1\""
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         javaCompileOptions {
@@ -64,7 +60,7 @@ android {
                                      "$projectDir/schemas".toString()]
             }
         }
-
+        signingConfig signingConfigs.config
     }
     buildTypes {
         release {
@@ -78,6 +74,7 @@ android {
                     outputFileName = "${variant.applicationId}_${defaultConfig.versionName}-${variantData.variantConfiguration.baseName}.apk"
                 }
             }
+            signingConfig signingConfigs.config
         }
         debug {
             minifyEnabled false
@@ -89,9 +86,10 @@ android {
         sourceCompatibility 1.8
         targetCompatibility 1.8
     }
-
     sourceSets {
         androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
+    }
+    productFlavors {
     }
 }
 
@@ -149,13 +147,10 @@ dependencies {
     //stetho
     debugImplementation 'com.facebook.stetho:stetho:1.5.0'
     debugImplementation 'com.facebook.stetho:stetho-okhttp3:1.5.0'
-
     // intro
     implementation 'com.github.paolorotolo:appintro:v5.1.0'
-
     //rate
-    implementation "com.vorlonsoft:androidrate:1.2.1"
-
+    implementation 'com.vorlonsoft:androidrate:1.2.1'
     //EasyFeedback
     implementation 'com.webianks.library:easy-feedback:1.0.5'
 }
