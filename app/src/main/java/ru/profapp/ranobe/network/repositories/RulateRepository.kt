@@ -280,7 +280,7 @@ object RulateRepository : BaseRepository() {
             description = (description ?: "") + ("\nКоличество глав: $chapterCount")
         }
         if (book.ready != null) {
-            description = (description ?: "") + ("\nГотовность: $book.ready")
+            description = (description ?: "") + ("\nГотовность: ${book.ready}")
         }
     }
 

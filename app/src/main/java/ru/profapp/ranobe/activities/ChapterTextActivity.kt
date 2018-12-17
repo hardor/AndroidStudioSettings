@@ -552,6 +552,11 @@ class ChapterTextActivity : AppCompatActivity() {
         bottomNavigationView.menu.findItem(R.id.navigation_bookmark).isVisible = !MyApp.autoAddBookmark
     }
 
+    override fun onResume() {
+        super.onResume()
+        hideSystemUI()
+    }
+
     override fun onPause() {
         super.onPause()
         if (MyApp.autoAddBookmark) {
