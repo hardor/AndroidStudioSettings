@@ -39,7 +39,6 @@
     android:layout_height="wrap_content"
     android:background="@color/webViewBackground"
     android:layout_gravity="bottom"
-    app:layout_behavior="ru.profapp.ranobe.customElements.BottomNavigationBehavior"
     app:menu="@menu/chapter_bottom"/>
 
   <ProgressBar

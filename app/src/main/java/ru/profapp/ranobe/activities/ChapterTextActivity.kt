@@ -224,6 +224,7 @@ class ChapterTextActivity : AppCompatActivity() {
 
         textWebview.appbar = appbar_chT
         textWebview.bottomNavigationView = bottomNavigationView
+        textWebview.isHorizontalScrollBarEnabled = false
 
         lastChapterIdPref = applicationContext.getSharedPreferences(Constants.last_chapter_id_Pref, Context.MODE_PRIVATE)
 

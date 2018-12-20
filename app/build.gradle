@@ -1,7 +1,7 @@
 ext {
 
     majVersion = 1
-    minVersion = 10
+    minVersion = 12
 
     calculateVersionName = {
         return "${majVersion}.${minVersion}"
@@ -36,7 +36,6 @@ android {
         config {
             keyAlias 'ranobe'
             keyPassword 'gf6ds7fsfs7 '
-            storeFile file('D:/Projects/Keystore/RanobeReader/ranobe.keystore')
             storePassword 'gf6ds7fsfs7 '
         }
     }
@@ -64,8 +63,7 @@ android {
     }
     buildTypes {
         release {
-            shrinkResources true
-            minifyEnabled true
+            minifyEnabled false
             buildConfigField "boolean", "USE_LOG", "false"
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             android.applicationVariants.all { variant ->
