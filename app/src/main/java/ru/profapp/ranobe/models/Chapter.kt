@@ -39,7 +39,7 @@ class Chapter() {
                     return url.substring(0, url.lastIndexOf("/"))
                 }
             } catch (ignore: Exception) {
-                ignore.printStackTrace()
+                logError(LogType.ERROR, "ChapterTextActivity", url, ignore)
             }
 
 

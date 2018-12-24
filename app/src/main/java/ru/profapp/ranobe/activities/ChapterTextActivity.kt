@@ -43,6 +43,7 @@ import ru.profapp.ranobe.models.*
 import ru.profapp.ranobe.network.repositories.RanobeHubRepository
 import ru.profapp.ranobe.network.repositories.RanobeRfRepository
 import ru.profapp.ranobe.network.repositories.RulateRepository
+import java.net.SocketException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
@@ -57,7 +58,7 @@ class ChapterTextActivity : AppCompatActivity() {
     private var mChapterList: List<Chapter> = ArrayList()
 
     private var lastChapterIdPref: SharedPreferences? = null
-    private var currentRanobe: Ranobe? = null
+    private lateinit var currentRanobe: Ranobe
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     lateinit var bottomNavigationView: BottomNavigationView
@@ -69,13 +70,13 @@ class ChapterTextActivity : AppCompatActivity() {
                 or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 or View.SYSTEM_UI_FLAG_FULLSCREEN
                 or View.SYSTEM_UI_FLAG_LOW_PROFILE
-                or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
     }
 
     private fun showSystemUI() {
         window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
     }
 
     private fun setWebColors() {
@@ -99,7 +100,7 @@ class ChapterTextActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (!MyApp.isApplicationInitialized) {
+        if (!MyApp.isApplicationInitialized || MyApp.ranobe == null) {
             val firstIntent = Intent(this, MainActivity::class.java)
 
             firstIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) // So all other activities will be dumped
@@ -151,7 +152,7 @@ class ChapterTextActivity : AppCompatActivity() {
 
         //   AppRate.with(this).showRateDialog(this)
 
-        bottomNavigationView = findViewById(R.id.button_layout);
+        bottomNavigationView = findViewById(R.id.button_layout)
         setupActionBar()
 
         Thread.setDefaultUncaughtExceptionHandler(MyExceptionHandler(this))
@@ -166,9 +167,15 @@ class ChapterTextActivity : AppCompatActivity() {
 
         mContext = this@ChapterTextActivity
 
-        currentRanobe = MyApp.ranobe
-        mChapterList = currentRanobe?.chapterList?.filter { it -> it.canRead } ?: mChapterList
+        currentRanobe = MyApp.ranobe!!
 
+        val tempList = currentRanobe.chapterList.filter { it -> it.canRead }
+
+        mChapterList = if (tempList.any()) {
+            tempList
+        } else {
+            currentRanobe.chapterList
+        }
 
         mChapterCount = mChapterList.size
 
@@ -176,8 +183,17 @@ class ChapterTextActivity : AppCompatActivity() {
             mCurrentChapter = mChapterList.firstOrNull { it.url == hChapterUrl } ?: mChapterList[0]
             chapterIndex = mChapterList.indexOf(mCurrentChapter)
         } else {
-            chapterIndex = mChapterCount - 1
-            mCurrentChapter = mChapterList[chapterIndex]
+            try {
+                chapterIndex = mChapterCount - 1
+                mCurrentChapter = mChapterList[chapterIndex]
+            } catch (e: ArrayIndexOutOfBoundsException) {
+                chapterIndex = 0
+                mCurrentChapter= Chapter().apply {
+                    title = "Not found"
+                    text = "Not found"
+                }
+                logError(LogType.ERROR, "ChapterTextActivity", currentRanobe.url, e)
+            }
         }
         textWebview.webViewClient = object : WebViewClient() {
 
@@ -230,10 +246,10 @@ class ChapterTextActivity : AppCompatActivity() {
 
         initWebView()
 
-        if (currentRanobe != null && !currentRanobe?.url.isNullOrBlank() && !currentRanobe?.title.isNullOrBlank()) {
+        if (!currentRanobe.url.isBlank() && !currentRanobe.title.isBlank()) {
             val request = Completable.fromAction {
                 MyApp.database.ranobeHistoryDao().insertNewRanobe(
-                        RanobeHistory(currentRanobe!!.url, currentRanobe!!.title, currentRanobe!!.description)
+                        RanobeHistory(currentRanobe.url, currentRanobe.title, currentRanobe.description)
                 )
             }.subscribeOn(Schedulers.io()).subscribe({}, { error ->
                 logError(LogType.ERROR, "", "", error, false)
@@ -307,7 +323,7 @@ class ChapterTextActivity : AppCompatActivity() {
 
                 }, { error ->
 
-                    if (error is UnknownHostException || error is SocketTimeoutException)
+                    if (error is UnknownHostException || error is SocketTimeoutException || error is SocketException)
                         Toast.makeText(mContext, R.string.error_connection, Toast.LENGTH_SHORT).show()
                     else
                         logError(LogType.ERROR, "GetChapterText", mCurrentChapter.url, error.fillInStackTrace())

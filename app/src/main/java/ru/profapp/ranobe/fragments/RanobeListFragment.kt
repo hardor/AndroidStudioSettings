@@ -353,49 +353,6 @@ class RanobeListFragment : Fragment() {
                     return@map ranobes
                 }
 
-                // Groups
-                //                .map {
-                //
-                //                    return@map if (fragmentType == Constants.FragmentType.Favorite) {
-                //                        when (checkedSortItemName) {
-                //                            Constants.SortOrder.ByTitle.name -> it.sortedBy { r -> r.title }
-                //                            Constants.SortOrder.ByDate.name -> it.sortedByDescending { r -> r.readyDate }
-                //                            Constants.SortOrder.ByUpdates.name -> it.sortedByDescending { r -> r.newChapters }
-                //                            else -> it.sortedBy { r -> r.ranobeSite }
-                //
-                //                        }
-                //                    } else
-                //                        it
-                //
-                //                }
-                //Add titles
-                //                .map {
-                //                    val newRanobeList = mutableListOf<Ranobe>()
-                //                    val groupList = it.asSequence().sortedByDescending { s -> s.readyDate }.groupBy { g -> g.ranobeSite }
-                //                    for (siteGroup in groupList) {
-                //                        val webGroupList = siteGroup.value.groupBy { g -> g.isFavoriteInWeb }
-                //                        for (webGroup in webGroupList) {
-                //                            if (page == 0) {
-                //                                val titleRanobe = Ranobe(Title)
-                //                                titleRanobe.title = (Constants.RanobeSite.fromUrl(siteGroup.key)?.title
-                //                                        ?: None.title).plus(
-                //                                        if (fragmentType == Constants.FragmentType.Favorite) {
-                //                                            if (webGroup.key) " Web" else " Local"
-                //                                        } else ""
-                //                                )
-                //                                newRanobeList.add(titleRanobe)
-                //                            }
-                //                            newRanobeList.addAll(webGroup.value.map { gr ->
-                //                                gr.chapterList = gr.chapterList
-                //                                return@map gr
-                //                            })
-                //                        }
-                //
-                //                    }
-
-                //                    return@map newRanobeList.toList()
-                //                }
-
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ result ->

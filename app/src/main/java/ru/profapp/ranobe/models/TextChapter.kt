@@ -33,36 +33,4 @@ class TextChapter {
         this.ranobeUrl = chapter.ranobeUrl
     }
 
-    constructor(chapterUrl: String, chapterName: String, ranobeName: String, ranobeUrl: String, text: String) {
-        this.chapterUrl = chapterUrl
-        this.chapterName = chapterName.replace("^\\s+", "")
-        this.ranobeName = ranobeName
-        this.ranobeUrl = ranobeUrl
-        this.text = text
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as TextChapter
-
-        if (chapterUrl != other.chapterUrl) return false
-        if (chapterName != other.chapterName) return false
-        if (ranobeName != other.ranobeName) return false
-        if (ranobeUrl != other.ranobeUrl) return false
-        if (text != other.text) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = chapterUrl.hashCode()
-        result = 31 * result + chapterName.hashCode()
-        result = 31 * result + ranobeName.hashCode()
-        result = 31 * result + ranobeUrl.hashCode()
-        result = 31 * result + text.hashCode()
-        return result
-    }
-
 }
