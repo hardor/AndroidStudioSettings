@@ -31,6 +31,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_chapter_text.*
+import ru.profapp.ranobe.BuildConfig
 import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.R
 import ru.profapp.ranobe.common.Constants
@@ -119,8 +120,7 @@ class ChapterTextActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_chapter_text)
 
-
-        AppRate.with(this)
+        val apprate = AppRate.with(this)
                 .setStoreType(StoreType.GOOGLEPLAY)
                 .setTimeToWait(Time.DAY, 10) // default is 10 days, 0 means install millisecond, 10 means app is launched 10 or more time units later than installation
                 .setLaunchTimes(10)           // default is 10, 3 means app is launched 3 or more times
@@ -131,7 +131,7 @@ class ChapterTextActivity : AppCompatActivity() {
                 .set365DayPeriodMaxNumberDialogLaunchTimes(3) // default is unlimited, 3 means 3 or less occurrences of the display of the Rate Dialog within a 365-day period
                 .setVersionCodeCheck(true)          // default is false, true means to re-enable the Rate Dialog if a new version of app with different version code is installed
                 .setVersionNameCheck(true)          // default is false, true means to re-enable the Rate Dialog if a new version of app with different version name is installed
-                .setDebug(false)                    // default is false, true is for development only, true ensures that the Rate Dialog will be shown each time the app is launched
+
                 .setOnClickButtonListener { it ->
                     when (it.toInt()) {
                         DialogInterface.BUTTON_NEGATIVE -> logMessage(LogType.INFO, "Rate", "NEGATIVE")
@@ -140,7 +140,12 @@ class ChapterTextActivity : AppCompatActivity() {
                         else -> logMessage(LogType.INFO, "Rate", "ELSE $it")
                     }
                 }
-                .monitor()                         // Monitors the app launch times
+
+        if (BuildConfig.DEBUG) {
+            apprate.isDebug = true  // default is false, true is for development only, true ensures that the Rate Dialog will be shown each time the app is launched
+        }
+
+        apprate.monitor()                         // Monitors the app launch times
 
         if (AppRate.with(this).storeType == StoreType.GOOGLEPLAY) { // Checks that current app store type from library options is StoreType.GOOGLEPLAY
             if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this) != ConnectionResult.SERVICE_MISSING) { // Checks that Google Play is available
@@ -188,7 +193,7 @@ class ChapterTextActivity : AppCompatActivity() {
                 mCurrentChapter = mChapterList[chapterIndex]
             } catch (e: ArrayIndexOutOfBoundsException) {
                 chapterIndex = 0
-                mCurrentChapter= Chapter().apply {
+                mCurrentChapter = Chapter().apply {
                     title = "Not found"
                     text = "Not found"
                 }

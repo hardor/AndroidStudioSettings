@@ -10,15 +10,11 @@ import ru.profapp.ranobe.network.dto.ranobeHubDTO.RanobeHubSearchGson
 
 interface IRanobeHubApiService {
 
-
     @Headers("X-Requested-With: XMLHttpRequest")
-    @GET("/ranobe")
-    fun GetReadyBooks(@Query("page") page: Int,
-                      @Header("X-CSRF-TOKEN") token: String
-//                      @Field("country") country: Int? = null,
-//                      @Field("sort") sort: String? = null,
-//                      @Field("tags") tags: List<String>? = null,
-//                      @Field("years") years: String? = null
+    @GET("/api/feed")
+    fun GetReadyBooks(
+            @Query("page") page: Int?=null,
+            @Header("X-CSRF-TOKEN") token: String
     ): Single<RanobeHubReadyGson>
 
     @GET("/ranobe")

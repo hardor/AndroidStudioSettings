@@ -11,7 +11,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.common.Constants
 import ru.profapp.ranobe.helpers.LogType
-import ru.profapp.ranobe.helpers.dateFromString
 import ru.profapp.ranobe.helpers.logError
 import ru.profapp.ranobe.helpers.removeTags
 import ru.profapp.ranobe.models.Chapter
@@ -72,13 +71,17 @@ object RanobeHubRepository : BaseRepository() {
                         token = metaOgTitle.attr("content")
                     }
                 }
-                return@flatMap instance.GetReadyBooks(page, token).map {
+                return@flatMap instance.GetReadyBooks(token = token).map {
                     return@map getRanobeReadyList(it)
                 }
             }
 
         } else {
-            return instance.GetReadyBooks(page, token).map {
+            return if (page == 1) {
+                instance.GetReadyBooks(null, token)
+            } else {
+                instance.GetReadyBooks(page, token)
+            }.map {
                 return@map getRanobeReadyList(it)
             }
         }
@@ -88,30 +91,53 @@ object RanobeHubRepository : BaseRepository() {
     private fun getRanobeReadyList(it: RanobeHubReadyGson): List<Ranobe> {
         val or: MutableList<Ranobe> = mutableListOf()
 
-        if (it.content.isNotBlank()) {
+        if (it.resource != null) {
 
-            val items = Jsoup.parse(it.content).select("div.grid_item")
-            for (item in items) {
-                val ranobe = Ranobe(Constants.RanobeSite.RanobeHub)
+            for (resource in it.resource) {
 
-                ranobe.id = item.selectFirst("div.__item_set_rating").attr("data-id").toInt()
-                ranobe.url = "${Constants.RanobeSite.RanobeHub.url}/ranobe/${ranobe.id}"
-                ranobe.image = Constants.RanobeSite.RanobeHub.url + item.selectFirst("img").attr("data-src")
+                val ranobeH = resource.ranobe
 
-                if (!ranobe.image.isNullOrBlank()) {
-                    Completable.fromAction {
-                        MyApp.database.ranobeImageDao().insert(RanobeImage(ranobe.url, ranobe.image!!))
-                    }?.subscribeOn(Schedulers.io())?.subscribe({}, { error ->
-                        logError(LogType.ERROR, "", "", error, false)
-                    })
+                var existRanobe = or.firstOrNull { b -> b.id == ranobeH?.id }
 
+                if (existRanobe == null) {
+
+                    val ranobe = Ranobe(Constants.RanobeSite.RanobeHub).apply {
+                        id = ranobeH?.id
+                        url = "${Constants.RanobeSite.RanobeHub.url}/ranobe/${id}"
+                        image = Constants.RanobeSite.RanobeHub.url + ranobeH?.poster
+                        title = ranobeH?.names?.rus ?: ""
+                        engTitle = ranobeH?.names?.eng
+                        readyDate = resource.createdAt?.let { it1 -> Date(it1 * 1000) }
+                    }
+
+
+                    if (!ranobe.image.isNullOrBlank()) {
+                        Completable.fromAction {
+                            MyApp.database.ranobeImageDao().insert(RanobeImage(ranobe.url, ranobe.image!!))
+                        }?.subscribeOn(Schedulers.io())?.subscribe({}, { error ->
+                            logError(LogType.ERROR, "", "", error, false)
+                        })
+                    }
+
+                    or.add(ranobe)
+                    existRanobe = ranobe
                 }
-                val desc = item.selectFirst("div.description")
-                ranobe.description = desc.ownText()
-                ranobe.title = item.selectFirst("div.header").selectFirst("a").text()
-                ranobe.engTitle = item.selectFirst("div.header").selectFirst("h5").text()
-                ranobe.readyDate = dateFromString(desc.selectFirst("span").text())
-                or.add(ranobe)
+
+                val jsObject = Jsoup.parse(resource.content)
+                if (jsObject.hasText()) {
+                    val chapter = Chapter()
+                    chapter.apply {
+                        title = jsObject.selectFirst("a").text()
+                        ranobeId = existRanobe.id
+                        ranobeUrl = existRanobe.url
+                        url = jsObject.selectFirst("a").attr("href")
+                        ranobeName = existRanobe.title
+                    }
+
+                    existRanobe.chapterList.add(chapter)
+                    existRanobe.chapterList.sortByDescending { it.id }
+                }
+
             }
         }
 
