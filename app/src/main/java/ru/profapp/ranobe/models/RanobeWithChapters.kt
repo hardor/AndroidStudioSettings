@@ -15,22 +15,5 @@ class RanobeWithChapters {
     @Relation(parentColumn = "Url", entityColumn = "RanobeUrl", entity = Chapter::class)
     var chapterList: MutableList<Chapter> = ArrayList()
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as RanobeWithChapters
-
-        if (ranobe != other.ranobe) return false
-        if (chapterList != other.chapterList) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = ranobe.hashCode()
-        result = 31 * result + chapterList.hashCode()
-        return result
-    }
 
 }

@@ -7,9 +7,9 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import io.reactivex.Single
+import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.common.Constants
 import ru.profapp.ranobe.common.Constants.RanobeSite.*
-import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.network.dto.rulateDTO.RulateComment
 import ru.profapp.ranobe.network.repositories.RanobeHubRepository
 import ru.profapp.ranobe.network.repositories.RanobeRfRepository
@@ -141,58 +141,6 @@ class Ranobe() {
             wasUpdated = it
         }
 
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as Ranobe
-
-        if (url != other.url) return false
-        if (engTitle != other.engTitle) return false
-        if (title != other.title) return false
-        if (image != other.image) return false
-        if (readyDate != other.readyDate) return false
-        if (lang != other.lang) return false
-        if (description != other.description) return false
-        if (additionalInfo != other.additionalInfo) return false
-        if (chapterCount != other.chapterCount) return false
-        if (lastReadChapter != other.lastReadChapter) return false
-        if (wasUpdated != other.wasUpdated) return false
-        if (isFavorite != other.isFavorite) return false
-        if (isFavoriteInWeb != other.isFavoriteInWeb) return false
-        if (rating != other.rating) return false
-        if (status != other.status) return false
-        if (genres != other.genres) return false
-        if (chapterList != other.chapterList) return false
-        if (comments != other.comments) return false
-        if (bookmarkIdRf != other.bookmarkIdRf) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = url.hashCode()
-        result = 31 * result + (engTitle?.hashCode() ?: 0)
-        result = 31 * result + title.hashCode()
-        result = 31 * result + (image?.hashCode() ?: 0)
-        result = 31 * result + (readyDate?.hashCode() ?: 0)
-        result = 31 * result + (lang?.hashCode() ?: 0)
-        result = 31 * result + (description?.hashCode() ?: 0)
-        result = 31 * result + (additionalInfo?.hashCode() ?: 0)
-        result = 31 * result + (chapterCount ?: 0)
-        result = 31 * result + (lastReadChapter ?: 0)
-        result = 31 * result + wasUpdated.hashCode()
-        result = 31 * result + isFavorite.hashCode()
-        result = 31 * result + isFavoriteInWeb.hashCode()
-        result = 31 * result + (rating?.hashCode() ?: 0)
-        result = 31 * result + (status?.hashCode() ?: 0)
-        result = 31 * result + (genres?.hashCode() ?: 0)
-        result = 31 * result + chapterList.hashCode()
-        result = 31 * result + comments.hashCode()
-        result = 31 * result + bookmarkIdRf
-        return result
     }
 
 }

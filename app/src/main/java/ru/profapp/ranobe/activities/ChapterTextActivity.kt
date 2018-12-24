@@ -137,7 +137,7 @@ class ChapterTextActivity : AppCompatActivity() {
                         DialogInterface.BUTTON_NEGATIVE -> logMessage(LogType.INFO, "Rate", "NEGATIVE")
                         DialogInterface.BUTTON_NEUTRAL -> logMessage(LogType.INFO, "Rate", "NEUTRAL")
                         DialogInterface.BUTTON_POSITIVE -> logMessage(LogType.INFO, "Rate", "POSITIVE")
-                        else -> logMessage(LogType.INFO, "Rate", "ELSE$ it")
+                        else -> logMessage(LogType.INFO, "Rate", "ELSE $it")
                     }
                 }
                 .monitor()                         // Monitors the app launch times
