@@ -199,7 +199,7 @@ object RulateRepository : BaseRepository() {
 
         val mCalendar = Calendar.getInstance()
         val format = SimpleDateFormat("MM-dd HH:mm", Locale.getDefault())
-        id = id?: book.id
+        id = id ?: book.id
 
         engTitle = engTitle ?: book.sTitle
         title = if (title.isBlank()) book.tTitle ?: title else title
@@ -279,7 +279,7 @@ object RulateRepository : BaseRepository() {
         if (chapterCount != null) {
             description = (description ?: "") + ("\nКоличество глав: $chapterCount")
         }
-        if (book.ready != null) {
+        if (book.ready != null && book.ready != "&mdash;") {
             description = (description ?: "") + ("\nГотовность: ${book.ready}")
         }
     }
