@@ -17,7 +17,7 @@
     android:title="@string/volume_scroll"/>
 
   <SwitchPreference
-    android:defaultValue="false"
+    android:defaultValue="true"
     android:key="@string/pref_general_auto_bookmark"
     android:summaryOff="@string/summary_auto_bookmark_off"
     android:summaryOn="@string/summary_auto_bookmark_on"

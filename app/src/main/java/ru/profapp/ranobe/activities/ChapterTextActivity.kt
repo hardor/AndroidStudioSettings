@@ -31,11 +31,11 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_chapter_text.*
-import ru.profapp.ranobe.BuildConfig
 import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.R
 import ru.profapp.ranobe.common.Constants
 import ru.profapp.ranobe.common.MyExceptionHandler
+import ru.profapp.ranobe.common.OnSwipeTouchListener
 import ru.profapp.ranobe.helpers.LogType
 import ru.profapp.ranobe.helpers.ThemeHelper
 import ru.profapp.ranobe.helpers.logError
@@ -141,9 +141,6 @@ class ChapterTextActivity : AppCompatActivity() {
                     }
                 }
 
-        if (BuildConfig.DEBUG) {
-            apprate.isDebug = true  // default is false, true is for development only, true ensures that the Rate Dialog will be shown each time the app is launched
-        }
 
         apprate.monitor()                         // Monitors the app launch times
 
@@ -243,9 +240,29 @@ class ChapterTextActivity : AppCompatActivity() {
 
         textWebview.setBackgroundColor(resources.getColor(R.color.webViewBackground))
 
-        textWebview.appbar = appbar_chT
-        textWebview.bottomNavigationView = bottomNavigationView
         textWebview.isHorizontalScrollBarEnabled = false
+        textWebview.setOnTouchListener( object: OnSwipeTouchListener(applicationContext) {
+            override fun onSwipeLeft() {
+                OnClicked(-1)
+                bottomNavigationView.menu.findItem(R.id.navigation_next).isChecked = true
+            }
+
+            override fun onSwipeRight() {
+                OnClicked(+1)
+                bottomNavigationView.menu.findItem(R.id.navigation_prev).isChecked = true
+            }
+
+            override fun onTap() {
+                if (appbar_chT != null) {
+                    val fullyExpanded = (appbar_chT!!.height - appbar_chT!!.bottom == 0) && (bottomNavigationView.height == bottomNavigationView.bottom - bottomNavigationView.top)
+
+                    appbar_chT?.setExpanded(!fullyExpanded)
+
+                    bottomNavigationView.updateView(fullyExpanded)
+
+                }
+            }
+        })
 
         lastChapterIdPref = applicationContext.getSharedPreferences(Constants.last_chapter_id_Pref, Context.MODE_PRIVATE)
 
@@ -506,7 +523,7 @@ class ChapterTextActivity : AppCompatActivity() {
             }
 
         } else {
-            Toast.makeText(mContext, R.string.not_exist, Toast.LENGTH_SHORT).show()
+            Toast.makeText(mContext, R.string.chapter_not_available, Toast.LENGTH_SHORT).show()
             chapterIndex = prevChapterIndex
         }
 
@@ -592,6 +609,13 @@ class ChapterTextActivity : AppCompatActivity() {
         compositeDisposable.clear()
     }
 
+
+    private fun BottomNavigationView.updateView(fullyExpanded: Boolean) {
+        if (fullyExpanded)
+            this.animate().translationY(this.height.toFloat())
+        else
+            this.animate().translationY(0f)
+    }
 }
 
 

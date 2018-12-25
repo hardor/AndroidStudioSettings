@@ -14,31 +14,32 @@
     android:layout_height="wrap_content"
     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-      <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar_chT"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        app:layout_scrollFlags="scroll|enterAlways"
-        app:title=""
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+    <androidx.appcompat.widget.Toolbar
+      android:id="@+id/toolbar_chT"
+      android:layout_width="match_parent"
+      android:layout_height="?attr/actionBarSize"
+      app:layout_scrollFlags="scroll|enterAlways"
+      app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+      app:title=""/>
 
   </com.google.android.material.appbar.AppBarLayout>
 
 
-    <ru.profapp.ranobe.customElements.NestedWebView
-      android:id="@+id/textWebview"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:hardwareAccelerated="true"
-      app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+  <WebView
+    android:id="@+id/textWebview"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:hardwareAccelerated="true"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
 
   <com.google.android.material.bottomnavigation.BottomNavigationView
     android:id="@+id/button_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/webViewBackground"
     android:layout_gravity="bottom"
+    android:background="@color/webViewBackground"
+    app:layout_behavior="ru.profapp.ranobe.customElements.BottomNavigationBehavior"
     app:menu="@menu/chapter_bottom"/>
 
   <ProgressBar

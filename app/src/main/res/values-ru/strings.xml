@@ -109,4 +109,11 @@
   <string name="show_only_readable">Показывать только доступные главы</string>
   <string name="clear_progress_summary">Удалить закладки на главах ( позиция текста)</string>
   <string name="clear_progress">Закладки на главах</string>
+  <string name="app_intro">Инструкция</string>
+  <string name="rate_dialog_title">Оценить приложение</string>
+  <string name="rate_dialog_cancel">Напомнить позже</string>
+  <string name="rate_dialog_no">Нет, спасибо</string>
+  <string name="rate_dialog_ok">Оценить сейчас</string>
+  <string name="chapter_not_available">Глава не доступна</string>
+  <string name="rate_dialog_message">Если вам нравится использовать это приложение, не могли бы вы уделить время, чтобы оценить его? Это не займет больше минуты. Спасибо за вашу поддержку!</string>
 </resources>
