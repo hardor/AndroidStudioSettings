@@ -59,7 +59,7 @@ class NumberPickerPreference : DialogPreference {
             val newValue = picker.value
             if (callChangeListener(newValue)) {
                 value = newValue
-                MyApp.chapterTextSize = newValue
+                MyApp.preferencesManager.fontSize = newValue
             }
         }
     }

@@ -15,22 +15,26 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.room.Room
+import com.crashlytics.android.Crashlytics
 import com.google.android.material.snackbar.Snackbar
+import io.fabric.sdk.android.Fabric
+import ru.profapp.ranobe.DAO.DatabaseDao
+import ru.profapp.ranobe.MyApp
+import ru.profapp.ranobe.MyApp.Companion.DB_NAME
+import ru.profapp.ranobe.R
 import ru.profapp.ranobe.common.Constants.Ranoberf_Login_Pref
 import ru.profapp.ranobe.common.Constants.Rulate_Login_Pref
 import ru.profapp.ranobe.common.Constants.last_chapter_id_Pref
 import ru.profapp.ranobe.common.MyExceptionHandler
-import ru.profapp.ranobe.DAO.DatabaseDao
 import ru.profapp.ranobe.helpers.LogType
 import ru.profapp.ranobe.helpers.logError
-import ru.profapp.ranobe.MyApp
-import ru.profapp.ranobe.MyApp.Companion.DB_NAME
-import ru.profapp.ranobe.R
 import ru.profapp.ranobe.utils.FileUtils
 import java.io.File
+import javax.inject.Inject
 
 class BackupActivity : AppCompatActivity() {
-
+    @Inject
+    lateinit var crashlyticsKit: Crashlytics
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -44,8 +48,10 @@ class BackupActivity : AppCompatActivity() {
             finish()
             return
         }
-
+        MyApp.component.inject(this)
         setupActionBar()
+        Fabric.with(this, crashlyticsKit)
+
         setContentView(R.layout.activity_backup)
         Thread.setDefaultUncaughtExceptionHandler(MyExceptionHandler(this))
         val backupButton = findViewById<Button>(R.id.backup_button_backup)

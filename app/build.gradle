@@ -150,7 +150,9 @@ dependencies {
     implementation 'com.vorlonsoft:androidrate:1.2.1'
     //EasyFeedback
     implementation 'com.webianks.library:easy-feedback:1.0.5'
-
+    //dagger 2
+    implementation 'com.google.dagger:dagger:2.13'
+    kapt 'com.google.dagger:dagger-compiler:2.13'
     //FlexibleAdapter
    // implementation 'eu.davidea:flexible-adapter:5.1.0'
   //  implementation 'eu.davidea:flexible-adapter-ui:1.0.0'

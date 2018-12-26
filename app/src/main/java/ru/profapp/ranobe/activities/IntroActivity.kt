@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.github.paolorotolo.appintro.AppIntro
 import ru.profapp.ranobe.BuildConfig
+import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.R
 import ru.profapp.ranobe.fragments.intro.IntroFragment
 
@@ -34,8 +35,7 @@ class IntroActivity : AppIntro() {
     }
 
     private fun closeIntro() {
-        val getPrefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-        getPrefs.edit().putBoolean(BuildConfig.INTRO_KEY, false).apply()
+        MyApp.preferencesManager.isFirstStart = false
         finish()
     }
 

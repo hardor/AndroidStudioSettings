@@ -18,15 +18,15 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import ru.profapp.ranobe.MyApp
+import ru.profapp.ranobe.R
 import ru.profapp.ranobe.adapters.ExpandableDownloadRecyclerViewAdapter
 import ru.profapp.ranobe.common.MyExceptionHandler
 import ru.profapp.ranobe.helpers.LogType
 import ru.profapp.ranobe.helpers.logError
-
 import ru.profapp.ranobe.models.Chapter
 import ru.profapp.ranobe.models.Ranobe
-import ru.profapp.ranobe.MyApp
-import ru.profapp.ranobe.R
+import javax.inject.Inject
 
 class DownloadActivity : AppCompatActivity() {
 
@@ -40,6 +40,8 @@ class DownloadActivity : AppCompatActivity() {
 
     private lateinit var currentRanobe: Ranobe
 
+    @Inject
+    lateinit var crashlyticsKit: Crashlytics
     private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
 
         when (item.itemId) {
@@ -155,7 +157,10 @@ class DownloadActivity : AppCompatActivity() {
             finish()
             return
         }
-        Fabric.with(this, Crashlytics())
+
+        MyApp.component.inject(this)
+        Fabric.with(this, crashlyticsKit)
+
         setupActionBar()
         setContentView(R.layout.activity_download)
         Thread.setDefaultUncaughtExceptionHandler(MyExceptionHandler(this))

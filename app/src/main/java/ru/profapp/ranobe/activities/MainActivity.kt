@@ -13,21 +13,18 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.crashlytics.android.Crashlytics
-import com.crashlytics.android.core.CrashlyticsCore
 import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.MobileAds
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.webianks.easy_feedback.EasyFeedback
 import io.fabric.sdk.android.Fabric
 import io.reactivex.schedulers.Schedulers
-import ru.profapp.ranobe.BuildConfig
+import kotlinx.android.synthetic.main.app_bar_main.*
+import kotlinx.android.synthetic.main.content_main.*
 import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.R
 import ru.profapp.ranobe.common.Constants
@@ -39,44 +36,41 @@ import ru.profapp.ranobe.helpers.ThemeHelper
 import ru.profapp.ranobe.models.Chapter
 import ru.profapp.ranobe.models.Ranobe
 import ru.profapp.ranobe.network.repositories.RanobeRfRepository
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(),
         NavigationView.OnNavigationItemSelectedListener {
 
     private var currentTheme = ThemeHelper.sTheme
-    private lateinit var adView: AdView
 
     private var currentFragment: String = Constants.FragmentType.Favorite.name
     private var currentTitle: String? = null
 
     private var alertErrorDialog: AlertDialog? = null
+
+    @Inject
+    lateinit var crashlyticsKit: Crashlytics
+
+    @Inject
+    lateinit var adRequest: AdRequest
+
     override fun onCreate(savedInstanceState: Bundle?) {
         initSettingPreference()
         super.onCreate(savedInstanceState)
         MyApp.isApplicationInitialized = true
-        // Set up Crashlytics, disabled for debug builds
-        val crashlyticsKit = Crashlytics.Builder()
-                .core(CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build())
-                .build()
-
-        Fabric.with(this, crashlyticsKit, Crashlytics())
+        MyApp.component.inject(this)
+        Fabric.with(this, crashlyticsKit)
 
         setContentView(R.layout.activity_main)
         Thread.setDefaultUncaughtExceptionHandler(MyExceptionHandler(this))
 
         Thread {
-
-            val getPrefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-
-            val isFirstStart = getPrefs.getBoolean(BuildConfig.INTRO_KEY, true)
-
+            val isFirstStart = MyApp.preferencesManager.isFirstStart
             if (isFirstStart) {
                 val i = Intent(this@MainActivity, IntroActivity::class.java)
                 startActivity(i)
             }
         }.start()
-
-
 
         if (intent.getBooleanExtra("crash", false)) {
             intent.removeExtra("crash")
@@ -93,18 +87,9 @@ class MainActivity : AppCompatActivity(),
             alertErrorDialog?.show()
         }
 
-        MobileAds.initialize(applicationContext, getString(R.string.app_admob_id))
-        adView = findViewById(R.id.adView)
 
-        val adRequest = AdRequest.Builder()
+        adView.loadAd(adRequest)
 
-        if (BuildConfig.DEBUG) {
-            adRequest.addTestDevice("sdfsdf")
-        }
-
-        adView.loadAd(adRequest.build())
-
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
         val drawer = findViewById<DrawerLayout>(R.id.drawer_layout)
@@ -168,7 +153,7 @@ class MainActivity : AppCompatActivity(),
         navigationView.itemIconTintList = null
         navigationView.setNavigationItemSelectedListener(this)
 
-        val vkButton: ImageButton = navigationView.getHeaderView(0).findViewById(R.id.vkbutton)
+        val vkButton: ImageButton = navigationView.getHeaderView(0).findViewById(R.id.vkButton)
         vkButton.setOnClickListener {
             val url = getString(R.string.all_vkUrl)
 
@@ -183,17 +168,13 @@ class MainActivity : AppCompatActivity(),
 
     private fun initSettingPreference() {
         PreferenceManager.setDefaultValues(this, R.xml.pref_general, false)
-        val settingPref = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-        MyApp.chapterTextSize = settingPref.getInt(applicationContext.getString(R.string.pref_general_text_size), 13)
+
         val rfPref = applicationContext.getSharedPreferences(Constants.Ranoberf_Login_Pref, Context.MODE_PRIVATE)
         if (rfPref != null) {
             MyApp.ranobeRfToken = rfPref.getString(Constants.KEY_Login, "")
         }
 
-        ThemeHelper.setTheme(settingPref.getBoolean(applicationContext.getString(R.string.pref_general_app_theme), false))
-        MyApp.useVolumeButtonsToScroll = settingPref.getBoolean(applicationContext.getString(R.string.pref_general_volume_scroll), false)
-        MyApp.autoAddBookmark = settingPref.getBoolean(applicationContext.getString(R.string.pref_general_auto_bookmark), true)
-        //        MyApp.hidePaymentChapter = settingPref.getBoolean(applicationContext.getString(R.string.pref_general_hide_chapter), false)
+        ThemeHelper.setTheme(MyApp.preferencesManager.isDarkTheme)
 
         ThemeHelper.onActivityCreateSetTheme()
         currentTheme = AppCompatDelegate.getDefaultNightMode()
@@ -300,9 +281,9 @@ class MainActivity : AppCompatActivity(),
                         .build()
                         .start();
 
-//                val marketIntent = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName"))
-//                if (marketIntent.resolveActivity(this.packageManager) != null) startActivity(marketIntent)
-//                else Toast.makeText(this, R.string.market_exist, Toast.LENGTH_SHORT).show()
+                //                val marketIntent = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName"))
+                //                if (marketIntent.resolveActivity(this.packageManager) != null) startActivity(marketIntent)
+                //                else Toast.makeText(this, R.string.market_exist, Toast.LENGTH_SHORT).show()
             }
         }
 

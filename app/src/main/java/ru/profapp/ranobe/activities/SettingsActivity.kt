@@ -13,24 +13,24 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import com.crashlytics.android.Crashlytics
-import com.crashlytics.android.core.CrashlyticsCore
 import io.fabric.sdk.android.Fabric
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import ru.profapp.ranobe.BuildConfig
+import ru.profapp.ranobe.MyApp
+import ru.profapp.ranobe.R
 import ru.profapp.ranobe.common.Constants
 import ru.profapp.ranobe.common.MyExceptionHandler
 import ru.profapp.ranobe.helpers.ThemeHelper
-import ru.profapp.ranobe.MyApp
-import ru.profapp.ranobe.R
+import javax.inject.Inject
 
 class SettingsActivity : AppCompatPreferenceActivity() {
 
+    @Inject
+    lateinit var crashlyticsKit: Crashlytics
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
 
         if (!MyApp.isApplicationInitialized) {
             val firstIntent = Intent(this, MainActivity::class.java)
@@ -43,11 +43,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             return
         }
 
-        // Set up Crashlytics, disabled for debug builds
-        val crashlyticsKit = Crashlytics.Builder()
-                .core(CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build())
-                .build()
-
+        MyApp.component.inject(this)
         Fabric.with(this, crashlyticsKit)
         setupActionBar()
         title = resources.getText(R.string.action_settings)
@@ -236,7 +232,6 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 
             val prefButton = findPreference(getString(R.string.ClearHistoryButton))
             prefButton.setOnPreferenceClickListener {
-                activity.applicationContext.getSharedPreferences(Constants.last_chapter_id_Pref, 0).edit().clear().apply()
 
                 Completable.fromAction { MyApp.database.ranobeHistoryDao().cleanHistory() }
                         ?.observeOn(AndroidSchedulers.mainThread())
@@ -278,12 +273,12 @@ class SettingsActivity : AppCompatPreferenceActivity() {
                     ThemeHelper.setTheme(value.toString().toBoolean())
                     ThemeHelper.onActivityCreateSetTheme()
                 }
-                preference.context.getString(R.string.pref_general_volume_scroll) -> {
-                    MyApp.useVolumeButtonsToScroll = value.toString().toBoolean()
-                }
-                preference.context.getString(R.string.pref_general_auto_bookmark) -> {
-                    MyApp.autoAddBookmark = value.toString().toBoolean()
-                }
+//                preference.context.getString(R.string.pref_general_volume_scroll) -> {
+//                    MyApp.isUseVolumeButtonsToScroll = value.toString().toBoolean()
+//                }
+//                preference.context.getString(R.string.pref_general_auto_bookmark) -> {
+//                    MyApp.isAutoAddBookmark = value.toString().toBoolean()
+//                }
 
                 //                preference.context.getString(R.string.pref_general_hide_chapter) -> {
                 //                    MyApp.hidePaymentChapter = value.toString().toBoolean()

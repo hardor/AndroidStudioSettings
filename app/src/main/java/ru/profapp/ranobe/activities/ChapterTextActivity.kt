@@ -3,11 +3,9 @@ package ru.profapp.ranobe.activities
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
@@ -47,6 +45,7 @@ import ru.profapp.ranobe.network.repositories.RulateRepository
 import java.net.SocketException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import javax.inject.Inject
 
 class ChapterTextActivity : AppCompatActivity() {
 
@@ -58,11 +57,14 @@ class ChapterTextActivity : AppCompatActivity() {
     private var mChapterCount: Int = 0
     private var mChapterList: List<Chapter> = ArrayList()
 
-    private var lastChapterIdPref: SharedPreferences? = null
+
     private lateinit var currentRanobe: Ranobe
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     lateinit var bottomNavigationView: BottomNavigationView
+
+    @Inject
+    lateinit var crashlyticsKit: Crashlytics
 
     private fun hideSystemUI() {
         window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -82,9 +84,8 @@ class ChapterTextActivity : AppCompatActivity() {
 
     private fun setWebColors() {
 
-        val settingPref = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-        val oldColor = settingPref.getBoolean(resources.getString(R.string.pref_general_app_theme), false)
-        settingPref.edit().putBoolean(resources.getString(R.string.pref_general_app_theme), !oldColor).apply()
+        val oldColor = MyApp.preferencesManager.isDarkTheme
+        MyApp.preferencesManager.isDarkTheme = !oldColor
         ThemeHelper.setTheme(!oldColor)
         ThemeHelper.onActivityCreateSetTheme()
         this.recreate()
@@ -112,9 +113,8 @@ class ChapterTextActivity : AppCompatActivity() {
             return
         }
 
-
-
-        Fabric.with(this, Crashlytics())
+        MyApp.component.inject(this)
+        Fabric.with(this, crashlyticsKit)
 
         hideSystemUI()
 
@@ -181,21 +181,24 @@ class ChapterTextActivity : AppCompatActivity() {
 
         mChapterCount = mChapterList.size
 
-        if (hChapterUrl != null) {
-            mCurrentChapter = mChapterList.firstOrNull { it.url == hChapterUrl } ?: mChapterList[0]
+        val foundChapter= mChapterList.firstOrNull { it.url == hChapterUrl }
+        if (hChapterUrl != null && foundChapter !=null ) {
+            mCurrentChapter = foundChapter
             chapterIndex = mChapterList.indexOf(mCurrentChapter)
         } else {
-            try {
+
                 chapterIndex = mChapterCount - 1
-                mCurrentChapter = mChapterList[chapterIndex]
-            } catch (e: ArrayIndexOutOfBoundsException) {
+            if(chapterIndex<=0){
                 chapterIndex = 0
                 mCurrentChapter = Chapter().apply {
                     title = "Not found"
                     text = "Not found"
                 }
-                logError(LogType.ERROR, "ChapterTextActivity", currentRanobe.url, e)
+                logMessage(LogType.ERROR, "ChapterTextActivity", currentRanobe.url)
+            }else{
+                mCurrentChapter = mChapterList[chapterIndex]
             }
+
         }
         textWebview.webViewClient = object : WebViewClient() {
 
@@ -264,7 +267,6 @@ class ChapterTextActivity : AppCompatActivity() {
             }
         })
 
-        lastChapterIdPref = applicationContext.getSharedPreferences(Constants.last_chapter_id_Pref, Context.MODE_PRIVATE)
 
         initWebView()
 
@@ -322,7 +324,7 @@ class ChapterTextActivity : AppCompatActivity() {
         webViewProgressBar.visibility = View.VISIBLE
 
         val style = ("style = \"text-align: justify; text-indent: 20px;font-size: "
-                + MyApp.chapterTextSize.toString() + "px;"
+                + MyApp.preferencesManager.fontSize + "px;"
                 + "color: " + String.format("#%06X", 0xFFFFFF and color)
                 + "; background-color: " + String.format("#%06X", 0xFFFFFF and color2)
                 + "\"")
@@ -534,16 +536,16 @@ class ChapterTextActivity : AppCompatActivity() {
 
     private fun putToReaded() {
 
-        if (lastChapterIdPref == null) {
-            lastChapterIdPref = applicationContext.getSharedPreferences(Constants.last_chapter_id_Pref, Context.MODE_PRIVATE)
-        }
+
         mCurrentChapter.isRead = true
 
-        mCurrentChapter.id?.let { lastChapterIdPref!!.edit().putInt(mCurrentChapter.ranobeUrl, it).apply() }
+        mCurrentChapter.id?.let {
+            MyApp.preferencesManager.setLastChapter(mCurrentChapter.ranobeUrl, it)
+        }
 
         saveHistoryToDb()
 
-        if (MyApp.autoAddBookmark) {
+        if (MyApp.preferencesManager.isAutoAddBookmark) {
             saveProgressToDb(0f)
         }
     }
@@ -565,7 +567,7 @@ class ChapterTextActivity : AppCompatActivity() {
         val action = event.action
         val keyCode = event.keyCode
 
-        if (!MyApp.useVolumeButtonsToScroll) {
+        if (!MyApp.preferencesManager.isUseVolumeButtonsToScroll) {
             return super.dispatchKeyEvent(event)
         } else {
             return when (keyCode) {
@@ -588,7 +590,7 @@ class ChapterTextActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        bottomNavigationView.menu.findItem(R.id.navigation_bookmark).isVisible = !MyApp.autoAddBookmark
+        bottomNavigationView.menu.findItem(R.id.navigation_bookmark).isVisible = !MyApp.preferencesManager.isAutoAddBookmark
     }
 
     override fun onResume() {
@@ -598,7 +600,7 @@ class ChapterTextActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        if (MyApp.autoAddBookmark) {
+        if (MyApp.preferencesManager.isAutoAddBookmark) {
             saveProgressToDb()
         }
     }

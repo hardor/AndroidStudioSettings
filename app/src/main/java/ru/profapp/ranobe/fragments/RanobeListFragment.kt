@@ -4,7 +4,6 @@ import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.Context
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -170,12 +169,12 @@ class RanobeListFragment : Fragment() {
 
                                         MyApp.database.ranobeDao().insertAll(*newList.toTypedArray())
 
-//                                        if (isRanobeHubError || isRulateError || isRanobeRfError) {
-//                                            val errorString: String = (if (isRulateError) " Rulate " else "") + (if (isRanobeRfError) " Ранобэ.рф " else "") + (if (isRanobeHubError) " RanobeHub " else "")
-//                                                                                       runOnUiThread {
-//                                                                                            Toast.makeText(this, getString(R.string.no_connection_to) + errorString, Toast.LENGTH_SHORT).show()
-//                                                                                        }
-//                                        }
+                                        //                                        if (isRanobeHubError || isRulateError || isRanobeRfError) {
+                                        //                                            val errorString: String = (if (isRulateError) " Rulate " else "") + (if (isRanobeRfError) " Ранобэ.рф " else "") + (if (isRanobeHubError) " RanobeHub " else "")
+                                        //                                                                                       runOnUiThread {
+                                        //                                                                                            Toast.makeText(this, getString(R.string.no_connection_to) + errorString, Toast.LENGTH_SHORT).show()
+                                        //                                                                                        }
+                                        //                                        }
 
                                         for (ranobe in local) {
                                             if (!newList.any { its -> its.url == ranobe.url }) {
@@ -217,9 +216,7 @@ class RanobeListFragment : Fragment() {
 
                 builder.create()?.show()
             }
-
-            val settingPref = PreferenceManager.getDefaultSharedPreferences(mContext)
-            checkedSortItemName = settingPref.getString(resources.getString(R.string.pref_general_sort_order), null) ?: Constants.SortOrder.default.name
+            checkedSortItemName = MyApp.preferencesManager.sortOrder
             tVSortOrder.text = getString(Constants.SortOrder.valueOf(checkedSortItemName).resId)
             setVectorForPreLollipop(tVSortOrder, R.drawable.ic_sort_by_alpha_black_24dp, mContext!!, Constants.ApplicationConstants.DRAWABLE_LEFT)
             tVSortOrder.visibility = View.VISIBLE
@@ -241,7 +238,7 @@ class RanobeListFragment : Fragment() {
                             tVSortOrder.text = getString(selectItem)
                             sortValuesAndNotify(checkedSortItemName)
                             recyclerView.scrollToPosition(0)
-                            settingPref.edit().putString(resources.getString(R.string.pref_general_sort_order), checkedSortItemName).apply()
+                            MyApp.preferencesManager.sortOrder = checkedSortItemName
                             dialog.dismiss()
                         }
                         .setCancelable(true)
@@ -322,7 +319,7 @@ class RanobeListFragment : Fragment() {
 
                 } //Check lastReaded
                 .map { ranobes ->
-                    val lastChapterIdPref = mContext?.applicationContext?.getSharedPreferences(Constants.last_chapter_id_Pref, Context.MODE_PRIVATE)
+
                     for (ranobe in ranobes) {
                         ranobe.newChapters = 0
                         val chapterList = ranobe.chapterList
@@ -334,18 +331,14 @@ class RanobeListFragment : Fragment() {
                             }
                             val chapterlist2 = templist.take(Constants.chaptersNum)
 
-
-                            if (lastChapterIdPref != null && lastChapterIdPref.contains(chapterlist2.first().ranobeUrl)) {
-                                val lastId = lastChapterIdPref.getInt(chapterlist2.first().ranobeUrl, -1)
-                                if (lastId > 0) {
-                                    for (chapter in chapterlist2) {
-                                        if (chapter.id != null) {
-                                            chapter.isRead = chapter.id!! <= lastId
-                                            ranobe.newChapters += if (chapter.isRead) 0 else 1
-                                        }
+                            val lastId = MyApp.preferencesManager.getLastChapter(chapterlist2.first().ranobeUrl)
+                            if (lastId > 0) {
+                                for (chapter in chapterlist2) {
+                                    if (chapter.id != null) {
+                                        chapter.isRead = chapter.id!! <= lastId
+                                        ranobe.newChapters += if (chapter.isRead) 0 else 1
                                     }
                                 }
-
                             }
 
                         }

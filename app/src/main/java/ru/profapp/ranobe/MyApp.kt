@@ -6,20 +6,27 @@ import androidx.multidex.MultiDexApplication
 import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.google.android.gms.ads.MobileAds
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
 import ru.profapp.ranobe.DAO.DatabaseDao
 import ru.profapp.ranobe.common.Constants
+import ru.profapp.ranobe.dagger.ApplicationComponent
+import ru.profapp.ranobe.dagger.DaggerApplicationComponent
+import ru.profapp.ranobe.dagger.PreferencesModule
 import ru.profapp.ranobe.helpers.LogType
 import ru.profapp.ranobe.helpers.logError
 import ru.profapp.ranobe.helpers.logMessage
 import ru.profapp.ranobe.models.Chapter
 import ru.profapp.ranobe.models.Ranobe
+import ru.profapp.ranobe.pref.GeneralPreferencesManager
 import ru.profapp.ranobe.utils.StethoUtils
 
 class MyApp : MultiDexApplication() {
 
     companion object {
+
+        val component: ApplicationComponent = DaggerApplicationComponent.create()
 
         val chapterComparator = Comparator { b: Chapter, a: Chapter ->
 
@@ -31,8 +38,6 @@ class MyApp : MultiDexApplication() {
 
         }
         var ranobeRfToken: String? = null
-
-        var chapterTextSize: Int? = null
 
         var fragmentType: Constants.FragmentType? = null
 
@@ -86,7 +91,7 @@ class MyApp : MultiDexApplication() {
 
             }
         }
-
+        @VisibleForTesting
         val MIGRATION_3_4: Migration = object : Migration(3, 4) {
             override fun migrate(database: SupportSQLiteDatabase) {
 
@@ -114,15 +119,19 @@ class MyApp : MultiDexApplication() {
         lateinit var database: DatabaseDao
         var ranobe: Ranobe? = null
         var refWatcher: RefWatcher? = null
-        var useVolumeButtonsToScroll: Boolean = false
-        var autoAddBookmark: Boolean = false
+
         var isApplicationInitialized: Boolean = false
         //        var hidePaymentChapter: Boolean= false
+
+        lateinit var preferencesManager: GeneralPreferencesManager
 
     }
 
     override fun onCreate() {
         super.onCreate()
+        component.inject(this)
+        preferencesManager = PreferencesModule(this).provideGeneralPreferencesManager()
+        MobileAds.initialize(applicationContext, getString(R.string.app_admob_id))
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         if (BuildConfig.DEBUG) {
             if (LeakCanary.isInAnalyzerProcess(this)) {

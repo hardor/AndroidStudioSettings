@@ -1,6 +1,5 @@
 package ru.profapp.ranobe.adapters
 
-import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
@@ -11,12 +10,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
+import ru.profapp.ranobe.MyApp
+import ru.profapp.ranobe.R
 import ru.profapp.ranobe.activities.RanobeInfoActivity
 import ru.profapp.ranobe.common.Constants
 import ru.profapp.ranobe.common.OnLoadMoreListener
 import ru.profapp.ranobe.models.Ranobe
-import ru.profapp.ranobe.MyApp
-import ru.profapp.ranobe.R
 import java.util.*
 
 /**
@@ -128,17 +127,13 @@ class RanobeRecyclerViewAdapter(private val glide: RequestManager, recyclerView:
                     }
                     val chapterlist2 = templist.take(Constants.chaptersNum)
 
-                    val lastChapterIdPref = mContext.applicationContext.getSharedPreferences(Constants.last_chapter_id_Pref, Context.MODE_PRIVATE)
-                    if (lastChapterIdPref != null && lastChapterIdPref.contains(chapterlist2.first().ranobeUrl)) {
-                        val lastId = lastChapterIdPref.getInt(chapterlist2.first().ranobeUrl, -1)
-                        if (lastId > 0) {
+                    val lastId = MyApp.preferencesManager.getLastChapter(chapterlist2.first().ranobeUrl)
+                    if (lastId > 0) {
 
-                            for (chapter in chapterlist2) {
-                                if (chapter.id != null)
-                                    chapter.isRead = chapter.id!! <= lastId
-                            }
+                        for (chapter in chapterlist2) {
+                            if (chapter.id != null)
+                                chapter.isRead = chapter.id!! <= lastId
                         }
-
                     }
 
                     val adapter = ChapterRecyclerViewAdapter(chapterlist2, holder.mItem)

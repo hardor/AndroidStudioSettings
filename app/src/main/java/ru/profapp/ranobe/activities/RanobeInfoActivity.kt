@@ -17,9 +17,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.crashlytics.android.Crashlytics
-import com.crashlytics.android.core.CrashlyticsCore
 import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.MobileAds
 import io.fabric.sdk.android.Fabric
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -27,13 +25,11 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_ranobe_info.*
-import ru.profapp.ranobe.BuildConfig
 import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.R
 import ru.profapp.ranobe.adapters.CommentsRecyclerViewAdapter
 import ru.profapp.ranobe.adapters.ExpandableChapterRecyclerViewAdapter
 import ru.profapp.ranobe.common.Constants
-import ru.profapp.ranobe.common.Constants.last_chapter_id_Pref
 import ru.profapp.ranobe.common.MyExceptionHandler
 import ru.profapp.ranobe.helpers.LogType
 import ru.profapp.ranobe.helpers.ThemeHelper
@@ -45,6 +41,7 @@ import ru.profapp.ranobe.network.repositories.RulateRepository
 import ru.profapp.ranobe.utils.GlideApp
 import ru.profapp.ranobe.utils.GlideRequests
 import java.util.*
+import javax.inject.Inject
 
 class RanobeInfoActivity : AppCompatActivity() {
 
@@ -55,13 +52,16 @@ class RanobeInfoActivity : AppCompatActivity() {
     private lateinit var mCurrentRanobe: Ranobe
     private lateinit var mContext: Context
     private var adapterExpandable: ExpandableChapterRecyclerViewAdapter? = null
-    private var lastChapterIdPref: SharedPreferences? = null
     private var mChapterLayoutManager: LinearLayoutManager? = null
 
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     private lateinit var mGlide: GlideRequests
 
+    @Inject
+    lateinit var crashlyticsKit: Crashlytics
+    @Inject
+    lateinit var adRequest: AdRequest
     override fun onCreate(savedInstanceState: Bundle?) {
 
         currentTheme = AppCompatDelegate.getDefaultNightMode()
@@ -78,11 +78,7 @@ class RanobeInfoActivity : AppCompatActivity() {
             return
         }
 
-        // Set up Crashlytics, disabled for debug builds
-        val crashlyticsKit = Crashlytics.Builder()
-                .core(CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build())
-                .build()
-
+        MyApp.component.inject(this)
         Fabric.with(this, crashlyticsKit)
         setContentView(R.layout.activity_ranobe_info)
         Thread.setDefaultUncaughtExceptionHandler(MyExceptionHandler(this))
@@ -96,9 +92,9 @@ class RanobeInfoActivity : AppCompatActivity() {
 
         getFavoriteIcon()
 
-        fab_rI_favorite.setOnClickListener { setToFavorite() }
+        rInfoFabFavorite.setOnClickListener { setToFavorite() }
 
-        fabBookmark.setOnClickListener {
+        rInfoFabBookmark.setOnClickListener {
 
             val chapterProgress = MyApp.database.chapterProgressDao().getLastChapterByRanobeUrl(mCurrentRanobe.url).subscribeOn(Schedulers.io())?.blockingGet()
             val intent = Intent(mContext, ChapterTextActivity::class.java)
@@ -108,10 +104,10 @@ class RanobeInfoActivity : AppCompatActivity() {
 
         }
 
-        setSupportActionBar(toolbar_rI)
+        setSupportActionBar(rInfoToolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        mGlide.load(mCurrentRanobe.image).into(main_logoimage)
+        mGlide.load(mCurrentRanobe.image).into(rInfoAppBarImage)
 
         supportActionBar?.title = mCurrentRanobe.title
 
@@ -120,75 +116,49 @@ class RanobeInfoActivity : AppCompatActivity() {
         rfpreferences = applicationContext.getSharedPreferences(Constants.Ranoberf_Login_Pref, 0)
 
         mChapterLayoutManager = LinearLayoutManager(mContext)
-        rV_rI_chapters.layoutManager = mChapterLayoutManager
-        rV_rI_chapters.onFlingListener = object : RecyclerView.OnFlingListener() {
+        rInfoTabCardChaptersRecycler.layoutManager = mChapterLayoutManager
+        rInfoTabCardChaptersRecycler.onFlingListener = object : RecyclerView.OnFlingListener() {
             @RequiresApi(Build.VERSION_CODES.KITKAT)
             override fun onFling(velocityX: Int, velocityY: Int): Boolean {
-                rV_rI_chapters.dispatchNestedFling(velocityX.toFloat(), velocityY.toFloat(), false)
+                rInfoTabCardChaptersRecycler.dispatchNestedFling(velocityX.toFloat(), velocityY.toFloat(), false)
                 return false
             }
         }
 
-        rV_rI_chapters.setHasFixedSize(true)
-        pBar_RanobeInfo.visibility = View.VISIBLE
+        rInfoTabCardChaptersRecycler.setHasFixedSize(true)
+        rInfoTabCardChaptersProgressBar.visibility = View.VISIBLE
         loadData()
         loadChapters()
 
+        rInfoTabHost.setup()
 
-        tH_rI_comments.setup()
+        val tabSpec: TabHost.TabSpec = rInfoTabHost.newTabSpec("chapters")
 
-        val tabSpec: TabHost.TabSpec = tH_rI_comments.newTabSpec("chapters")
-
-        tabSpec.setContent(R.id.cV_history_ranobe)
+        tabSpec.setContent(R.id.rInfoTabCardChapters)
         tabSpec.setIndicator(resources.getString(R.string.chapters))
-        tH_rI_comments.addTab(tabSpec)
-        tH_rI_comments.currentTab = 0
+        rInfoTabHost.addTab(tabSpec)
+        rInfoTabHost.currentTab = 0
 
-        //        if (MyApp.hidePaymentChapter) {
-        //            hideButton.setImageResource(R.drawable.ic_visibility_black_24dp)
-        //        } else {
-        //            hideButton.setImageResource(R.drawable.ic_visibility_off_black_24dp)
-        //        }
-        //        hideButton.setOnClickListener { v ->
-        //
-        //            mCurrentRanobe.hidePaymentChapters = !mCurrentRanobe.hidePaymentChapters
-        //
-        //            if (mCurrentRanobe.hidePaymentChapters) {
-        //                hideButton.setImageResource(R.drawable.ic_visibility_off_black_24dp)
-        //            } else {
-        //                hideButton.setImageResource(R.drawable.ic_visibility_black_24dp)
-        //            }
-        //        }
-        initAds()
-
+        rInfoAdView.loadAd(adRequest)
     }
 
-    private fun initAds() {
-        MobileAds.initialize(applicationContext, getString(R.string.app_admob_id))
-        val adRequest = AdRequest.Builder()
 
-        if (BuildConfig.DEBUG) {
-            adRequest.addTestDevice("test")
-        }
-
-        adView?.loadAd(adRequest.build())
-    }
 
     private fun loadData() {
 
         if (!mCurrentRanobe.description.isNullOrEmpty()) {
-            cV_RI_description.visibility = View.VISIBLE
+            rInfoCardViewDescription.visibility = View.VISIBLE
         } else {
-            cV_RI_description.visibility = View.GONE
+            rInfoCardViewDescription.visibility = View.GONE
         }
         if (!mCurrentRanobe.additionalInfo.isNullOrEmpty()) {
-            cV_RI_info.visibility = View.VISIBLE
+            rInfoCardViewAdditional.visibility = View.VISIBLE
         } else {
-            cV_RI_info.visibility = View.GONE
+            rInfoCardViewAdditional.visibility = View.GONE
         }
 
 
-        mGlide.load(mCurrentRanobe.image).into(main_logoimage)
+        mGlide.load(mCurrentRanobe.image).into(rInfoAppBarImage)
 
         var aboutText = String.format("%s / %s \n\n%s", mCurrentRanobe.title, mCurrentRanobe.engTitle, mCurrentRanobe.description)
         if (!mCurrentRanobe.rating.isNullOrBlank())
@@ -198,18 +168,18 @@ class RanobeInfoActivity : AppCompatActivity() {
             aboutText = aboutText.plus("\n\n${mCurrentRanobe.genres}")
         }
 
-        tV_rI_about.text = aboutText
-        tV_rI_additionalInfo.text = mCurrentRanobe.additionalInfo
+        rInfoCardDescriptionAbout.text = aboutText
+        rInfoCardViewAdditionalInfo.text = mCurrentRanobe.additionalInfo
     }
 
     private fun loadChapters() {
         recycleChapterList.clear()
-        lastChapterIdPref = applicationContext.getSharedPreferences(last_chapter_id_Pref, Context.MODE_PRIVATE)
+
 
         val request = mCurrentRanobe.updateRanobe(mContext).map {
 
-            if (lastChapterIdPref != null) {
-                val lastId: Int = lastChapterIdPref?.getInt(mCurrentRanobe.url, -1) ?: -1
+
+                val lastId: Int = MyApp.preferencesManager.getLastChapter(mCurrentRanobe.url)
                 if (lastId > 0) {
 
                     for (chapter in mCurrentRanobe.chapterList) {
@@ -218,40 +188,40 @@ class RanobeInfoActivity : AppCompatActivity() {
                     }
 
                 }
-            }
+
             return@map it
         }.observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
 
-                    pBar_RanobeInfo.visibility = View.GONE
+                    rInfoTabCardChaptersProgressBar.visibility = View.GONE
                     loadData()
                     recycleChapterList.addAll(mCurrentRanobe.chapterList)
                     adapterExpandable = ExpandableChapterRecyclerViewAdapter(mContext, recycleChapterList, mCurrentRanobe)
-                    rV_rI_chapters.adapter = adapterExpandable
+                    rInfoTabCardChaptersRecycler.adapter = adapterExpandable
 
                     if (mCurrentRanobe.comments.isNotEmpty()) {
-                        rV_rI_comments.layoutManager = LinearLayoutManager(mContext)
-                        rV_rI_comments.setHasFixedSize(true)
-                        rV_rI_comments.onFlingListener = object : RecyclerView.OnFlingListener() {
+                        rInfoTabCardCommentsRecycler.layoutManager = LinearLayoutManager(mContext)
+                        rInfoTabCardCommentsRecycler.setHasFixedSize(true)
+                        rInfoTabCardCommentsRecycler.onFlingListener = object : RecyclerView.OnFlingListener() {
                             @RequiresApi(Build.VERSION_CODES.KITKAT)
                             override fun onFling(velocityX: Int, velocityY: Int): Boolean {
-                                rV_rI_comments.dispatchNestedFling(velocityX.toFloat(), velocityY.toFloat(), false)
+                                rInfoTabCardCommentsRecycler.dispatchNestedFling(velocityX.toFloat(), velocityY.toFloat(), false)
                                 return false
                             }
                         }
 
-                        rV_rI_comments.adapter = CommentsRecyclerViewAdapter(mGlide, mCurrentRanobe.comments)
+                        rInfoTabCardCommentsRecycler.adapter = CommentsRecyclerViewAdapter(mGlide, mCurrentRanobe.comments)
 
-                        val tabSpec: TabHost.TabSpec = tH_rI_comments.newTabSpec("comments")
-                        tabSpec.setContent(R.id.cV_history_chapters)
+                        val tabSpec: TabHost.TabSpec = rInfoTabHost.newTabSpec("comments")
+                        tabSpec.setContent(R.id.rInfoTabCardComments)
                         tabSpec.setIndicator(resources.getString(R.string.comments))
-                        tH_rI_comments.addTab(tabSpec)
+                        rInfoTabHost.addTab(tabSpec)
                     }
 
                 }, { error ->
                     logError(LogType.ERROR, "loadChapters", "", error)
-                    pBar_RanobeInfo.visibility = View.GONE
+                    rInfoTabCardChaptersProgressBar.visibility = View.GONE
                 })
 
         compositeDisposable.add(request)
@@ -260,7 +230,7 @@ class RanobeInfoActivity : AppCompatActivity() {
     private fun getFavoriteIcon() {
         if (mCurrentRanobe.isFavorite || mCurrentRanobe.isFavoriteInWeb) {
 
-            fab_rI_favorite.setImageResource(R.drawable.ic_favorite_black_24dp)
+            rInfoFabFavorite.setImageResource(R.drawable.ic_favorite_black_24dp)
 
         } else {
             val request = MyApp.database.ranobeDao().isRanobeFavorite(mCurrentRanobe.url)
@@ -270,18 +240,18 @@ class RanobeInfoActivity : AppCompatActivity() {
                         if (it != null) {
                             mCurrentRanobe.isFavorite = it.isFavorite
                             mCurrentRanobe.isFavoriteInWeb = it.isFavoriteInWeb
-                            fab_rI_favorite.setImageResource(R.drawable.ic_favorite_black_24dp)
+                            rInfoFabFavorite.setImageResource(R.drawable.ic_favorite_black_24dp)
                         } else {
                             mCurrentRanobe.isFavorite = false
                             mCurrentRanobe.isFavoriteInWeb = false
-                            fab_rI_favorite.setImageResource(R.drawable.ic_favorite_border_black_24dp)
+                            rInfoFabFavorite.setImageResource(R.drawable.ic_favorite_border_black_24dp)
                         }
 
                     }, { error ->
                         logError(LogType.ERROR, "loadChapters", "", error)
                         mCurrentRanobe.isFavorite = false
                         mCurrentRanobe.isFavoriteInWeb = false
-                        fab_rI_favorite.setImageResource(R.drawable.ic_favorite_border_black_24dp)
+                        rInfoFabFavorite.setImageResource(R.drawable.ic_favorite_border_black_24dp)
                     })
             compositeDisposable.add(request)
         }
@@ -333,7 +303,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({ result ->
-                        fab_rI_favorite.setImageResource(R.drawable.ic_favorite_black_24dp)
+                        rInfoFabFavorite.setImageResource(R.drawable.ic_favorite_black_24dp)
                         if (result)
                             Toast.makeText(mContext, mCurrentRanobe.title + " " + mContext.getString(R.string.added_to_web), Toast.LENGTH_SHORT).show()
                         else
@@ -377,7 +347,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({ result ->
                             if (result.first) {
-                                fab_rI_favorite.setImageResource(R.drawable.ic_favorite_border_black_24dp)
+                                rInfoFabFavorite.setImageResource(R.drawable.ic_favorite_border_black_24dp)
                             } else {
                                 Toast.makeText(mContext, result.second, Toast.LENGTH_SHORT).show()
                             }
@@ -395,7 +365,7 @@ class RanobeInfoActivity : AppCompatActivity() {
                         .subscribe({
                             mCurrentRanobe.isFavorite = false
                             mCurrentRanobe.isFavoriteInWeb = false
-                            fab_rI_favorite.setImageResource(R.drawable.ic_favorite_border_black_24dp)
+                            rInfoFabFavorite.setImageResource(R.drawable.ic_favorite_border_black_24dp)
                         }, { error ->
                             logError(LogType.ERROR, "", "", error, false)
                         })
@@ -409,9 +379,9 @@ class RanobeInfoActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        adView?.adListener = null
-        adView?.removeAllViews()
-        adView?.destroy()
+        rInfoAdView?.adListener = null
+        rInfoAdView?.removeAllViews()
+        rInfoAdView?.destroy()
         compositeDisposable.clear()
         Thread.setDefaultUncaughtExceptionHandler(null)
 
@@ -419,14 +389,14 @@ class RanobeInfoActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        adView?.resume()
+        rInfoAdView?.resume()
         if (currentTheme != AppCompatDelegate.getDefaultNightMode())
             recreate()
     }
 
     override fun onPause() {
         super.onPause()
-        adView?.pause()
+        rInfoAdView?.pause()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
