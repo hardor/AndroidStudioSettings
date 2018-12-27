@@ -125,17 +125,22 @@ object RanobeHubRepository : BaseRepository() {
 
                 val jsObject = Jsoup.parse(resource.content)
                 if (jsObject.hasText()) {
-                    val chapter = Chapter()
-                    chapter.apply {
-                        title = jsObject.selectFirst("a").text()
-                        ranobeId = existRanobe.id
-                        ranobeUrl = existRanobe.url
-                        url = jsObject.selectFirst("a").attr("href")
-                        ranobeName = existRanobe.title
+
+                    val obj = jsObject.selectFirst("a")
+                    if (obj != null && obj.hasAttr("href")) {
+                        val chapter = Chapter()
+                        chapter.apply {
+                            title = obj.text()
+                            ranobeId = existRanobe.id
+                            ranobeUrl = existRanobe.url
+                            url = obj.attr("href")
+                            ranobeName = existRanobe.title
+                        }
+
+                        existRanobe.chapterList.add(chapter)
+                        existRanobe.chapterList.sortByDescending { it.id }
                     }
 
-                    existRanobe.chapterList.add(chapter)
-                    existRanobe.chapterList.sortByDescending { it.id }
                 }
 
             }

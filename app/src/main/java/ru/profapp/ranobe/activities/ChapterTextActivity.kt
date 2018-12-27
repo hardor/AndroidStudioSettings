@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.crashlytics.android.Crashlytics
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.vorlonsoft.android.rate.AppRate
 import com.vorlonsoft.android.rate.StoreType
@@ -181,21 +182,21 @@ class ChapterTextActivity : AppCompatActivity() {
 
         mChapterCount = mChapterList.size
 
-        val foundChapter= mChapterList.firstOrNull { it.url == hChapterUrl }
-        if (hChapterUrl != null && foundChapter !=null ) {
+        val foundChapter = mChapterList.firstOrNull { it.url == hChapterUrl }
+        if (hChapterUrl != null && foundChapter != null) {
             mCurrentChapter = foundChapter
             chapterIndex = mChapterList.indexOf(mCurrentChapter)
         } else {
 
-                chapterIndex = mChapterCount - 1
-            if(chapterIndex<=0){
+            chapterIndex = mChapterCount - 1
+            if (chapterIndex <= 0) {
                 chapterIndex = 0
                 mCurrentChapter = Chapter().apply {
                     title = "Not found"
                     text = "Not found"
                 }
                 logMessage(LogType.ERROR, "ChapterTextActivity", currentRanobe.url)
-            }else{
+            } else {
                 mCurrentChapter = mChapterList[chapterIndex]
             }
 
@@ -243,8 +244,7 @@ class ChapterTextActivity : AppCompatActivity() {
 
         textWebview.setBackgroundColor(resources.getColor(R.color.webViewBackground))
 
-        textWebview.isHorizontalScrollBarEnabled = false
-        textWebview.setOnTouchListener( object: OnSwipeTouchListener(applicationContext) {
+        textWebview.setOnTouchListener(object : OnSwipeTouchListener(applicationContext) {
             override fun onSwipeLeft() {
                 OnClicked(-1)
                 bottomNavigationView.menu.findItem(R.id.navigation_next).isChecked = true
@@ -256,14 +256,14 @@ class ChapterTextActivity : AppCompatActivity() {
             }
 
             override fun onTap() {
-                if (appbar_chT != null) {
-                    val fullyExpanded = (appbar_chT!!.height - appbar_chT!!.bottom == 0) && (bottomNavigationView.height == bottomNavigationView.bottom - bottomNavigationView.top)
 
-                    appbar_chT?.setExpanded(!fullyExpanded)
+                val fullyExpanded = (appbar_chT.visibility == View.VISIBLE) && (bottomNavigationView.visibility == View.VISIBLE)
 
-                    bottomNavigationView.updateView(fullyExpanded)
+                appbar_chT.updateView(fullyExpanded)
 
-                }
+                bottomNavigationView.updateView(fullyExpanded)
+
+
             }
         })
 
@@ -567,7 +567,7 @@ class ChapterTextActivity : AppCompatActivity() {
         val action = event.action
         val keyCode = event.keyCode
 
-        if (!MyApp.preferencesManager.isUseVolumeButtonsToScroll) {
+        if (!MyApp.preferencesManager.useVolumeButtonsToScroll) {
             return super.dispatchKeyEvent(event)
         } else {
             return when (keyCode) {
@@ -614,9 +614,16 @@ class ChapterTextActivity : AppCompatActivity() {
 
     private fun BottomNavigationView.updateView(fullyExpanded: Boolean) {
         if (fullyExpanded)
-            this.animate().translationY(this.height.toFloat())
+            this.visibility = View.GONE           // this.animate().translationY(this.height.toFloat())
         else
-            this.animate().translationY(0f)
+            this.visibility = View.VISIBLE            //this.animate().translationY(0f)
+    }
+
+    private fun AppBarLayout.updateView(fullyExpanded: Boolean) {
+        if (fullyExpanded)
+            this.visibility = View.GONE           // this.animate().translationY(this.height.toFloat())
+        else
+            this.visibility = View.VISIBLE            //this.animate().translationY(0f)
     }
 }
 

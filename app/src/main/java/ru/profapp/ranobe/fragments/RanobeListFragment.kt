@@ -283,13 +283,7 @@ class RanobeListFragment : Fragment() {
 
         swipeRefreshLayout.isRefreshing = true
         oldListSize = ranobeList.size
-        if (remove) {
-            page = 0
-            oldListSize = ranobeList.size
-            ranobeList.clear()
-            ranobeRecyclerViewAdapter.notifyItemRangeRemoved(0, oldListSize)
-            oldListSize = 0
-        }
+
 
         val loader: Observable<List<Ranobe>> = when (fragmentType) {
             Constants.FragmentType.Rulate -> rulateLoadRanobe().toObservable()
@@ -349,6 +343,15 @@ class RanobeListFragment : Fragment() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ result ->
+
+                    if (remove) {
+                        page = 0
+                        oldListSize = ranobeList.size
+                        ranobeList.clear()
+                        ranobeRecyclerViewAdapter.notifyItemRangeRemoved(0, oldListSize)
+                        oldListSize = 0
+                    }
+
                     if (fragmentType == Constants.FragmentType.Saved) {
 
                         Snackbar.make(swipeRefreshLayout, R.string.saved_info, Snackbar.LENGTH_SHORT).show()
@@ -410,8 +413,8 @@ class RanobeListFragment : Fragment() {
             request?.dispose()
             dialog.dismiss()
         }
-        progressDialog.progress = 0
 
+        progressDialog.incrementProgressBy(-progressDialog.progress)
 
         if (loadFromDatabase) {
 

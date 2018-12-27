@@ -8,6 +8,7 @@ import android.preference.PreferenceManager
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
@@ -25,6 +26,7 @@ import io.fabric.sdk.android.Fabric
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import ru.profapp.ranobe.BuildConfig
 import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.R
 import ru.profapp.ranobe.common.Constants
@@ -154,6 +156,7 @@ class MainActivity : AppCompatActivity(),
         navigationView.setNavigationItemSelectedListener(this)
 
         val vkButton: ImageButton = navigationView.getHeaderView(0).findViewById(R.id.vkButton)
+
         vkButton.setOnClickListener {
             val url = getString(R.string.all_vkUrl)
 
@@ -164,6 +167,8 @@ class MainActivity : AppCompatActivity(),
                 Toast.makeText(this, R.string.browser_exist, Toast.LENGTH_SHORT).show()
         }
 
+        val navText: TextView = navigationView.getHeaderView(0).findViewById(R.id.navText)
+        navText.text = "${getString(R.string.app_name)} ${BuildConfig.VERSION_NAME}"
     }
 
     private fun initSettingPreference() {
@@ -279,11 +284,7 @@ class MainActivity : AppCompatActivity(),
                         .withEmail("admin@profapp.ru")
                         .withSystemInfo()
                         .build()
-                        .start();
-
-                //                val marketIntent = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName"))
-                //                if (marketIntent.resolveActivity(this.packageManager) != null) startActivity(marketIntent)
-                //                else Toast.makeText(this, R.string.market_exist, Toast.LENGTH_SHORT).show()
+                        .start()
             }
         }
 

@@ -269,20 +269,16 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 
             when (preference.key) {
                 preference.context.getString(R.string.pref_general_app_theme) -> {
-
+                    MyApp.preferencesManager.isDarkTheme = value.toString().toBoolean()
                     ThemeHelper.setTheme(value.toString().toBoolean())
                     ThemeHelper.onActivityCreateSetTheme()
                 }
-//                preference.context.getString(R.string.pref_general_volume_scroll) -> {
-//                    MyApp.isUseVolumeButtonsToScroll = value.toString().toBoolean()
-//                }
-//                preference.context.getString(R.string.pref_general_auto_bookmark) -> {
-//                    MyApp.isAutoAddBookmark = value.toString().toBoolean()
-//                }
-
-                //                preference.context.getString(R.string.pref_general_hide_chapter) -> {
-                //                    MyApp.hidePaymentChapter = value.toString().toBoolean()
-                //                }
+                preference.context.getString(R.string.pref_general_volume_scroll) -> {
+                    MyApp.preferencesManager.useVolumeButtonsToScroll = value.toString().toBoolean()
+                }
+                preference.context.getString(R.string.pref_general_auto_bookmark) -> {
+                    MyApp.preferencesManager.isAutoAddBookmark = value.toString().toBoolean()
+                }
 
             }
 
