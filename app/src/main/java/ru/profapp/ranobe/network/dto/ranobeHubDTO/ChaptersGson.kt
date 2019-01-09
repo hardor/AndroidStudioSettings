@@ -8,7 +8,7 @@ data class ChaptersGson(
 
 data class Volumes(
         @SerializedName("id") val id: Int,
-        @SerializedName("num") val num: Long,
+        @SerializedName("num") val num: Double,
         @SerializedName("name") val name: String,
         @SerializedName("chapters") val chapters: List<tChapter> = listOf()
 

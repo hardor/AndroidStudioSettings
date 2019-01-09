@@ -21,11 +21,19 @@ import ru.profapp.ranobe.network.dto.ranobeHubDTO.RanobeHubReadyGson
 import ru.profapp.ranobe.network.endpoints.IRanobeHubApiService
 import ru.profapp.ranobe.network.interceptors.AddCookiesInterceptor
 import ru.profapp.ranobe.network.interceptors.ReceivedCookiesInterceptor
+import java.text.DecimalFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
 object RanobeHubRepository : BaseRepository() {
+
+    val decFormat: DecimalFormat = DecimalFormat()
+
+    init {
+        decFormat.isDecimalSeparatorAlwaysShown = false
+    }
+
 
     private var token: String = ""
 
@@ -40,7 +48,7 @@ object RanobeHubRepository : BaseRepository() {
 
                     chapter.title = if (chapter.title.isBlank()) {
                         if (volumesNum > 1) {
-                            "Том ${volume.num}. ${tChapter.name}"
+                            "Том ${decFormat.format(volume.num)}. ${tChapter.name}"
                         } else tChapter.name
                     } else chapter.title
 
@@ -56,7 +64,10 @@ object RanobeHubRepository : BaseRepository() {
 
             ranobe.chapterList.reverse()
             return@map true
-        }.onErrorReturn { false }
+        }.onErrorReturn {
+            logError(LogType.ERROR, "getBookInfo", ranobe.url, it)
+            false
+        }
 
     }
 

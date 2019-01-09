@@ -197,8 +197,8 @@ object RulateRepository : BaseRepository() {
 
     private infix fun Ranobe.updateRanobe(book: RulateBook) {
 
-        val mCalendar = Calendar.getInstance()
-        val format = SimpleDateFormat("MM-dd HH:mm", Locale.getDefault())
+//        val mCalendar = Calendar.getInstance()
+//        val decFormat = SimpleDateFormat("MM-dd HH:mm", Locale.getDefault())
         id = id ?: book.id
 
         engTitle = engTitle ?: book.sTitle
@@ -254,6 +254,7 @@ object RulateRepository : BaseRepository() {
     }
 
     private infix fun Ranobe.updateRanobe(book: RulateSearchBook) {
+        id = id ?: book.id
         engTitle = engTitle ?: book.sTitle
 
         title = if (title.isBlank()) book.tTitle ?: title else title
