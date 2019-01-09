@@ -109,6 +109,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             findPreference(getString(R.string.pref_general_app_theme)).onPreferenceChangeListener = sChangePreferenceListener
             findPreference(getString(R.string.pref_general_volume_scroll)).onPreferenceChangeListener = sChangePreferenceListener
             findPreference(getString(R.string.pref_general_auto_bookmark)).onPreferenceChangeListener = sChangePreferenceListener
+            findPreference(getString(R.string.pref_general_swipe_navigate)).onPreferenceChangeListener = sChangePreferenceListener
 
         }
 
@@ -278,6 +279,9 @@ class SettingsActivity : AppCompatPreferenceActivity() {
                 }
                 preference.context.getString(R.string.pref_general_auto_bookmark) -> {
                     MyApp.preferencesManager.isAutoAddBookmark = value.toString().toBoolean()
+                }
+                preference.context.getString(R.string.pref_general_swipe_navigate) -> {
+                    MyApp.preferencesManager.useSwipeForNavigate = value.toString().toBoolean()
                 }
 
             }

@@ -23,6 +23,13 @@
     android:summaryOn="@string/summary_auto_bookmark_on"
     android:title="@string/auto_bookmark"/>
 
+  <SwitchPreference
+    android:defaultValue="false"
+    android:key="@string/pref_general_swipe_navigate"
+    android:summaryOff="@string/summary_swipe_navigate_off"
+    android:summaryOn="@string/summary_swipe_navigate_on"
+    android:title="@string/swipe_navigate"/>
+
   <!--<SwitchPreference-->
     <!--android:defaultValue="false"-->
     <!--android:key="@string/pref_general_hide_chapter"-->

@@ -33,7 +33,7 @@ class GeneralPreferencesImpl(private val context: Context) : GeneralPreferences 
 
     override var fontSize: Int by PreferenceDelegates<Int>(context, "", R.string.pref_general_text_size, 13)
 
-
+    override var useSwipeForNavigate: Boolean by PreferenceDelegates<Boolean>(context, "", R.string.pref_general_swipe_navigate, false)
 
 }
 
@@ -44,7 +44,7 @@ interface GeneralPreferences {
     var isDarkTheme: Boolean
     var isFirstStart: Boolean
     var sortOrder: String
-
+    var useSwipeForNavigate: Boolean
 
     fun setLastChapter(ranobeUrl: String, chapterId: Int)
     fun getLastChapter(ranobeUrl: String): Int

@@ -116,4 +116,7 @@
   <string name="rate_dialog_ok">Оценить сейчас</string>
   <string name="chapter_not_available">Глава не доступна</string>
   <string name="rate_dialog_message">Если вам нравится использовать это приложение, не могли бы вы уделить время, чтобы оценить его? Это не займет больше минуты. Спасибо за вашу поддержку!</string>
+  <string name="summary_swipe_navigate_off">Использовать кнопки для навигации</string>
+  <string name="summary_swipe_navigate_on">Свайп влево/вправо для перехода к пред/след главе</string>
+  <string name="swipe_navigate">Использовть свайпы для навигации</string>
 </resources>

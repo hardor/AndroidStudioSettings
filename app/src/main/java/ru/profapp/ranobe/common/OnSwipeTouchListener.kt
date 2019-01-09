@@ -30,9 +30,9 @@ open class OnSwipeTouchListener(context: Context) : OnTouchListener {
         private val SWIPE_DISTANCE_THRESHOLD = 100
         private val SWIPE_VELOCITY_THRESHOLD = 100
 
-        override fun onSingleTapUp(e: MotionEvent?): Boolean {
+        override fun onDoubleTap(e: MotionEvent?): Boolean {
             onTap()
-            return false
+            return super.onDoubleTap(e)
         }
 
         override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
