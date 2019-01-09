@@ -3,7 +3,6 @@ package ru.profapp.ranobe.customElements
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.DialogPreference
 import android.util.AttributeSet
@@ -22,11 +21,11 @@ import ru.profapp.ranobe.network.repositories.RanobeRfRepository
 open class BaseLoginPreference(context: Context, attrs: AttributeSet) : DialogPreference(context, attrs), DialogInterface.OnClickListener {
 
     private val mCurrentValue: String? = null
-    lateinit var sharedPref: SharedPreferences
+    open lateinit var sharedToken: String
+    open lateinit var sharedLogin: String
     lateinit var ranobeSite: Constants.RanobeSite
-    // Current value
-    //    val mCurrentValue: String? = null
-    // View elements
+
+
     private lateinit var loginEditor: EditText
     private lateinit var resultTextView: TextView
     private lateinit var passwordEditor: TextInputEditText
@@ -45,11 +44,9 @@ open class BaseLoginPreference(context: Context, attrs: AttributeSet) : DialogPr
         // Inflate layout
         val view = View.inflate(context, R.layout.diaolog_login, null)
 
-        val value = sharedPref.getString(Constants.KEY_Login, "")
-
         resultTextView = view.findViewById(R.id.tV_login_resultLabel)
         loginEditor = view.findViewById(R.id.eT_login_email)
-        loginEditor.setText(value)
+        loginEditor.setText(sharedLogin)
         passwordEditor = view.findViewById(R.id.eT_login_password)
 
         return view
@@ -88,11 +85,11 @@ open class BaseLoginPreference(context: Context, attrs: AttributeSet) : DialogPr
                     .subscribe({ result ->
 
                         if (result.first) {
-                            sharedPref.edit().putString(Constants.KEY_Token, result.second).apply()
+                            sharedToken = result.second
                             summary = username
                             alert.dismiss()
                         } else {
-                            sharedPref.edit().putString(Constants.KEY_Token, "").apply()
+                            sharedToken = ""
                             summary = context.getString(R.string.summary_login)
                             if (ranobeSite == Constants.RanobeSite.RanobeRf) {
                                 RanobeRfRepository.paymentStatus = null
@@ -104,7 +101,7 @@ open class BaseLoginPreference(context: Context, attrs: AttributeSet) : DialogPr
                         }
 
                     }, {
-                        sharedPref.edit().putString(Constants.KEY_Token, "").apply()
+                        sharedToken = ""
                         summary = context.getString(R.string.summary_login)
                         if (ranobeSite == Constants.RanobeSite.RanobeRf) {
                             RanobeRfRepository.paymentStatus = null
@@ -127,7 +124,7 @@ open class BaseLoginPreference(context: Context, attrs: AttributeSet) : DialogPr
 
         password = passwordEditor.text.toString()
 
-        sharedPref.edit().putString(Constants.KEY_Login, username).apply()
+        sharedLogin = username
 
 
         if (!username.isNotBlank() || !password.isNotBlank()) {

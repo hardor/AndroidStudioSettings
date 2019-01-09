@@ -80,8 +80,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
     override fun isValidFragment(fragmentName: String): Boolean {
         return (PreferenceFragment::class.java.name == fragmentName
                 || GeneralPreferenceFragment::class.java.name == fragmentName
-                || RulatePreferenceFragment::class.java.name == fragmentName
-                || RanobeRfPreferenceFragment::class.java.name == fragmentName
+                || AuthPreferenceFragment::class.java.name == fragmentName
                 || DataPreferenceFragment::class.java.name == fragmentName)
         //|| ExportPreferenceFragment.class.getName().equals(fragmentName);
     }
@@ -129,51 +128,34 @@ class SettingsActivity : AppCompatPreferenceActivity() {
      * activity is showing a two-pane settings UI.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    class RulatePreferenceFragment : PreferenceFragment() {
+    class AuthPreferenceFragment : PreferenceFragment() {
         override fun onCreate(savedInstanceState: Bundle?) {
 
             super.onCreate(savedInstanceState)
-            addPreferencesFromResource(R.xml.pref_rulate)
+            addPreferencesFromResource(R.xml.pref_auth)
             val prefLogin = findPreference(getString(R.string.rulate_authorization_pref))
-            val mPreferences = activity?.applicationContext?.getSharedPreferences(Constants.Rulate_Login_Pref, 0)
 
-            val token = mPreferences?.getString(Constants.KEY_Token, "") ?: ""
+
+            val token = MyApp.preferencesManager.rulateToken
 
             if (token != "") {
-                prefLogin.summary = mPreferences?.getString(Constants.KEY_Login, "") ?: ""
+                prefLogin.summary = MyApp.preferencesManager.rulateLogin
             } else {
                 prefLogin.summary = resources.getString(R.string.summary_login)
             }
-            setHasOptionsMenu(true)
-        }
 
-        override fun onOptionsItemSelected(item: MenuItem): Boolean {
-            val id = item.itemId
-            if (id == android.R.id.home) {
-                activity?.onBackPressed()
-                return true
-            }
-            return super.onOptionsItemSelected(item)
-        }
 
-    }
+            val prefLogin2 = findPreference(getString(R.string.ranoberf_authorization_pref))
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    class RanobeRfPreferenceFragment : PreferenceFragment() {
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-            addPreferencesFromResource(R.xml.pref_ranoberf)
-            val prefLogin = findPreference(getString(R.string.ranoberf_authorization_pref))
 
-            val mPreferences = activity.applicationContext.getSharedPreferences(Constants.Ranoberf_Login_Pref, 0)
+            val token2 = MyApp.preferencesManager.ranoberfToken
 
-            val token = mPreferences?.getString(Constants.KEY_Token, "") ?: ""
-
-            if (token != "") {
-                prefLogin.summary = mPreferences?.getString(Constants.KEY_Login, "") ?: ""
+            if (token2 != "") {
+                prefLogin2.summary = MyApp.preferencesManager.ranoberfLogin
             } else {
-                prefLogin.summary = resources.getString(R.string.summary_login)
+                prefLogin2.summary = resources.getString(R.string.summary_login)
             }
+
             setHasOptionsMenu(true)
         }
 

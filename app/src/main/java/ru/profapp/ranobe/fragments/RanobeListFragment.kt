@@ -57,19 +57,17 @@ class RanobeListFragment : Fragment() {
     private var checkedSortItemName: String = Constants.SortOrder.default.name
 
     private fun getRulateWebFavorite(): Single<List<Ranobe>> {
-        val mPreferences = mContext!!.applicationContext.getSharedPreferences(Constants.Rulate_Login_Pref, 0)
-        val token = mPreferences.getString(Constants.KEY_Token, "")
-        if (token.isNullOrBlank())
+
+        val token = MyApp.preferencesManager.rulateToken
+        if (token.isBlank())
             return Single.just(listOf())
         return RulateRepository.getFavoriteBooks(token)
     }
 
     private fun getRanobeRfWebFavorite(): Single<List<Ranobe>> {
 
-        val mPreferences = mContext!!.applicationContext.getSharedPreferences(Constants.Ranoberf_Login_Pref, 0)
-
-        val token = mPreferences.getString(Constants.KEY_Token, "")
-        if (token.isNullOrBlank())
+        val token = MyApp.preferencesManager.ranoberfToken
+        if (token.isBlank())
             return Single.just(listOf())
         return RanobeRfRepository.getFavoriteBooks(token)
     }

@@ -23,6 +23,12 @@ class GeneralPreferencesImpl(private val context: Context) : GeneralPreferences 
 
     override var sortOrder: String by PreferenceDelegates<String>(context, "", R.string.pref_general_sort_order, Constants.SortOrder.default.name)
 
+    override var rulateToken: String by PreferenceDelegates<String>(context, Constants.Rulate_Login_Pref, Constants.KEY_Token, "")
+    override var ranoberfToken: String by PreferenceDelegates<String>(context, Constants.Ranoberf_Login_Pref, Constants.KEY_Token, "")
+
+    override var rulateLogin: String by PreferenceDelegates<String>(context, Constants.Rulate_Login_Pref, Constants.KEY_Login, "")
+    override var ranoberfLogin: String by PreferenceDelegates<String>(context, Constants.Ranoberf_Login_Pref, Constants.KEY_Login, "")
+
     override var isAutoAddBookmark: Boolean by PreferenceDelegates<Boolean>(context, "", R.string.pref_general_auto_bookmark, true)
 
     override var useVolumeButtonsToScroll: Boolean by PreferenceDelegates<Boolean>(context, "", R.string.pref_general_volume_scroll, false)
@@ -45,6 +51,11 @@ interface GeneralPreferences {
     var isFirstStart: Boolean
     var sortOrder: String
     var useSwipeForNavigate: Boolean
+    var rulateToken: String
+    var ranoberfToken: String
+    var rulateLogin: String
+    var ranoberfLogin: String
+
 
     fun setLastChapter(ranobeUrl: String, chapterId: Int)
     fun getLastChapter(ranobeUrl: String): Int

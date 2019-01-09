@@ -2,7 +2,6 @@ package ru.profapp.ranobe.activities
 
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -47,8 +46,6 @@ class RanobeInfoActivity : AppCompatActivity() {
 
     private var currentTheme = ThemeHelper.sTheme
     private val recycleChapterList = ArrayList<Chapter>()
-    private lateinit var preferences: SharedPreferences
-    private lateinit var rfpreferences: SharedPreferences
     private lateinit var mCurrentRanobe: Ranobe
     private lateinit var mContext: Context
     private var adapterExpandable: ExpandableChapterRecyclerViewAdapter? = null
@@ -62,6 +59,7 @@ class RanobeInfoActivity : AppCompatActivity() {
     lateinit var crashlyticsKit: Crashlytics
     @Inject
     lateinit var adRequest: AdRequest
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         currentTheme = AppCompatDelegate.getDefaultNightMode()
@@ -111,10 +109,6 @@ class RanobeInfoActivity : AppCompatActivity() {
 
         supportActionBar?.title = mCurrentRanobe.title
 
-        preferences = applicationContext.getSharedPreferences(Constants.Rulate_Login_Pref, 0)
-
-        rfpreferences = applicationContext.getSharedPreferences(Constants.Ranoberf_Login_Pref, 0)
-
         mChapterLayoutManager = LinearLayoutManager(mContext)
         rInfoTabCardChaptersRecycler.layoutManager = mChapterLayoutManager
         rInfoTabCardChaptersRecycler.onFlingListener = object : RecyclerView.OnFlingListener() {
@@ -141,7 +135,6 @@ class RanobeInfoActivity : AppCompatActivity() {
 
         rInfoAdView.loadAd(adRequest)
     }
-
 
 
     private fun loadData() {
@@ -179,15 +172,15 @@ class RanobeInfoActivity : AppCompatActivity() {
         val request = mCurrentRanobe.updateRanobe(mContext).map {
 
 
-                val lastId: Int = MyApp.preferencesManager.getLastChapter(mCurrentRanobe.url)
-                if (lastId > 0) {
+            val lastId: Int = MyApp.preferencesManager.getLastChapter(mCurrentRanobe.url)
+            if (lastId > 0) {
 
-                    for (chapter in mCurrentRanobe.chapterList) {
-                        if (chapter.id != null)
-                            chapter.isRead = chapter.id!! <= lastId
-                    }
-
+                for (chapter in mCurrentRanobe.chapterList) {
+                    if (chapter.id != null)
+                        chapter.isRead = chapter.id!! <= lastId
                 }
+
+            }
 
             return@map it
         }.observeOn(AndroidSchedulers.mainThread())
@@ -271,13 +264,13 @@ class RanobeInfoActivity : AppCompatActivity() {
             when (mCurrentRanobe.ranobeSite) {
 
                 Constants.RanobeSite.Rulate.url -> {
-                    val token = preferences.getString(Constants.KEY_Token, "") ?: ""
+                    val token = MyApp.preferencesManager.rulateToken
                     if (!token.isBlank()) {
                         fabRequest = RulateRepository.addBookmark(token, mCurrentRanobe.id)
                     }
                 }
                 Constants.RanobeSite.RanobeRf.url -> {
-                    val token = rfpreferences.getString(Constants.KEY_Token, "") ?: ""
+                    val token = MyApp.preferencesManager.ranoberfToken
                     if (!token.isBlank()) {
                         fabRequest = RanobeRfRepository.addBookmark(token, mCurrentRanobe.id, mCurrentRanobe.chapterList.firstOrNull()?.id)
                     }
@@ -320,13 +313,13 @@ class RanobeInfoActivity : AppCompatActivity() {
                 when (mCurrentRanobe.ranobeSite) {
 
                     Constants.RanobeSite.Rulate.url -> {
-                        val token = preferences.getString(Constants.KEY_Token, "") ?: ""
+                        val token = MyApp.preferencesManager.rulateToken
                         if (!token.isBlank()) {
                             fabRequest = RulateRepository.removeBookmark(token, mCurrentRanobe.id)
                         }
                     }
                     Constants.RanobeSite.RanobeRf.url -> {
-                        val token = rfpreferences.getString(Constants.KEY_Token, "") ?: ""
+                        val token = MyApp.preferencesManager.ranoberfToken
                         if (!token.isBlank()) {
                             fabRequest = RanobeRfRepository.removeBookmark(token, mCurrentRanobe.bookmarkIdRf)
                         }

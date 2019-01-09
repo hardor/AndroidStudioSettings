@@ -115,8 +115,7 @@ class Ranobe() {
 
         bookInfo = if (!wasUpdated) {
             if (ranobeSite == Rulate.url || url.contains(Rulate.url)) {
-                val mPreferences = mContext.applicationContext.getSharedPreferences(Constants.Rulate_Login_Pref, 0)
-                val token = mPreferences.getString(Constants.KEY_Token, "") ?: ""
+                val token = MyApp.preferencesManager.ranoberfToken
                 RulateRepository.getBookInfo(this, token, id)
             } else if (ranobeSite == RanobeRf.url || url.contains(RanobeRf.url)) {
                 RanobeRfRepository.getBookInfo(this)

@@ -7,11 +7,8 @@
     android:title="@string/pref_header_general"/>
 
   <header
-    android:fragment="ru.profapp.ranobe.activities.SettingsActivity$RulatePreferenceFragment"
-    android:title="@string/tl_rulate_name"/>
-  <header
-    android:fragment="ru.profapp.ranobe.activities.SettingsActivity$RanobeRfPreferenceFragment"
-    android:title="@string/ranobe_rf"/>
+    android:fragment="ru.profapp.ranobe.activities.SettingsActivity$AuthPreferenceFragment"
+    android:title="@string/authorization"/>
   <header
     android:fragment="ru.profapp.ranobe.activities.SettingsActivity$DataPreferenceFragment"
     android:title="@string/data"/>

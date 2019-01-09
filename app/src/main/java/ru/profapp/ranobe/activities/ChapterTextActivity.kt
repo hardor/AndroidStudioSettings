@@ -475,8 +475,8 @@ class ChapterTextActivity : AppCompatActivity() {
     }
 
     private fun getRulateChapterText(): Single<Boolean> {
-        val preferences = applicationContext.getSharedPreferences(Constants.Rulate_Login_Pref, 0)
-        val token: String = preferences.getString(Constants.KEY_Token, "") ?: ""
+
+        val token: String = MyApp.preferencesManager.rulateToken
 
         return RulateRepository.getChapterText(token, mCurrentChapter)
 

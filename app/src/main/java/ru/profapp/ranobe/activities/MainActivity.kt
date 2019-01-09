@@ -1,6 +1,5 @@
 package ru.profapp.ranobe.activities
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -174,23 +173,16 @@ class MainActivity : AppCompatActivity(),
     private fun initSettingPreference() {
         PreferenceManager.setDefaultValues(this, R.xml.pref_general, false)
 
-        val rfPref = applicationContext.getSharedPreferences(Constants.Ranoberf_Login_Pref, Context.MODE_PRIVATE)
-        if (rfPref != null) {
-            MyApp.ranobeRfToken = rfPref.getString(Constants.KEY_Login, "")
-        }
-
         ThemeHelper.setTheme(MyApp.preferencesManager.isDarkTheme)
 
         ThemeHelper.onActivityCreateSetTheme()
         currentTheme = AppCompatDelegate.getDefaultNightMode()
 
-        val ranobeRfPref = applicationContext.getSharedPreferences(Constants.Ranoberf_Login_Pref, 0)
-        if (ranobeRfPref != null) {
-            val token = ranobeRfPref.getString(Constants.KEY_Token, "")
-            if (!token.isNullOrBlank()) {
-                RanobeRfRepository.token = token
-            }
+        val token = MyApp.preferencesManager.ranoberfToken
+        if (!token.isBlank()) {
+            RanobeRfRepository.token = token
         }
+
     }
 
     override fun onBackPressed() {

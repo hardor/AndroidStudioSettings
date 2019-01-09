@@ -37,7 +37,6 @@ class MyApp : MultiDexApplication() {
             }
 
         }
-        var ranobeRfToken: String? = null
 
         var fragmentType: Constants.FragmentType? = null
 
