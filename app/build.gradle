@@ -1,7 +1,7 @@
 ext {
 
     majVersion = 1
-    minVersion = 18
+    minVersion = 21
 
     calculateVersionName = {
         return "${majVersion}.${minVersion}"
@@ -63,7 +63,7 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             buildConfigField "boolean", "USE_LOG", "false"
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             android.applicationVariants.all { variant ->
@@ -173,15 +173,9 @@ dependencies {
     //dagger 2
     implementation 'com.google.dagger:dagger:2.13'
     kapt 'com.google.dagger:dagger-compiler:2.13'
-    //FlexibleAdapter
 
-    // implementation 'eu.davidea:flexible-adapter:5.1.0'
-
-    //  implementation 'eu.davidea:flexible-adapter-ui:1.0.0'
-
-    //  implementation 'eu.davidea:flexible-adapter-livedata:1.0.0-b3'
-
-    // implementation 'eu.davidea:flexible-adapter-databinding:1.0.0'
+    //BRVAH
+   // implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.44'
 }
 
 apply plugin: 'com.google.gms.google-services'

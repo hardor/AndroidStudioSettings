@@ -130,8 +130,8 @@ class ChapterTextActivity : AppCompatActivity() {
                 .setSelectedAppLaunches(1)   // default is 1, 1 means each launch, 2 means every 2nd launch, 3 means every 3rd launch, etc
                 .setShowLaterButton(true)           // default is true, true means to show the Neutral button ("Remind me later").
                 .set365DayPeriodMaxNumberDialogLaunchTimes(3) // default is unlimited, 3 means 3 or less occurrences of the display of the Rate Dialog within a 365-day period
-                .setVersionCodeCheck(true)          // default is false, true means to re-enable the Rate Dialog if a new version of app with different version code is installed
-                .setVersionNameCheck(true)          // default is false, true means to re-enable the Rate Dialog if a new version of app with different version name is installed
+                .setVersionCodeCheck(false)          // default is false, true means to re-enable the Rate Dialog if a new version of app with different version code is installed
+                .setVersionNameCheck(false)          // default is false, true means to re-enable the Rate Dialog if a new version of app with different version name is installed
 
                 .setOnClickButtonListener { it ->
                     when (it.toInt()) {
