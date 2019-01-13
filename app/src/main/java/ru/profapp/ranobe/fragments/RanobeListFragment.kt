@@ -311,28 +311,43 @@ class RanobeListFragment : Fragment() {
 
                 } //Check lastReaded
                 .map { ranobes ->
+                    if (fragmentType == Constants.FragmentType.Favorite) {
+                        for (ranobe in ranobes) {
+                            ranobe.newChapters = 0
+                            val chapterList = ranobe.chapterList
 
-                    for (ranobe in ranobes) {
-                        ranobe.newChapters = 0
-                        val chapterList = ranobe.chapterList
+                            if (chapterList.isNotEmpty()) {
+                                var templist = chapterList.filter { it.canRead }
+                                if (!templist.any()) {
+                                    templist = chapterList.take(Constants.chaptersNum)
+                                }
+                                val chapterlist2 = templist.take(Constants.chaptersNum)
 
-                        if (chapterList.isNotEmpty()) {
-                            var templist = chapterList.filter { it.canRead }
-                            if (!templist.any()) {
-                                templist = chapterList.take(Constants.chaptersNum)
-                            }
-                            val chapterlist2 = templist.take(Constants.chaptersNum)
+                                val lastChapterUrl = MyApp.preferencesManager.getLastChapterUrl(chapterlist2.first().ranobeUrl)
 
-                            val lastId = MyApp.preferencesManager.getLastChapter(chapterlist2.first().ranobeUrl)
-                            if (lastId > 0) {
-                                for (chapter in chapterlist2) {
-                                    if (chapter.id != null) {
-                                        chapter.isRead = chapter.id!! <= lastId
-                                        ranobe.newChapters += if (chapter.isRead) 0 else 1
+                                if (lastChapterUrl.isNotEmpty()) {
+                                    val chapterIndex = chapterlist2.firstOrNull { c -> c.url == lastChapterUrl }?.index
+                                    if (chapterIndex != null) {
+                                        for (chapter in chapterlist2) {
+                                            chapter.isRead = chapter.index <= chapterIndex
+                                            ranobe.newChapters += if (chapter.isRead) 0 else 1
+
+                                        }
+                                    }
+                                } else {
+                                    val lastId = MyApp.preferencesManager.getLastChapterId(chapterlist2.first().ranobeUrl)
+                                    if (lastId > 0) {
+                                        for (chapter in chapterlist2) {
+                                            if (chapter.id != null) {
+                                                chapter.isRead = chapter.id!! <= lastId
+                                                ranobe.newChapters += if (chapter.isRead) 0 else 1
+                                            }
+                                        }
                                     }
                                 }
-                            }
 
+
+                            }
                         }
                     }
                     return@map ranobes
@@ -472,7 +487,7 @@ class RanobeListFragment : Fragment() {
                 newRanobe.title = group.value.first().ranobeName
                 val chapterList = mutableListOf<Chapter>()
 
-                chapterList.addAll(group.value.asSequence().map { it -> Chapter(it) }.sortedWith(MyApp.chapterComparator).toList())
+                chapterList.addAll(group.value.asSequence().map { it -> Chapter(it) }.sortedBy { ch -> ch.index })
 
                 newRanobe.chapterList = chapterList
                 newRanobe.wasUpdated = true

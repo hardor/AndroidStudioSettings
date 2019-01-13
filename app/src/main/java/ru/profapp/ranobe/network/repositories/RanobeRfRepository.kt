@@ -8,15 +8,14 @@ import io.reactivex.schedulers.Schedulers
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.common.Constants
 import ru.profapp.ranobe.helpers.LogType
 import ru.profapp.ranobe.helpers.logError
-
 import ru.profapp.ranobe.helpers.removeTags
 import ru.profapp.ranobe.models.Chapter
 import ru.profapp.ranobe.models.Ranobe
 import ru.profapp.ranobe.models.RanobeImage
-import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.network.dto.ranoberfDTO.ResultBookInfo
 import ru.profapp.ranobe.network.dto.ranoberfDTO.RfBook
 import ru.profapp.ranobe.network.dto.ranoberfDTO.RfChapter
@@ -234,7 +233,7 @@ object RanobeRfRepository : BaseRepository() {
 
             chapter.ranobeUrl = if (chapter.ranobeUrl.isBlank()) url else chapter.ranobeUrl
             chapter.ranobeName = title
-            chapter.index = index
+            chapter.index = book.parts.size - index - 1
 
             //  chapter.url = rChapter.alias ?: chapter.url
 

@@ -15,15 +15,17 @@ class TextChapter() {
     @PrimaryKey
     @NonNull
     @ColumnInfo(name = "ChapterUrl")
-    var chapterUrl: String=""
+    var chapterUrl: String = ""
     @ColumnInfo(name = "ChapterName")
-    var chapterName: String=""
+    var chapterName: String = ""
     @ColumnInfo(name = "RanobeName")
-    var ranobeName: String=""
+    var ranobeName: String = ""
     @ColumnInfo(name = "RanobeUrl")
     var ranobeUrl: String = ""
     @ColumnInfo(name = "Text")
-    var text: String=""
+    var text: String = ""
+    @ColumnInfo(name = "ChapterIndex")
+    var chapterIndex: Int = 0
 
     constructor(chapter: Chapter) : this() {
         this.chapterUrl = chapter.url
@@ -31,6 +33,7 @@ class TextChapter() {
         this.chapterName = chapter.title.replace("^\\s+", "")
         this.ranobeName = chapter.ranobeName
         this.ranobeUrl = chapter.ranobeUrl
+        this.chapterIndex = chapter.index
     }
 
 }

@@ -124,13 +124,13 @@ object RulateRepository : BaseRepository() {
                 val existRanobe = or.firstOrNull { b -> b.url == ranobe.url }
                 if (existRanobe != null) {
                     existRanobe.chapterList.addAll(ranobe.chapterList)
-                    existRanobe.chapterList.sortByDescending { it.id }
                 } else {
                     or.add(ranobe)
                 }
 
             }
         }
+        or.forEach { r -> r.chapterList.sortByDescending { ch -> ch.url } }
         return or
     }
 
@@ -234,7 +234,7 @@ object RulateRepository : BaseRepository() {
             chapter.ranobeUrl = url
             chapter.url = url + "/" + chapter.id
             chapter.ranobeName = title
-            chapter.index = size - 1 - i
+            chapter.index = i
             chapterList.add(chapter)
         }
         chapterList.reverse()

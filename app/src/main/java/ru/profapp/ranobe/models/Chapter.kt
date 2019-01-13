@@ -3,10 +3,10 @@ package ru.profapp.ranobe.models
 import androidx.annotation.NonNull
 import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
-import ru.profapp.ranobe.common.Constants.RanobeSite.*
+import ru.profapp.ranobe.common.Constants.RanobeSite.RanobeRf
+import ru.profapp.ranobe.common.Constants.RanobeSite.Rulate
 import ru.profapp.ranobe.helpers.LogType
 import ru.profapp.ranobe.helpers.logError
-
 import java.util.*
 
 /**
@@ -48,12 +48,8 @@ class Chapter() {
     @ColumnInfo(name = "Id")
     var id: Int? = null
         get() {
-            if (field == null && !url.isBlank() && !url.contains(RanobeRf.url)) {
-
-                if (url.contains(RanobeHub.url)) {
-                    val arr = url.replace(ranobeUrl, "").split("/").takeLast(2)
-                    return arr[1].replace(".", "").toInt() + (arr[0].replace(".", "").toInt() * 10000)
-                } else {
+            if (field == null && !url.isBlank()) {
+                if (url.contains(Rulate.url)) {
                     val value: String = url.substring(url.lastIndexOf("/") + 1)
                     return try {
                         Integer.parseInt(value)

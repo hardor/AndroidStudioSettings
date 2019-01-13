@@ -126,16 +126,26 @@ class RanobeRecyclerViewAdapter(private val glide: RequestManager, recyclerView:
                         templist = chapterList.take(Constants.chaptersNum)
                     }
                     val chapterlist2 = templist.take(Constants.chaptersNum)
-
-                    val lastId = MyApp.preferencesManager.getLastChapter(chapterlist2.first().ranobeUrl)
-                    if (lastId > 0) {
-
-                        for (chapter in chapterlist2) {
-                            if (chapter.id != null)
-                                chapter.isRead = chapter.id!! <= lastId
-                        }
-                    }
-
+//                    val lastChapterUrl = MyApp.preferencesManager.getLastChapterUrl(chapterlist2.first().ranobeUrl)
+//
+//                    if (lastChapterUrl.isNotEmpty()) {
+//                        val chapterIndex = chapterlist2.firstOrNull { c -> c.url == lastChapterUrl }?.index
+//                        if (chapterIndex != null) {
+//                            for (chapter in chapterlist2) {
+//                                chapter.isRead = chapter.index <= chapterIndex
+//
+//                            }
+//                        }
+//                    } else {
+//                        val lastId = MyApp.preferencesManager.getLastChapterId(chapterlist2.first().ranobeUrl)
+//                        if (lastId > 0) {
+//
+//                            for (chapter in chapterlist2) {
+//                                if (chapter.id != null)
+//                                    chapter.isRead = chapter.id!! <= lastId
+//                            }
+//                        }
+//                    }
                     val adapter = ChapterRecyclerViewAdapter(chapterlist2, holder.mItem)
                     holder.chaptersListView.adapter = adapter
                     holder.chaptersListView.visibility = View.VISIBLE

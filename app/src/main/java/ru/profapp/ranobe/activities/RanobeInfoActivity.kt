@@ -171,51 +171,64 @@ class RanobeInfoActivity : AppCompatActivity() {
 
         val request = mCurrentRanobe.updateRanobe(mContext).map {
 
+            val lastChapterUrl = MyApp.preferencesManager.getLastChapterUrl(mCurrentRanobe.chapterList.first().ranobeUrl)
 
-            val lastId: Int = MyApp.preferencesManager.getLastChapter(mCurrentRanobe.url)
-            if (lastId > 0) {
-
-                for (chapter in mCurrentRanobe.chapterList) {
-                    if (chapter.id != null)
-                        chapter.isRead = chapter.id!! <= lastId
+            if (lastChapterUrl.isNotEmpty()) {
+                val chapterIndex = mCurrentRanobe.chapterList.firstOrNull { c -> c.url == lastChapterUrl }?.index
+                if (chapterIndex != null) {
+                    for (chapter in mCurrentRanobe.chapterList) {
+                        chapter.isRead = chapter.index <= chapterIndex
+                    }
                 }
+            } else {
+                val lastId: Int = MyApp.preferencesManager.getLastChapterId(mCurrentRanobe.url)
+                if (lastId > 0) {
 
+                    for (chapter in mCurrentRanobe.chapterList) {
+                        if (chapter.id != null)
+                            chapter.isRead = chapter.id!! <= lastId
+                    }
+
+                }
             }
+
 
             return@map it
         }.observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe({
+                .subscribe(
+                        {
 
-                    rInfoTabCardChaptersProgressBar.visibility = View.GONE
-                    loadData()
-                    recycleChapterList.addAll(mCurrentRanobe.chapterList)
-                    adapterExpandable = ExpandableChapterRecyclerViewAdapter(mContext, recycleChapterList, mCurrentRanobe)
-                    rInfoTabCardChaptersRecycler.adapter = adapterExpandable
+                            rInfoTabCardChaptersProgressBar.visibility = View.GONE
+                            loadData()
+                            recycleChapterList.addAll(mCurrentRanobe.chapterList)
+                            adapterExpandable = ExpandableChapterRecyclerViewAdapter(mContext, recycleChapterList, mCurrentRanobe)
+                            rInfoTabCardChaptersRecycler.adapter = adapterExpandable
 
-                    if (mCurrentRanobe.comments.isNotEmpty()) {
-                        rInfoTabCardCommentsRecycler.layoutManager = LinearLayoutManager(mContext)
-                        rInfoTabCardCommentsRecycler.setHasFixedSize(true)
-                        rInfoTabCardCommentsRecycler.onFlingListener = object : RecyclerView.OnFlingListener() {
-                            @RequiresApi(Build.VERSION_CODES.KITKAT)
-                            override fun onFling(velocityX: Int, velocityY: Int): Boolean {
-                                rInfoTabCardCommentsRecycler.dispatchNestedFling(velocityX.toFloat(), velocityY.toFloat(), false)
-                                return false
+                            if (mCurrentRanobe.comments.isNotEmpty()) {
+                                rInfoTabCardCommentsRecycler.layoutManager = LinearLayoutManager(mContext)
+                                rInfoTabCardCommentsRecycler.setHasFixedSize(true)
+                                rInfoTabCardCommentsRecycler.onFlingListener = object : RecyclerView.OnFlingListener() {
+                                    @RequiresApi(Build.VERSION_CODES.KITKAT)
+                                    override fun onFling(velocityX: Int, velocityY: Int): Boolean {
+                                        rInfoTabCardCommentsRecycler.dispatchNestedFling(velocityX.toFloat(), velocityY.toFloat(), false)
+                                        return false
+                                    }
+                                }
+
+                                rInfoTabCardCommentsRecycler.adapter = CommentsRecyclerViewAdapter(mGlide, mCurrentRanobe.comments)
+
+                                val tabSpec: TabHost.TabSpec = rInfoTabHost.newTabSpec("comments")
+                                tabSpec.setContent(R.id.rInfoTabCardComments)
+                                tabSpec.setIndicator(resources.getString(R.string.comments))
+                                rInfoTabHost.addTab(tabSpec)
                             }
-                        }
 
-                        rInfoTabCardCommentsRecycler.adapter = CommentsRecyclerViewAdapter(mGlide, mCurrentRanobe.comments)
-
-                        val tabSpec: TabHost.TabSpec = rInfoTabHost.newTabSpec("comments")
-                        tabSpec.setContent(R.id.rInfoTabCardComments)
-                        tabSpec.setIndicator(resources.getString(R.string.comments))
-                        rInfoTabHost.addTab(tabSpec)
-                    }
-
-                }, { error ->
-                    logError(LogType.ERROR, "loadChapters", "", error)
-                    rInfoTabCardChaptersProgressBar.visibility = View.GONE
-                })
+                        },
+                        { error ->
+                            logError(LogType.ERROR, "loadChapters", "", error)
+                            rInfoTabCardChaptersProgressBar.visibility = View.GONE
+                        })
 
         compositeDisposable.add(request)
     }
@@ -371,10 +384,11 @@ class RanobeInfoActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
+
         rInfoAdView?.adListener = null
         rInfoAdView?.removeAllViews()
         rInfoAdView?.destroy()
+        super.onDestroy()
         compositeDisposable.clear()
         Thread.setDefaultUncaughtExceptionHandler(null)
 

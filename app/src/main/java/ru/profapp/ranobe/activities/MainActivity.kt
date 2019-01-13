@@ -304,10 +304,10 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         adView.adListener = null
         adView.removeAllViews()
         adView.destroy()
+        super.onDestroy()
         Thread.setDefaultUncaughtExceptionHandler(null)
     }
 

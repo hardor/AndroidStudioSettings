@@ -149,14 +149,15 @@ object RanobeHubRepository : BaseRepository() {
                         }
 
                         existRanobe.chapterList.add(chapter)
-                        existRanobe.chapterList.sortByDescending { it.id }
                     }
 
                 }
 
+
             }
         }
 
+        or.forEach { r -> r.chapterList.sortByDescending { ch -> ch.url } }
         return or
 
     }

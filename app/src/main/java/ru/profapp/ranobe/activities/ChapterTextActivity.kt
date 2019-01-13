@@ -251,14 +251,14 @@ class ChapterTextActivity : AppCompatActivity() {
             }
 
             override fun onSwipeLeft() {
-                if(MyApp.preferencesManager.useSwipeForNavigate ) {
+                if (MyApp.preferencesManager.useSwipeForNavigate) {
                     OnClicked(-1)
                     bottomNavigationView.menu.findItem(R.id.navigation_next).isChecked = true
                 }
             }
 
             override fun onSwipeRight() {
-                if(MyApp.preferencesManager.useSwipeForNavigate ) {
+                if (MyApp.preferencesManager.useSwipeForNavigate) {
                     OnClicked(+1)
                     bottomNavigationView.menu.findItem(R.id.navigation_prev).isChecked = true
                 }
@@ -548,9 +548,9 @@ class ChapterTextActivity : AppCompatActivity() {
 
         mCurrentChapter.isRead = true
 
-        mCurrentChapter.id?.let {
-            MyApp.preferencesManager.setLastChapter(mCurrentChapter.ranobeUrl, it)
-        }
+
+        MyApp.preferencesManager.setLastChapterUrl(mCurrentChapter.ranobeUrl, mCurrentChapter.url)
+
 
         saveHistoryToDb()
 

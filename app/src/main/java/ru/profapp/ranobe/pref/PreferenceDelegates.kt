@@ -49,6 +49,7 @@ class PreferenceDelegates<T>(val context: Context, val prefRes: String, private 
         with(prefs.edit())
         {
             when (value) {
+                null -> remove(key)
                 is Boolean -> putBoolean(key, value)
                 is Int -> putInt(key, value)
                 is Long -> putLong(key, value)

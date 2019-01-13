@@ -11,12 +11,19 @@ import ru.profapp.ranobe.common.Constants
  */
 
 class GeneralPreferencesImpl(private val context: Context) : GeneralPreferences {
-    override fun setLastChapter(ranobeUrl: String, chapterId: Int) {
-        var lastChapterId: Int by PreferenceDelegates<Int>(context, Constants.last_chapter_id_Pref, ranobeUrl, -1)
-        lastChapterId = chapterId
+
+    override fun setLastChapterUrl(ranobeUrl: String, chapterUrl: String) {
+        var lastChapterUrl: String by PreferenceDelegates<String>(context, Constants.last_chapter_id_Pref, "url_$ranobeUrl", "")
+        lastChapterUrl = chapterUrl
     }
 
-    override fun getLastChapter(ranobeUrl: String): Int {
+    override fun getLastChapterUrl(ranobeUrl: String): String {
+        val lastChapterUrl: String  by PreferenceDelegates<String>(context, Constants.last_chapter_id_Pref, "url_$ranobeUrl", "")
+        return lastChapterUrl
+    }
+
+    //Todo: remove 1.19
+    override fun getLastChapterId(ranobeUrl: String): Int {
         val lastChapterId: Int by PreferenceDelegates<Int>(context, Constants.last_chapter_id_Pref, ranobeUrl, -1)
         return lastChapterId
     }
@@ -57,8 +64,12 @@ interface GeneralPreferences {
     var ranoberfLogin: String
 
 
-    fun setLastChapter(ranobeUrl: String, chapterId: Int)
-    fun getLastChapter(ranobeUrl: String): Int
+    fun setLastChapterUrl(ranobeUrl: String, chapterUrl: String)
+
+    fun getLastChapterUrl(ranobeUrl: String): String
+
+    // Todo: remove 1.19
+    fun getLastChapterId(ranobeUrl: String): Int
 
     //rulate
 

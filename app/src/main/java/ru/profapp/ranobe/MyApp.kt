@@ -17,7 +17,6 @@ import ru.profapp.ranobe.dagger.PreferencesModule
 import ru.profapp.ranobe.helpers.LogType
 import ru.profapp.ranobe.helpers.logError
 import ru.profapp.ranobe.helpers.logMessage
-import ru.profapp.ranobe.models.Chapter
 import ru.profapp.ranobe.models.Ranobe
 import ru.profapp.ranobe.pref.GeneralPreferencesManager
 import ru.profapp.ranobe.utils.StethoUtils
@@ -27,16 +26,6 @@ class MyApp : MultiDexApplication() {
     companion object {
 
         val component: ApplicationComponent = DaggerApplicationComponent.create()
-
-        val chapterComparator = Comparator { b: Chapter, a: Chapter ->
-
-            if (a.id != null && b.id != null) {
-                return@Comparator a.id!!.compareTo(b.id!!)
-            } else {
-                return@Comparator (a.title).compareTo(b.title)
-            }
-
-        }
 
         var fragmentType: Constants.FragmentType? = null
 
@@ -80,7 +69,6 @@ class MyApp : MultiDexApplication() {
                     database.execSQL("CREATE TABLE ranobeHistory (RanobeUrl TEXT NOT NULL, RanobeName TEXT NOT NULL, Description TEXT, ReadDate INTEGER NOT NULL, PRIMARY KEY(RanobeUrl))")
                     database.execSQL("CREATE INDEX index_ranobeHistory_RanobeUrl ON ranobeHistory (RanobeUrl)")
                     database.execSQL("CREATE TABLE IF NOT EXISTS textChapter2 (ChapterUrl TEXT NOT NULL, ChapterName TEXT NOT NULL, RanobeName TEXT NOT NULL,  RanobeUrl TEXT NOT NULL,Text TEXT NOT NULL,PRIMARY KEY(ChapterUrl));")
-                    //database.execSQL("INSERT INTO textChapter2 (ChapterUrl, ChapterName, RanobeName,RanobeUrl,  Text) SELECT ChapterUrl, ChapterName, RanobeName,'',  Text FROM textChapter;")
                     database.execSQL("DROP TABLE textChapter;")
                     database.execSQL("ALTER TABLE textChapter2 RENAME TO textChapter;")
                     database.execSQL("CREATE INDEX index_textChapter_ChapterUrl ON textChapter (ChapterUrl);")
@@ -114,6 +102,24 @@ class MyApp : MultiDexApplication() {
 
             }
         }
+        @VisibleForTesting
+        val MIGRATION_4_5: Migration = object : Migration(4, 5) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+
+                logMessage(LogType.ERROR, "MIGRATION", "MIGRATION start")
+                //Change ranobe
+                try {
+                    database.execSQL("CREATE TABLE IF NOT EXISTS textChapter2 (ChapterUrl TEXT NOT NULL, ChapterName TEXT NOT NULL, RanobeName TEXT NOT NULL,  RanobeUrl TEXT NOT NULL,Text TEXT NOT NULL,ChapterIndex INTEGER NOT NULL,PRIMARY KEY(ChapterUrl));")
+                    database.execSQL("INSERT INTO textChapter2 (ChapterUrl,ChapterName, RanobeName,RanobeUrl,Text,ChapterIndex) SELECT ChapterUrl,ChapterName, RanobeName,RanobeUrl,Text,0 FROM textChapter;")
+                    database.execSQL("DROP TABLE textChapter;")
+                    database.execSQL("ALTER TABLE textChapter2 RENAME TO textChapter;")
+                    database.execSQL("CREATE INDEX index_textChapter_ChapterUrl ON textChapter (ChapterUrl);")
+                } catch (e: Exception) {
+                    logError(LogType.ERROR, "MIGRATION_4_5", "MIGRATION_4_5 failed", e)
+                }
+
+            }
+        }
 
         lateinit var database: DatabaseDao
         var ranobe: Ranobe? = null
@@ -142,7 +148,7 @@ class MyApp : MultiDexApplication() {
             StethoUtils.install(this)
 
         }
-        MyApp.database = Room.databaseBuilder(this, DatabaseDao::class.java, DB_NAME).addMigrations(MIGRATION_2_3, MIGRATION_3_4).fallbackToDestructiveMigration().build()
+        MyApp.database = Room.databaseBuilder(this, DatabaseDao::class.java, DB_NAME).addMigrations(MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5).fallbackToDestructiveMigration().build()
     }
 }
 
