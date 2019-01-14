@@ -256,7 +256,7 @@ object RanobeRfRepository : BaseRepository() {
             chapter.updateChapter(ch)
             chapter.ranobeUrl = url
             chapter.ranobeName = title
-            chapter.index = i
+            chapter.index = allChapters.size -  i -1
             chapterList.add(chapter)
         }
         if (chapterList.size > 0) {

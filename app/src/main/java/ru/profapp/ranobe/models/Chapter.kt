@@ -105,6 +105,7 @@ class Chapter() {
         text = textChapter.text
         url = textChapter.chapterUrl
         ranobeUrl = textChapter.ranobeUrl
+        index = textChapter.chapterIndex
     }
 
     constructor(chapterHistory: ChapterHistory) : this() {

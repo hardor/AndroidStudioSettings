@@ -1,7 +1,7 @@
 ext {
 
     majVersion = 1
-    minVersion = 21
+    minVersion = 22
 
     calculateVersionName = {
         return "${majVersion}.${minVersion}"
@@ -63,7 +63,7 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             buildConfigField "boolean", "USE_LOG", "false"
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             android.applicationVariants.all { variant ->

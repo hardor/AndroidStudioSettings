@@ -487,7 +487,7 @@ class RanobeListFragment : Fragment() {
                 newRanobe.title = group.value.first().ranobeName
                 val chapterList = mutableListOf<Chapter>()
 
-                chapterList.addAll(group.value.asSequence().map { it -> Chapter(it) }.sortedBy { ch -> ch.index })
+                chapterList.addAll(group.value.asSequence().map { it -> Chapter(it) }.sortedByDescending { ch -> ch.index })
 
                 newRanobe.chapterList = chapterList
                 newRanobe.wasUpdated = true

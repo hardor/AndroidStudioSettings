@@ -22,18 +22,19 @@ import ru.profapp.ranobe.network.endpoints.IRanobeHubApiService
 import ru.profapp.ranobe.network.interceptors.AddCookiesInterceptor
 import ru.profapp.ranobe.network.interceptors.ReceivedCookiesInterceptor
 import java.text.DecimalFormat
+import java.text.NumberFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
 object RanobeHubRepository : BaseRepository() {
 
-    val decFormat: DecimalFormat = DecimalFormat()
+    private val nf = NumberFormat.getNumberInstance(Locale.ENGLISH)
+    private val decFormat: DecimalFormat = nf as DecimalFormat
 
     init {
         decFormat.isDecimalSeparatorAlwaysShown = false
     }
-
 
     private var token: String = ""
 
@@ -152,7 +153,6 @@ object RanobeHubRepository : BaseRepository() {
                     }
 
                 }
-
 
             }
         }
