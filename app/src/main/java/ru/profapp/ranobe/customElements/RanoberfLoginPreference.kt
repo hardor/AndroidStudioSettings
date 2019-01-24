@@ -20,6 +20,7 @@ class RanoberfLoginPreference(context: Context, attrs: AttributeSet) : BaseLogin
         get() = MyApp.preferencesManager.ranoberfToken
         set(value) {
             MyApp.preferencesManager.ranoberfToken = value
+            RanobeRfRepository.paymentStatus = null
         }
 
     override var sharedLogin
