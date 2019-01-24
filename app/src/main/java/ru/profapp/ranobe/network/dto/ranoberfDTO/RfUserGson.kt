@@ -26,7 +26,7 @@ data class ResultUser(
         @SerializedName("paymentContinue")
         var paymentContinue: Long? = null,
         @SerializedName("donates")
-        var donates: Int? = null,
+        var donates: Double? = null,
         @SerializedName("checkerBlock")
         var checkerBlock: Any? = null
 

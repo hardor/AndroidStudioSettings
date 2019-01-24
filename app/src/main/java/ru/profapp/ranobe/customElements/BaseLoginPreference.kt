@@ -92,7 +92,6 @@ open class BaseLoginPreference(context: Context, attrs: AttributeSet) : DialogPr
                             sharedToken = ""
                             summary = context.getString(R.string.summary_login)
                             if (ranobeSite == Constants.RanobeSite.RanobeRf) {
-                                RanobeRfRepository.paymentStatus = null
                                 RanobeRfRepository.token = null
                             }
                             resultTextView.text = result.second
@@ -104,7 +103,6 @@ open class BaseLoginPreference(context: Context, attrs: AttributeSet) : DialogPr
                         sharedToken = ""
                         summary = context.getString(R.string.summary_login)
                         if (ranobeSite == Constants.RanobeSite.RanobeRf) {
-                            RanobeRfRepository.paymentStatus = null
                             RanobeRfRepository.token = null
                         }
                         resultTextView.text = context.getString(R.string.auth_error)

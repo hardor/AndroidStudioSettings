@@ -44,6 +44,7 @@ object RanobeRfRepository : BaseRepository() {
 
             return@map false
         }.onErrorReturn {
+            logError(LogType.ERROR, "getUserStatus", "getUserStatus error", it)
             return@onErrorReturn false
         }.subscribeOn(Schedulers.io()).blockingGet()
     }
