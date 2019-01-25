@@ -21,6 +21,7 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.webianks.easy_feedback.EasyFeedback
+import de.cketti.library.changelog.ChangeLog
 import io.fabric.sdk.android.Fabric
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -92,6 +93,12 @@ class MainActivity : AppCompatActivity(),
         adView.loadAd(adRequest)
 
         setSupportActionBar(toolbar)
+
+
+        val cl = ChangeLog(this)
+        if (cl.isFirstRun) {
+            cl.logDialog.show()
+        }
 
         val drawer = findViewById<DrawerLayout>(R.id.drawer_layout)
 

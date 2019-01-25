@@ -176,6 +176,9 @@ dependencies {
     kapt 'com.google.dagger:dagger-compiler:2.13'
 
     //BRVAH
+//ChangeLog
+    implementation 'de.cketti.library.changelog:ckchangelog:1.2.2'
+
 
     // implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.44'
 }
