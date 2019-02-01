@@ -2,9 +2,7 @@ package ru.profapp.ranobe.activities
 
 import android.Manifest
 import android.Manifest.permission
-import android.app.AlarmManager
-import android.app.PendingIntent
-import android.content.Context
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -16,6 +14,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.crashlytics.android.Crashlytics
 import com.google.android.material.snackbar.Snackbar
+import droidninja.filepicker.FilePickerBuilder
+import droidninja.filepicker.FilePickerConst
+import droidninja.filepicker.models.sort.SortingTypes
 import io.fabric.sdk.android.Fabric
 import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.MyApp.Companion.DB_NAME
@@ -27,10 +28,8 @@ import ru.profapp.ranobe.common.MyExceptionHandler
 import ru.profapp.ranobe.helpers.LogType
 import ru.profapp.ranobe.helpers.ZipHelper
 import ru.profapp.ranobe.helpers.logError
-import ru.profapp.ranobe.utils.FileUtils
 import java.io.File
 import javax.inject.Inject
-
 
 class BackupActivity : AppCompatActivity() {
     @Inject
@@ -140,69 +139,89 @@ class BackupActivity : AppCompatActivity() {
 
                             var result = false
 
+
+                         //   FilePickerUtils.notifyMediaStore(this,Environment.getExternalStorageDirectory().path )
+
+                            FilePickerBuilder.Companion.instance
+                                .sortDocumentsBy(SortingTypes.name)
+                                .setMaxCount(1)
+                                .setActivityTitle(getString(R.string.file_choose_ranobereader))
+                                .setActivityTheme(R.style.LibAppTheme)
+                                .addFileSupport(
+                                    "ZIP",
+                                    arrayOf(".zip"),
+                                    R.drawable.ic_insert_drive_file_black_24dp
+                                )
+                                .enableDocSupport(true)
+                                .enableImagePicker(true)
+                                .enableSelectAll(false)
+                                .enableVideoPicker(true)
+                                .enableCameraSupport(true)
+                                .pickFile(this)
+
                             val zipFile =
                                 File("${Environment.getExternalStorageDirectory().path}/RanobeReaderBackup.zip")
-
-                            if (zipFile.isFile && zipFile.canRead()) {
-                                result = result || ZipHelper.unzip(
-                                    zipFile.absolutePath,
-                                    "${filesDir.path}/../"
-                                )
-                            }
-                            if (!result) {
-                                for (index in 0 until appFiles.count()) {
-                                    result = result || FileUtils.copyFile(
-                                        internalFiles[index],
-                                        appFiles[index]
-                                    )
-                                }
-                            }
-
-                            if (result) {
-
-                                val dbShm = File("$appFiles/../", "$DB_NAME-shm")
-                                val dbWal = File("$appFiles/../", "$DB_NAME-wal")
-                                dbShm.delete()
-                                dbWal.delete()
-
-                                Snackbar.make(
-                                    findViewById(android.R.id.content),
-                                    getString(R.string.backup_restore_success),
-                                    Snackbar.LENGTH_LONG
-                                ).show()
-
-                                val intent = Intent(this, MainActivity::class.java)
-                                intent.addFlags(
-                                    Intent.FLAG_ACTIVITY_CLEAR_TOP
-                                            or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                            or Intent.FLAG_ACTIVITY_NEW_TASK
-                                )
-
-                                val pendingIntent = PendingIntent.getActivity(
-                                    this,
-                                    0,
-                                    intent,
-                                    PendingIntent.FLAG_ONE_SHOT
-                                )
-
-                                val mgr =
-                                    this.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-                                mgr.set(
-                                    AlarmManager.RTC,
-                                    System.currentTimeMillis() + 100,
-                                    pendingIntent
-                                )
-
-                                this.finish()
-                                System.exit(2)
-
-                            } else {
-                                Snackbar.make(
-                                    findViewById(android.R.id.content),
-                                    getString(R.string.backup_restore_nothing),
-                                    Snackbar.LENGTH_LONG
-                                ).show()
-                            }
+//
+//                            if (zipFile.isFile && zipFile.canRead()) {
+//                                result = result || ZipHelper.unzip(
+//                                    zipFile.absolutePath,
+//                                    "${filesDir.path}/../"
+//                                )
+//                            }
+//                            if (!result) {
+//                                for (index in 0 until appFiles.count()) {
+//                                    result = result || FileUtils.copyFile(
+//                                        internalFiles[index],
+//                                        appFiles[index]
+//                                    )
+//                                }
+//                            }
+//
+//                            if (result) {
+//
+//                                val dbShm = File("$appFiles/../", "$DB_NAME-shm")
+//                                val dbWal = File("$appFiles/../", "$DB_NAME-wal")
+//                                dbShm.delete()
+//                                dbWal.delete()
+//
+//                                Snackbar.make(
+//                                    findViewById(android.R.id.content),
+//                                    getString(R.string.backup_restore_success),
+//                                    Snackbar.LENGTH_LONG
+//                                ).show()
+//
+//                                val intent = Intent(this, MainActivity::class.java)
+//                                intent.addFlags(
+//                                    Intent.FLAG_ACTIVITY_CLEAR_TOP
+//                                            or Intent.FLAG_ACTIVITY_CLEAR_TASK
+//                                            or Intent.FLAG_ACTIVITY_NEW_TASK
+//                                )
+//
+//                                val pendingIntent = PendingIntent.getActivity(
+//                                    this,
+//                                    0,
+//                                    intent,
+//                                    PendingIntent.FLAG_ONE_SHOT
+//                                )
+//
+//                                val mgr =
+//                                    this.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+//                                mgr.set(
+//                                    AlarmManager.RTC,
+//                                    System.currentTimeMillis() + 100,
+//                                    pendingIntent
+//                                )
+//
+//                                this.finish()
+//                                System.exit(2)
+//
+//                            } else {
+//                                Snackbar.make(
+//                                    findViewById(android.R.id.content),
+//                                    getString(R.string.backup_restore_nothing),
+//                                    Snackbar.LENGTH_LONG
+//                                ).show()
+//                            }
                         }
 
                     val alert = builder.create()
@@ -247,5 +266,15 @@ class BackupActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         Thread.setDefaultUncaughtExceptionHandler(null)
+    }
+
+    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            FilePickerConst.REQUEST_CODE_DOC -> if (resultCode == Activity.RESULT_OK && data != null) {
+             //   docPaths = ArrayList()
+               // docPaths.addAll(data.getStringArrayListExtra(FilePickerConst.KEY_SELECTED_DOCS))
+            }
+        }
+
     }
 }
