@@ -92,6 +92,7 @@
 
   <string name="activity_backup_drive_desc">Backing up your data to storage allows you to restore all your readings in case you lose or change devices.</string>
   <string name="activity_backup_success">Data successfully backed up to storage</string>
+  <string name="activity_backup_error">An error occurred  while data backed</string>
   <string name="backup_restore_success">Successfully restored data from storage</string>
   <string name="backup_restore_nothing">No data found for backup/restore</string>
   <string name="activity_backup_button_backup" translatable="false">Backup now</string>
@@ -157,6 +158,13 @@
   <string name="summary_swipe_navigate_off">Use buttons for navigate to next/prev chapters</string>
   <string name="pref_general_swipe_navigate" translatable="false">pref_general_swipe_navigate</string>
   <string name="authorization">Authorization</string>
+  <string name="file_choose_ranobereader">Please choose your RanobeReaderBackup.zip file</string>
+  <string name="reading_settings">Reading settings</string>
+  <string name="font">Font</string>
+  <string name="fffffff">fffffff</string>
+  <string name="pref_general_font">pref_general_font</string>
+  <string name="pref_general_background_color">pref_general_background_color</string>
+  <string name="pref_general_text_color">pref_general_text_color</string>
 
   <!--<string name="tl_rulate_web" translatable="false">Rulate Web</string>-->
   <!--<string name="ranoberf_web" translatable="false">Ранобэ.рф Web</string>-->

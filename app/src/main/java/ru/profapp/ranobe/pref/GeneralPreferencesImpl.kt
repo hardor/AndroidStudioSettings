@@ -48,6 +48,11 @@ class GeneralPreferencesImpl(private val context: Context) : GeneralPreferences 
 
     override var useSwipeForNavigate: Boolean by PreferenceDelegates<Boolean>(context, "", R.string.pref_general_swipe_navigate, false)
 
+    override var font: String by PreferenceDelegates<String>(context, "", R.string.pref_general_font, Constants.CustomFonts.Default.title)
+
+    override var textColor: Int? by PreferenceDelegates<Int?>(context, "", R.string.pref_general_text_color, context.resources.getColor(R.color.webViewText))
+    override var backgroundColor: Int? by PreferenceDelegates<Int?>(context, "", R.string.pref_general_background_color, context.resources.getColor(R.color.webViewBackground))
+
 }
 
 interface GeneralPreferences {
@@ -62,6 +67,9 @@ interface GeneralPreferences {
     var ranoberfToken: String
     var rulateLogin: String
     var ranoberfLogin: String
+    var font: String
+    var textColor: Int?
+    var backgroundColor: Int?
 
 
     fun setLastChapterUrl(ranobeUrl: String, chapterUrl: String)

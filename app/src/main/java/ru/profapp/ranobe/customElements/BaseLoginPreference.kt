@@ -42,7 +42,7 @@ open class BaseLoginPreference(context: Context, attrs: AttributeSet) : DialogPr
     override fun onCreateDialogView(): View {
 
         // Inflate layout
-        val view = View.inflate(context, R.layout.diaolog_login, null)
+        val view = View.inflate(context, R.layout.dialog_login, null)
 
         resultTextView = view.findViewById(R.id.tV_login_resultLabel)
         loginEditor = view.findViewById(R.id.eT_login_email)
