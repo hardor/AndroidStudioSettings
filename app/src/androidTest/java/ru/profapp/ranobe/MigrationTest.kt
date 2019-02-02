@@ -1,6 +1,5 @@
 package ru.profapp.ranobe
 
-import androidx.room.Room
 import androidx.room.testing.MigrationTestHelper
 import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import androidx.test.InstrumentationRegistry
@@ -13,7 +12,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import ru.profapp.ranobe.DAO.DatabaseDao
-
 import ru.profapp.ranobe.MyApp.Companion.MIGRATION_2_3
 import ru.profapp.ranobe.MyApp.Companion.MIGRATION_3_4
 import ru.profapp.ranobe.helpers.LogType
@@ -71,7 +69,7 @@ class MigrationTest {
 
     companion object {
         const val TEST_DB = "test-db"
-        val database: DatabaseDao? = Room.databaseBuilder(InstrumentationRegistry.getTargetContext(), DatabaseDao::class.java, TEST_DB).addMigrations(MIGRATION_2_3, MIGRATION_3_4).build()
+        val database: DatabaseDao? = MyApp.initDatabase(InstrumentationRegistry.getTargetContext())
     }
 
 }

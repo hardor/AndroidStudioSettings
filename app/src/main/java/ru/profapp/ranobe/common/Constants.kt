@@ -63,6 +63,39 @@ object Constants {
 
     }
 
+    enum class CustomFonts(val title:String, val file:String) {
+
+        Default("Default", ""),
+        Lobster("Lobster", "Lobster-Regular.ttf"),
+        Merriweather("Merriweather", "Merriweather-Regular.ttf"),
+        OpenSans("OpenSans", "OpenSans-Regular.ttf"),
+        Pacifico("Pacifico", "Pacifico-Regular.ttf"),
+        PT_Sans("PT Sans", "PT_Sans-Web-Regular.ttf"),
+        RobotoMono("RobotoMono", "RobotoMono-Regular.ttf"),
+        Roboto("Roboto", "Roboto-Regular.ttf");
+
+        companion object {
+            fun getFileByTitle(title: String?): String {
+
+                if (title.isNullOrEmpty())
+                    return Default.file
+
+                return (CustomFonts.values().firstOrNull { it.title == title }
+                    ?: CustomFonts.Default).file
+            }
+
+            fun getTitleByFile(file: String?): String {
+
+                if (file.isNullOrEmpty())
+                    return Default.title
+
+                return (CustomFonts.values().firstOrNull { it.file == file }
+                    ?: CustomFonts.Default).title
+            }
+
+        }
+    }
+
     enum class ApplicationConstants {
         DRAWABLE_LEFT,
 

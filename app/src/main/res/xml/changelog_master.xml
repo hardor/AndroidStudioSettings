@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<changelog>
+    <release
+        version="1.25"
+        versioncode="101025">
+        <change>Исправлена загрузка платных глав для ранобэ.рф когда число донатов на счету было не
+            целое
+        </change>
+    </release>
+    <release
+        version="1.24"
+        versioncode="101024">
+        <change>Испрвалены вылеты при запуске</change>
+    </release>
+    <release
+        version="1.23"
+        versioncode="101023">
+        <change>Исправлена загрузка платных глав с рулейта</change>
+    </release>
+    <release
+        version="1.22"
+        versioncode="101022">
+        <change>Изменен метод сортировки глав. Должно исправить проблему с порядком скачанных глав
+            (потребуется перезакачка)
+        </change>
+    </release>
+    <release
+        version="1.20"
+        versioncode="101020">
+        <change>Исправлена загрузка ранобэ из поиска для rulate</change>
+        <change>Исправлена загрузка глав для некоторых ранобэ из ranobehub</change>
+    </release>
+    <release
+        version="1.18"
+        versioncode="101018">
+        <change>Показ и скрытие тулбаров только по двойному тапу</change>
+        <change>Исправлены последние обновления для ranobehub</change>
+        <change>android 9: исправлена загрузка изображений для рулейт</change>
+    </release>
+</changelog>

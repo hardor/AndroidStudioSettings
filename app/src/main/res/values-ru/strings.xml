@@ -119,4 +119,5 @@
   <string name="summary_swipe_navigate_off">Использовать кнопки для навигации</string>
   <string name="summary_swipe_navigate_on">Свайп влево/вправо для перехода к пред/след главе</string>
   <string name="swipe_navigate">Использовть свайпы для навигации</string>
+  <string name="activity_backup_error">Во время резервного копирования произошла ошибка</string>
 </resources>

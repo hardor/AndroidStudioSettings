@@ -1,5 +1,6 @@
 package ru.profapp.ranobe
 
+import android.content.Context
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDexApplication
@@ -130,6 +131,10 @@ class MyApp : MultiDexApplication() {
 
         lateinit var preferencesManager: GeneralPreferencesManager
 
+        fun initDatabase(context: Context) :DatabaseDao {
+            return  Room.databaseBuilder(context, DatabaseDao::class.java, DB_NAME).addMigrations(MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5).fallbackToDestructiveMigration().build()
+        }
+
     }
 
     override fun onCreate() {
@@ -148,7 +153,7 @@ class MyApp : MultiDexApplication() {
             StethoUtils.install(this)
 
         }
-        MyApp.database = Room.databaseBuilder(this, DatabaseDao::class.java, DB_NAME).addMigrations(MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5).fallbackToDestructiveMigration().build()
+        MyApp.database = initDatabase(this)
     }
 }
 

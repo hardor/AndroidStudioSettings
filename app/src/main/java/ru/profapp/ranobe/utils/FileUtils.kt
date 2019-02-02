@@ -6,6 +6,15 @@ import java.io.*
 
 object FileUtils {
 
+
+    fun copyFile(toCopyPath: String, destPath: String): Boolean {
+
+        val toCopyFile = File(toCopyPath)
+        val destFile = File(destPath)
+
+        return copyFile(toCopyFile, destFile)
+    }
+
     fun copyFile(toCopy: File, destFile: File): Boolean {
         try {
             return FileUtils.copyStream(FileInputStream(toCopy),

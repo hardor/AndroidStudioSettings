@@ -13,12 +13,10 @@
     android:title="@string/open_in_browser"
     app:showAsAction="ifRoom"
     />
-
-
   <item
-    android:id="@+id/navigation_day_night"
-    android:icon="@drawable/ic_settings_brightness_black_24dp"
-    android:title="@string/day_night"
-    app:showAsAction="ifRoom"
-    />
+      android:id="@+id/navigation_reading_settings"
+      android:icon="@drawable/ic_settings_applications_black_24dp"
+      android:title="@string/reading_settings"
+      app:showAsAction="ifRoom"
+      />
 </menu>
