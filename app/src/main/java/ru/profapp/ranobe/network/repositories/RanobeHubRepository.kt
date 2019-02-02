@@ -18,6 +18,7 @@ import ru.profapp.ranobe.models.Ranobe
 import ru.profapp.ranobe.models.RanobeImage
 import ru.profapp.ranobe.network.dto.ranobeHubDTO.RanobeHubBook
 import ru.profapp.ranobe.network.dto.ranobeHubDTO.RanobeHubReadyGson
+import ru.profapp.ranobe.network.dto.ranobeHubDTO.RanobeHubSearchItem
 import ru.profapp.ranobe.network.endpoints.IRanobeHubApiService
 import ru.profapp.ranobe.network.interceptors.AddCookiesInterceptor
 import ru.profapp.ranobe.network.interceptors.ReceivedCookiesInterceptor
@@ -164,7 +165,10 @@ object RanobeHubRepository : BaseRepository() {
 
     fun searchBooks(search: String): Single<List<Ranobe>> {
         return instance.SearchBooks(search).map {
-            return@map getRanobeList(it.categories.ranobe.items)
+            return@map getRanobeSearchList(it.data)
+        }.onErrorReturn {
+            logError(LogType.ERROR, "searchBooks", "rabobehub: " + search, it)
+            listOf()
         }
     }
 
@@ -221,6 +225,18 @@ object RanobeHubRepository : BaseRepository() {
         return or
     }
 
+    private fun getRanobeSearchList(it: List<RanobeHubSearchItem>): List<Ranobe> {
+        val or: MutableList<Ranobe> = mutableListOf()
+
+        for (value in it) {
+            val ranobe = Ranobe(Constants.RanobeSite.RanobeHub)
+            ranobe.updateRanobeHubRanobe(value)
+            or.add(ranobe)
+
+        }
+        return or
+    }
+
     private infix fun Ranobe.updateRanobeHubRanobe(book: RanobeHubBook) {
 
         id = if (id == null) book.id ?: id else id
@@ -256,6 +272,29 @@ object RanobeHubRepository : BaseRepository() {
 
         rating = book.rating?.toString()
         chapterCount = chapterCount ?: book.chapters
+    }
+
+    private infix fun Ranobe.updateRanobeHubRanobe(book: RanobeHubSearchItem) {
+
+        id = if (id == null) book.id ?: id else id
+
+        title = if (title.isBlank()) book.names?.rus ?: title else title
+        engTitle = engTitle ?: book.names?.eng
+
+        url = Constants.RanobeSite.RanobeHub.url + "/ranobe/" + id
+
+        description = description ?: book.description?.removeTags() ?: ""
+
+        image = image ?: Constants.RanobeSite.RanobeHub.url + "/img/ranobe/posters/" + id + "/0-min.jpg"
+
+        if (!image.isNullOrBlank()) {
+            Completable.fromAction {
+                MyApp.database.ranobeImageDao().insert(RanobeImage(url, image!!))
+            }?.subscribeOn(Schedulers.io())?.subscribe({}, { error ->
+                logError(LogType.ERROR, "", "", error, false)
+            })
+
+        }
     }
 
     private var instance: IRanobeHubApiService = create()

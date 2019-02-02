@@ -110,7 +110,10 @@ object RanobeRfRepository : BaseRepository() {
                 }
             }
 
-            return@map or
+            return@map or.toList()
+        }.onErrorReturn {
+            logError(LogType.ERROR, "searchBooks", "raboberf: " + search, it)
+            listOf<Ranobe>()
         }
     }
 

@@ -3,14 +3,19 @@ package ru.profapp.ranobe.network.dto.ranobeHubDTO
 import com.google.gson.annotations.SerializedName
 
 data class RanobeHubSearchGson(
-        @SerializedName("categories") val categories: Categories
+    @SerializedName("data") val data: List<RanobeHubSearchItem> = mutableListOf()
 )
 
-data class Categories(
-        @SerializedName("ranobe") val ranobe: RanobeHub
+data class RanobeHubSearchItem(
+    @SerializedName("id")
+    val id: Int? = null,
+    @SerializedName("names")
+    val names: Names? = null,
+    @SerializedName("description")
+    val description: String? = null,
+    @SerializedName("url")
+    val url: String? = null,
+    @SerializedName("image")
+    val image: String? = null
 )
 
-data class RanobeHub(
-        @SerializedName("items") val items: List<RanobeHubBook> = listOf(),
-        @SerializedName("name") val name: String? = null
-)

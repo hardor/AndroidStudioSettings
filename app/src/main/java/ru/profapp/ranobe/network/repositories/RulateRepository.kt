@@ -72,6 +72,9 @@ object RulateRepository : BaseRepository() {
     fun searchBooks(search: String): Single<List<Ranobe>> {
         return instance.SearchBooks(search).map {
             return@map getRanobeList(it)
+        }.onErrorReturn {
+            logError(LogType.ERROR, "searchBooks", "rulate: " + search, it)
+            listOf()
         }
     }
 
