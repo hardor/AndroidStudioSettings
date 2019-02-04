@@ -334,25 +334,26 @@ class RanobeListFragment : Fragment() {
 
                             var wasRead = false
                             if (lastChapterUrl.isNotEmpty()) {
-                                wasRead = true
+
                                 val chapterIndex =
-                                    chapterlist2.firstOrNull { c -> c.url == lastChapterUrl }?.index
+                                        chapterList.firstOrNull { c -> c.url == lastChapterUrl }?.index
                                 if (chapterIndex != null) {
+                                    wasRead = true
                                     for (chapter in chapterlist2) {
                                         chapter.isRead = chapter.index <= chapterIndex
-                                        ranobe.newChapters += if (chapter.isRead) 0 else 1
+                                        ranobe.newChapters += (if (chapter.isRead) 0 else 1)
 
                                     }
                                 }
                             } else {
                                 val lastId =
                                     MyApp.preferencesManager.getLastChapterId(chapterlist2.first().ranobeUrl)
-                                if (lastId > 0) {
+                                if (lastId != null) {
                                     wasRead = true
                                     for (chapter in chapterlist2) {
                                         if (chapter.id != null) {
                                             chapter.isRead = chapter.id!! <= lastId
-                                            ranobe.newChapters += if (chapter.isRead) 0 else 1
+                                            ranobe.newChapters += (if (chapter.isRead) 0 else 1)
                                         }
                                     }
                                 }

@@ -2,6 +2,7 @@ package ru.profapp.ranobe.pref
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.ContextCompat
 import ru.profapp.ranobe.BuildConfig
 import ru.profapp.ranobe.R
 import ru.profapp.ranobe.common.Constants
@@ -13,45 +14,131 @@ import ru.profapp.ranobe.common.Constants
 class GeneralPreferencesImpl(private val context: Context) : GeneralPreferences {
 
     override fun setLastChapterUrl(ranobeUrl: String, chapterUrl: String) {
-        var lastChapterUrl: String by PreferenceDelegates<String>(context, Constants.last_chapter_id_Pref, "url_$ranobeUrl", "")
+        var lastChapterUrl: String by PreferenceDelegates<String>(
+            context,
+            Constants.last_chapter_id_Pref,
+            "url_$ranobeUrl",
+            ""
+        )
         lastChapterUrl = chapterUrl
     }
 
     override fun getLastChapterUrl(ranobeUrl: String): String {
-        val lastChapterUrl: String  by PreferenceDelegates<String>(context, Constants.last_chapter_id_Pref, "url_$ranobeUrl", "")
+        val lastChapterUrl: String  by PreferenceDelegates<String>(
+            context,
+            Constants.last_chapter_id_Pref,
+            "url_$ranobeUrl",
+            ""
+        )
         return lastChapterUrl
     }
 
     //Todo: remove 1.19
-    override fun getLastChapterId(ranobeUrl: String): Int {
-        val lastChapterId: Int by PreferenceDelegates<Int>(context, Constants.last_chapter_id_Pref, ranobeUrl, -1)
+    override fun getLastChapterId(ranobeUrl: String): Int? {
+        val lastChapterId: Int? by PreferenceDelegates<Int?>(
+            context,
+            Constants.last_chapter_id_Pref,
+            ranobeUrl,
+            -1
+        )
         return lastChapterId
     }
 
-    override var sortOrder: String by PreferenceDelegates<String>(context, "", R.string.pref_general_sort_order, Constants.SortOrder.default.name)
+    override var sortOrder: String by PreferenceDelegates<String>(
+        context,
+        "",
+        R.string.pref_general_sort_order,
+        Constants.SortOrder.default.name
+    )
 
-    override var rulateToken: String by PreferenceDelegates<String>(context, Constants.Rulate_Login_Pref, Constants.KEY_Token, "")
-    override var ranoberfToken: String by PreferenceDelegates<String>(context, Constants.Ranoberf_Login_Pref, Constants.KEY_Token, "")
+    override var rulateToken: String by PreferenceDelegates<String>(
+        context,
+        Constants.Rulate_Login_Pref,
+        Constants.KEY_Token,
+        ""
+    )
+    override var ranoberfToken: String by PreferenceDelegates<String>(
+        context,
+        Constants.Ranoberf_Login_Pref,
+        Constants.KEY_Token,
+        ""
+    )
 
-    override var rulateLogin: String by PreferenceDelegates<String>(context, Constants.Rulate_Login_Pref, Constants.KEY_Login, "")
-    override var ranoberfLogin: String by PreferenceDelegates<String>(context, Constants.Ranoberf_Login_Pref, Constants.KEY_Login, "")
+    override var rulateLogin: String by PreferenceDelegates<String>(
+        context,
+        Constants.Rulate_Login_Pref,
+        Constants.KEY_Login,
+        ""
+    )
+    override var ranoberfLogin: String by PreferenceDelegates<String>(
+        context,
+        Constants.Ranoberf_Login_Pref,
+        Constants.KEY_Login,
+        ""
+    )
 
-    override var isAutoAddBookmark: Boolean by PreferenceDelegates<Boolean>(context, "", R.string.pref_general_auto_bookmark, true)
+    override var isAutoAddBookmark: Boolean by PreferenceDelegates<Boolean>(
+        context,
+        "",
+        R.string.pref_general_auto_bookmark,
+        true
+    )
 
-    override var useVolumeButtonsToScroll: Boolean by PreferenceDelegates<Boolean>(context, "", R.string.pref_general_volume_scroll, false)
+    override var useVolumeButtonsToScroll: Boolean by PreferenceDelegates<Boolean>(
+        context,
+        "",
+        R.string.pref_general_volume_scroll,
+        false
+    )
 
-    override var isDarkTheme: Boolean by PreferenceDelegates<Boolean>(context, "", R.string.pref_general_app_theme, false)
+    override var isDarkTheme: Boolean by PreferenceDelegates<Boolean>(
+        context,
+        "",
+        R.string.pref_general_app_theme,
+        false
+    )
 
-    override var isFirstStart: Boolean by PreferenceDelegates<Boolean>(context, null, BuildConfig.INTRO_KEY, true)
+    override var isFirstStart: Boolean by PreferenceDelegates<Boolean>(
+        context,
+        null,
+        BuildConfig.INTRO_KEY,
+        true
+    )
 
-    override var fontSize: Int by PreferenceDelegates<Int>(context, "", R.string.pref_general_text_size, 13)
+    override var fontSize: Int by PreferenceDelegates<Int>(
+        context,
+        "",
+        R.string.pref_general_text_size,
+        13
+    )
 
-    override var useSwipeForNavigate: Boolean by PreferenceDelegates<Boolean>(context, "", R.string.pref_general_swipe_navigate, false)
+    override var useSwipeForNavigate: Boolean by PreferenceDelegates<Boolean>(
+        context,
+        "",
+        R.string.pref_general_swipe_navigate,
+        false
+    )
 
-    override var font: String by PreferenceDelegates<String>(context, "", R.string.pref_general_font, Constants.CustomFonts.Default.title)
+    override var font: String by PreferenceDelegates<String>(
+        context,
+        "",
+        R.string.pref_general_font,
+        Constants.CustomFonts.Default.title
+    )
 
-    override var textColor: Int? by PreferenceDelegates<Int?>(context, "", R.string.pref_general_text_color, context.resources.getColor(R.color.webViewText))
-    override var backgroundColor: Int? by PreferenceDelegates<Int?>(context, "", R.string.pref_general_background_color, context.resources.getColor(R.color.webViewBackground))
+    override var textColor: Int? by PreferenceDelegates<Int?>(
+        context,
+        "",
+        R.string.pref_general_text_color,
+       -1
+    )
+
+    override var backgroundColor: Int? by PreferenceDelegates<Int?>(
+        context,
+        "",
+        R.string.pref_general_background_color,
+      -1
+    )
 
 }
 
@@ -77,10 +164,11 @@ interface GeneralPreferences {
     fun getLastChapterUrl(ranobeUrl: String): String
 
     // Todo: remove 1.19
-    fun getLastChapterId(ranobeUrl: String): Int
+    fun getLastChapterId(ranobeUrl: String): Int?
 
     //rulate
 
 }
 
-class GeneralPreferencesManager(private val mPreferencesProvider: GeneralPreferences) : GeneralPreferences by mPreferencesProvider
+class GeneralPreferencesManager(private val mPreferencesProvider: GeneralPreferences) :
+    GeneralPreferences by mPreferencesProvider

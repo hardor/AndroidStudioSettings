@@ -8,10 +8,8 @@ import kotlin.reflect.KProperty
 class PreferenceDelegates<T>(val context: Context, val prefRes: String, private val key: String, val defaultValue: T) {
 
     val prefs: SharedPreferences by lazy {
-        if (prefRes.isEmpty())
-            PreferenceManager.getDefaultSharedPreferences(context)
-        else
-            context.getSharedPreferences(prefRes, Context.MODE_PRIVATE)
+        if (prefRes.isEmpty()) PreferenceManager.getDefaultSharedPreferences(context)
+        else context.getSharedPreferences(prefRes, Context.MODE_PRIVATE)
     }
 
     constructor (context: Context, prefResId: Int? = null, keyResId: Int, defaultValue: T) : this(context, if (prefResId == null) "" else context.getString(prefResId), context.getString(keyResId), defaultValue)
@@ -31,14 +29,17 @@ class PreferenceDelegates<T>(val context: Context, val prefRes: String, private 
 
     @Suppress("UNCHECKED_CAST")
     private fun findPreferences(key: String, defaultValue: T): T {
-        with(prefs)
-        {
-            val result: Any = when (defaultValue) {
+        with(prefs) {
+            val result: Any? = when (defaultValue) {
                 is Boolean -> getBoolean(key, defaultValue)
-                is Int -> getInt(key, defaultValue)
+                is Int -> {
+                    val t = getInt(key, defaultValue)
+                    if (t == -1) null else t
+                }
                 is Long -> getLong(key, defaultValue)
                 is Float -> getFloat(key, defaultValue)
                 is String -> getString(key, defaultValue)
+
                 else -> throw IllegalArgumentException()
             }
             return result as T
@@ -46,8 +47,7 @@ class PreferenceDelegates<T>(val context: Context, val prefRes: String, private 
     }
 
     private fun savePreference(key: String, value: T) {
-        with(prefs.edit())
-        {
+        with(prefs.edit()) {
             when (value) {
                 null -> remove(key)
                 is Boolean -> putBoolean(key, value)

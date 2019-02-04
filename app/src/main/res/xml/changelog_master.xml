@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
     <release
+        version="1.27"
+        versioncode="101027">
+        <change>Добавлен показ лога изменений</change>
+        <change>Добавлены настройки чтения: шрифт, цвет текста и подложки</change>
+    </release>
+    <release
+        version="1.26"
+        versioncode="101026">
+        <change>Исправлен поиск для ranobehub
+        </change>
+    </release>
+    <release
         version="1.25"
         versioncode="101025">
         <change>Исправлена загрузка платных глав для ранобэ.рф когда число донатов на счету было не

@@ -197,8 +197,8 @@ class RanobeInfoActivity : AppCompatActivity() {
                         }
                     }
                 } else {
-                    val lastId: Int = MyApp.preferencesManager.getLastChapterId(mCurrentRanobe.url)
-                    if (lastId > 0) {
+                    val lastId: Int? = MyApp.preferencesManager.getLastChapterId(mCurrentRanobe.url)
+                    if (lastId !=null) {
 
                         for (chapter in mCurrentRanobe.chapterList) {
                             if (chapter.id != null)

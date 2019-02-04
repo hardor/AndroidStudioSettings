@@ -120,4 +120,8 @@
   <string name="summary_swipe_navigate_on">Свайп влево/вправо для перехода к пред/след главе</string>
   <string name="swipe_navigate">Использовть свайпы для навигации</string>
   <string name="activity_backup_error">Во время резервного копирования произошла ошибка</string>
+    <string name="font">Шрифт</string>
+  <string name="text_color" translatable="false">Цвет текста</string>
+  <string name="background_color">Цвет фона</string>
+  <string name="reading_settings">Настройфки чтаения</string>
 </resources>

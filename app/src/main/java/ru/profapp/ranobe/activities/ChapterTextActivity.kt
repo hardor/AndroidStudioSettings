@@ -343,8 +343,8 @@ class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.D
         val style = ("style = \"text-align: justify; text-indent: 20px;font-size: "
                 + MyApp.preferencesManager.fontSize + "px;"
                 + "font-family: MyFont;"
-                + "color: " + String.format("#%06X", 0xFFFFFF and MyApp.preferencesManager.textColor!!)
-                + "; background-color: " + String.format("#%06X", 0xFFFFFF and MyApp.preferencesManager.backgroundColor!!)
+                + "color: " + String.format("#%06X", 0xFFFFFF and (MyApp.preferencesManager.textColor?:resources.getColor(R.color.webViewText)))
+                + "; background-color: " + String.format("#%06X", 0xFFFFFF and (MyApp.preferencesManager.backgroundColor?:resources.getColor(R.color.webViewBackground)))
                 + "\"")
 
         val request = GetChapterText()

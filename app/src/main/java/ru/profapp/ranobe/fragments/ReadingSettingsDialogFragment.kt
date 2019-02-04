@@ -30,6 +30,7 @@ public class ReadingSettingsDialogFragment : DialogFragment() {
         val builder = AlertDialog.Builder(context!!)
         // Get the layout inflater
         val inflater = activity!!.layoutInflater
+        isCancelable = false
 
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
@@ -39,26 +40,22 @@ public class ReadingSettingsDialogFragment : DialogFragment() {
         val fontSpinner: Spinner = view.findViewById(R.id.spinner_reading_font)
 
 
-    val fontAdapter =  ArrayAdapter(
-            context!!,
-            android.R.layout.simple_spinner_item,
-            enumValues<Constants.CustomFonts>().map { it.title })
-            .also { adapter ->
-                // Specify the layout to use when the list of choices appears
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                // Apply the adapter to the spinner
-                fontSpinner.adapter = adapter
-            }
+        val fontAdapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, enumValues<Constants.CustomFonts>().map { it.title }).also { adapter ->
+            // Specify the layout to use when the list of choices appears
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            // Apply the adapter to the spinner
+            fontSpinner.adapter = adapter
+        }
 
         fontSpinner.setSelection(fontAdapter.getPosition(Constants.CustomFonts.getTitleByFile(MyApp.preferencesManager.font)))
 
-        val chooseColorWebviewTextButton: Button =
-            view.findViewById(R.id.btn_chooseColor_webviewText)
-        val chooseColorWebviewTextEditText: EditText =
-            view.findViewById(R.id.eT_chooseColor_webviewText)
+        val chooseColorWebviewTextButton: Button = view.findViewById(R.id.btn_chooseColor_webviewText)
+        val chooseColorWebviewTextEditText: EditText = view.findViewById(R.id.eT_chooseColor_webviewText)
 
-        chooseColorWebviewTextButton.setBackgroundColor(MyApp.preferencesManager.textColor!!)
-        chooseColorWebviewTextEditText.setText(String.format("%06X", 0xFFFFFF and MyApp.preferencesManager.textColor!!))
+        chooseColorWebviewTextButton.setBackgroundColor(MyApp.preferencesManager.textColor
+                ?: resources.getColor(R.color.webViewText))
+        chooseColorWebviewTextEditText.setText(String.format("%06X", 0xFFFFFF and (MyApp.preferencesManager.textColor
+                ?: resources.getColor(R.color.webViewText))))
 
 
         chooseColorWebviewTextEditText.addTextChangedListener(object : TextWatcher {
@@ -68,7 +65,7 @@ public class ReadingSettingsDialogFragment : DialogFragment() {
                     chooseColorWebviewTextButton.setBackgroundColor(editColor)
                 } catch (e: IllegalArgumentException) {
                     chooseColorWebviewTextButton.setBackgroundColor(resources.getColor(R.color.webViewText))
-                    chooseColorWebviewTextEditText.error = "Incorrect color"
+                    chooseColorWebviewTextEditText.error = getString(R.string.incorrect_color)
                 }
 
             }
@@ -85,34 +82,24 @@ public class ReadingSettingsDialogFragment : DialogFragment() {
         })
 
         chooseColorWebviewTextButton.setOnClickListener { v ->
-            ColorPickerPopup.Builder(context)
-                .initialColor(Color.RED) // Set initial color
-                .enableBrightness(false) // Enable brightness slider or not
-                .enableAlpha(false) // Enable alpha slider or not
-                .okTitle("Choose")
-                .cancelTitle("Cancel")
-                .showIndicator(true)
-                .showValue(true)
-                .build()
-                .show(v, object : ColorPickerPopup.ColorPickerObserver() {
-                    override fun onColorPicked(color: Int) {
-                        v.setBackgroundColor(color)
-                        chooseColorWebviewTextEditText.setText(
-                            String.format(
-                                "%06X",
-                                0xFFFFFF and color
-                            )
-                        )
-                    }
-                })
+            ColorPickerPopup.Builder(context).initialColor(MyApp.preferencesManager.textColor
+                    ?: resources.getColor(R.color.webViewText)) // Set initial color
+                    .enableBrightness(true) // Enable brightness slider or not
+                    .enableAlpha(false) // Enable alpha slider or not
+                    .okTitle("Choose").cancelTitle("Cancel").showIndicator(true).showValue(true).build().show(v, object : ColorPickerPopup.ColorPickerObserver() {
+                        override fun onColorPicked(color: Int) {
+                            v.setBackgroundColor(color)
+                            chooseColorWebviewTextEditText.setText(String.format("%06X", 0xFFFFFF and color), TextView.BufferType.EDITABLE)
+                        }
+                    })
 
         }
 
 
         val chooseColorWebviewBackgroundButton: Button = view.findViewById(R.id.btn_chooseColor_webviewBackground)
-        val chooseColorWebviewBackgroundEditText: EditText =  view.findViewById(R.id.eT_chooseColor_webviewBackground)
-        chooseColorWebviewBackgroundButton.setBackgroundColor(MyApp.preferencesManager.backgroundColor!!)
-        chooseColorWebviewBackgroundEditText.setText(String.format("%06X", 0xFFFFFF and MyApp.preferencesManager.backgroundColor!!))
+        val chooseColorWebviewBackgroundEditText: EditText = view.findViewById(R.id.eT_chooseColor_webviewBackground)
+        chooseColorWebviewBackgroundButton.setBackgroundColor(MyApp.preferencesManager.backgroundColor?:resources.getColor(R.color.webViewBackground))
+        chooseColorWebviewBackgroundEditText.setText(String.format("%06X", 0xFFFFFF and (MyApp.preferencesManager.backgroundColor?:resources.getColor(R.color.webViewBackground))))
 
 
         chooseColorWebviewBackgroundEditText.addTextChangedListener(object : TextWatcher {
@@ -122,7 +109,7 @@ public class ReadingSettingsDialogFragment : DialogFragment() {
                     chooseColorWebviewBackgroundButton.setBackgroundColor(editColor)
                 } catch (e: IllegalArgumentException) {
                     chooseColorWebviewBackgroundButton.setBackgroundColor(resources.getColor(R.color.webViewBackground))
-                    chooseColorWebviewBackgroundEditText.error = "Incorrect color"
+                    chooseColorWebviewBackgroundEditText.error = getString(R.string.incorrect_color)
                 }
 
             }
@@ -139,26 +126,15 @@ public class ReadingSettingsDialogFragment : DialogFragment() {
         })
 
         chooseColorWebviewBackgroundButton.setOnClickListener { v ->
-            ColorPickerPopup.Builder(context)
-                .initialColor(Color.RED) // Set initial color
-                .enableBrightness(false) // Enable brightness slider or not
-                .enableAlpha(false) // Enable alpha slider or not
-                .okTitle("Choose")
-                .cancelTitle("Cancel")
-                .showIndicator(true)
-                .showValue(true)
-                .build()
-                .show(v, object : ColorPickerPopup.ColorPickerObserver() {
-                    override fun onColorPicked(color: Int) {
-                        v.setBackgroundColor(color)
-                        chooseColorWebviewBackgroundEditText.setText(
-                            String.format(
-                                "%06X",
-                                0xFFFFFF and color
-                            )
-                        )
-                    }
-                })
+            ColorPickerPopup.Builder(context).initialColor(MyApp.preferencesManager.backgroundColor?:resources.getColor(R.color.webViewBackground)) // Set initial color
+                    .enableBrightness(true) // Enable brightness slider or not
+                    .enableAlpha(false) // Enable alpha slider or not
+                    .okTitle("Choose").cancelTitle("Cancel").showIndicator(true).showValue(true).build().show(v, object : ColorPickerPopup.ColorPickerObserver() {
+                        override fun onColorPicked(color: Int) {
+                            v.setBackgroundColor(color)
+                            chooseColorWebviewBackgroundEditText.setText(String.format("%06X", 0xFFFFFF and color), TextView.BufferType.EDITABLE)
+                        }
+                    })
 
         }
 
@@ -184,39 +160,33 @@ public class ReadingSettingsDialogFragment : DialogFragment() {
         })
 
         builder.setView(view)
-            // Add action buttons
-            .setPositiveButton(
-                R.string.ok
-            ) { dialog, _ ->
-                val fontSize = fontSeekBarTextView.text.toString().toIntOrNull()
-                if (fontSize != null) MyApp.preferencesManager.fontSize = fontSize
+                // Add action buttons
+                .setPositiveButton(R.string.ok) { dialog, _ ->
+                    val fontSize = fontSeekBarTextView.text.toString().toIntOrNull()
+                    if (fontSize != null) MyApp.preferencesManager.fontSize = fontSize
 
-                MyApp.preferencesManager.font =
-                    Constants.CustomFonts.getFileByTitle(fontSpinner.selectedItem as String)
+                    MyApp.preferencesManager.font = Constants.CustomFonts.getFileByTitle(fontSpinner.selectedItem as String)
 
-                MyApp.preferencesManager.isDarkTheme = dayNightSwitch.isChecked
+                    MyApp.preferencesManager.isDarkTheme = dayNightSwitch.isChecked
 
-                try {
-                    val editColor = Color.parseColor("#${chooseColorWebviewTextEditText.text}")
-                    MyApp.preferencesManager.textColor = editColor
-                } catch (e: IllegalArgumentException) {
-                    MyApp.preferencesManager.textColor = null
-                }
+                    try {
+                        val editColor = Color.parseColor("#${chooseColorWebviewTextEditText.text}")
+                        MyApp.preferencesManager.textColor = editColor
+                    } catch (e: IllegalArgumentException) {
+                        MyApp.preferencesManager.textColor = null
+                    }
 
 
-                try {
-                    val editColor =
-                        Color.parseColor("#${chooseColorWebviewBackgroundEditText.text}")
-                    MyApp.preferencesManager.backgroundColor = editColor
-                } catch (e: IllegalArgumentException) {
-                    MyApp.preferencesManager.backgroundColor = null
-                }
+                    try {
+                        val editColor = Color.parseColor("#${chooseColorWebviewBackgroundEditText.text}")
+                        MyApp.preferencesManager.backgroundColor = editColor
+                    } catch (e: IllegalArgumentException) {
+                        MyApp.preferencesManager.backgroundColor = null
+                    }
 
-                dialog.cancel()
-                mListener.onDialogPositiveClick(this@ReadingSettingsDialogFragment)
-            }
-            .setNegativeButton(R.string.cancel,
-                { dialog, id ->
+                    dialog.cancel()
+                    mListener.onDialogPositiveClick(this@ReadingSettingsDialogFragment)
+                }.setNegativeButton(R.string.cancel, { dialog, id ->
                     dialog.cancel()
                 })
         return builder.create()
