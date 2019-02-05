@@ -53,7 +53,7 @@ class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.D
         ThemeHelper.setTheme(MyApp.preferencesManager.isDarkTheme)
 
 
-        if( ThemeHelper.sTheme != AppCompatDelegate.getDefaultNightMode()) {
+        if (ThemeHelper.sTheme != AppCompatDelegate.getDefaultNightMode()) {
             ThemeHelper.onActivityCreateSetTheme()
             this.recreate()
         }
@@ -75,26 +75,31 @@ class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.D
 
     lateinit var bottomNavigationView: BottomNavigationView
 
+    private var isFullWindow: Boolean = false
+
     @Inject
     lateinit var crashlyticsKit: Crashlytics
 
     private fun hideSystemUI() {
-        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                // Set the content to appear under the system bars so that the
-                // content doesn't resize when the system bars hide and show.
-                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                // Hide the nav bar and status bar
-                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_FULLSCREEN)
+        window.decorView.systemUiVisibility =
+
+            (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                    // Set the content to appear under the system bars so that the
+                    // content doesn't resize when the system bars hide and show.
+                    or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    // Hide the nav bar and status bar
+                    or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    or View.SYSTEM_UI_FLAG_FULLSCREEN)
 
     }
 
     private fun showSystemUI() {
-        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+        window.decorView.systemUiVisibility = 0
+//        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+//                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+//                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
     }
 
     private fun calculateProgression(): Float {
@@ -120,8 +125,6 @@ class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.D
 
         MyApp.component.inject(this)
         Fabric.with(this, crashlyticsKit)
-
-        hideSystemUI()
 
         setContentView(R.layout.activity_chapter_text)
 
@@ -256,7 +259,6 @@ class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.D
 
         textWebview.setOnTouchListener(object : OnSwipeTouchListener(applicationContext) {
             override fun onTouch(v: View, event: MotionEvent): Boolean {
-                hideSystemUI()
                 return super.onTouch(v, event)
             }
 
@@ -274,14 +276,11 @@ class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.D
                 }
             }
 
-            override fun onTap() {
+            override fun onDoubleTap() {
 
-                val fullyExpanded =
-                    (appbar_chT.visibility == View.VISIBLE) && (bottomNavigationView.visibility == View.VISIBLE)
+                isFullWindow = !isFullWindow
 
-                appbar_chT.updateView(fullyExpanded)
-
-                bottomNavigationView.updateView(fullyExpanded)
+                updateView(appbar_chT, bottomNavigationView, isFullWindow)
 
 
             }
@@ -343,8 +342,16 @@ class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.D
         val style = ("style = \"text-align: justify; text-indent: 20px;font-size: "
                 + MyApp.preferencesManager.fontSize + "px;"
                 + "font-family: MyFont;"
-                + "color: " + String.format("#%06X", 0xFFFFFF and (MyApp.preferencesManager.textColor?:resources.getColor(R.color.webViewText)))
-                + "; background-color: " + String.format("#%06X", 0xFFFFFF and (MyApp.preferencesManager.backgroundColor?:resources.getColor(R.color.webViewBackground)))
+                + "color: " + String.format(
+            "#%06X",
+            0xFFFFFF and (MyApp.preferencesManager.textColor
+                ?: resources.getColor(R.color.webViewText))
+        )
+                + "; background-color: " + String.format(
+            "#%06X",
+            0xFFFFFF and (MyApp.preferencesManager.backgroundColor
+                ?: resources.getColor(R.color.webViewBackground))
+        )
                 + "\"")
 
         val request = GetChapterText()
@@ -356,7 +363,7 @@ class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.D
                 }
 
                 val summary =
-                    ("<html><style>img{display: inline;height: auto;max-width: 90%;} @font-face { font-family: MyFont;src: url('file:///android_asset/fonts/"+MyApp.preferencesManager.font+"');}</style><body "
+                    ("<html><style>img{display: inline;height: auto;max-width: 90%;} @font-face { font-family: MyFont;src: url('file:///android_asset/fonts/" + MyApp.preferencesManager.font + "');}</style><body "
                             + style + ">"
                             + "<b>" + mCurrentChapter.title + "</b>" + "</br>"
                             + (mCurrentChapter.text
@@ -649,11 +656,6 @@ class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.D
             !MyApp.preferencesManager.isAutoAddBookmark
     }
 
-    override fun onResume() {
-        super.onResume()
-        hideSystemUI()
-    }
-
     override fun onPause() {
         super.onPause()
         if (MyApp.preferencesManager.isAutoAddBookmark) {
@@ -668,21 +670,28 @@ class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.D
     }
 
 
-    private fun BottomNavigationView.updateView(fullyExpanded: Boolean) {
-        if (fullyExpanded)
-            this.visibility =
-                View.GONE           // this.animate().translationY(this.height.toFloat())
-        else
-            this.visibility = View.VISIBLE            //this.animate().translationY(0f)
+    private fun updateView(
+        appBar: AppBarLayout,
+        bottomView: BottomNavigationView,
+        fullyExpanded: Boolean
+    ) {
+        if (fullyExpanded) {
+            hideSystemUI()
+            appBar.visibility = View.GONE
+            bottomView.visibility = View.GONE
+
+        } else {
+            showSystemUI()
+            appBar.visibility = View.VISIBLE
+            bottomView.visibility = View.VISIBLE
+        }
     }
 
-    private fun AppBarLayout.updateView(fullyExpanded: Boolean) {
-        if (fullyExpanded)
-            this.visibility =
-                View.GONE           // this.animate().translationY(this.height.toFloat())
-        else
-            this.visibility = View.VISIBLE            //this.animate().translationY(0f)
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (isFullWindow && hasFocus) hideSystemUI()
     }
+
 }
 
 

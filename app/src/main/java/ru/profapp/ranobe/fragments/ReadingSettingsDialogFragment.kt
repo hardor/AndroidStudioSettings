@@ -54,20 +54,22 @@ public class ReadingSettingsDialogFragment : DialogFragment() {
 
         chooseColorWebviewTextButton.setBackgroundColor(MyApp.preferencesManager.textColor
                 ?: resources.getColor(R.color.webViewText))
-        chooseColorWebviewTextEditText.setText(String.format("%06X", 0xFFFFFF and (MyApp.preferencesManager.textColor
-                ?: resources.getColor(R.color.webViewText))))
 
+        MyApp.preferencesManager.textColor?.let {
+            chooseColorWebviewTextEditText.setText(String.format("%06X", 0xFFFFFF and it))
+        }
 
         chooseColorWebviewTextEditText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
-                try {
-                    val editColor = Color.parseColor("#$s")
-                    chooseColorWebviewTextButton.setBackgroundColor(editColor)
-                } catch (e: IllegalArgumentException) {
-                    chooseColorWebviewTextButton.setBackgroundColor(resources.getColor(R.color.webViewText))
-                    chooseColorWebviewTextEditText.error = getString(R.string.incorrect_color)
+                if(s.isNotBlank()) {
+                    try {
+                        val editColor = Color.parseColor("#$s")
+                        chooseColorWebviewTextButton.setBackgroundColor(editColor)
+                    } catch (e: IllegalArgumentException) {
+                        chooseColorWebviewTextButton.setBackgroundColor(resources.getColor(R.color.webViewText))
+                        chooseColorWebviewTextEditText.error = getString(R.string.incorrect_color)
+                    }
                 }
-
             }
 
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
@@ -99,17 +101,22 @@ public class ReadingSettingsDialogFragment : DialogFragment() {
         val chooseColorWebviewBackgroundButton: Button = view.findViewById(R.id.btn_chooseColor_webviewBackground)
         val chooseColorWebviewBackgroundEditText: EditText = view.findViewById(R.id.eT_chooseColor_webviewBackground)
         chooseColorWebviewBackgroundButton.setBackgroundColor(MyApp.preferencesManager.backgroundColor?:resources.getColor(R.color.webViewBackground))
-        chooseColorWebviewBackgroundEditText.setText(String.format("%06X", 0xFFFFFF and (MyApp.preferencesManager.backgroundColor?:resources.getColor(R.color.webViewBackground))))
+        MyApp.preferencesManager.backgroundColor?.let {
+            chooseColorWebviewBackgroundEditText.setText(String.format("%06X", 0xFFFFFF and it))
+        }
 
 
         chooseColorWebviewBackgroundEditText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
-                try {
-                    val editColor = Color.parseColor("#$s")
-                    chooseColorWebviewBackgroundButton.setBackgroundColor(editColor)
-                } catch (e: IllegalArgumentException) {
-                    chooseColorWebviewBackgroundButton.setBackgroundColor(resources.getColor(R.color.webViewBackground))
-                    chooseColorWebviewBackgroundEditText.error = getString(R.string.incorrect_color)
+                if(s.isNotBlank()) {
+                    try {
+                        val editColor = Color.parseColor("#$s")
+                        chooseColorWebviewBackgroundButton.setBackgroundColor(editColor)
+                    } catch (e: IllegalArgumentException) {
+                        chooseColorWebviewBackgroundButton.setBackgroundColor(resources.getColor(R.color.webViewBackground))
+                        chooseColorWebviewBackgroundEditText.error =
+                            getString(R.string.incorrect_color)
+                    }
                 }
 
             }
@@ -142,6 +149,9 @@ public class ReadingSettingsDialogFragment : DialogFragment() {
         val dayNightSwitch: Switch = view.findViewById(R.id.switch_reading_day_night)
         dayNightSwitch.isChecked = MyApp.preferencesManager.isDarkTheme
 
+        val useSwipesSwitch: Switch = view.findViewById(R.id.switch_reading_use_swipes)
+        useSwipesSwitch.isChecked = MyApp.preferencesManager.useSwipeForNavigate
+
         val fontSeekBar: SeekBar = view.findViewById(R.id.seekBar_reading_fontsize)
         fontSeekBar.progress = MyApp.preferencesManager.fontSize - 6
 
@@ -168,6 +178,8 @@ public class ReadingSettingsDialogFragment : DialogFragment() {
                     MyApp.preferencesManager.font = Constants.CustomFonts.getFileByTitle(fontSpinner.selectedItem as String)
 
                     MyApp.preferencesManager.isDarkTheme = dayNightSwitch.isChecked
+
+                    MyApp.preferencesManager.useSwipeForNavigate = useSwipesSwitch.isChecked
 
                     try {
                         val editColor = Color.parseColor("#${chooseColorWebviewTextEditText.text}")

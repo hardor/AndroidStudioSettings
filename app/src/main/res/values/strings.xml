@@ -71,7 +71,7 @@
   <string name="task_finished">Task finished</string>
   <string name="app_email" translatable="false">admin@profapp.ru</string>
   <string name="data">Data</string>
-  <string name="day_night">Day/Night</string>
+  <string name="day_night">Night mode</string>
   <string name="not_exist">Not exist</string>
   <string name="Load_from_Rulate">Load bookmarks from Rulate site</string>
   <string name="open_in_browser" translatable="false">Open in browser</string>

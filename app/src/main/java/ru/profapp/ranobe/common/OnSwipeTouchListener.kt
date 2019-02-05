@@ -19,7 +19,7 @@ open class OnSwipeTouchListener(context: Context) : OnTouchListener {
 
     open fun onSwipeRight() {}
 
-    open fun onTap() {}
+    open fun onDoubleTap() {}
 
     override fun onTouch(v: View, event: MotionEvent): Boolean {
         return gestureDetector.onTouchEvent(event)
@@ -31,7 +31,7 @@ open class OnSwipeTouchListener(context: Context) : OnTouchListener {
         private val SWIPE_VELOCITY_THRESHOLD = 100
 
         override fun onDoubleTap(e: MotionEvent?): Boolean {
-            onTap()
+            onDoubleTap()
             return super.onDoubleTap(e)
         }
 

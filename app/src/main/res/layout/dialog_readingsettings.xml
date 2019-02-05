@@ -110,4 +110,12 @@
 
     </LinearLayout>
 
+
+    <Switch
+        android:id="@+id/switch_reading_use_swipes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/swipe_navigate" />
+
+
 </LinearLayout>

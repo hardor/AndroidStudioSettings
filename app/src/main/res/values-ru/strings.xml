@@ -56,7 +56,7 @@
     </string>
   <string name="title_activity_download">Загрузка</string>
   <string name="task_finished">Загрузка завершена</string>
-  <string name="day_night">Day/Night</string>
+  <string name="day_night">Ночной режим</string>
   <string name="data">Данные</string>
   <string name="not_exist">Глава отсутствет</string>
   <string name="Load_from_Rulate">Загрузка закладок с сайта Rulate</string>
