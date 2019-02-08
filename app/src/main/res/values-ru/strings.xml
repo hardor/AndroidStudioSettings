@@ -124,4 +124,10 @@
   <string name="text_color" translatable="false">Цвет текста</string>
   <string name="background_color">Цвет фона</string>
   <string name="reading_settings">Настройфки чтаения</string>
+  <string name="authorization">Авторизация</string>
+  <string name="incorrect_color">Неверный цвет</string>
+  <string name="paid_chapters_skipped">%1$d платных глав было пропущено</string>
+  <string name="site">Сайт</string>
+  <string name="genre">Жанр</string>
+  <string name="file_choose_ranobereader">Выберите ваш RanobeReaderBackup.zip файл</string>
 </resources>

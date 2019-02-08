@@ -44,6 +44,7 @@ import ru.profapp.ranobe.network.repositories.RanobeRfRepository
 import ru.profapp.ranobe.network.repositories.RulateRepository
 import java.io.IOException
 import javax.inject.Inject
+import kotlin.math.abs
 
 class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.DialogListener {
 
@@ -580,6 +581,17 @@ class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.D
                 mCurrentChapter = mChapterList[chapterIndex]
                 initWebView()
                 mChapterList[prevChapterIndex].text = null
+
+                if (abs(mChapterList[prevChapterIndex].index - mChapterList[chapterIndex].index) > 1) {
+                    Toast.makeText(
+                        mContext,
+                        getString(
+                            R.string.paid_chapters_skipped,
+                           abs(mChapterList[prevChapterIndex].index - mChapterList[chapterIndex].index)
+                        ),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
 
             } catch (e: ArrayIndexOutOfBoundsException) {
                 chapterIndex = prevChapterIndex
