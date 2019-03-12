@@ -339,6 +339,7 @@ class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.D
 
         val style = ("style = \"text-align: justify; text-indent: 20px;font-size: "
                 + MyApp.preferencesManager.fontSize + "px;"
+                + "line-height: ${MyApp.preferencesManager.lineHeightCss/10};"
                 + "font-family: MyFont;"
                 + "color: " + String.format(
             "#%06X",

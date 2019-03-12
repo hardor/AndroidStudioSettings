@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
     <release
+        version="1.28"
+        versioncode="101028">
+        <change>Добавлена настройка интервала</change>
+    </release>
+    <release
         version="1.27"
         versioncode="101027">
         <change>Добавлен показ лога изменений</change>

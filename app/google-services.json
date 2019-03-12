@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "510986481056-f0nj10slsr8s30pim6oekila5f9qrt6h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ru.profapp.ranobe",
+            "certificate_hash": "6eee188ce34a7c3309cbf9f09876e477fcefbbf9"
+          }
+        },
+        {
+          "client_id": "510986481056-f3vkte7q6mul44a0rsirint3f6v2ssq4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ru.profapp.ranobe",
+            "certificate_hash": "c3f91713690d790498f02626b9c5f386baf3b368"
+          }
+        },
+        {
           "client_id": "510986481056-d66ckbuvn93ktc7n8shqj8qqhdtij421.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +45,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "510986481056-r8sl6tdr39qbce6bpiob0s3cc9fgb3cj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

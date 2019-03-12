@@ -169,11 +169,33 @@ public class ReadingSettingsDialogFragment : DialogFragment() {
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
         })
 
+
+        val  lineHeightSeekBar: SeekBar = view.findViewById(R.id.seekBar_reading_lineheight)
+        lineHeightSeekBar.progress = MyApp.preferencesManager.lineHeightCss - 10
+
+
+        val lineHeightSeekBarTextView: TextView = view.findViewById(R.id.textView_reading_lineheight)
+        lineHeightSeekBarTextView.text = (MyApp.preferencesManager.lineHeightCss /10).toString()
+
+        lineHeightSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                lineHeightSeekBarTextView.text = ((progress + 10)/10).toString()
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+
+            override fun onStopTrackingTouch(seekBar: SeekBar) {}
+        })
+
         builder.setView(view)
                 // Add action buttons
                 .setPositiveButton(R.string.ok) { dialog, _ ->
                     val fontSize = fontSeekBarTextView.text.toString().toIntOrNull()
                     if (fontSize != null) MyApp.preferencesManager.fontSize = fontSize
+
+
+                    val lineHeight = lineHeightSeekBarTextView.text.toString().toFloatOrNull()
+                    if (lineHeight != null) MyApp.preferencesManager.lineHeightCss = (lineHeight*10).toInt()
 
                     MyApp.preferencesManager.font = Constants.CustomFonts.getFileByTitle(fontSpinner.selectedItem as String)
 

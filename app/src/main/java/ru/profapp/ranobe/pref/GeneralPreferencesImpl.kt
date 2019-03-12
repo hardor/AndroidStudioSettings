@@ -2,7 +2,6 @@ package ru.profapp.ranobe.pref
 
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.core.content.ContextCompat
 import ru.profapp.ranobe.BuildConfig
 import ru.profapp.ranobe.R
 import ru.profapp.ranobe.common.Constants
@@ -140,6 +139,13 @@ class GeneralPreferencesImpl(private val context: Context) : GeneralPreferences 
       -1
     )
 
+    override var lineHeightCss: Int by PreferenceDelegates<Int>(
+        context,
+        "",
+        R.string.pref_general_lineheight_web,
+      10
+    )
+
 }
 
 interface GeneralPreferences {
@@ -157,6 +163,7 @@ interface GeneralPreferences {
     var font: String
     var textColor: Int?
     var backgroundColor: Int?
+    var lineHeightCss: Int
 
 
     fun setLastChapterUrl(ranobeUrl: String, chapterUrl: String)
@@ -165,8 +172,6 @@ interface GeneralPreferences {
 
     // Todo: remove 1.19
     fun getLastChapterId(ranobeUrl: String): Int?
-
-    //rulate
 
 }
 
