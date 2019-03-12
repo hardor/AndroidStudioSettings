@@ -1,7 +1,6 @@
 package ru.profapp.ranobe.adapters
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -11,12 +10,13 @@ import androidx.annotation.NonNull
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.schedulers.Schedulers
-import ru.profapp.ranobe.activities.ChapterTextActivity
-import ru.profapp.ranobe.common.Constants
-import ru.profapp.ranobe.models.Chapter
-import ru.profapp.ranobe.models.Ranobe
 import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.R
+import ru.profapp.ranobe.activities.ChapterTextActivity
+import ru.profapp.ranobe.common.Constants
+import ru.profapp.ranobe.helpers.launchActivity
+import ru.profapp.ranobe.models.Chapter
+import ru.profapp.ranobe.models.Ranobe
 
 class ChapterRecyclerViewAdapter(private val mValues: List<Chapter>, private val mRanobe: Ranobe) : RecyclerView.Adapter<ChapterRecyclerViewAdapter.ViewHolder>() {
 
@@ -41,9 +41,9 @@ class ChapterRecyclerViewAdapter(private val mValues: List<Chapter>, private val
 
                 }
                 if (MyApp.ranobe != null) {
-                    val intent = Intent(mContext, ChapterTextActivity::class.java)
-                    intent.putExtra("ChapterUrl", item.url)
-                    mContext.startActivity(intent)
+                    mContext.launchActivity<ChapterTextActivity> {
+                        putExtra("ChapterUrl", item.url)
+                    }
                 }
             }
 

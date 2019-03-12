@@ -1,6 +1,5 @@
 package ru.profapp.ranobe.adapters
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +14,7 @@ import ru.profapp.ranobe.R
 import ru.profapp.ranobe.activities.RanobeInfoActivity
 import ru.profapp.ranobe.common.Constants
 import ru.profapp.ranobe.common.OnLoadMoreListener
+import ru.profapp.ranobe.helpers.launchActivity
 import ru.profapp.ranobe.models.Ranobe
 import java.util.*
 
@@ -204,11 +204,9 @@ class RanobeRecyclerViewAdapter(private val glide: RequestManager, recyclerView:
 
         override fun onClick(v: View) {
             if (adapterPosition != RecyclerView.NO_POSITION) {
-
-                val intent = Intent(v.context, RanobeInfoActivity::class.java)
                 MyApp.ranobe = mItem
                 if (MyApp.ranobe != null) {
-                    v.context.startActivity(intent)
+                    v.context.launchActivity<RanobeInfoActivity>()
                 }
 
             }

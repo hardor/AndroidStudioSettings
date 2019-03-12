@@ -32,6 +32,7 @@ import ru.profapp.ranobe.common.Constants
 import ru.profapp.ranobe.common.MyExceptionHandler
 import ru.profapp.ranobe.helpers.LogType
 import ru.profapp.ranobe.helpers.ThemeHelper
+import ru.profapp.ranobe.helpers.launchActivity
 import ru.profapp.ranobe.helpers.logError
 import ru.profapp.ranobe.models.Chapter
 import ru.profapp.ranobe.models.Ranobe
@@ -66,10 +67,10 @@ class RanobeInfoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         if (!MyApp.isApplicationInitialized || MyApp.ranobe == null) {
-            val firstIntent = Intent(this, MainActivity::class.java)
 
-            firstIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) // So all other activities will be dumped
-            startActivity(firstIntent)
+            launchActivity<MainActivity> {
+                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            }
 
             // We are done, so finish this activity and get out now
             finish()
@@ -97,10 +98,11 @@ class RanobeInfoActivity : AppCompatActivity() {
             val chapterProgress =
                 MyApp.database.chapterProgressDao().getLastChapterByRanobeUrl(mCurrentRanobe.url)
                     .subscribeOn(Schedulers.io())?.blockingGet()
-            val intent = Intent(mContext, ChapterTextActivity::class.java)
-            intent.putExtra("ChapterUrl", chapterProgress?.chapterUrl)
-            intent.putExtra("Progress", chapterProgress?.progress)
-            mContext.startActivity(intent)
+
+            launchActivity<ChapterTextActivity> {
+                putExtra("ChapterUrl", chapterProgress?.chapterUrl)
+                putExtra("Progress", chapterProgress?.progress)
+            }
 
         }
 
@@ -457,9 +459,9 @@ class RanobeInfoActivity : AppCompatActivity() {
         when (item.itemId) {
             android.R.id.home -> onBackPressed()
             R.id.download_chapters -> {
-                val intent = Intent(mContext, DownloadActivity::class.java)
+
                 if (MyApp.ranobe != null) {
-                    mContext.startActivity(intent)
+                    launchActivity<DownloadActivity> ()
                 }
             }
             R.id.navigation_open_in_browser -> {

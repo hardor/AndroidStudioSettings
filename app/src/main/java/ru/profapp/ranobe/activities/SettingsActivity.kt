@@ -22,6 +22,7 @@ import ru.profapp.ranobe.R
 import ru.profapp.ranobe.common.Constants
 import ru.profapp.ranobe.common.MyExceptionHandler
 import ru.profapp.ranobe.helpers.ThemeHelper
+import ru.profapp.ranobe.helpers.launchActivity
 import javax.inject.Inject
 
 class SettingsActivity : AppCompatPreferenceActivity() {
@@ -33,11 +34,10 @@ class SettingsActivity : AppCompatPreferenceActivity() {
         super.onCreate(savedInstanceState)
 
         if (!MyApp.isApplicationInitialized) {
-            val firstIntent = Intent(this, MainActivity::class.java)
 
-            firstIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) // So all other activities will be dumped
-            startActivity(firstIntent)
-
+            launchActivity<MainActivity> {
+                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            }
             // We are done, so finish this activity and get out now
             finish()
             return

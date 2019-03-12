@@ -35,6 +35,7 @@ import ru.profapp.ranobe.fragments.HistoryFragment
 import ru.profapp.ranobe.fragments.RanobeListFragment
 import ru.profapp.ranobe.fragments.SearchFragment
 import ru.profapp.ranobe.helpers.ThemeHelper
+import ru.profapp.ranobe.helpers.launchActivity
 import ru.profapp.ranobe.models.Chapter
 import ru.profapp.ranobe.models.Ranobe
 import ru.profapp.ranobe.network.repositories.RanobeRfRepository
@@ -69,8 +70,7 @@ class MainActivity : AppCompatActivity(),
         Thread {
             val isFirstStart = MyApp.preferencesManager.isFirstStart
             if (isFirstStart) {
-                val i = Intent(this@MainActivity, IntroActivity::class.java)
-                startActivity(i)
+                launchActivity<IntroActivity>()
             }
         }.start()
 
@@ -141,10 +141,11 @@ class MainActivity : AppCompatActivity(),
                     MyApp.ranobe = ranobe
                 }
                 if (MyApp.ranobe != null && MyApp.ranobe!!.url.contains(chapterProgress.ranobeUrl)) {
-                    val intent = Intent(this@MainActivity, ChapterTextActivity::class.java)
-                    intent.putExtra("ChapterUrl", chapterProgress.chapterUrl)
-                    intent.putExtra("Progress", chapterProgress.progress)
-                    startActivity(intent)
+
+                    launchActivity<ChapterTextActivity>{
+                        putExtra("ChapterUrl", chapterProgress.chapterUrl)
+                        putExtra("Progress", chapterProgress.progress)
+                    }
                 }
 
             } else {
@@ -216,8 +217,7 @@ class MainActivity : AppCompatActivity(),
 
 
         if (id == R.id.action_settings) {
-            val intent = Intent(this, SettingsActivity::class.java)
-            startActivity(intent)
+            launchActivity<SettingsActivity>()
             title = resources.getText(R.string.action_settings)
             return true
         }
@@ -257,8 +257,7 @@ class MainActivity : AppCompatActivity(),
                 currentTitle = resources.getText(R.string.ranobe_hub).toString()
             }
             R.id.nav_manage -> {
-                val intent = Intent(this, SettingsActivity::class.java)
-                startActivity(intent)
+                launchActivity<SettingsActivity>()
             }
             R.id.nav_search -> {
                 currentFragment = Constants.FragmentType.Search.name
