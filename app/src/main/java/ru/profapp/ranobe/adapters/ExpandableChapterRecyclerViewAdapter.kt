@@ -1,7 +1,6 @@
 package ru.profapp.ranobe.adapters
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -12,14 +11,15 @@ import androidx.annotation.NonNull
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.schedulers.Schedulers
+import ru.profapp.ranobe.MyApp
+import ru.profapp.ranobe.R
 import ru.profapp.ranobe.activities.ChapterTextActivity
 import ru.profapp.ranobe.common.Constants
 import ru.profapp.ranobe.helpers.convertDpToPixel
+import ru.profapp.ranobe.helpers.launchActivity
 import ru.profapp.ranobe.helpers.setVectorForPreLollipop
 import ru.profapp.ranobe.models.Chapter
 import ru.profapp.ranobe.models.Ranobe
-import ru.profapp.ranobe.MyApp
-import ru.profapp.ranobe.R
 
 class ExpandableChapterRecyclerViewAdapter(private val mContext: Context, private val mRanobe: Ranobe) : RecyclerView.Adapter<ExpandableChapterRecyclerViewAdapter.GroupViewHolder>() {
 
@@ -87,10 +87,11 @@ class ExpandableChapterRecyclerViewAdapter(private val mContext: Context, privat
                         }
                     }
                     if (MyApp.ranobe != null) {
-                        val intent = Intent(mContext, ChapterTextActivity::class.java)
-                        intent.putExtra("ChapterUrl", childItem.url)
 
-                        mContext.startActivity(intent)
+                        mContext.launchActivity<ChapterTextActivity> {
+                            putExtra("ChapterUrl", childItem.url)
+                        }
+
                     }
                 }
             }

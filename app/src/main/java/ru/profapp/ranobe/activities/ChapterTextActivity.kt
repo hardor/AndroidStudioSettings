@@ -34,10 +34,7 @@ import ru.profapp.ranobe.common.Constants
 import ru.profapp.ranobe.common.MyExceptionHandler
 import ru.profapp.ranobe.common.OnSwipeTouchListener
 import ru.profapp.ranobe.fragments.ReadingSettingsDialogFragment
-import ru.profapp.ranobe.helpers.LogType
-import ru.profapp.ranobe.helpers.ThemeHelper
-import ru.profapp.ranobe.helpers.logError
-import ru.profapp.ranobe.helpers.logMessage
+import ru.profapp.ranobe.helpers.*
 import ru.profapp.ranobe.models.*
 import ru.profapp.ranobe.network.repositories.RanobeHubRepository
 import ru.profapp.ranobe.network.repositories.RanobeRfRepository
@@ -114,10 +111,10 @@ class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.D
         super.onCreate(savedInstanceState)
 
         if (!MyApp.isApplicationInitialized || MyApp.ranobe == null) {
-            val firstIntent = Intent(this, MainActivity::class.java)
 
-            firstIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) // So all other activities will be dumped
-            startActivity(firstIntent)
+            launchActivity<MainActivity> {
+                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            }
 
             // We are done, so finish this activity and get out now
             finish()
@@ -415,9 +412,7 @@ class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.D
         when (item.itemId) {
             android.R.id.home -> onBackPressed()
             R.id.action_settings -> {
-                val intent = Intent(this, SettingsActivity::class.java)
-
-                startActivity(intent)
+                launchActivity<SettingsActivity> ()
             }
 
             R.id.navigation_open_in_browser -> {

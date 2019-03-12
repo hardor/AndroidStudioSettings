@@ -14,11 +14,9 @@ import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.room.Room
 import com.crashlytics.android.Crashlytics
 import com.google.android.material.snackbar.Snackbar
 import io.fabric.sdk.android.Fabric
-import ru.profapp.ranobe.DAO.DatabaseDao
 import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.MyApp.Companion.DB_NAME
 import ru.profapp.ranobe.R
@@ -27,6 +25,7 @@ import ru.profapp.ranobe.common.Constants.Rulate_Login_Pref
 import ru.profapp.ranobe.common.Constants.last_chapter_id_Pref
 import ru.profapp.ranobe.common.MyExceptionHandler
 import ru.profapp.ranobe.helpers.LogType
+import ru.profapp.ranobe.helpers.launchActivity
 import ru.profapp.ranobe.helpers.logError
 import ru.profapp.ranobe.utils.FileUtils
 import java.io.File
@@ -39,10 +38,10 @@ class BackupActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         if (!MyApp.isApplicationInitialized) {
-            val firstIntent = Intent(this, MainActivity::class.java)
 
-            firstIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) // So all other activities will be dumped
-            startActivity(firstIntent)
+            launchActivity<MainActivity> {
+                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            }
 
             // We are done, so finish this activity and get out now
             finish()
