@@ -9,8 +9,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.NonNull
 import androidx.recyclerview.widget.RecyclerView
-import ru.profapp.ranobe.models.Chapter
 import ru.profapp.ranobe.R
+import ru.profapp.ranobe.models.Chapter
 
 class ExpandableDownloadRecyclerViewAdapter() : RecyclerView.Adapter<ExpandableDownloadRecyclerViewAdapter.GroupViewHolder>() {
 

@@ -5,8 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import ru.profapp.ranobe.models.ChapterHistory
 import ru.profapp.ranobe.R
+import ru.profapp.ranobe.models.ChapterHistory
 import java.text.DateFormat
 import java.util.*
 

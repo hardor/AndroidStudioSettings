@@ -5,11 +5,10 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.activities.MainActivity
 import ru.profapp.ranobe.helpers.LogType
 import ru.profapp.ranobe.helpers.logError
-
-import ru.profapp.ranobe.MyApp
 
 class MyExceptionHandler(private val activity: Activity) : Thread.UncaughtExceptionHandler {
 

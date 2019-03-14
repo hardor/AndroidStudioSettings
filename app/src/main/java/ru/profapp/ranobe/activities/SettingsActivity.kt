@@ -12,8 +12,6 @@ import android.preference.PreferenceFragment
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.ActionBar
-import com.crashlytics.android.Crashlytics
-import io.fabric.sdk.android.Fabric
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -23,12 +21,8 @@ import ru.profapp.ranobe.common.Constants
 import ru.profapp.ranobe.common.MyExceptionHandler
 import ru.profapp.ranobe.helpers.ThemeHelper
 import ru.profapp.ranobe.helpers.launchActivity
-import javax.inject.Inject
 
 class SettingsActivity : AppCompatPreferenceActivity() {
-
-    @Inject
-    lateinit var crashlyticsKit: Crashlytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +38,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
         }
 
         MyApp.component.inject(this)
-        Fabric.with(this, crashlyticsKit)
+
         setupActionBar()
         title = resources.getText(R.string.action_settings)
         Thread.setDefaultUncaughtExceptionHandler(MyExceptionHandler(this))
@@ -277,8 +271,9 @@ class SettingsActivity : AppCompatPreferenceActivity() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
+
         Thread.setDefaultUncaughtExceptionHandler(null)
+        super.onDestroy()
     }
 
 }

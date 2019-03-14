@@ -74,14 +74,15 @@ class HistoryFragment : Fragment() {
     }
 
     override fun onDetach() {
-        super.onDetach()
+
         mContext = null
+        super.onDetach()
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         mContext = null
         MyApp.refWatcher?.watch(this)
+        super.onDestroy()
     }
 
     companion object {

@@ -76,8 +76,9 @@ abstract class AppCompatPreferenceActivity : PreferenceActivity() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
+
         delegate.onDestroy()
+        super.onDestroy()
     }
 
     override fun invalidateOptionsMenu() {

@@ -94,9 +94,10 @@ class HistoryPageFragment : Fragment() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
+
         mContext = null
         compositeDisposable.dispose()
+        super.onDestroy()
     }
 
     private fun toRanobe(ranobeHistory: RanobeHistory): Ranobe {

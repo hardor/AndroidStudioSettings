@@ -16,13 +16,11 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
-import com.crashlytics.android.Crashlytics
 import com.google.android.gms.ads.AdRequest
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.webianks.easy_feedback.EasyFeedback
 import de.cketti.library.changelog.ChangeLog
-import io.fabric.sdk.android.Fabric
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
@@ -34,6 +32,7 @@ import ru.profapp.ranobe.common.MyExceptionHandler
 import ru.profapp.ranobe.fragments.HistoryFragment
 import ru.profapp.ranobe.fragments.RanobeListFragment
 import ru.profapp.ranobe.fragments.SearchFragment
+import ru.profapp.ranobe.helpers.AdViewManager
 import ru.profapp.ranobe.helpers.ThemeHelper
 import ru.profapp.ranobe.helpers.launchActivity
 import ru.profapp.ranobe.models.Chapter
@@ -52,17 +51,13 @@ class MainActivity : AppCompatActivity(),
     private var alertErrorDialog: AlertDialog? = null
 
     @Inject
-    lateinit var crashlyticsKit: Crashlytics
-
-    @Inject
     lateinit var adRequest: AdRequest
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        initSettingPreference()
         super.onCreate(savedInstanceState)
+        initSettingPreference()
         MyApp.isApplicationInitialized = true
         MyApp.component.inject(this)
-        Fabric.with(this, crashlyticsKit)
 
         setContentView(R.layout.activity_main)
         Thread.setDefaultUncaughtExceptionHandler(MyExceptionHandler(this))
@@ -90,6 +85,7 @@ class MainActivity : AppCompatActivity(),
         }
 
 
+        AdViewManager(lifecycle,adView)
         adView.loadAd(adRequest)
 
         setSupportActionBar(toolbar)
@@ -310,16 +306,13 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onDestroy() {
-        adView.adListener = null
-        adView.removeAllViews()
-        adView.destroy()
-        super.onDestroy()
         Thread.setDefaultUncaughtExceptionHandler(null)
+        super.onDestroy()
     }
 
     override fun onResume() {
         super.onResume()
-        adView.resume()
+
         if (currentTheme != AppCompatDelegate.getDefaultNightMode()) {
             recreate()
         }
@@ -327,10 +320,9 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onPause() {
-        super.onPause()
-        adView.pause()
         alertErrorDialog?.dismiss()
         alertErrorDialog = null
+        super.onPause()
     }
 
     companion object {

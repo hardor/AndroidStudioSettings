@@ -1,11 +1,8 @@
 package ru.profapp.ranobe.activities
 
-import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import androidx.preference.PreferenceManager
 import com.github.paolorotolo.appintro.AppIntro
-import ru.profapp.ranobe.BuildConfig
 import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.R
 import ru.profapp.ranobe.fragments.intro.IntroFragment

@@ -14,9 +14,7 @@ import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import com.crashlytics.android.Crashlytics
 import com.google.android.material.snackbar.Snackbar
-import io.fabric.sdk.android.Fabric
 import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.MyApp.Companion.DB_NAME
 import ru.profapp.ranobe.R
@@ -29,11 +27,8 @@ import ru.profapp.ranobe.helpers.launchActivity
 import ru.profapp.ranobe.helpers.logError
 import ru.profapp.ranobe.utils.FileUtils
 import java.io.File
-import javax.inject.Inject
 
 class BackupActivity : AppCompatActivity() {
-    @Inject
-    lateinit var crashlyticsKit: Crashlytics
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -49,7 +44,7 @@ class BackupActivity : AppCompatActivity() {
         }
         MyApp.component.inject(this)
         setupActionBar()
-        Fabric.with(this, crashlyticsKit)
+
 
         setContentView(R.layout.activity_backup)
         Thread.setDefaultUncaughtExceptionHandler(MyExceptionHandler(this))
@@ -177,7 +172,8 @@ class BackupActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
+
         Thread.setDefaultUncaughtExceptionHandler(null)
+        super.onDestroy()
     }
 }

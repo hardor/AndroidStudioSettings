@@ -13,7 +13,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.DialogFragment
-import com.crashlytics.android.Crashlytics
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.material.appbar.AppBarLayout
@@ -21,7 +20,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.vorlonsoft.android.rate.AppRate
 import com.vorlonsoft.android.rate.StoreType
 import com.vorlonsoft.android.rate.Time
-import io.fabric.sdk.android.Fabric
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -40,7 +38,6 @@ import ru.profapp.ranobe.network.repositories.RanobeHubRepository
 import ru.profapp.ranobe.network.repositories.RanobeRfRepository
 import ru.profapp.ranobe.network.repositories.RulateRepository
 import java.io.IOException
-import javax.inject.Inject
 import kotlin.math.abs
 
 class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.DialogListener {
@@ -74,9 +71,6 @@ class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.D
     lateinit var bottomNavigationView: BottomNavigationView
 
     private var isFullWindow: Boolean = false
-
-    @Inject
-    lateinit var crashlyticsKit: Crashlytics
 
     private fun hideSystemUI() {
         window.decorView.systemUiVisibility =
@@ -122,7 +116,7 @@ class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.D
         }
 
         MyApp.component.inject(this)
-        Fabric.with(this, crashlyticsKit)
+
 
         setContentView(R.layout.activity_chapter_text)
 
@@ -665,16 +659,18 @@ class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.D
     }
 
     override fun onPause() {
-        super.onPause()
+
         if (MyApp.preferencesManager.isAutoAddBookmark) {
             saveProgressToDb()
         }
+        super.onPause()
     }
 
     override fun onDestroy() {
-        super.onDestroy()
+
         Thread.setDefaultUncaughtExceptionHandler(null)
         compositeDisposable.clear()
+        super.onDestroy()
     }
 
 

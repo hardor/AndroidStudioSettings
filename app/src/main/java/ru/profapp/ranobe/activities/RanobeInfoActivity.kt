@@ -15,9 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.crashlytics.android.Crashlytics
 import com.google.android.gms.ads.AdRequest
-import io.fabric.sdk.android.Fabric
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -30,10 +28,7 @@ import ru.profapp.ranobe.adapters.CommentsRecyclerViewAdapter
 import ru.profapp.ranobe.adapters.ExpandableChapterRecyclerViewAdapter
 import ru.profapp.ranobe.common.Constants
 import ru.profapp.ranobe.common.MyExceptionHandler
-import ru.profapp.ranobe.helpers.LogType
-import ru.profapp.ranobe.helpers.ThemeHelper
-import ru.profapp.ranobe.helpers.launchActivity
-import ru.profapp.ranobe.helpers.logError
+import ru.profapp.ranobe.helpers.*
 import ru.profapp.ranobe.models.Chapter
 import ru.profapp.ranobe.models.Ranobe
 import ru.profapp.ranobe.network.repositories.RanobeRfRepository
@@ -57,14 +52,12 @@ class RanobeInfoActivity : AppCompatActivity() {
     private lateinit var mGlide: GlideRequests
 
     @Inject
-    lateinit var crashlyticsKit: Crashlytics
-    @Inject
     lateinit var adRequest: AdRequest
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        currentTheme = AppCompatDelegate.getDefaultNightMode()
         super.onCreate(savedInstanceState)
+        currentTheme = AppCompatDelegate.getDefaultNightMode()
 
         if (!MyApp.isApplicationInitialized || MyApp.ranobe == null) {
 
@@ -78,7 +71,7 @@ class RanobeInfoActivity : AppCompatActivity() {
         }
 
         MyApp.component.inject(this)
-        Fabric.with(this, crashlyticsKit)
+
         setContentView(R.layout.activity_ranobe_info)
         Thread.setDefaultUncaughtExceptionHandler(MyExceptionHandler(this))
 
@@ -141,6 +134,7 @@ class RanobeInfoActivity : AppCompatActivity() {
         rInfoTabHost.addTab(tabSpec)
         rInfoTabHost.currentTab = 0
 
+        AdViewManager(lifecycle,rInfoAdView)
         rInfoAdView.loadAd(adRequest)
     }
 
@@ -434,26 +428,18 @@ class RanobeInfoActivity : AppCompatActivity() {
 
     override fun onDestroy() {
 
-        rInfoAdView?.adListener = null
-        rInfoAdView?.removeAllViews()
-        rInfoAdView?.destroy()
-        super.onDestroy()
         compositeDisposable.clear()
         Thread.setDefaultUncaughtExceptionHandler(null)
+        super.onDestroy()
 
     }
 
     override fun onResume() {
         super.onResume()
-        rInfoAdView?.resume()
         if (currentTheme != AppCompatDelegate.getDefaultNightMode())
             recreate()
     }
 
-    override fun onPause() {
-        super.onPause()
-        rInfoAdView?.pause()
-    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {

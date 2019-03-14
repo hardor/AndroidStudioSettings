@@ -6,7 +6,7 @@ import ru.profapp.ranobe.activities.*
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [FabricModule::class, AdModule::class, PreferencesModule::class])
+@Component(modules = [AdModule::class, PreferencesModule::class])
 interface ApplicationComponent {
 
     fun inject(app: Application)

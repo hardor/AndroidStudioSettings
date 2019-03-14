@@ -10,10 +10,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
+import ru.profapp.ranobe.R
 import ru.profapp.ranobe.common.Constants
 import ru.profapp.ranobe.helpers.setVectorForPreLollipop
 import ru.profapp.ranobe.network.dto.rulateDTO.RulateComment
-import ru.profapp.ranobe.R
 import ru.profapp.ranobe.utils.GlideRequests
 import java.util.*
 

@@ -18,14 +18,14 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import ru.profapp.ranobe.MyApp
+import ru.profapp.ranobe.R
 import ru.profapp.ranobe.adapters.RanobeRecyclerViewAdapter
 import ru.profapp.ranobe.common.Constants.RanobeSite.Title
 import ru.profapp.ranobe.models.Ranobe
-import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.network.repositories.RanobeHubRepository
 import ru.profapp.ranobe.network.repositories.RanobeRfRepository
 import ru.profapp.ranobe.network.repositories.RulateRepository
-import ru.profapp.ranobe.R
 import ru.profapp.ranobe.utils.GlideApp
 
 /**
@@ -88,8 +88,8 @@ class SearchFragment : Fragment() {
     }
 
     override fun onDetach() {
-        super.onDetach()
         mContext = null
+        super.onDetach()
     }
 
     private fun findRanobe(searchString: String) {
@@ -199,10 +199,11 @@ class SearchFragment : Fragment() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
+
         searhRequest?.dispose()
         mContext = null
         MyApp.refWatcher?.watch(this)
+        super.onDestroy()
     }
 }
 

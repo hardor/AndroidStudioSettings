@@ -7,9 +7,11 @@ import androidx.multidex.MultiDexApplication
 import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.crashlytics.android.Crashlytics
 import com.google.android.gms.ads.MobileAds
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
+import io.fabric.sdk.android.Fabric
 import ru.profapp.ranobe.DAO.DatabaseDao
 import ru.profapp.ranobe.common.Constants
 import ru.profapp.ranobe.dagger.ApplicationComponent
@@ -139,6 +141,7 @@ class MyApp : MultiDexApplication() {
 
     override fun onCreate() {
         super.onCreate()
+
         component.inject(this)
         preferencesManager = PreferencesModule(this).provideGeneralPreferencesManager()
         MobileAds.initialize(applicationContext, getString(R.string.app_admob_id))
@@ -152,7 +155,10 @@ class MyApp : MultiDexApplication() {
             refWatcher = LeakCanary.install(this)
             StethoUtils.install(this)
 
+        }else{
+           Fabric.with(applicationContext, Crashlytics())
         }
+
         MyApp.database = initDatabase(this)
     }
 }

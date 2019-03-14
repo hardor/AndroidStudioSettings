@@ -11,9 +11,7 @@ import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.crashlytics.android.Crashlytics
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import io.fabric.sdk.android.Fabric
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -27,7 +25,6 @@ import ru.profapp.ranobe.helpers.launchActivity
 import ru.profapp.ranobe.helpers.logError
 import ru.profapp.ranobe.models.Chapter
 import ru.profapp.ranobe.models.Ranobe
-import javax.inject.Inject
 
 class DownloadActivity : AppCompatActivity() {
 
@@ -41,8 +38,6 @@ class DownloadActivity : AppCompatActivity() {
 
     private lateinit var currentRanobe: Ranobe
 
-    @Inject
-    lateinit var crashlyticsKit: Crashlytics
     private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
 
         when (item.itemId) {
@@ -159,7 +154,7 @@ class DownloadActivity : AppCompatActivity() {
         }
 
         MyApp.component.inject(this)
-        Fabric.with(this, crashlyticsKit)
+
 
         setupActionBar()
         setContentView(R.layout.activity_download)
@@ -232,8 +227,9 @@ class DownloadActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
+
         Thread.setDefaultUncaughtExceptionHandler(null)
         compositeDisposable.dispose()
+        super.onDestroy()
     }
 }

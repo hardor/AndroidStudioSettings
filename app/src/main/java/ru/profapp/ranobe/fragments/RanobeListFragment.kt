@@ -522,11 +522,12 @@ class RanobeListFragment : Fragment() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
+
         mContext = null
         request?.dispose()
         progressDialog.dismiss()
         MyApp.refWatcher?.watch(this)
+        super.onDestroy()
     }
 
     private fun rulateLoadRanobe(): Single<List<Ranobe>> {
@@ -549,10 +550,9 @@ class RanobeListFragment : Fragment() {
     }
 
     override fun onDetach() {
-        super.onDetach()
         mContext = null
         progressDialog.dismiss()
-
+        super.onDetach()
     }
 
     companion object {
