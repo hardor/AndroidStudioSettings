@@ -142,3 +142,12 @@
 
 # Top-level functions that can only be used by Kotlin.
 -dontwarn retrofit2.-KotlinExtensions
+
+# Google api
+-keep class com.google.api.** {
+*;
+}
+-dontwarn org.apache.**
+-dontwarn android.net.http.AndroidHttpClient.**
+-dontwarn com.google.api.client.extensions.java6.auth.**
+-dontwarn org.mortbay.log.**

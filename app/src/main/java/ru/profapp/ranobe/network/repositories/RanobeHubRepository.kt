@@ -267,8 +267,7 @@ object RanobeHubRepository : BaseRepository() {
             }
         }
 
-        image = image ?: Constants.RanobeSite.RanobeHub.url + "/img/ranobe/posters/" + id
-                + "/0-min.jpg"
+        image = image ?: "${Constants.RanobeSite.RanobeHub.url}/img/ranobe/posters/$id/0-min.jpg"
 
         if (!image.isNullOrBlank()) {
             Completable.fromAction {
@@ -294,8 +293,7 @@ object RanobeHubRepository : BaseRepository() {
 
         description = description ?: book.description?.removeTags() ?: ""
 
-        image = image ?: Constants.RanobeSite.RanobeHub.url + "/img/ranobe/posters/" + id
-                + "/0-min.jpg"
+        image = image ?: "${Constants.RanobeSite.RanobeHub.url}/img/ranobe/posters/$id/0-min.jpg"
 
         if (!image.isNullOrBlank()) {
             Completable.fromAction {
