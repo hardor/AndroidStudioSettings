@@ -21,33 +21,24 @@ object Constants {
     const val chaptersNum = 4
 
     enum class FragmentType {
-        Favorite,
-        Rulate,
-        Ranoberf,
-        RanobeHub,
-        Search,
-        Saved,
-        History
+        Favorite, Rulate, Ranoberf, RanobeHub, Search, Saved, History
     }
 
     enum class RanobeSite(val url: String, val title: String) {
-        Error("Error", "Error"),
-        None("", ""),
-        Title("Title", "Title"),
-        Rulate("tl.rulate.ru", "Rulate"),
-        RanobeRf("https://xn--80ac9aeh6f.xn--p1ai", "Ранобэ.рф"),
-        RanobeHub("https://ranobehub.org", "RanobeHub");
+        Error("Error", "Error"), None("", ""), Title("Title", "Title"), Rulate("tl.rulate.ru",
+            "Rulate"),
+        RanobeRf("https://xn--80ac9aeh6f.xn--p1ai", "Ранобэ.рф"), RanobeHub("https://ranobehub.org",
+            "RanobeHub");
 
         companion object {
-            fun fromUrl(findValue: String): RanobeSite? = RanobeSite.values().firstOrNull { it.url == findValue }
+            fun fromUrl(findValue: String): RanobeSite? =
+                RanobeSite.values().firstOrNull { it.url == findValue }
         }
     }
 
     enum class SortOrder(val resId: Int) {
-        ByTitle(R.string.byTitle),
-        ByDate(R.string.byDate),
-        ByUpdates(R.string.byUpdates),
-        ByRanobeSite(R.string.byRanobeSite);
+        ByTitle(R.string.byTitle), ByDate(R.string.byDate), ByUpdates(R.string.byUpdates), ByRanobeSite(
+            R.string.byRanobeSite);
 
         companion object {
             val default: SortOrder = ByTitle
@@ -57,28 +48,26 @@ object Constants {
                 }.toTypedArray()
             }
 
-            fun fromResId(findValue: Int): SortOrder = SortOrder.values().firstOrNull { it.resId == findValue }
-                    ?: SortOrder.default
+            fun fromResId(findValue: Int): SortOrder =
+                SortOrder.values().firstOrNull { it.resId == findValue } ?: SortOrder.default
         }
 
     }
 
-    enum class CustomFonts(val title:String, val file:String) {
+    enum class CustomFonts(val title: String, val file: String) {
 
-        Default("Default", ""),
-        Lobster("Lobster", "Lobster-Regular.ttf"),
-        Merriweather("Merriweather", "Merriweather-Regular.ttf"),
-        OpenSans("OpenSans", "OpenSans-Regular.ttf"),
-        Pacifico("Pacifico", "Pacifico-Regular.ttf"),
-        PT_Sans("PT Sans", "PT_Sans-Web-Regular.ttf"),
-        RobotoMono("RobotoMono", "RobotoMono-Regular.ttf"),
-        Roboto("Roboto", "Roboto-Regular.ttf");
+        Default("Default", ""), Lobster("Lobster",
+            "Lobster-Regular.ttf"),
+        Merriweather("Merriweather", "Merriweather-Regular.ttf"), OpenSans("OpenSans",
+            "OpenSans-Regular.ttf"),
+        Pacifico("Pacifico", "Pacifico-Regular.ttf"), PT_Sans("PT Sans",
+            "PT_Sans-Web-Regular.ttf"),
+        RobotoMono("RobotoMono", "RobotoMono-Regular.ttf"), Roboto("Roboto", "Roboto-Regular.ttf");
 
         companion object {
             fun getFileByTitle(title: String?): String {
 
-                if (title.isNullOrEmpty())
-                    return Default.file
+                if (title.isNullOrEmpty()) return Default.file
 
                 return (CustomFonts.values().firstOrNull { it.title == title }
                     ?: CustomFonts.Default).file
@@ -86,8 +75,7 @@ object Constants {
 
             fun getTitleByFile(file: String?): String {
 
-                if (file.isNullOrEmpty())
-                    return Default.title
+                if (file.isNullOrEmpty()) return Default.title
 
                 return (CustomFonts.values().firstOrNull { it.file == file }
                     ?: CustomFonts.Default).title
@@ -106,10 +94,9 @@ object Constants {
         DRAWABLE_BOTTOM;
 
         companion object {
-            fun valueOf(string: String?): ApplicationConstants {
+            private fun valueOf(string: String?): ApplicationConstants {
 
-                if (string.isNullOrEmpty())
-                    return DRAWABLE_LEFT
+                if (string.isNullOrEmpty()) return DRAWABLE_LEFT
 
                 return try {
                     ApplicationConstants.valueOf(string)

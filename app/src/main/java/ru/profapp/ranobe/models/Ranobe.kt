@@ -39,7 +39,8 @@ class Ranobe() {
                 return try {
                     when (ranobeSite) {
                         Rulate.url -> url.replace("${Rulate.url}/book/", "").toInt()
-                        RanobeHub.url -> url.replace("${Constants.RanobeSite.RanobeHub.url}/ranobe/", "").toInt()
+                        RanobeHub.url -> url.replace("${Constants.RanobeSite.RanobeHub.url}/ranobe/",
+                            "").toInt()
                         else -> field
                     }
 
@@ -121,8 +122,7 @@ class Ranobe() {
                 RanobeRfRepository.getBookInfo(this)
             } else if (ranobeSite == RanobeHub.url || url.contains(RanobeHub.url)) {
                 RanobeHubRepository.getBookInfo(this)
-            } else
-                Single.just(false)
+            } else Single.just(false)
 
         } else {
             Single.just(true)
@@ -130,7 +130,8 @@ class Ranobe() {
 
         return bookInfo.map {
             if (!it) {
-                val result = MyApp.database.ranobeDao().getRanobeWithChaptersByUrl(url).blockingGet()
+                val result = MyApp.database.ranobeDao().getRanobeWithChaptersByUrl(url)
+                    .blockingGet()
                 if (result != null) {
                     chapterList = result.chapterList
                 }

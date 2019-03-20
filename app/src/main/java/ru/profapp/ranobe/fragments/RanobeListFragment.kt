@@ -29,18 +29,16 @@ import ru.profapp.ranobe.common.Constants
 import ru.profapp.ranobe.common.Constants.RanobeSite.Error
 import ru.profapp.ranobe.common.Constants.fragmentBundle
 import ru.profapp.ranobe.common.OnLoadMoreListener
-import ru.profapp.ranobe.helpers.LogType
-import ru.profapp.ranobe.helpers.logError
-import ru.profapp.ranobe.helpers.setVectorForPreLollipop
+import ru.profapp.ranobe.helpers.*
 import ru.profapp.ranobe.models.Chapter
 import ru.profapp.ranobe.models.Ranobe
 import ru.profapp.ranobe.network.repositories.RanobeHubRepository
 import ru.profapp.ranobe.network.repositories.RanobeRfRepository
 import ru.profapp.ranobe.network.repositories.RulateRepository
-import ru.profapp.ranobe.utils.GlideApp
 import java.net.UnknownHostException
 
 class RanobeListFragment : Fragment() {
+
 
     private val ranobeList = mutableListOf<Ranobe>()
     private lateinit var progressDialog: ProgressDialog
@@ -84,9 +82,8 @@ class RanobeListFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         if (arguments != null && arguments!!.containsKey(fragmentBundle)) {
-            fragmentType = Constants.FragmentType.valueOf(
-                arguments!!.getString(fragmentBundle) ?: ""
-            )
+            fragmentType = Constants.FragmentType.valueOf(arguments!!.getString(fragmentBundle)
+                ?: "")
         }
 
     }
@@ -105,17 +102,18 @@ class RanobeListFragment : Fragment() {
         ranobeRecyclerViewAdapter.notifyDataSetChanged()
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater,
+                              container: ViewGroup?,
+                              savedInstanceState: Bundle?): View {
         val view = inflater.inflate(R.layout.fragment_ranobe_list, container, false)
         progressDialog = ProgressDialog(mContext)
         val recyclerView = view.findViewById<RecyclerView>(R.id.rV_ranobeList_ranobe)
 
         recyclerView.layoutManager = LinearLayoutManager(mContext)
 
-        ranobeRecyclerViewAdapter =
-                RanobeRecyclerViewAdapter(GlideApp.with(mContext!!), recyclerView, ranobeList)
+        ranobeRecyclerViewAdapter = RanobeRecyclerViewAdapter(GlideApp.with(mContext!!),
+            recyclerView,
+            ranobeList)
 
         recyclerView.adapter = ranobeRecyclerViewAdapter
 
@@ -156,10 +154,8 @@ class RanobeListFragment : Fragment() {
                                 val newList = mutableListOf<Ranobe>()
 
                                 val isRulateError = Rulate.firstOrNull()?.ranobeSite == Error.url
-                                val isRanobeRfError =
-                                    RanobeRf.firstOrNull()?.ranobeSite == Error.url
-                                val isRanobeHubError =
-                                    RanobeHub.firstOrNull()?.ranobeSite == Error.url
+                                val isRanobeRfError = RanobeRf.firstOrNull()?.ranobeSite == Error.url
+                                val isRanobeHubError = RanobeHub.firstOrNull()?.ranobeSite == Error.url
 
                                 if (!isRulateError) newList.addAll(Rulate)
                                 if (!isRanobeRfError) newList.addAll(RanobeRf)
@@ -178,8 +174,7 @@ class RanobeListFragment : Fragment() {
                                     if (!newList.any { its -> its.url == ranobe.url }) {
                                         if (ranobe.isFavoriteInWeb) {
                                             if ((!isRulateError && ranobe.ranobeSite == Constants.RanobeSite.Rulate.url) || (!isRanobeRfError && ranobe.ranobeSite == Constants.RanobeSite.RanobeRf.url) || (!isRanobeHubError && ranobe.ranobeSite == Constants.RanobeSite.RanobeHub.url)) MyApp.database.ranobeDao().deleteByUrl(
-                                                ranobe.url
-                                            )
+                                                ranobe.url)
                                         } else if (!ranobe.isFavoriteInWeb) {
                                             newList.add(ranobe)
                                         }
@@ -202,13 +197,11 @@ class RanobeListFragment : Fragment() {
                                 }
                                 onItemsLoadFinished()
                             }, { error ->
-                                logError(
-                                    LogType.ERROR,
+                                logCrashlystics(LogType.ERROR,
                                     "sync favorite",
                                     "",
                                     error.fillInStackTrace(),
-                                    true
-                                )
+                                    true)
                                 onItemsLoadFinished(error)
                             })
 
@@ -219,12 +212,10 @@ class RanobeListFragment : Fragment() {
             }
             checkedSortItemName = MyApp.preferencesManager.sortOrder
             tVSortOrder.text = getString(Constants.SortOrder.valueOf(checkedSortItemName).resId)
-            setVectorForPreLollipop(
-                tVSortOrder,
+            setVectorForPreLollipop(tVSortOrder,
                 R.drawable.ic_sort_by_alpha_black_24dp,
                 mContext!!,
-                Constants.ApplicationConstants.DRAWABLE_LEFT
-            )
+                Constants.ApplicationConstants.DRAWABLE_LEFT)
             tVSortOrder.visibility = View.VISIBLE
             tVSortOrder.setOnClickListener {
 
@@ -232,8 +223,7 @@ class RanobeListFragment : Fragment() {
                 val stringItems = items.map {
                     return@map resources.getString(it)
                 }.toTypedArray()
-                val currentItem =
-                    items.indexOf(Constants.SortOrder.valueOf(checkedSortItemName).resId)
+                val currentItem = items.indexOf(Constants.SortOrder.valueOf(checkedSortItemName).resId)
 
                 val builder = AlertDialog.Builder(mContext!!)
                 builder.setTitle(getString(R.string.load_web_bookmarks))
@@ -308,7 +298,7 @@ class RanobeListFragment : Fragment() {
                 for (ranobe in ranobeList) {
                     if (ranobe.image.isNullOrBlank()) {
                         MyApp.database.ranobeImageDao().getImageByUrl(ranobe.url)
-                            .subscribeOn(Schedulers.io())?.subscribe { it ->
+                            .subscribeOn(Schedulers.io())?.subscribe {
                                 ranobe.image = it.image
                             }
                     }
@@ -329,14 +319,14 @@ class RanobeListFragment : Fragment() {
                             }
                             val chapterlist2 = templist.take(Constants.chaptersNum)
 
-                            val lastChapterUrl =
-                                MyApp.preferencesManager.getLastChapterUrl(chapterlist2.first().ranobeUrl)
+                            val lastChapterUrl = MyApp.preferencesManager.getLastChapterUrl(
+                                chapterlist2.first().ranobeUrl)
 
                             var wasRead = false
                             if (lastChapterUrl.isNotEmpty()) {
 
-                                val chapterIndex =
-                                        chapterList.firstOrNull { c -> c.url == lastChapterUrl }?.index
+                                val chapterIndex = chapterList.firstOrNull { c -> c.url == lastChapterUrl }
+                                    ?.index
                                 if (chapterIndex != null) {
                                     wasRead = true
                                     for (chapter in chapterlist2) {
@@ -346,8 +336,7 @@ class RanobeListFragment : Fragment() {
                                     }
                                 }
                             } else {
-                                val lastId =
-                                    MyApp.preferencesManager.getLastChapterId(chapterlist2.first().ranobeUrl)
+                                val lastId = MyApp.preferencesManager.getLastChapterId(chapterlist2.first().ranobeUrl)
                                 if (lastId != null) {
                                     wasRead = true
                                     for (chapter in chapterlist2) {
@@ -389,18 +378,16 @@ class RanobeListFragment : Fragment() {
                 if (result.any()) {
                     ranobeList.addAll(result)
                     if (fragmentType == Constants.FragmentType.Favorite) sortValuesAndNotify(
-                        checkedSortItemName
-                    )
-                    else ranobeRecyclerViewAdapter.notifyItemRangeInserted(
-                        oldListSize, ranobeList.size
-                    )
+                        checkedSortItemName)
+                    else ranobeRecyclerViewAdapter.notifyItemRangeInserted(oldListSize,
+                        ranobeList.size)
                     oldListSize = ranobeList.size
                 }
                 page++
                 onItemsLoadFinished()
 
             }, { error ->
-                logError(LogType.ERROR, "refreshItems", "", error.fillInStackTrace(), false)
+                logError(TAG, "", error.fillInStackTrace(), false)
                 onItemsLoadFinished(error)
             })
 
@@ -422,9 +409,9 @@ class RanobeListFragment : Fragment() {
                         break
                     }
                 }
-                if (!errorConnection) Toast.makeText(
-                    mContext, R.string.error, Toast.LENGTH_SHORT
-                ).show()
+                if (!errorConnection) Toast.makeText(mContext,
+                    R.string.error,
+                    Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(mContext, R.string.error, Toast.LENGTH_SHORT).show()
             }
@@ -455,7 +442,7 @@ class RanobeListFragment : Fragment() {
 
             progressDialog.setTitle(resources.getString(R.string.load_ranobes_from_db))
             progressDialog.show()
-            return (MyApp.database.ranobeDao().getFavoriteRanobes().map { it ->
+            return (MyApp.database.ranobeDao().getFavoriteRanobes().map {
 
                 val newRanobeList = mutableListOf<Ranobe>()
                 newRanobeList.addAll(it.map map1@{ gr ->
@@ -509,7 +496,7 @@ class RanobeListFragment : Fragment() {
                 newRanobe.title = group.value.first().ranobeName
                 val chapterList = mutableListOf<Chapter>()
 
-                chapterList.addAll(group.value.asSequence().map { it -> Chapter(it) }.sortedByDescending { ch -> ch.index })
+                chapterList.addAll(group.value.asSequence().map { Chapter(it) }.sortedByDescending { ch -> ch.index })
 
                 newRanobe.chapterList = chapterList
                 newRanobe.wasUpdated = true
@@ -556,6 +543,10 @@ class RanobeListFragment : Fragment() {
     }
 
     companion object {
+
+
+        private val TAG = "Ranobe List Fragment"
+
 
         fun newInstance(fragmentType: String): RanobeListFragment {
             val fragment = RanobeListFragment()

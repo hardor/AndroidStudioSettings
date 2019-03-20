@@ -94,3 +94,16 @@ fun Date.addMinutes(minutes: Int): Date {
 fun Date.addSeconds(seconds: Int): Date {
     return add(Calendar.SECOND, seconds)
 }
+
+fun dateFromString(text: String?): Date? {
+    if (text.isNullOrBlank()) return null
+
+    val dig = text.replace("[^0-9]".toRegex(), "").toInt()
+    if (text.contains("минут")) return Date().addMinutes(-1 * dig)
+    else if (text.contains("час")) return Date().addHours(-1 * dig)
+    else if (text.contains("день") || text.contains("дн")) return Date().addDays(-1 * dig)
+    else if (text.contains("недел")) return Date().addDays(-7 * dig)
+    else if (text.contains("месяц")) return Date().addMonths(-1 * dig)
+
+    return null
+}

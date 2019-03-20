@@ -19,11 +19,13 @@ class PreferencesModule(private val application: Application) {
 
     @Provides
     @Singleton
-    fun provideDefaultPreferences(): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
+    fun provideDefaultPreferences(): SharedPreferences =
+        PreferenceManager.getDefaultSharedPreferences(application)
 
     @Provides
     @Singleton
-    fun provideSharedPreferences(name:String): SharedPreferences = application.applicationContext.getSharedPreferences(name, Context.MODE_PRIVATE)
+    fun provideSharedPreferences(name: String): SharedPreferences =
+        application.applicationContext.getSharedPreferences(name, Context.MODE_PRIVATE)
 
     @Provides
     @Singleton

@@ -10,12 +10,15 @@ import ru.profapp.ranobe.models.ChapterHistory
 import java.text.DateFormat
 import java.util.*
 
-class HistoryChaptersRecyclerViewAdapter(private val mValues: List<ChapterHistory>) : RecyclerView.Adapter<HistoryChaptersRecyclerViewAdapter.MyViewHolder>() {
+class HistoryChaptersRecyclerViewAdapter(private val mValues: List<ChapterHistory>) :
+    RecyclerView.Adapter<HistoryChaptersRecyclerViewAdapter.MyViewHolder>() {
+
+    companion object {
+        private val TAG = "History Chapters RecyclerView Adapter"
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val view = LayoutInflater
-                .from(parent.context)
-                .inflate(R.layout.item_history, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_history, parent, false)
         return MyViewHolder(view)
     }
 
@@ -27,7 +30,9 @@ class HistoryChaptersRecyclerViewAdapter(private val mValues: List<ChapterHistor
         holder.item = mValues[position]
         holder.chTextView.text = holder.item.chapterName
 
-        holder.rTextView.text = "${DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.SHORT, Locale.getDefault()).format(holder.item.readDate)} ${holder.item.ranobeName}"
+        holder.rTextView.text = "${DateFormat.getDateTimeInstance(DateFormat.DEFAULT,
+            DateFormat.SHORT,
+            Locale.getDefault()).format(holder.item.readDate)} ${holder.item.ranobeName}"
 
     }
 

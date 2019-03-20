@@ -15,13 +15,13 @@ import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.R
 import ru.profapp.ranobe.adapters.HistoryChaptersRecyclerViewAdapter
 import ru.profapp.ranobe.adapters.RanobeRecyclerViewAdapter
-import ru.profapp.ranobe.helpers.LogType
+import ru.profapp.ranobe.helpers.GlideApp
 import ru.profapp.ranobe.helpers.logError
 import ru.profapp.ranobe.models.Ranobe
 import ru.profapp.ranobe.models.RanobeHistory
-import ru.profapp.ranobe.utils.GlideApp
 
 class HistoryPageFragment : Fragment() {
+
 
     private var mContext: Context? = null
 
@@ -34,7 +34,8 @@ class HistoryPageFragment : Fragment() {
         pageNumber = arguments!!.getInt(ARGUMENT_PAGE_NUMBER)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater,
+                              container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
         val view: View?
@@ -43,15 +44,15 @@ class HistoryPageFragment : Fragment() {
         when (pageNumber) {
 
             1 -> {
-                  view = inflater.inflate(R.layout.fragment_history_chapters, container, false)
+                view = inflater.inflate(R.layout.fragment_history_chapters, container, false)
                 chapterRecyclerView = view.findViewById(R.id.rV_history_chapters)
                 chapterRecyclerView!!.layoutManager = LinearLayoutManager(mContext)
-                val chapterRequest = MyApp.database.ranobeHistoryDao().allChapters().subscribeOn(Schedulers.io())
-                        .observeOn(mainThread()).subscribe({
-                            chapterRecyclerView!!.adapter = HistoryChaptersRecyclerViewAdapter(it)
-                        }, { error ->
-                            logError(LogType.ERROR, "HistoryFragment", "", error)
-                        })
+                val chapterRequest = MyApp.database.ranobeHistoryDao().allChapters()
+                    .subscribeOn(Schedulers.io()).observeOn(mainThread()).subscribe({
+                        chapterRecyclerView!!.adapter = HistoryChaptersRecyclerViewAdapter(it)
+                    }, { error ->
+                        logError(TAG, "", error)
+                    })
                 compositeDisposable.add(chapterRequest)
             }
             else -> {
@@ -64,20 +65,20 @@ class HistoryPageFragment : Fragment() {
                     val ranobeList = it.map { r -> toRanobe(r) }
                     for (ranobe in ranobeList) {
                         if (ranobe.image.isNullOrBlank()) {
-                            MyApp.database.ranobeImageDao().getImageByUrl(ranobe.url).subscribeOn(Schedulers.io()).subscribe { it2 ->
+                            MyApp.database.ranobeImageDao().getImageByUrl(ranobe.url)
+                                .subscribeOn(Schedulers.io()).subscribe { it2 ->
                                 ranobe.image = it2.image
                             }
                         }
                     }
                     return@map ranobeList
 
-                }.subscribeOn(Schedulers.io())
-                        .observeOn(mainThread())
-                        .subscribe({
-                            ranobeRecyclerView!!.adapter = RanobeRecyclerViewAdapter(GlideApp.with(mContext!!), ranobeRecyclerView!!, it)
-                        }, { error ->
-                            logError(LogType.ERROR, "HistoryFragment", "", error)
-                        })
+                }.subscribeOn(Schedulers.io()).observeOn(mainThread()).subscribe({
+                        ranobeRecyclerView!!.adapter = RanobeRecyclerViewAdapter(GlideApp.with(
+                            mContext!!), ranobeRecyclerView!!, it)
+                    }, { error ->
+                        logError(TAG, "", error)
+                    })
 
                 compositeDisposable.add(ranobeRequest)
 
@@ -110,18 +111,24 @@ class HistoryPageFragment : Fragment() {
     }
 
     fun update() {
-        ranobeRecyclerView?.let { it ->
-            it.adapter = RanobeRecyclerViewAdapter(GlideApp.with(context!!), ranobeRecyclerView!!, listOf())
+        ranobeRecyclerView?.let {
+            it.adapter = RanobeRecyclerViewAdapter(GlideApp.with(context!!),
+                ranobeRecyclerView!!,
+                listOf())
             it.adapter?.notifyDataSetChanged()
         }
 
-        chapterRecyclerView?.let { it ->
+        chapterRecyclerView?.let {
             it.adapter = HistoryChaptersRecyclerViewAdapter(listOf())
             it.adapter?.notifyDataSetChanged()
         }
     }
 
     companion object {
+
+        private val TAG = "History Page Fragment"
+
+
         const val ARGUMENT_PAGE_NUMBER = "arg_page_number"
 
         fun newInstance(page: Int): HistoryPageFragment {

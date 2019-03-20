@@ -12,21 +12,23 @@ import com.google.android.gms.ads.MobileAds
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
 import io.fabric.sdk.android.Fabric
-import ru.profapp.ranobe.DAO.DatabaseDao
 import ru.profapp.ranobe.common.Constants
 import ru.profapp.ranobe.dagger.ApplicationComponent
 import ru.profapp.ranobe.dagger.DaggerApplicationComponent
 import ru.profapp.ranobe.dagger.PreferencesModule
+import ru.profapp.ranobe.dao.DatabaseDao
 import ru.profapp.ranobe.helpers.LogType
+import ru.profapp.ranobe.helpers.StethoUtils
 import ru.profapp.ranobe.helpers.logError
 import ru.profapp.ranobe.helpers.logMessage
 import ru.profapp.ranobe.models.Ranobe
 import ru.profapp.ranobe.pref.GeneralPreferencesManager
-import ru.profapp.ranobe.utils.StethoUtils
 
 class MyApp : MultiDexApplication() {
 
     companion object {
+
+        val TAG = "MyAPP"
 
         val component: ApplicationComponent = DaggerApplicationComponent.create()
 
@@ -38,21 +40,7 @@ class MyApp : MultiDexApplication() {
             override fun migrate(database: SupportSQLiteDatabase) {
                 //Change ranobe
                 try {
-                    database.execSQL("CREATE TABLE chapter_temp ( Url TEXT NOT NULL DEFAULT ''," +
-                            " RanobeUrl TEXT NOT NULL DEFAULT ''," +
-                            " Title TEXT NOT NULL DEFAULT ''," +
-                            " Status TEXT, " +
-                            " CanRead INTEGER NOT NULL DEFAULT (1)," +
-                            " New INTEGER NOT NULL DEFAULT (0)," +
-                            " [Index] INTEGER NOT NULL DEFAULT (0)," +
-                            " Time INTEGER," +
-                            " RanobeId INTEGER," +
-                            " Downloaded INTEGER NOT NULL DEFAULT (0)," +
-                            " IsRead INTEGER NOT NULL DEFAULT (0)," +
-                            " RanobeName TEXT NOT NULL DEFAULT ''," +
-                            " Id INTEGER, " +
-                            " PRIMARY KEY(Url) );"
-                    )
+                    database.execSQL("CREATE TABLE chapter_temp ( Url TEXT NOT NULL DEFAULT ''," + " RanobeUrl TEXT NOT NULL DEFAULT ''," + " Title TEXT NOT NULL DEFAULT ''," + " Status TEXT, " + " CanRead INTEGER NOT NULL DEFAULT (1)," + " New INTEGER NOT NULL DEFAULT (0)," + " [Index] INTEGER NOT NULL DEFAULT (0)," + " Time INTEGER," + " RanobeId INTEGER," + " Downloaded INTEGER NOT NULL DEFAULT (0)," + " IsRead INTEGER NOT NULL DEFAULT (0)," + " RanobeName TEXT NOT NULL DEFAULT ''," + " Id INTEGER, " + " PRIMARY KEY(Url) );")
 
                     database.execSQL("INSERT INTO chapter_temp ( Url, RanobeUrl, Title, Status, CanRead, New, [Index], Time, RanobeId, Downloaded, IsRead, RanobeName, Id) SELECT Url, RanobeUrl, Title, Status, CanRead, New, [Index], Time, RanobeId, Downloaded, Readed, RanobeName,Id FROM chapter;")
                     database.execSQL("CREATE TABLE ranobe2 (Url TEXT NOT NULL, Id INTEGER, EngTitle TEXT, Title TEXT NOT NULL, Image TEXT, ReadyDate INTEGER, Lang TEXT, Description TEXT, AdditionalInfo TEXT, RanobeSite TEXT NOT NULL, ChapterCount INTEGER, LastReadChapter INTEGER,  IsFavorite INTEGER NOT NULL, IsFavoriteInWeb INTEGER NOT NULL, Rating TEXT, Status TEXT, PRIMARY KEY(Url));")
@@ -76,7 +64,7 @@ class MyApp : MultiDexApplication() {
                     database.execSQL("ALTER TABLE textChapter2 RENAME TO textChapter;")
                     database.execSQL("CREATE INDEX index_textChapter_ChapterUrl ON textChapter (ChapterUrl);")
                 } catch (e: Exception) {
-                    logError(LogType.ERROR, "MIGRATION_2_3", "MIGRATION_2_3 failed", e)
+                    logError(TAG, "MIGRATION_2_3 failed", e)
                 }
 
             }
@@ -100,7 +88,7 @@ class MyApp : MultiDexApplication() {
                     database.execSQL("CREATE INDEX index_chapterProgress_ChapterUrl ON chapterProgress (ChapterUrl);")
                     database.execSQL("CREATE INDEX index_chapterHistory_ChapterUrl ON chapterHistory (ChapterUrl);")
                 } catch (e: Exception) {
-                    logError(LogType.ERROR, "MIGRATION_3_4", "MIGRATION_3_4 failed", e)
+                    logError(TAG, "MIGRATION_3_4 failed", e)
                 }
 
             }
@@ -118,7 +106,7 @@ class MyApp : MultiDexApplication() {
                     database.execSQL("ALTER TABLE textChapter2 RENAME TO textChapter;")
                     database.execSQL("CREATE INDEX index_textChapter_ChapterUrl ON textChapter (ChapterUrl);")
                 } catch (e: Exception) {
-                    logError(LogType.ERROR, "MIGRATION_4_5", "MIGRATION_4_5 failed", e)
+                    logError(TAG, "MIGRATION_4_5 failed", e)
                 }
 
             }
@@ -133,8 +121,10 @@ class MyApp : MultiDexApplication() {
 
         lateinit var preferencesManager: GeneralPreferencesManager
 
-        fun initDatabase(context: Context) :DatabaseDao {
-            return  Room.databaseBuilder(context, DatabaseDao::class.java, DB_NAME).addMigrations(MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5).fallbackToDestructiveMigration().build()
+        fun initDatabase(context: Context): DatabaseDao {
+            return Room.databaseBuilder(context, DatabaseDao::class.java, DB_NAME)
+                .addMigrations(MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
+                .fallbackToDestructiveMigration().build()
         }
 
     }
@@ -155,9 +145,9 @@ class MyApp : MultiDexApplication() {
             refWatcher = LeakCanary.install(this)
             StethoUtils.install(this)
 
-        }else{
-           Fabric.with(applicationContext, Crashlytics())
         }
+
+        Fabric.with(applicationContext, Crashlytics())
 
         MyApp.database = initDatabase(this)
     }

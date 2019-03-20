@@ -8,7 +8,8 @@ import ru.profapp.ranobe.R
 import ru.profapp.ranobe.common.Constants
 import ru.profapp.ranobe.network.repositories.RanobeRfRepository
 
-class RanoberfLoginPreference(context: Context, attrs: AttributeSet) : BaseLoginPreference(context, attrs) {
+class RanoberfLoginPreference(context: Context, attrs: AttributeSet) :
+    BaseLoginPreference(context, attrs) {
 
 
     init {
@@ -28,10 +29,11 @@ class RanoberfLoginPreference(context: Context, attrs: AttributeSet) : BaseLogin
         set(value) {
             MyApp.preferencesManager.ranoberfLogin = value
         }
+
     override fun auth(): Single<Array<String>> {
 
         val res = super.auth()
-        return res.flatMap { it ->
+        return res.flatMap {
 
             if (it[0].toBoolean()) {
                 return@flatMap RanobeRfRepository.login(username, password)

@@ -87,23 +87,27 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/eT_chooseColor_webviewText"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:digits="0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f,A,B,C,D,E,F"
-            android:hint="@string/fffffff"
-            android:inputType="text"
-            android:maxLines="1" />
+            android:hint="@string/fffffff">
 
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/eT_chooseColor_webviewText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:digits="0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f,A,B,C,D,E,F"
+                android:inputType="text"
+                android:maxLines="1" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/btn_chooseColor_webviewText"
             android:layout_width="40dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:text="" />
-
 
     </LinearLayout>
 
@@ -117,23 +121,28 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/eT_chooseColor_webviewBackground"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
             android:layout_weight="1"
+
+            android:layout_height="wrap_content"
+            android:hint="@string/fffffff">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/eT_chooseColor_webviewBackground"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:digits="0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f,A,B,C,D,E,F"
-            android:hint="@string/fffffff"
             android:inputType="text"
             android:maxLines="1" />
 
-
+        </com.google.android.material.textfield.TextInputLayout>
         <Button
             android:id="@+id/btn_chooseColor_webviewBackground"
             android:layout_width="40dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:text="" />
-
 
     </LinearLayout>
 

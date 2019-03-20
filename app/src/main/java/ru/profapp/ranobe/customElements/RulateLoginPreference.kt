@@ -8,7 +8,8 @@ import ru.profapp.ranobe.R
 import ru.profapp.ranobe.common.Constants
 import ru.profapp.ranobe.network.repositories.RulateRepository
 
-class RulateLoginPreference(context: Context, attrs: AttributeSet) : BaseLoginPreference(context, attrs) {
+class RulateLoginPreference(context: Context, attrs: AttributeSet) :
+    BaseLoginPreference(context, attrs) {
 
 
     init {
@@ -31,7 +32,7 @@ class RulateLoginPreference(context: Context, attrs: AttributeSet) : BaseLoginPr
     override fun auth(): Single<Array<String>> {
 
         val res = super.auth()
-        return res.flatMap { it ->
+        return res.flatMap {
 
             if (it[0].toBoolean()) {
                 return@flatMap RulateRepository.login(username, password)

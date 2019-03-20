@@ -12,17 +12,22 @@ import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import ru.profapp.ranobe.R
 import ru.profapp.ranobe.common.Constants
+import ru.profapp.ranobe.helpers.GlideRequests
 import ru.profapp.ranobe.helpers.setVectorForPreLollipop
 import ru.profapp.ranobe.network.dto.rulateDTO.RulateComment
-import ru.profapp.ranobe.utils.GlideRequests
 import java.util.*
 
-class CommentsRecyclerViewAdapter(private val glide: GlideRequests, private val mValues: List<RulateComment>) : RecyclerView.Adapter<CommentsRecyclerViewAdapter.MyViewHolder>() {
+class CommentsRecyclerViewAdapter(private val glide: GlideRequests,
+                                  private val mValues: List<RulateComment>) :
+    RecyclerView.Adapter<CommentsRecyclerViewAdapter.MyViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentsRecyclerViewAdapter.MyViewHolder {
-        val view = LayoutInflater
-                .from(parent.context)
-                .inflate(R.layout.item_comment, parent, false)
+    companion object {
+        private val TAG = "Comments RecyclerView Adapter"
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup,
+                                    viewType: Int): CommentsRecyclerViewAdapter.MyViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_comment, parent, false)
         return MyViewHolder(view)
     }
 
@@ -31,13 +36,18 @@ class CommentsRecyclerViewAdapter(private val glide: GlideRequests, private val 
         val mContext = holder.itemView.context
         holder.item = mValues[position]
         holder.bodyTextView.text = holder.item.body
-        if (holder.item.time != null)
-            holder.dateView.text = String.format("%s %s", holder.item.author, DateFormat.getDateFormat(mContext).format(Date(holder.item.time!!.times(1000))))
+        if (holder.item.time != null) holder.dateView.text = String.format("%s %s",
+            holder.item.author,
+            DateFormat.getDateFormat(mContext).format(Date(holder.item.time!!.times(1000))))
 
-        val dp50 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50f, mContext.resources.displayMetrics).toInt()
+        val dp50 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+            50f,
+            mContext.resources.displayMetrics).toInt()
         glide.load(mValues[position].avatar).into(object : SimpleTarget<Drawable>(dp50, dp50) {
             override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                setVectorForPreLollipop(holder.bodyTextView, resource, Constants.ApplicationConstants.DRAWABLE_LEFT)
+                setVectorForPreLollipop(holder.bodyTextView,
+                    resource,
+                    Constants.ApplicationConstants.DRAWABLE_LEFT)
             }
         })
     }

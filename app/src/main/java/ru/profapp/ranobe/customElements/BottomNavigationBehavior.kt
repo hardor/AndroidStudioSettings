@@ -9,7 +9,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.snackbar.Snackbar
 
 class BottomNavigationBehavior<V : View>(context: Context, attrs: AttributeSet) :
-        CoordinatorLayout.Behavior<V>(context, attrs) {
+    CoordinatorLayout.Behavior<V>(context, attrs) {
 
     override fun layoutDependsOn(parent: CoordinatorLayout, child: V, dependency: View): Boolean {
         if (dependency is Snackbar.SnackbarLayout) {
@@ -36,7 +36,6 @@ class BottomNavigationBehavior<V : View>(context: Context, attrs: AttributeSet) 
             webview.layoutParams = params
         }
     }
-
 
 
 }

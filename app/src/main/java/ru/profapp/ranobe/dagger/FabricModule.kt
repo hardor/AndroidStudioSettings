@@ -15,18 +15,16 @@ class FabricModule {
 
     @Provides
     @Singleton
-    fun provideCrashlyticsCore(): CrashlyticsCore = CrashlyticsCore.Builder()
-            .disabled(BuildConfig.DEBUG)
-            .build()
+    fun provideCrashlyticsCore(): CrashlyticsCore =
+        CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build()
 
     @Provides
     @Singleton
-    fun provideCrashlytics(crashlyticsCore: CrashlyticsCore): Crashlytics = Crashlytics.Builder()
-            .core(crashlyticsCore)
-            .build()
+    fun provideCrashlytics(crashlyticsCore: CrashlyticsCore): Crashlytics =
+        Crashlytics.Builder().core(crashlyticsCore).build()
 
     @Provides
     @Singleton
-    fun provideFabric(context: Context, crashlytics: Crashlytics): Fabric
-            = Fabric.with(context, crashlytics)
+    fun provideFabric(context: Context, crashlytics: Crashlytics): Fabric =
+        Fabric.with(context, crashlytics)
 }

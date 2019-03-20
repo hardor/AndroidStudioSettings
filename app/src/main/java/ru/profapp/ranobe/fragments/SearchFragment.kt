@@ -22,11 +22,11 @@ import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.R
 import ru.profapp.ranobe.adapters.RanobeRecyclerViewAdapter
 import ru.profapp.ranobe.common.Constants.RanobeSite.Title
+import ru.profapp.ranobe.helpers.GlideApp
 import ru.profapp.ranobe.models.Ranobe
 import ru.profapp.ranobe.network.repositories.RanobeHubRepository
 import ru.profapp.ranobe.network.repositories.RanobeRfRepository
 import ru.profapp.ranobe.network.repositories.RulateRepository
-import ru.profapp.ranobe.utils.GlideApp
 
 /**
  * A simple [Fragment] subclass.
@@ -36,6 +36,7 @@ import ru.profapp.ranobe.utils.GlideApp
  * create an instance of this fragment.
  */
 class SearchFragment : Fragment() {
+
     private lateinit var recyclerView: RecyclerView
     private lateinit var ranobeRecyclerViewAdapter: RanobeRecyclerViewAdapter
 
@@ -51,7 +52,9 @@ class SearchFragment : Fragment() {
         adapterRanobeList = ArrayList()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(inflater: LayoutInflater,
+                              container: ViewGroup?,
+                              savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_search, container, false)
         val simpleSearchView = view.findViewById<SearchView>(R.id.sV_search)
@@ -61,8 +64,7 @@ class SearchFragment : Fragment() {
         simpleSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 resultLabel.visibility = View.GONE
-                if (query.isNotBlank())
-                    findRanobe(query)
+                if (query.isNotBlank()) findRanobe(query)
 
                 simpleSearchView.clearFocus()
                 return false
@@ -77,7 +79,9 @@ class SearchFragment : Fragment() {
 
         recyclerView.layoutManager = LinearLayoutManager(mContext)
 
-        ranobeRecyclerViewAdapter = RanobeRecyclerViewAdapter(GlideApp.with(mContext!!), recyclerView, adapterRanobeList)
+        ranobeRecyclerViewAdapter = RanobeRecyclerViewAdapter(GlideApp.with(mContext!!),
+            recyclerView,
+            adapterRanobeList)
         recyclerView.adapter = ranobeRecyclerViewAdapter
         return view
     }
@@ -100,42 +104,45 @@ class SearchFragment : Fragment() {
         adapterRanobeList.clear()
         ranobeRecyclerViewAdapter.notifyItemRangeRemoved(0, size)
 
-        searhRequest = Single.zip(findRulateRanobe(searchString), findRanobeRfRanobe(searchString), findRanobeHubRanobe(searchString),
-                io.reactivex.functions.Function3<List<Ranobe>, List<Ranobe>, List<Ranobe>, List<Ranobe>>
-                { Rulate, RanobeRfW, RanobeHub ->
-                    val newList = mutableListOf<Ranobe>()
-                    newList.addAll(Rulate)
-                    newList.addAll(RanobeRfW)
-                    newList.addAll(RanobeHub)
-                    return@Function3 newList
-                }
-        ).map { ranobeList ->
+        searhRequest = Single.zip(findRulateRanobe(searchString),
+            findRanobeRfRanobe(searchString),
+            findRanobeHubRanobe(searchString),
+            io.reactivex.functions.Function3<List<Ranobe>, List<Ranobe>, List<Ranobe>, List<Ranobe>> { Rulate, RanobeRfW, RanobeHub ->
+                val newList = mutableListOf<Ranobe>()
+                newList.addAll(Rulate)
+                newList.addAll(RanobeRfW)
+                newList.addAll(RanobeHub)
+                return@Function3 newList
+            }).map { ranobeList ->
             for (ranobe in ranobeList) {
                 if (ranobe.image.isNullOrBlank()) {
-                    MyApp.database.ranobeImageDao().getImageByUrl(ranobe.url).observeOn(AndroidSchedulers.mainThread())?.subscribeOn(Schedulers.io())?.subscribe { it ->
-                        ranobe.image = it.image
-                    }
+                    MyApp.database.ranobeImageDao().getImageByUrl(ranobe.url)
+                        .observeOn(AndroidSchedulers.mainThread())?.subscribeOn(Schedulers.io())
+                        ?.subscribe {
+                            ranobe.image = it.image
+                        }
                 }
             }
             return@map ranobeList
 
         }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
 
-                .subscribe({ result ->
-                    val prevSize = adapterRanobeList.size
-                    adapterRanobeList.addAll(result)
-                    ranobeRecyclerViewAdapter.notifyItemRangeInserted(prevSize, adapterRanobeList.size)
-                    if (adapterRanobeList.size == 0) {
-                        resultLabel.visibility = View.VISIBLE
-                    }
+            .subscribe({ result ->
+                val prevSize = adapterRanobeList.size
+                adapterRanobeList.addAll(result)
+                ranobeRecyclerViewAdapter.notifyItemRangeInserted(prevSize, adapterRanobeList.size)
+                if (adapterRanobeList.size == 0) {
+                    resultLabel.visibility = View.VISIBLE
+                }
 
-                    recyclerView.scrollToPosition(0)
+                recyclerView.scrollToPosition(0)
 
-                    progressBar.visibility = GONE
-                }, {
-                    Toast.makeText(mContext, getString(R.string.error_connection), Toast.LENGTH_SHORT).show()
-                    progressBar.visibility = GONE
-                })
+                progressBar.visibility = GONE
+            }, {
+                Toast.makeText(mContext, getString(R.string.error_connection), Toast.LENGTH_SHORT)
+                    .show()
+                progressBar.visibility = GONE
+            })
 
     }
 
@@ -191,6 +198,9 @@ class SearchFragment : Fragment() {
     }
 
     companion object {
+        private val TAG = "Search Fragment"
+
+
         fun newInstance() = SearchFragment().apply {
             arguments = Bundle().apply {
 

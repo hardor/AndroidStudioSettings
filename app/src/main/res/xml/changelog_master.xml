@@ -4,6 +4,8 @@
         version="1.28"
         versioncode="101028">
         <change>Добавлена настройка интервала</change>
+        <change>Изменен формат бекапа файлов на архивы. &lt;b&gt;Обновите свой бекап!!!&lt;/b&gt;</change>
+        <change>&lt;b&gt;[НЕ Стабильно]&lt;/b&gt; Добавлена возможность бекапа в Google Drive</change>
     </release>
     <release
         version="1.27"

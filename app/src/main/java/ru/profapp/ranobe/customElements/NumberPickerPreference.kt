@@ -18,7 +18,9 @@ class NumberPickerPreference : DialogPreference {
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context,
+        attrs,
+        defStyleAttr)
 
     companion object {
         const val MAX_VALUE: Int = 30
@@ -33,7 +35,8 @@ class NumberPickerPreference : DialogPreference {
         }
 
     override fun onCreateDialogView(): View {
-        val layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        val layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT)
         layoutParams.gravity = Gravity.CENTER
 
         picker = NumberPicker(context)

@@ -80,7 +80,9 @@
     android:id="@+id/view"
     style="@style/divider"
     app:layout_constraintBottom_toBottomOf="parent"
-    />
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+      />
   <ImageView
     android:id="@+id/iV_ranobe_siteLogo"
     android:layout_width="24dp"

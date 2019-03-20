@@ -1,4 +1,4 @@
-package ru.profapp.ranobe.utils
+package ru.profapp.ranobe.helpers
 
 import android.app.Application
 import com.facebook.stetho.Stetho
@@ -11,13 +11,9 @@ object StethoUtils {
 
         // Enable Chrome DevTools
 
-        initializerBuilder.enableWebKitInspector(
-                Stetho.defaultInspectorModulesProvider(application)
-        )
+        initializerBuilder.enableWebKitInspector(Stetho.defaultInspectorModulesProvider(application))
         // Enable command line interface
-        initializerBuilder.enableDumpapp(
-                Stetho.defaultDumperPluginsProvider(application)
-        )
+        initializerBuilder.enableDumpapp(Stetho.defaultDumperPluginsProvider(application))
 
         // Use the InitializerBuilder to generate an Initializer
         val initializer = initializerBuilder.build()
@@ -28,6 +24,6 @@ object StethoUtils {
     }
 
     fun interceptor(): StethoInterceptor {
-       return  StethoInterceptor()
+        return StethoInterceptor()
     }
 }

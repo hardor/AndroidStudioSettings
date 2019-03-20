@@ -40,8 +40,7 @@ import ru.profapp.ranobe.models.Ranobe
 import ru.profapp.ranobe.network.repositories.RanobeRfRepository
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity(),
-        NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private var currentTheme = ThemeHelper.sTheme
 
@@ -52,6 +51,7 @@ class MainActivity : AppCompatActivity(),
 
     @Inject
     lateinit var adRequest: AdRequest
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,19 +73,18 @@ class MainActivity : AppCompatActivity(),
             intent.removeExtra("crash")
             val builder = AlertDialog.Builder(this)
             builder.setTitle(getString(R.string.all_uncaughtException))
-                    .setMessage(getString(R.string.all_appCrashed))
-                    .setIcon(R.drawable.ic_info_black_24dp)
-                    .setCancelable(true)
-                    .setPositiveButton("OK") { dialog, _ ->
-                        dialog.cancel()
-                    }
+                .setMessage(getString(R.string.all_appCrashed))
+                .setIcon(R.drawable.ic_info_black_24dp).setCancelable(true)
+                .setPositiveButton("OK") { dialog, _ ->
+                    dialog.cancel()
+                }
 
             alertErrorDialog = builder.create()
             alertErrorDialog?.show()
         }
 
 
-        AdViewManager(lifecycle,adView)
+        AdViewManager(lifecycle, adView)
         adView.loadAd(adRequest)
 
         setSupportActionBar(toolbar)
@@ -103,17 +102,22 @@ class MainActivity : AppCompatActivity(),
         if (savedInstanceState == null) {
             currentFragment = Constants.FragmentType.Favorite.name
             currentTitle = resources.getText(R.string.favorite).toString()
-            ft.replace(R.id.mainFrame, RanobeListFragment.newInstance(currentFragment), MY_FRAGMENT).commit()
+            ft.replace(R.id.mainFrame, RanobeListFragment.newInstance(currentFragment), MY_FRAGMENT)
+                .commit()
         } else {
-            currentFragment = savedInstanceState.getString("Fragment", Constants.FragmentType.Favorite.name)
-            currentTitle = savedInstanceState.getString("Title", resources.getText(R.string.favorite).toString())
+            currentFragment = savedInstanceState.getString("Fragment",
+                Constants.FragmentType.Favorite.name)
+            currentTitle = savedInstanceState.getString("Title",
+                resources.getText(R.string.favorite).toString())
 
             val myFragment = supportFragmentManager.findFragmentByTag("MY_FRAGMENT")
             if (myFragment == null) {
                 if (currentFragment == Constants.FragmentType.Search.name) {
                     ft.replace(R.id.mainFrame, SearchFragment.newInstance(), MY_FRAGMENT)
                 } else {
-                    ft.replace(R.id.mainFrame, RanobeListFragment.newInstance(currentFragment), MY_FRAGMENT)
+                    ft.replace(R.id.mainFrame,
+                        RanobeListFragment.newInstance(currentFragment),
+                        MY_FRAGMENT)
                 }
                 ft.commit()
             }
@@ -123,7 +127,8 @@ class MainActivity : AppCompatActivity(),
 
         val floatingActionButton = findViewById<FloatingActionButton>(R.id.fab)
         floatingActionButton.setOnClickListener {
-            val chapterProgress = MyApp.database.chapterProgressDao().getLastChapter().subscribeOn(Schedulers.io())?.blockingGet()
+            val chapterProgress = MyApp.database.chapterProgressDao().getLastChapter()
+                .subscribeOn(Schedulers.io())?.blockingGet()
             if (chapterProgress != null) {
                 if (MyApp.ranobe == null || !MyApp.ranobe!!.url.contains(chapterProgress.ranobeUrl) || !MyApp.ranobe!!.wasUpdated) {
 
@@ -138,19 +143,24 @@ class MainActivity : AppCompatActivity(),
                 }
                 if (MyApp.ranobe != null && MyApp.ranobe!!.url.contains(chapterProgress.ranobeUrl)) {
 
-                    launchActivity<ChapterTextActivity>{
+                    launchActivity<ChapterTextActivity> {
                         putExtra("ChapterUrl", chapterProgress.chapterUrl)
                         putExtra("Progress", chapterProgress.progress)
                     }
                 }
 
             } else {
-                Toast.makeText(this, resources.getText(R.string.not_history), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, resources.getText(R.string.not_history), Toast.LENGTH_SHORT)
+                    .show()
             }
 
         }
 
-        val toggle = ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        val toggle = ActionBarDrawerToggle(this,
+            drawer,
+            toolbar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close)
         drawer.addDrawerListener(toggle)
         toggle.syncState()
 
@@ -164,10 +174,9 @@ class MainActivity : AppCompatActivity(),
             val url = getString(R.string.all_vkUrl)
 
             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-            if (browserIntent.resolveActivity(this.packageManager) != null)
-                startActivity(browserIntent)
-            else
-                Toast.makeText(this, R.string.browser_exist, Toast.LENGTH_SHORT).show()
+            if (browserIntent.resolveActivity(this.packageManager) != null) startActivity(
+                browserIntent)
+            else Toast.makeText(this, R.string.browser_exist, Toast.LENGTH_SHORT).show()
         }
 
         val navText: TextView = navigationView.getHeaderView(0).findViewById(R.id.navText)
@@ -274,11 +283,8 @@ class MainActivity : AppCompatActivity(),
                 currentTitle = resources.getText(R.string.history).toString()
             }
             R.id.nav_send -> {
-                EasyFeedback.Builder(this)
-                        .withEmail("admin@profapp.ru")
-                        .withSystemInfo()
-                        .build()
-                        .start()
+                EasyFeedback.Builder(this).withEmail("admin@profapp.ru").withSystemInfo().build()
+                    .start()
             }
         }
 
@@ -327,6 +333,11 @@ class MainActivity : AppCompatActivity(),
 
     companion object {
         const val MY_FRAGMENT = "MY_FRAGMENT"
+
+
+        private val TAG = "Main Activity"
+
+
     }
 
 }

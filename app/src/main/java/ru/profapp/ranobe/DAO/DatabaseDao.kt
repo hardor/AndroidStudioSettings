@@ -1,10 +1,11 @@
-package ru.profapp.ranobe.DAO
+package ru.profapp.ranobe.dao
 
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import ru.profapp.ranobe.models.*
 
-@androidx.room.Database(entities = [Ranobe::class, Chapter::class, TextChapter::class, RanobeImage::class, ChapterHistory::class, RanobeHistory::class, ChapterProgress::class], version = 5)
+@androidx.room.Database(entities = [Ranobe::class, Chapter::class, TextChapter::class, RanobeImage::class, ChapterHistory::class, RanobeHistory::class, ChapterProgress::class],
+    version = 5)
 @TypeConverters(DateConverter::class)
 abstract class DatabaseDao : RoomDatabase() {
 

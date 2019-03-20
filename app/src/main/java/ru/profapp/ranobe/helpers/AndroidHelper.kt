@@ -8,7 +8,6 @@ import android.util.DisplayMetrics
 import android.widget.TextView
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import ru.profapp.ranobe.common.Constants
-import java.util.*
 
 /**
  * This method converts dp unit to equivalent pixels, depending on device density.
@@ -18,7 +17,7 @@ import java.util.*
  * @return A float value to represent px equivalent to dp depending on device density
  */
 fun convertDpToPixel(dp: Int, context: Context): Int {
-    return dp * ( context.resources.displayMetrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT)
+    return dp * (context.resources.displayMetrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT)
 }
 
 /**
@@ -65,51 +64,69 @@ fun setVectorForPreLollipop(resourceId: Int, activity: Context): Drawable? {
     return icon
 }
 
-fun setVectorForPreLollipop(textView: TextView, resourceId: Int, activity: Context, position: Constants.ApplicationConstants) {
+fun setVectorForPreLollipop(textView: TextView,
+                            resourceId: Int,
+                            activity: Context,
+                            position: Constants.ApplicationConstants) {
     val icon: Drawable? = if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-        VectorDrawableCompat.create(activity.resources, resourceId,
-                activity.theme)
+        VectorDrawableCompat.create(activity.resources, resourceId, activity.theme)
     } else {
         activity.resources.getDrawable(resourceId, activity.theme)
     }
     when (position) {
-        Constants.ApplicationConstants.DRAWABLE_LEFT -> textView.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null)
+        Constants.ApplicationConstants.DRAWABLE_LEFT -> textView.setCompoundDrawablesWithIntrinsicBounds(
+            icon,
+            null,
+            null,
+            null)
 
-        Constants.ApplicationConstants.DRAWABLE_RIGHT -> textView.setCompoundDrawablesWithIntrinsicBounds(null, null, icon, null)
+        Constants.ApplicationConstants.DRAWABLE_RIGHT -> textView.setCompoundDrawablesWithIntrinsicBounds(
+            null,
+            null,
+            icon,
+            null)
 
-        Constants.ApplicationConstants.DRAWABLE_TOP -> textView.setCompoundDrawablesWithIntrinsicBounds(null, icon, null, null)
+        Constants.ApplicationConstants.DRAWABLE_TOP -> textView.setCompoundDrawablesWithIntrinsicBounds(
+            null,
+            icon,
+            null,
+            null)
 
-        Constants.ApplicationConstants.DRAWABLE_BOTTOM -> textView.setCompoundDrawablesWithIntrinsicBounds(null, null, null, icon)
+        Constants.ApplicationConstants.DRAWABLE_BOTTOM -> textView.setCompoundDrawablesWithIntrinsicBounds(
+            null,
+            null,
+            null,
+            icon)
     }
 }
 
-fun setVectorForPreLollipop(textView: TextView, icon: Drawable, position: Constants.ApplicationConstants) {
+fun setVectorForPreLollipop(textView: TextView,
+                            icon: Drawable,
+                            position: Constants.ApplicationConstants) {
 
     when (position) {
-        Constants.ApplicationConstants.DRAWABLE_LEFT -> textView.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null)
+        Constants.ApplicationConstants.DRAWABLE_LEFT -> textView.setCompoundDrawablesWithIntrinsicBounds(
+            icon,
+            null,
+            null,
+            null)
 
-        Constants.ApplicationConstants.DRAWABLE_RIGHT -> textView.setCompoundDrawablesWithIntrinsicBounds(null, null, icon, null)
+        Constants.ApplicationConstants.DRAWABLE_RIGHT -> textView.setCompoundDrawablesWithIntrinsicBounds(
+            null,
+            null,
+            icon,
+            null)
 
-        Constants.ApplicationConstants.DRAWABLE_TOP -> textView.setCompoundDrawablesWithIntrinsicBounds(null, icon, null, null)
+        Constants.ApplicationConstants.DRAWABLE_TOP -> textView.setCompoundDrawablesWithIntrinsicBounds(
+            null,
+            icon,
+            null,
+            null)
 
-        Constants.ApplicationConstants.DRAWABLE_BOTTOM -> textView.setCompoundDrawablesWithIntrinsicBounds(null, null, null, icon)
+        Constants.ApplicationConstants.DRAWABLE_BOTTOM -> textView.setCompoundDrawablesWithIntrinsicBounds(
+            null,
+            null,
+            null,
+            icon)
     }
-}
-
-fun dateFromString(text: String?): Date? {
-    if (text.isNullOrBlank()) return null
-
-    val dig = text.replace("[^0-9]".toRegex(), "").toInt()
-    if (text.contains("минут"))
-        return Date().addMinutes(-1 * dig)
-    else if (text.contains("час"))
-        return Date().addHours(-1 * dig)
-    else if (text.contains("день") || text.contains("дн"))
-        return Date().addDays(-1 * dig)
-    else if (text.contains("недел"))
-        return Date().addDays(-7 * dig)
-    else if (text.contains("месяц"))
-        return Date().addMonths(-1 * dig)
-
-    return null
 }

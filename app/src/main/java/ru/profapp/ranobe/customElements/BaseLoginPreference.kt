@@ -7,8 +7,6 @@ import android.os.Bundle
 import android.preference.DialogPreference
 import android.util.AttributeSet
 import android.view.View
-import android.widget.EditText
-import android.widget.TextView
 import com.google.android.material.textfield.TextInputEditText
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -18,7 +16,8 @@ import ru.profapp.ranobe.R
 import ru.profapp.ranobe.common.Constants
 import ru.profapp.ranobe.network.repositories.RanobeRfRepository
 
-open class BaseLoginPreference(context: Context, attrs: AttributeSet) : DialogPreference(context, attrs), DialogInterface.OnClickListener {
+open class BaseLoginPreference(context: Context, attrs: AttributeSet) :
+    DialogPreference(context, attrs), DialogInterface.OnClickListener {
 
     private val mCurrentValue: String? = null
     open lateinit var sharedToken: String
@@ -26,8 +25,7 @@ open class BaseLoginPreference(context: Context, attrs: AttributeSet) : DialogPr
     lateinit var ranobeSite: Constants.RanobeSite
 
 
-    private lateinit var loginEditor: EditText
-    private lateinit var resultTextView: TextView
+    private lateinit var loginEditor: TextInputEditText
     private lateinit var passwordEditor: TextInputEditText
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
 
@@ -44,7 +42,6 @@ open class BaseLoginPreference(context: Context, attrs: AttributeSet) : DialogPr
         // Inflate layout
         val view = View.inflate(context, R.layout.dialog_login, null)
 
-        resultTextView = view.findViewById(R.id.tV_login_resultLabel)
         loginEditor = view.findViewById(R.id.eT_login_email)
         loginEditor.setText(sharedLogin)
         passwordEditor = view.findViewById(R.id.eT_login_password)
@@ -69,51 +66,47 @@ open class BaseLoginPreference(context: Context, attrs: AttributeSet) : DialogPr
         val alert = (dialog as AlertDialog)
         alert.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
 
-            resultTextView.visibility = View.GONE
-            val loginRequest = auth()
-                    .map { result ->
 
-                        val resBool = java.lang.Boolean.valueOf(result[0])
-                        if (resBool) {
-                            return@map Pair(true, result[2])
-                        } else {
-                            return@map Pair(false, result[1])
-                        }
-                    }
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({ result ->
+            val loginRequest = auth().map { result ->
 
-                        if (result.first) {
-                            sharedToken = result.second
-                            summary = username
-                            alert.dismiss()
-                        } else {
-                            sharedToken = ""
-                            summary = context.getString(R.string.summary_login)
-                            if (ranobeSite == Constants.RanobeSite.RanobeRf) {
-                                RanobeRfRepository.token = null
-                            }
-                            resultTextView.text = result.second
+                val resBool = java.lang.Boolean.valueOf(result[0])
+                if (resBool) {
+                    return@map Pair(true, result[2])
+                } else {
+                    return@map Pair(false, result[1])
+                }
+            }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ result ->
 
-                            resultTextView.visibility = View.VISIBLE
-                        }
-
-                    }, {
+                    if (result.first) {
+                        sharedToken = result.second
+                        summary = username
+                        alert.dismiss()
+                    } else {
                         sharedToken = ""
                         summary = context.getString(R.string.summary_login)
                         if (ranobeSite == Constants.RanobeSite.RanobeRf) {
                             RanobeRfRepository.token = null
                         }
-                        resultTextView.text = context.getString(R.string.auth_error)
-                        resultTextView.visibility = View.VISIBLE
-                    })
+
+                        passwordEditor.error = result.second
+
+                    }
+
+                }, {
+                    sharedToken = ""
+                    summary = context.getString(R.string.summary_login)
+                    if (ranobeSite == Constants.RanobeSite.RanobeRf) {
+                        RanobeRfRepository.token = null
+                    }
+
+                    passwordEditor.error = context.getString(R.string.auth_error)
+                })
             compositeDisposable.add(loginRequest)
         }
-        alert.getButton(AlertDialog.BUTTON_NEGATIVE)
-                .setOnClickListener {
-                    alert.dismiss()
-                }
+        alert.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener {
+            alert.dismiss()
+        }
     }
 
     open fun auth(): Single<Array<String>> {

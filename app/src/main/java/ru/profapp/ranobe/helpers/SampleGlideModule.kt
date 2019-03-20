@@ -1,4 +1,4 @@
-package ru.profapp.ranobe.utils
+package ru.profapp.ranobe.helpers
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -26,16 +26,15 @@ class SampleGlideModule : AppGlideModule() {
     override fun applyOptions(context: Context, builder: GlideBuilder) {
         val memoryCacheSizeBytes = 1024 * 1024 * 20 // 20mb
         builder.setMemoryCache(LruResourceCache(memoryCacheSizeBytes.toLong()))
-        builder.setDiskCache(InternalCacheDiskCacheFactory(context, (memoryCacheSizeBytes * 10).toLong()))
+        builder.setDiskCache(InternalCacheDiskCacheFactory(context,
+            (memoryCacheSizeBytes * 10).toLong()))
         builder.setDefaultRequestOptions(requestOptions)
         builder.build(context)
     }
 
     override fun registerComponents(context: Context, glide: Glide, registry: Registry) {
-        val client = OkHttpClient.Builder()
-                .readTimeout(2, TimeUnit.SECONDS)
-                .connectTimeout(2, TimeUnit.SECONDS)
-                .build()
+        val client = OkHttpClient.Builder().readTimeout(2, TimeUnit.SECONDS)
+            .connectTimeout(2, TimeUnit.SECONDS).build()
 
         val factory = OkHttpUrlLoader.Factory(client)
 
@@ -43,17 +42,11 @@ class SampleGlideModule : AppGlideModule() {
     }
 
     companion object {
-        val requestOptions = RequestOptions()
-                .signature(ObjectKey(System.currentTimeMillis() / (24 * 60 * 60 * 1000)))
-                .override(200, 200)
-                .encodeFormat(Bitmap.CompressFormat.PNG)
-                .encodeQuality(100)
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .format(PREFER_ARGB_8888)
-                .skipMemoryCache(false)
-                .placeholder(R.drawable.ic_adb_black_24dp)
-                .error(R.drawable.ic_error_outline_black_24dp)
-                .fitCenter()
+        val requestOptions = RequestOptions().signature(ObjectKey(System.currentTimeMillis() / (24 * 60 * 60 * 1000)))
+            .override(200, 200).encodeFormat(Bitmap.CompressFormat.PNG).encodeQuality(100)
+            .diskCacheStrategy(DiskCacheStrategy.RESOURCE).format(PREFER_ARGB_8888)
+            .skipMemoryCache(false).placeholder(R.drawable.ic_adb_black_24dp)
+            .error(R.drawable.ic_error_outline_black_24dp).fitCenter()
     }
 
 }

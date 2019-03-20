@@ -21,7 +21,15 @@ import java.util.*
 /**
  * [RecyclerView.Adapter] that can display a [Ranobe] and makes a call to the specified
  */
-class RanobeRecyclerViewAdapter(private val glide: RequestManager, recyclerView: RecyclerView, private var mValues: List<Ranobe>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class RanobeRecyclerViewAdapter(private val glide: RequestManager,
+                                recyclerView: RecyclerView,
+                                private var mValues: List<Ranobe>) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    companion object {
+        private val TAG = "Ranobe RecyclerView Adapter"
+    }
+
     private val VIEW_TYPE_ITEM = 0
     private val VIEW_TYPE_GROUP_TITLE = 2
 
@@ -70,18 +78,18 @@ class RanobeRecyclerViewAdapter(private val glide: RequestManager, recyclerView:
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             VIEW_TYPE_ITEM -> {
-                val view = LayoutInflater
-                        .from(parent.context).inflate(R.layout.item_ranobe, parent, false)
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_ranobe, parent, false)
                 RanobeViewHolder(view)
             }
             VIEW_TYPE_GROUP_TITLE -> {
-                val view = LayoutInflater
-                        .from(parent.context).inflate(R.layout.item_title, parent, false)
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_title, parent, false)
                 TitleViewHolder(view)
             }
             else -> {
-                val view = LayoutInflater
-                        .from(parent.context).inflate(R.layout.item_loading, parent, false)
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_loading, parent, false)
                 LoadingViewHolder(view)
             }
         }
@@ -102,7 +110,14 @@ class RanobeRecyclerViewAdapter(private val glide: RequestManager, recyclerView:
                     val hours = (diff / 60 - numOfDays * 24).toInt()
                     val minutes = (diff % 60).toInt()
 
-                    val updateTime = "${mContext.getString(R.string.Updated)} ${mContext.resources.getQuantityString(R.plurals.numberOfDays, numOfDays, numOfDays)} ${mContext.resources.getQuantityString(R.plurals.numberOfHours, hours, hours)} ${mContext.resources.getQuantityString(R.plurals.numberOfMinutes, minutes, minutes)} ${mContext.getString(R.string.ago)}"
+                    val updateTime = "${mContext.getString(R.string.Updated)} ${mContext.resources.getQuantityString(
+                        R.plurals.numberOfDays,
+                        numOfDays,
+                        numOfDays)} ${mContext.resources.getQuantityString(R.plurals.numberOfHours,
+                        hours,
+                        hours)} ${mContext.resources.getQuantityString(R.plurals.numberOfMinutes,
+                        minutes,
+                        minutes)} ${mContext.getString(R.string.ago)}"
 
                     holder.updateTime.text = updateTime
                     holder.updateTime.visibility = View.VISIBLE
@@ -186,7 +201,8 @@ class RanobeRecyclerViewAdapter(private val glide: RequestManager, recyclerView:
 
     }
 
-    inner class RanobeViewHolder(mView: View) : RecyclerView.ViewHolder(mView), View.OnClickListener {
+    inner class RanobeViewHolder(mView: View) : RecyclerView.ViewHolder(mView),
+        View.OnClickListener {
 
         val imageView: ImageView = mView.findViewById(R.id.imageView)
         val ranobeSiteLogo: ImageView = mView.findViewById(R.id.iV_ranobe_siteLogo)

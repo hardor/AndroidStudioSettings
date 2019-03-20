@@ -8,6 +8,10 @@ import ru.profapp.ranobe.R
 import ru.profapp.ranobe.fragments.intro.IntroFragment
 
 class IntroActivity : AppIntro() {
+    companion object {
+        private val TAG = "Intro Activity"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -23,7 +27,8 @@ class IntroActivity : AppIntro() {
         setColorDoneText(resources.getColor(R.color.colorAccent))
         setNextArrowColor(resources.getColor(R.color.colorAccent))
         setSeparatorColor(resources.getColor(R.color.colorAccent))
-        setIndicatorColor(resources.getColor(R.color.colorAccent), resources.getColor(R.color.colorPrimary))
+        setIndicatorColor(resources.getColor(R.color.colorAccent),
+            resources.getColor(R.color.colorPrimary))
     }
 
     override fun onSkipPressed(currentFragment: Fragment?) {
@@ -42,8 +47,4 @@ class IntroActivity : AppIntro() {
         // Do something when users tap on Done button.
     }
 
-    override fun onSlideChanged(oldFragment: Fragment?, newFragment: Fragment?) {
-        super.onSlideChanged(oldFragment, newFragment)
-        // Do something when the slide changes.
-    }
 }

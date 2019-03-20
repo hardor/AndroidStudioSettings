@@ -2,6 +2,7 @@
 <resources>
   <color name="colorPrimary">#2196f3</color>
   <color name="colorPrimaryDark">#1976d2</color>
+  <color name="colorPrimaryDarkNest">#145191</color>
   <color name="colorAccent">#ff4081</color>
 
   <color name="webViewText">#000000</color>

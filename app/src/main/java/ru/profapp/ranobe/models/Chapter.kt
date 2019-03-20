@@ -5,7 +5,6 @@ import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
 import ru.profapp.ranobe.common.Constants.RanobeSite.RanobeRf
 import ru.profapp.ranobe.common.Constants.RanobeSite.Rulate
-import ru.profapp.ranobe.helpers.LogType
 import ru.profapp.ranobe.helpers.logError
 import java.util.*
 
@@ -14,9 +13,11 @@ import java.util.*
  */
 
 @Entity(tableName = "chapter",
-        foreignKeys = [ForeignKey(entity = Ranobe::class, parentColumns = arrayOf("Url"),
-                childColumns = arrayOf("RanobeUrl"), onDelete = CASCADE)],
-        indices = [Index(value = ["RanobeUrl"])])
+    foreignKeys = [ForeignKey(entity = Ranobe::class,
+        parentColumns = arrayOf("Url"),
+        childColumns = arrayOf("RanobeUrl"),
+        onDelete = CASCADE)],
+    indices = [Index(value = ["RanobeUrl"])])
 class Chapter() {
 
     @NonNull
@@ -39,7 +40,7 @@ class Chapter() {
                     return url.substring(0, url.lastIndexOf("/"))
                 }
             } catch (ignore: Exception) {
-                logError(LogType.ERROR, "ChapterTextActivity", url, ignore)
+                logError("ranobeUrl", url, ignore)
             }
 
 
@@ -54,7 +55,7 @@ class Chapter() {
                     return try {
                         Integer.parseInt(value)
                     } catch (error: NumberFormatException) {
-                        logError(LogType.ERROR, "ChapterId", url, error)
+                        logError("ChapterId", url, error)
                         field
                     }
                 }

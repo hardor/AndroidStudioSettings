@@ -10,7 +10,6 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.common.Constants
-import ru.profapp.ranobe.helpers.LogType
 import ru.profapp.ranobe.helpers.logError
 import ru.profapp.ranobe.helpers.removeTags
 import ru.profapp.ranobe.models.Chapter
@@ -44,7 +43,7 @@ object RanobeRfRepository : BaseRepository() {
 
             return@map false
         }.onErrorReturn {
-            logError(LogType.ERROR, "getUserStatus", "getUserStatus error", it)
+            logError("getUserStatus", "getUserStatus error", it)
             return@onErrorReturn false
         }.subscribeOn(Schedulers.io()).blockingGet()
     }
@@ -100,9 +99,10 @@ object RanobeRfRepository : BaseRepository() {
                     ranobe.image = book.image
                     if (!book.image.isNullOrBlank()) {
                         Completable.fromAction {
-                            MyApp.database.ranobeImageDao().insert(RanobeImage(ranobe.url, book.image))
+                            MyApp.database.ranobeImageDao()
+                                .insert(RanobeImage(ranobe.url, book.image))
                         }?.subscribeOn(Schedulers.io())?.subscribe({}, { error ->
-                            logError(LogType.ERROR, "", "", error, false)
+                            logError("", "", error, false)
                         })
 
                     }
@@ -112,7 +112,7 @@ object RanobeRfRepository : BaseRepository() {
 
             return@map or.toList()
         }.onErrorReturn {
-            logError(LogType.ERROR, "searchBooks", "raboberf: " + search, it)
+            logError("searchBooks", "raboberf: $search", it)
             listOf<Ranobe>()
         }
     }
@@ -206,7 +206,7 @@ object RanobeRfRepository : BaseRepository() {
             Completable.fromAction {
                 MyApp.database.ranobeImageDao().insert(RanobeImage(url, image!!))
             }?.subscribeOn(Schedulers.io())?.subscribe({}, { error ->
-                logError(LogType.ERROR, "", "", error, false)
+                logError("", "", error, false)
             })
 
         }
@@ -231,9 +231,7 @@ object RanobeRfRepository : BaseRepository() {
                 chapter.url = Constants.RanobeSite.RanobeRf.url + chapter.url
             }
 
-            chapter.canRead = (!rChapter.partDonate && !rChapter.payment) ||
-                    (rChapter.partDonate && rChapter.userDonate) ||
-                    (rChapter.payment && paymentStatus == true)
+            chapter.canRead = (!rChapter.partDonate && !rChapter.payment) || (rChapter.partDonate && rChapter.userDonate) || (rChapter.payment && paymentStatus == true)
 
             chapter.ranobeUrl = if (chapter.ranobeUrl.isBlank()) url else chapter.ranobeUrl
             chapter.ranobeName = title
@@ -250,7 +248,7 @@ object RanobeRfRepository : BaseRepository() {
         result.book?.let { this.updateRanobe(it) }
 
         // genres = result.genres.map { genre -> genre.title }.toString()
-        genres = result.genres.asSequence().map { it -> it.title }.joinToString()
+        genres = result.genres.asSequence().map { it.title }.joinToString()
 
         chapterList.clear()
 
@@ -260,7 +258,7 @@ object RanobeRfRepository : BaseRepository() {
             chapter.updateChapter(ch)
             chapter.ranobeUrl = url
             chapter.ranobeName = title
-            chapter.index = allChapters.size -  i -1
+            chapter.index = allChapters.size - i - 1
             chapterList.add(chapter)
         }
         if (chapterList.size > 0) {
@@ -272,8 +270,9 @@ object RanobeRfRepository : BaseRepository() {
     private infix fun Chapter.updateChapter(rChapter: RfChapter) {
 
         id = if (id == null) rChapter.id ?: id else id
-        title = if (title.isBlank()) String.format("%s %s", rChapter.partNumber
-                ?: "", rChapter.title)
+        title = if (title.isBlank()) String.format("%s %s",
+            rChapter.partNumber ?: "",
+            rChapter.title)
         else title
 
 
@@ -281,21 +280,16 @@ object RanobeRfRepository : BaseRepository() {
         if (!url.contains(Constants.RanobeSite.RanobeRf.url)) {
             url = Constants.RanobeSite.RanobeRf.url + url
         }
-        canRead = (!rChapter.partDonate && !rChapter.payment) ||
-                (rChapter.partDonate && rChapter.userDonate) ||
-                (rChapter.payment && paymentStatus == true)
+        canRead = (!rChapter.partDonate && !rChapter.payment) || (rChapter.partDonate && rChapter.userDonate) || (rChapter.payment && paymentStatus == true)
     }
 
     private var instance: IRanobeRfApiService = create()
 
     fun create(): IRanobeRfApiService {
         val httpClient = baseClient.addInterceptor(RanobeRfCookiesInterceptor(this))
-        val retrofit = Retrofit.Builder()
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(httpClient.build())
-                .baseUrl("https://xn--80ac9aeh6f.xn--p1ai")
-                .build()
+        val retrofit = Retrofit.Builder().addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create()).client(httpClient.build())
+            .baseUrl("https://xn--80ac9aeh6f.xn--p1ai").build()
         return retrofit.create(IRanobeRfApiService::class.java)
     }
 

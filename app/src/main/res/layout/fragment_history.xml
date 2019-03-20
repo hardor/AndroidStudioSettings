@@ -27,7 +27,7 @@
     </androidx.viewpager.widget.PagerTitleStrip>
   </androidx.viewpager.widget.ViewPager>
 
-  <Button
+  <com.google.android.material.button.MaterialButton
     android:id="@+id/btN_CleanData"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"

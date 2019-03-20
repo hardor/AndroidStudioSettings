@@ -69,7 +69,7 @@
   <string name="allow_external_storage">Разрешите доступ к внутренней памяти</string>
   <string name="backup_restore_nothing">Не найдены данные для восстановления/бэкапа</string>
   <string name="backup_restore_success">Данные успешно восстановлены</string>
-  <string name="activity_backup_success">Данные успешно сохранены в память телефона</string>
+  <string name="activity_backup_success">Данные успешно сохранены в память телефона. Файл RanobeReaderBackup.zip</string>
   <string name="response_error">Ошибка ответа сервера</string>
   <string name="not_history">Закладки для глав не найдены</string>
   <string name="activity_backup_drive_desc">Бэкап на диск позволит вам восстановить данные если вы потеряли или сменили устройство.</string>
@@ -86,7 +86,7 @@
   <string name="readyToRestore">Вы действительно хотите восстановить резервную копию? Данные вашего приложения будут переписаны.После восстановления приложение будет автоматически перезапущено.</string>
   <string name="all_uncaughtException">Внезапная ошибка</string>
   <string name="all_appCrashed">Приложение перезапущено после вылета. Если вылеты продолжатся, попробуйте очистить данные приложения.</string>
-  <string name="cant_remove_web_bookmark">Не удалось убрать веб закладку</string>
+  <string name="cant_remove_web_bookmark">Не удалось убрать веб закладку</string>   ш
   <string name="auth_error">Ошибка авторизации</string>
   <string name="vk">vk</string>
   <string name="all_vkUrl">https://vk.com/ranobereader</string>
@@ -121,7 +121,7 @@
   <string name="swipe_navigate">Использовать свайпы для навигации</string>
   <string name="activity_backup_error">Во время резервного копирования произошла ошибка</string>
     <string name="font">Шрифт</string>
-  <string name="text_color" translatable="false">Цвет текста</string>
+  <string name="text_color">Цвет текста</string>
   <string name="background_color">Цвет фона</string>
   <string name="reading_settings">Настройфки чтаения</string>
   <string name="authorization">Авторизация</string>
@@ -131,4 +131,17 @@
   <string name="genre">Жанр</string>
   <string name="file_choose_ranobereader">Выберите ваш RanobeReaderBackup.zip файл</string>
   <string name="line_height">Интервал</string>
+  <string name="readyToRestoreGdrive">Вы действительно хотите восстановить резервную копию из Google Drive? Данные вашего приложения будут переписаны.После восстановления приложение будет автоматически перезапущено.</string>
+  <string name="readyToBackupGdrive">Вы действительно хотите сделать резервную копиюd Google Drive? Ваши старые сохранения будут перезаписаны</string>
+    <string name="download_warning">Большое количество загруженных глав может вызвать проблемы в приложениb. Пожалуйста, периодически очищайте уже прочитанные загруженные главы.</string>
+  <string name="activity_backup_gdrive_success">Бэкап успешно загружен!</string>
+  <string name="activity_backup_gdrive_fail">Не удалось загрузить бэкап!</string>
+  <string name="activity_backup_gdrive_fail_create_zip">Не удалось создать архив</string>
+  <string name="activity_backup_gdrive_fail_not_found">Бэкап не найден</string>
+  <string name="activity_backup_auth_failed">Не удалось войти в аккаунт Google</string>
+  <string name="activity_backup_gdrive_fail_download">Не удалось загрузить бэкап файл из Google Drive</string>
+  <string name="activity_backup_gdrive_fail_upload">Не удалось загрузить бэкап файл в Google Drive</string>
+  <string name="write_and_read_rationale">Вы должны предоставить разрешения для сохранения и загрузки вашего бекапа</string>
+  <string name="alert_perms_denied">Разрешения не предоставлены</string>
+  <string name="alert_perms_denied_message">Хотите открыть настройки приложения для изменения ваших разрешений?</string>
 </resources>

@@ -9,8 +9,8 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.common.Constants
-import ru.profapp.ranobe.helpers.LogType
 import ru.profapp.ranobe.helpers.logError
+import ru.profapp.ranobe.helpers.logWarn
 import ru.profapp.ranobe.models.Chapter
 import ru.profapp.ranobe.models.Ranobe
 import ru.profapp.ranobe.models.RanobeImage
@@ -73,7 +73,7 @@ object RulateRepository : BaseRepository() {
         return instance.SearchBooks(search).map {
             return@map getRanobeList(it)
         }.onErrorReturn {
-            logError(LogType.ERROR, "searchBooks", "rulate: " + search, it)
+            logError("searchBooks", "rulate: $search", it)
             listOf()
         }
     }
@@ -164,7 +164,7 @@ object RulateRepository : BaseRepository() {
             Completable.fromAction {
                 MyApp.database.ranobeImageDao().insert(RanobeImage(url, image!!))
             }?.subscribeOn(Schedulers.io())?.subscribe({}, { error ->
-                logError(LogType.ERROR, "", "", error, false)
+                logError("", "", error, false)
             })
 
         }
@@ -182,7 +182,7 @@ object RulateRepository : BaseRepository() {
             }
 
         } catch (e: ParseException) {
-            logError(LogType.WARN, "updateRanobe", "", e, false)
+            logWarn("updateRanobe", "", e, false)
         }
 
         url = if (url.isBlank()) (Constants.RanobeSite.Rulate.url + "/book/" + id) else url
@@ -212,14 +212,15 @@ object RulateRepository : BaseRepository() {
             Completable.fromAction {
                 MyApp.database.ranobeImageDao().insert(RanobeImage(url, image!!))
             }?.subscribeOn(Schedulers.io())?.subscribe({}, { error ->
-                logError(LogType.ERROR, "", "", error, false)
+                logError("", "", error, false)
             })
 
         }
 
         lang = lang ?: book.lang
 
-        readyDate = readyDate ?: (if (book.lastActivity != null) Date(book.lastActivity * 1000) else readyDate)
+        readyDate = readyDate
+            ?: (if (book.lastActivity != null) Date(book.lastActivity * 1000) else readyDate)
 
         url = if (url.isBlank()) (Constants.RanobeSite.Rulate.url + "/book/" + id) else url
 
@@ -264,7 +265,8 @@ object RulateRepository : BaseRepository() {
 
         lang = lang ?: book.lang
 
-        readyDate = readyDate ?: (if (book.lastActivity != null) Date(book.lastActivity * 1000) else readyDate)
+        readyDate = readyDate
+            ?: (if (book.lastActivity != null) Date(book.lastActivity * 1000) else readyDate)
 
         url = if (url.isBlank()) (Constants.RanobeSite.Rulate.url + "/book/" + id) else url
 
@@ -303,17 +305,15 @@ object RulateRepository : BaseRepository() {
 
     }
 
-    val gson = GsonBuilder().registerTypeAdapter(RulateBook::class.java, RulateBookDeserializer()).create()!!
+    val gson = GsonBuilder().registerTypeAdapter(RulateBook::class.java,
+        RulateBookDeserializer()).create()!!
     private var instance: IRulateApiService = create()
 
     fun create(): IRulateApiService {
         val httpClient = baseClient.addInterceptor(ApiKeyInterceptor())
-        val retrofit = Retrofit.Builder()
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .client(httpClient.build())
-                .baseUrl("https://tl.rulate.ru")
-                .build()
+        val retrofit = Retrofit.Builder().addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson)).client(httpClient.build())
+            .baseUrl("https://tl.rulate.ru").build()
 
         return retrofit.create(IRulateApiService::class.java)
     }

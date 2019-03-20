@@ -10,8 +10,8 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.common.Constants
-import ru.profapp.ranobe.helpers.LogType
 import ru.profapp.ranobe.helpers.logError
+import ru.profapp.ranobe.helpers.logWarn
 import ru.profapp.ranobe.helpers.removeTags
 import ru.profapp.ranobe.models.Chapter
 import ru.profapp.ranobe.models.Ranobe
@@ -57,7 +57,9 @@ object RanobeHubRepository : BaseRepository() {
                     chapter.url = tChapter.url ?: chapter.url
 
                     chapter.ranobeUrl = ranobe.url
-                    chapter.ranobeName = ranobe.title
+                    if (chapter.ranobeName.isBlank() && ranobe.title.isNotBlank()) {
+                        chapter.ranobeName = ranobe.title
+                    }
                     chapter.index = index++
 
                     ranobe.chapterList.add(chapter)
@@ -67,7 +69,7 @@ object RanobeHubRepository : BaseRepository() {
             ranobe.chapterList.reverse()
             return@map true
         }.onErrorReturn {
-            logError(LogType.ERROR, "getBookInfo", ranobe.url, it)
+            logError("getBookInfo", ranobe.url, it)
             false
         }
 
@@ -79,7 +81,8 @@ object RanobeHubRepository : BaseRepository() {
 
             return instanceHtml.GetReady().flatMap { response ->
                 if (response.isSuccessful) {
-                    val metaOgTitle = Jsoup.parse(response.body()?.string()).head().select("meta[name=csrf-token]")
+                    val metaOgTitle = Jsoup.parse(response.body()?.string()).head()
+                        .select("meta[name=csrf-token]")
                     if (metaOgTitle != null) {
                         token = metaOgTitle.attr("content")
                     }
@@ -126,9 +129,10 @@ object RanobeHubRepository : BaseRepository() {
 
                     if (!ranobe.image.isNullOrBlank()) {
                         Completable.fromAction {
-                            MyApp.database.ranobeImageDao().insert(RanobeImage(ranobe.url, ranobe.image!!))
+                            MyApp.database.ranobeImageDao()
+                                .insert(RanobeImage(ranobe.url, ranobe.image!!))
                         }?.subscribeOn(Schedulers.io())?.subscribe({}, { error ->
-                            logError(LogType.ERROR, "", "", error, false)
+                            logError("", "", error, false)
                         })
                     }
 
@@ -167,7 +171,7 @@ object RanobeHubRepository : BaseRepository() {
         return instance.SearchBooks(search).map {
             return@map getRanobeSearchList(it.data)
         }.onErrorReturn {
-            logError(LogType.ERROR, "searchBooks", "rabobehub: " + search, it)
+            logError("searchBooks", "rabobehub: $search", it)
             listOf()
         }
     }
@@ -187,28 +191,32 @@ object RanobeHubRepository : BaseRepository() {
                 }
 
                 val body = jsObject.body()
-                if (mCurrentChapter.title.isBlank()) mCurrentChapter.title = body.selectFirst(".__ranobe_read_container h1").text()
+                if (mCurrentChapter.title.isBlank()) mCurrentChapter.title = body.selectFirst(".__ranobe_read_container h1")
+                    .text()
+
+                if (mCurrentChapter.ranobeName.isBlank()) {
+                    mCurrentChapter.ranobeName = body.selectFirst("span.read_nav__main_link")?.text()
+                        ?: ""
+                }
 
                 val textObj: Element? = body.selectFirst(".__ranobe_read_container")
                 textObj?.selectFirst("h1")?.remove()
                 textObj?.select(".ads-desktop")?.remove()
                 textObj?.select(".ads-mobile")?.remove()
                 textObj?.select(".adsbygoogle")?.remove()
-                textObj?.select("img")?.forEach { it ->
+                textObj?.select("img")?.forEach {
                     val img = it.attr("data-src")
 
                     var newAttr = Constants.RanobeSite.RanobeHub.url
-                    if (img.contains("/img/ranobe"))
-                        newAttr += img
-                    else
-                        newAttr = "$newAttr/img/ranobe/content/${mCurrentChapter.ranobeUrl.split("/").takeLast(1)[0]}/$img.jpg"
+                    if (img.contains("/img/ranobe")) newAttr += img
+                    else newAttr = "$newAttr/img/ranobe/content/${mCurrentChapter.ranobeUrl.split("/").takeLast(
+                        1)[0]}/$img.jpg"
 
                     it.attr("src", newAttr)
                 }
                 mCurrentChapter.text = textObj?.html()
                 return@map true
-            } else
-                return@map false
+            } else return@map false
         }
 
     }
@@ -255,17 +263,18 @@ object RanobeHubRepository : BaseRepository() {
             try {
                 readyDate = df.parse(book.changedAt)
             } catch (e: ParseException) {
-                logError(LogType.WARN, "Parse date", "", e, false)
+                logWarn("Parse date", "", e, false)
             }
         }
 
-        image = image ?: Constants.RanobeSite.RanobeHub.url + "/img/ranobe/posters/" + id + "/0-min.jpg"
+        image = image ?: Constants.RanobeSite.RanobeHub.url + "/img/ranobe/posters/" + id
+                + "/0-min.jpg"
 
         if (!image.isNullOrBlank()) {
             Completable.fromAction {
                 MyApp.database.ranobeImageDao().insert(RanobeImage(url, image!!))
             }?.subscribeOn(Schedulers.io())?.subscribe({}, { error ->
-                logError(LogType.ERROR, "", "", error, false)
+                logError("", "", error, false)
             })
 
         }
@@ -285,13 +294,14 @@ object RanobeHubRepository : BaseRepository() {
 
         description = description ?: book.description?.removeTags() ?: ""
 
-        image = image ?: Constants.RanobeSite.RanobeHub.url + "/img/ranobe/posters/" + id + "/0-min.jpg"
+        image = image ?: Constants.RanobeSite.RanobeHub.url + "/img/ranobe/posters/" + id
+                + "/0-min.jpg"
 
         if (!image.isNullOrBlank()) {
             Completable.fromAction {
                 MyApp.database.ranobeImageDao().insert(RanobeImage(url, image!!))
             }?.subscribeOn(Schedulers.io())?.subscribe({}, { error ->
-                logError(LogType.ERROR, "", "", error, false)
+                logError("", "", error, false)
             })
 
         }
@@ -303,26 +313,20 @@ object RanobeHubRepository : BaseRepository() {
     fun create(): IRanobeHubApiService {
 
         val httpClient = baseClient.addInterceptor(AddCookiesInterceptor(this))
-        val retrofit = Retrofit.Builder()
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl("https://ranobehub.org")
-                .client(httpClient.build())
-                .build()
+        val retrofit = Retrofit.Builder().addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create()).baseUrl("https://ranobehub.org")
+            .client(httpClient.build()).build()
 
         return retrofit.create(IRanobeHubApiService::class.java)
     }
 
     private fun createHtml(): IRanobeHubApiService {
         val httpClient = baseClient.addInterceptor(AddCookiesInterceptor(this))
-                .addInterceptor(ReceivedCookiesInterceptor(this))
+            .addInterceptor(ReceivedCookiesInterceptor(this))
 
-        val retrofit = Retrofit.Builder()
-                .client(httpClient.build())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .client(httpClient.build())
-                .baseUrl("https://ranobehub.org")
-                .build()
+        val retrofit = Retrofit.Builder().client(httpClient.build())
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create()).client(httpClient.build())
+            .baseUrl("https://ranobehub.org").build()
 
         return retrofit.create(IRanobeHubApiService::class.java)
     }

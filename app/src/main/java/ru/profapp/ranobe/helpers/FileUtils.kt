@@ -1,10 +1,15 @@
-package ru.profapp.ranobe.utils
+package ru.profapp.ranobe.helpers
 
-import ru.profapp.ranobe.helpers.LogType
-import ru.profapp.ranobe.helpers.logError
 import java.io.*
 
+
 object FileUtils {
+
+    fun deleteFile(destPath: String, fileName: String) {
+
+        val myFile = File(destPath, fileName)
+        if (myFile.exists()) myFile.delete()
+    }
 
 
     fun copyFile(toCopyPath: String, destPath: String): Boolean {
@@ -15,12 +20,11 @@ object FileUtils {
         return copyFile(toCopyFile, destFile)
     }
 
-    fun copyFile(toCopy: File, destFile: File): Boolean {
+    private fun copyFile(toCopy: File, destFile: File): Boolean {
         try {
-            return FileUtils.copyStream(FileInputStream(toCopy),
-                    FileOutputStream(destFile))
+            return copyStream(FileInputStream(toCopy), FileOutputStream(destFile))
         } catch (e: FileNotFoundException) {
-            logError(LogType.ERROR, "CopyFile", "", e, false)
+            logError("CopyFile", "", e, false)
         }
 
         return false
@@ -38,9 +42,20 @@ object FileUtils {
             os.close()
             return true
         } catch (e: IOException) {
-            logError(LogType.ERROR, "copyStream", "", e, false)
+            logError("copyStream", "", e, false)
         }
         return false
+    }
+
+    fun dirChecker(_targetLocation: String) {
+        val folder = File(_targetLocation)
+
+        if (!folder.exists()) {
+            if (folder.isDirectory) folder.mkdirs()
+            else folder.parentFile.mkdirs()
+        }
+
+
     }
 
 }

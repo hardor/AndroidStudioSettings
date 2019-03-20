@@ -1,4 +1,4 @@
-package ru.profapp.ranobe.DAO
+package ru.profapp.ranobe.dao
 
 import androidx.room.*
 import io.reactivex.Single
@@ -24,10 +24,10 @@ interface RanobeHistoryDao {
     fun insert(chapter: ChapterHistory)
 
     @Query("DELETE FROM ranobeHistory WHERE RanobeUrl NOT IN (SELECT RanobeUrl FROM ranobeHistory ORDER BY ReadDate DESC LIMIT 99)")
-    fun deleteLastChapter()
+    fun deleteLastRanobe()
 
     @Query("DELETE FROM chapterHistory WHERE ChapterUrl NOT IN (SELECT ChapterUrl FROM chapterHistory ORDER BY ReadDate DESC LIMIT 1000)")
-    fun deleteLastRanobe()
+    fun deleteLastChapter()
 
     @Transaction
     fun insertNewRanobe(ranobe: RanobeHistory) {

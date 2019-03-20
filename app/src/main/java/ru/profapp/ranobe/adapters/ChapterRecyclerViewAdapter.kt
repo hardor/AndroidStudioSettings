@@ -18,7 +18,12 @@ import ru.profapp.ranobe.helpers.launchActivity
 import ru.profapp.ranobe.models.Chapter
 import ru.profapp.ranobe.models.Ranobe
 
-class ChapterRecyclerViewAdapter(private val mValues: List<Chapter>, private val mRanobe: Ranobe) : RecyclerView.Adapter<ChapterRecyclerViewAdapter.ViewHolder>() {
+class ChapterRecyclerViewAdapter(private val mValues: List<Chapter>, private val mRanobe: Ranobe) :
+    RecyclerView.Adapter<ChapterRecyclerViewAdapter.ViewHolder>() {
+
+    companion object {
+        private val TAG = "Chapter RecyclerView Adapter"
+    }
 
     private val clickListener = object : OnItemClickListener {
         override fun onItemClick(mContext: Context, item: Chapter) {
@@ -27,10 +32,10 @@ class ChapterRecyclerViewAdapter(private val mValues: List<Chapter>, private val
 
                     val ranobe = Ranobe()
                     ranobe.url = item.ranobeUrl
+                    ranobe.title = item.ranobeName
                     if (MyApp.fragmentType != null && MyApp.fragmentType != Constants.FragmentType.Saved) {
 
-                        if (ranobe.updateRanobe(mContext).subscribeOn(Schedulers.io()).blockingGet())
-                            MyApp.ranobe = ranobe
+                        if (ranobe.updateRanobe(mContext).subscribeOn(Schedulers.io()).blockingGet()) MyApp.ranobe = ranobe
                         else {
                             MyApp.ranobe = mRanobe
                         }
@@ -58,9 +63,7 @@ class ChapterRecyclerViewAdapter(private val mValues: List<Chapter>, private val
     @NonNull
     override fun onCreateViewHolder(@NonNull parent: ViewGroup, viewType: Int): ChapterRecyclerViewAdapter.ViewHolder {
 
-        val view = LayoutInflater
-                .from(parent.context)
-                .inflate(R.layout.item_chapter, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_chapter, parent, false)
         return ViewHolder(view)
 
     }
@@ -72,13 +75,14 @@ class ChapterRecyclerViewAdapter(private val mValues: List<Chapter>, private val
         holder.mChapterItem = mValues[position]
         holder.mTextView.text = mValues[position].title
 
-        if (!holder.mChapterItem.canRead) {
-            holder.mView.setBackgroundColor(Color.GRAY)
+        if (!holder.mChapterItem.canRead && holder.mChapterItem.isRead) holder.mView.setBackgroundColor(
+            ContextCompat.getColor(mContext, R.color.colorPrimaryDarkNest))
+        else if (!holder.mChapterItem.canRead) holder.mView.setBackgroundColor(Color.GRAY)
+        else if (holder.mChapterItem.isRead) {
+            holder.mView.setBackgroundColor(ContextCompat.getColor(mContext,
+                R.color.colorPrimaryDark))
         }
 
-        if (holder.mChapterItem.isRead) {
-            holder.mView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.colorPrimaryDark))
-        }
 
     }
 

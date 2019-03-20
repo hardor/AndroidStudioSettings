@@ -12,7 +12,12 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.profapp.ranobe.R
 import ru.profapp.ranobe.models.Chapter
 
-class ExpandableDownloadRecyclerViewAdapter() : RecyclerView.Adapter<ExpandableDownloadRecyclerViewAdapter.GroupViewHolder>() {
+class ExpandableDownloadRecyclerViewAdapter() :
+    RecyclerView.Adapter<ExpandableDownloadRecyclerViewAdapter.GroupViewHolder>() {
+
+    companion object {
+        private val TAG = "Expandable Download RecyclerView Adapter"
+    }
 
     var selectAll: Boolean? = null
 
@@ -22,8 +27,12 @@ class ExpandableDownloadRecyclerViewAdapter() : RecyclerView.Adapter<ExpandableD
         if (mChapters.isNotEmpty()) {
             val num = Math.ceil((mChapters.size).toDouble() / numInGroup).toInt()
             for (i in 0 until num) {
-                val parentDataItem = ParentDataItem("${mChapters[minOf(i * numInGroup, mChapters.size - 1)].title} - ${mChapters[minOf((i + 1) * numInGroup - 1, mChapters.size - 1)].title}", (mChapters.subList(i * numInGroup, minOf((i + 1) * numInGroup, mChapters.size))))
-                parentDataItem.canRead = parentDataItem.childDataItems.any { it -> it.canRead }
+                val parentDataItem = ParentDataItem("${mChapters[minOf(i * numInGroup,
+                    mChapters.size - 1)].title} - ${mChapters[minOf((i + 1) * numInGroup - 1,
+                    mChapters.size - 1)].title}",
+                    (mChapters.subList(i * numInGroup,
+                        minOf((i + 1) * numInGroup, mChapters.size))))
+                parentDataItem.canRead = parentDataItem.childDataItems.any { it.canRead }
                 parentDataItems.add(parentDataItem)
             }
         }
@@ -32,13 +41,13 @@ class ExpandableDownloadRecyclerViewAdapter() : RecyclerView.Adapter<ExpandableD
     private val parentDataItems: ArrayList<ParentDataItem> = ArrayList()
 
     override fun onCreateViewHolder(@NonNull parent: ViewGroup, viewType: Int): ExpandableDownloadRecyclerViewAdapter.GroupViewHolder {
-        val view = LayoutInflater
-                .from(parent.context)
-                .inflate(R.layout.item_parent_child_checkbox, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_parent_child_checkbox, parent, false)
         return GroupViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ExpandableDownloadRecyclerViewAdapter.GroupViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ExpandableDownloadRecyclerViewAdapter.GroupViewHolder,
+                                  position: Int) {
 
         val mContext = holder.itemView.context
 
@@ -96,7 +105,8 @@ class ExpandableDownloadRecyclerViewAdapter() : RecyclerView.Adapter<ExpandableD
         return parentDataItems.size
     }
 
-    inner class GroupViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+    inner class GroupViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+        View.OnClickListener {
 
         val textViewParentName: TextView = itemView.findViewById(R.id.tv_parent_name)
         val checkBoxParentName: CheckBox = itemView.findViewById(R.id.cb_parent_name)
@@ -112,7 +122,8 @@ class ExpandableDownloadRecyclerViewAdapter() : RecyclerView.Adapter<ExpandableD
             for (indexView in 0 until intMaxNoOfChild) {
                 val checkBox = CheckBox(itemView.context)
                 checkBox.id = indexView
-                val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT)
                 linearLayoutChildItems.addView(checkBox, layoutParams)
             }
             textViewParentName.setOnClickListener(this)

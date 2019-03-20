@@ -24,6 +24,7 @@ import ru.profapp.ranobe.helpers.launchActivity
 
 class SettingsActivity : AppCompatPreferenceActivity() {
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -72,10 +73,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
      * Make sure to deny any unknown fragments here.
      */
     override fun isValidFragment(fragmentName: String): Boolean {
-        return (PreferenceFragment::class.java.name == fragmentName
-                || GeneralPreferenceFragment::class.java.name == fragmentName
-                || AuthPreferenceFragment::class.java.name == fragmentName
-                || DataPreferenceFragment::class.java.name == fragmentName)
+        return (PreferenceFragment::class.java.name == fragmentName || GeneralPreferenceFragment::class.java.name == fragmentName || AuthPreferenceFragment::class.java.name == fragmentName || DataPreferenceFragment::class.java.name == fragmentName)
         //|| ExportPreferenceFragment.class.getName().equals(fragmentName);
     }
 
@@ -177,12 +175,12 @@ class SettingsActivity : AppCompatPreferenceActivity() {
                 Completable.fromAction {
                     MyApp.database.textDao().cleanTable()
                 }?.andThen(Completable.fromAction { MyApp.database.ranobeImageDao().cleanTable() })
-                        ?.observeOn(AndroidSchedulers.mainThread())
-                        ?.subscribeOn(Schedulers.io())
-                        ?.subscribe({
-                            Toast.makeText(activity, resources.getText(R.string.cache_cremoved),
-                                    Toast.LENGTH_SHORT).show()
-                        }, {})
+                    ?.observeOn(AndroidSchedulers.mainThread())?.subscribeOn(Schedulers.io())
+                    ?.subscribe({
+                        Toast.makeText(activity,
+                            resources.getText(R.string.cache_cremoved),
+                            Toast.LENGTH_SHORT).show()
+                    }, {})
 
                 true
             }
@@ -190,12 +188,12 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             val favButton = findPreference(getString(R.string.ClearLocalFavButton))
             favButton.setOnPreferenceClickListener {
                 Completable.fromAction { MyApp.database.ranobeDao().cleanTable() }
-                        ?.observeOn(AndroidSchedulers.mainThread())
-                        ?.subscribeOn(Schedulers.io())
-                        ?.subscribe({
-                            Toast.makeText(activity, resources.getText(R.string.bookmarks_removed),
-                                    Toast.LENGTH_SHORT).show()
-                        }, { })
+                    ?.observeOn(AndroidSchedulers.mainThread())?.subscribeOn(Schedulers.io())
+                    ?.subscribe({
+                        Toast.makeText(activity,
+                            resources.getText(R.string.bookmarks_removed),
+                            Toast.LENGTH_SHORT).show()
+                    }, { })
 
 
                 true
@@ -203,7 +201,8 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 
             val clearReadChapterButton = findPreference(getString(R.string.ClearReadChapterButton))
             clearReadChapterButton.setOnPreferenceClickListener { preference ->
-                activity.applicationContext.getSharedPreferences(Constants.last_chapter_id_Pref, 0).edit().clear().apply()
+                activity.applicationContext.getSharedPreferences(Constants.last_chapter_id_Pref, 0)
+                    .edit().clear().apply()
                 true
             }
 
@@ -211,11 +210,12 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             prefButton.setOnPreferenceClickListener {
 
                 Completable.fromAction { MyApp.database.ranobeHistoryDao().cleanHistory() }
-                        ?.observeOn(AndroidSchedulers.mainThread())
-                        ?.subscribeOn(Schedulers.io())
-                        ?.subscribe({
-                            Toast.makeText(activity, resources.getText(R.string.history_removed), Toast.LENGTH_SHORT).show()
-                        }, { })
+                    ?.observeOn(AndroidSchedulers.mainThread())?.subscribeOn(Schedulers.io())
+                    ?.subscribe({
+                        Toast.makeText(activity,
+                            resources.getText(R.string.history_removed),
+                            Toast.LENGTH_SHORT).show()
+                    }, { })
 
 
                 true
@@ -225,11 +225,12 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             clearProgressButton.setOnPreferenceClickListener {
 
                 Completable.fromAction { MyApp.database.chapterProgressDao().cleanTable() }
-                        ?.observeOn(AndroidSchedulers.mainThread())
-                        ?.subscribeOn(Schedulers.io())
-                        ?.subscribe({
-                            Toast.makeText(activity, resources.getText(R.string.history_removed), Toast.LENGTH_SHORT).show()
-                        }, { })
+                    ?.observeOn(AndroidSchedulers.mainThread())?.subscribeOn(Schedulers.io())
+                    ?.subscribe({
+                        Toast.makeText(activity,
+                            resources.getText(R.string.history_removed),
+                            Toast.LENGTH_SHORT).show()
+                    }, { })
 
 
                 true
@@ -241,6 +242,8 @@ class SettingsActivity : AppCompatPreferenceActivity() {
     }
 
     companion object {
+
+        private val TAG = "Settings Activity"
 
         private val sChangePreferenceListener = Preference.OnPreferenceChangeListener { preference, value ->
 

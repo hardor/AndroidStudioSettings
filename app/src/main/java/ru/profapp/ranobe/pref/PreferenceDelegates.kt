@@ -5,19 +5,32 @@ import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import kotlin.reflect.KProperty
 
-class PreferenceDelegates<T>(val context: Context, val prefRes: String, private val key: String, val defaultValue: T) {
+class PreferenceDelegates<T>(val context: Context,
+                             private val prefRes: String,
+                             private val key: String,
+                             private val defaultValue: T) {
 
-    val prefs: SharedPreferences by lazy {
+    private val prefs: SharedPreferences by lazy {
         if (prefRes.isEmpty()) PreferenceManager.getDefaultSharedPreferences(context)
         else context.getSharedPreferences(prefRes, Context.MODE_PRIVATE)
     }
 
-    constructor (context: Context, prefResId: Int? = null, keyResId: Int, defaultValue: T) : this(context, if (prefResId == null) "" else context.getString(prefResId), context.getString(keyResId), defaultValue)
+    constructor (context: Context, prefResId: Int? = null, keyResId: Int, defaultValue: T) : this(
+        context,
+        if (prefResId == null) "" else context.getString(prefResId),
+        context.getString(keyResId),
+        defaultValue)
 
-    constructor (context: Context, prefResId: Int? = null, keyRes: String, defaultValue: T) : this(context, if (prefResId == null) "" else context.getString(prefResId), keyRes, defaultValue)
+    constructor (context: Context, prefResId: Int? = null, keyRes: String, defaultValue: T) : this(
+        context,
+        if (prefResId == null) "" else context.getString(prefResId),
+        keyRes,
+        defaultValue)
 
-    constructor (context: Context, prefRes: String?, keyResId: Int, defaultValue: T) : this(context, prefRes
-            ?: "", context.getString(keyResId), defaultValue)
+    constructor (context: Context, prefRes: String?, keyResId: Int, defaultValue: T) : this(context,
+        prefRes ?: "",
+        context.getString(keyResId),
+        defaultValue)
 
     operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
         return findPreferences(key, defaultValue)

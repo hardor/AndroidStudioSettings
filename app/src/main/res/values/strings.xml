@@ -1,198 +1,191 @@
 <resources>
-  <string name="app_name" translatable="false">RanobeReader Test</string>
-  <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
-  <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
-  <string name="action_settings">Settings</string>
-  <string name="title_activity_settings">Settings</string>
-  <string name="pref_header_general">General</string>
-  <string name="tl_rulate_name" translatable="false">Rulate</string>
-  <string name="text_size">Text size</string>
-  <string name="select_text_size">Select size for chapter\'s text</string>
-  <string name="login">Login</string>
-  <string name="login_email">Login/E-mail</string>
-  <string name="password">Password</string>
-  <string name="summary_login">Log in to get favorite Ranobe from your profile</string>
-  <string name="rulate_authorization">Rulate authorization</string>
-  <string name="ranoberf_authorization">Ранобэ.рф authorization</string>
-  <string name="pref_general_text_size" translatable="false">preference_text_size</string>
-  <string name="favorite">Favorite</string>
-  <string name="pref_general_app_theme" translatable="false">pref_general_app_theme</string>
-  <string name="ranobe_rf" translatable="false">Ранобэ.рф</string>
-  <string name="ranobe_hub" translatable="false">RanobeHub</string>
-  <string name="title_activity_ranobe_info" translatable="false">RanobeInfo</string>
-  <string name="chapters">Chapters</string>
-  <string name="description">Description</string>
-  <string name="additional_information">Additional Information</string>
-  <string name="title_activity_chapter_text" translatable="false"/>
-  <string name="previous">Previous</string>
-  <string name="next">Next</string>
-  <string name="logo" translatable="false">Logo</string>
-  <string name="delete_cache_summary">Delete the downloaded chapters</string>
-  <string name="delete_cache_chapters">Remove image cache and downloaded chapters</string>
-  <string name="history_removed">History was removed</string>
-  <string name="ClearCacheButton" translatable="false">ClearCacheButton</string>
-  <string name="clear_history">Remove history</string>
-  <string name="clear_history_summary">Remove information about read ranobes and chapters</string>
-  <string name="ClearHistoryButton" translatable="false">ClearHistoryButton</string>
-  <string name="search">Search</string>
-  <string name="banner_ad_unit_id" translatable="false">ca-app-pub-1483315001492731/8766185269</string>
-  <string name="Updated">Updated</string>
-  <string name="ago">ago</string>
-  <string name="load_ranobes">Loading favorite ranobe</string>
-  <string name="load_please_wait">Please wait for the load to complete</string>
-  <string name="download_chapters">Downloading selected chapters</string>
-  <string name="download_chapters_please_wait">Please wait for the download to complete</string>
-  <string name="settings">Settings</string>
-  <string name="general">General</string>
-  <string name="all_notFound">Not found</string>
-  <string name="enter_user_pass">Please enter username and password</string>
-  <string name="banner_ad_unit_main" translatable="false">ca-app-pub-1483315001492731/7756355928</string>
-  <string name="app_admob_id" translatable="false">ca-app-pub-1483315001492731~6790511196</string>
-  <string name="added_to_local">was added to local bookmarks.</string>
-  <string name="added_to_web">was added to web bookmarks.</string>
-  <string name="rulate_authorization_pref" translatable="false">rulate_authorization_pref</string>
-  <string name="ranoberf_authorization_pref" translatable="false">ranoberf_authorization_pref    </string>
-  <string name="comments">Comments</string>
-  <string name="delete_favorite_ranobes">Remove local bookmarks</string>
-  <string name="ClearLocalFavButton" translatable="false">ClearFavoriteButton</string>
-  <string name="delete_favorite_ranobes_summary">Remove all local favorite ranobes</string>
-  <string name="bookmarks_removed">Local bookmarks were removed</string>
-  <string name="saved_chapters">Saved chapters</string>
-  <string name="search_hereHint">Search Here</string>
-  <string name="feedback">Feedback</string>
-  <string name="app_theme">Dark theme</string>
-  <string name="summary_dark_theme_off">Turn off dark theme</string>
-  <string name="summary_dark_theme_on">Turn on dark theme</string>
-  <string name="download">Download</string>
-  <string name="title_activity_download">Download</string>
-  <string name="select_all">Select all</string>
-  <string name="select_none">Select none</string>
-  <string name="readyToDownload">Are you sure you want to download the marked chapters and delete not marked?</string>
-  <string name="task_finished">Task finished</string>
-  <string name="app_email" translatable="false">admin@profapp.ru</string>
-  <string name="data">Data</string>
-  <string name="day_night">Night mode</string>
-  <string name="not_exist">Not exist</string>
-  <string name="Load_from_Rulate">Load bookmarks from Rulate site</string>
-  <string name="open_in_browser" translatable="false">Open in browser</string>
-  <string name="finish" translatable="false">Finish</string>
-  <string name="error_connection">Error Connection</string>
-  <string name="no_connection_to">Cannot connection to</string>
-  <string name="browser_exist">No browsers found</string>
-  <string name="market_exist">No PlayMarket was found</string>
-  <string name="history">History</string>
-  <string name="load_ranobes_from_db">Loading favorite ranobe from database</string>
-  <string name="ranobes">Ranobes</string>
-  <string name="cache_cremoved">Cache was removed</string>
-  <string name="not_history">Bookmarks not found</string>
-  <string name="response_error">Response error</string>
-  <string name="export_import" translatable="false">Backup/Restore</string>
+    <string name="app_name" translatable="false">RanobeReader Test</string>
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="pref_header_general">General</string>
+    <string name="tl_rulate_name" translatable="false">Rulate</string>
+    <string name="text_size">Text size</string>
+    <string name="select_text_size">Select size for chapter\'s text</string>
+    <string name="login">Login</string>
+    <string name="login_email">Login/E-mail</string>
+    <string name="password">Password</string>
+    <string name="summary_login">Log in to get favorite Ranobe from your profile</string>
+    <string name="rulate_authorization">Rulate authorization</string>
+    <string name="ranoberf_authorization">Ранобэ.рф authorization</string>
+    <string name="pref_general_text_size" translatable="false">preference_text_size</string>
+    <string name="favorite">Favorite</string>
+    <string name="pref_general_app_theme" translatable="false">pref_general_app_theme</string>
+    <string name="ranobe_rf" translatable="false">Ранобэ.рф</string>
+    <string name="ranobe_hub" translatable="false">RanobeHub</string>
+    <string name="title_activity_ranobe_info" translatable="false">RanobeInfo</string>
+    <string name="chapters">Chapters</string>
+    <string name="description">Description</string>
+    <string name="additional_information">Additional Information</string>
+    <string name="title_activity_chapter_text" translatable="false" />
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
+    <string name="logo" translatable="false">Logo</string>
+    <string name="delete_cache_summary">Delete the downloaded chapters</string>
+    <string name="delete_cache_chapters">Remove image cache and downloaded chapters</string>
+    <string name="history_removed">History was removed</string>
+    <string name="ClearCacheButton" translatable="false">ClearCacheButton</string>
+    <string name="clear_history">Remove history</string>
+    <string name="clear_history_summary">Remove information about read ranobes and chapters</string>
+    <string name="ClearHistoryButton" translatable="false">ClearHistoryButton</string>
+    <string name="search">Search</string>
+    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-1483315001492731/8766185269</string>
+    <string name="Updated">Updated</string>
+    <string name="ago">ago</string>
+    <string name="load_ranobes">Loading favorite ranobe</string>
+    <string name="load_please_wait">Please wait for the load to complete</string>
+    <string name="download_chapters">Downloading selected chapters</string>
+    <string name="download_chapters_please_wait">Please wait for the download to complete</string>
+    <string name="settings">Settings</string>
+    <string name="general">General</string>
+    <string name="all_notFound">Not found</string>
+    <string name="enter_user_pass">Please enter username and password</string>
+    <string name="banner_ad_unit_main" translatable="false">ca-app-pub-1483315001492731/7756355928</string>
+    <string name="app_admob_id" translatable="false">ca-app-pub-1483315001492731~6790511196</string>
+    <string name="added_to_local">was added to local bookmarks.</string>
+    <string name="added_to_web">was added to web bookmarks.</string>
+    <string name="rulate_authorization_pref" translatable="false">rulate_authorization_pref</string>
+    <string name="ranoberf_authorization_pref" translatable="false">ranoberf_authorization_pref    </string>
+    <string name="comments">Comments</string>
+    <string name="delete_favorite_ranobes">Remove local bookmarks</string>
+    <string name="ClearLocalFavButton" translatable="false">ClearFavoriteButton</string>
+    <string name="delete_favorite_ranobes_summary">Remove all local favorite ranobes</string>
+    <string name="bookmarks_removed">Local bookmarks were removed</string>
+    <string name="saved_chapters">Saved chapters</string>
+    <string name="search_hereHint">Search Here</string>
+    <string name="feedback">Feedback</string>
+    <string name="app_theme">Dark theme</string>
+    <string name="summary_dark_theme_off">Turn off dark theme</string>
+    <string name="summary_dark_theme_on">Turn on dark theme</string>
+    <string name="download">Download</string>
+    <string name="title_activity_download">Download</string>
+    <string name="select_all">Select all</string>
+    <string name="select_none">Select none</string>
+    <string name="readyToDownload">Are you sure you want to download the marked chapters and delete not marked?</string>
+    <string name="task_finished">Task finished</string>
+    <string name="app_email" translatable="false">admin@profapp.ru</string>
+    <string name="data">Data</string>
+    <string name="day_night">Night mode</string>
+    <string name="not_exist">Not exist</string>
+    <string name="Load_from_Rulate">Load bookmarks from Rulate site</string>
+    <string name="open_in_browser" translatable="false">Open in browser</string>
+    <string name="finish" translatable="false">Finish</string>
+    <string name="error_connection">Error Connection</string>
+    <string name="no_connection_to">Cannot connection to</string>
+    <string name="browser_exist">No browsers found</string>
+    <string name="market_exist">No PlayMarket was found</string>
+    <string name="history">History</string>
+    <string name="load_ranobes_from_db">Loading favorite ranobe from database</string>
+    <string name="ranobes">Ranobes</string>
+    <string name="cache_cremoved">Cache was removed</string>
+    <string name="not_history">Bookmarks not found</string>
+    <string name="response_error">Response error</string>
+    <string name="export_import" translatable="false">Backup/Restore</string>
 
-  <!--Backup-->
+    <!--Backup-->
 
-  <string name="activity_backup_drive_desc">Backing up your data to storage allows you to restore all your readings in case you lose or change devices.</string>
-  <string name="activity_backup_success">Data successfully backed up to storage</string>
-  <string name="activity_backup_error">An error occurred  while data backed</string>
-  <string name="backup_restore_success">Successfully restored data from storage</string>
-  <string name="backup_restore_nothing">No data found for backup/restore</string>
-  <string name="activity_backup_button_backup" translatable="false">Backup now</string>
-  <string name="activity_backup_button_restore" translatable="false">Restore backup</string>
-  <string name="allow_external_storage">Please allow access to your storage</string>
-  <string name="allow" translatable="false">Allow</string>
-  <string name="error">Error</string>
-  <string name="saved_info">We automatically save all downloaded chapters to reduce the load on the sites</string>
-  <string name="ClearReadChapterButton" translatable="false">ClearReadedChapterButton</string>
-  <string name="clear_last_chapter_summary">Remove information about last read chapter in ranobe</string>
-  <string name="clear_last_chapter">Remove the label read</string>
-  <string name="volume_scroll">Scroll text using volume buttons</string>
-  <string name="summary_volume_scroll_off">Use volume buttons</string>
-  <string name="summary_volume_scroll_on">Don\'t use volume buttons</string>
-  <string name="pref_general_volume_scroll" translatable="false">pref_general_volume_scroll</string>
-  <string name="no_access">No access</string>
-  <string name="backup_restore" translatable="false">Backup/Restore</string>
-  <string name="readyToBackup">Are you sure to do backup? Your old one will be rewritten.</string>
-  <string name="readyToRestore">Are you sure to restore your backup? Your app data will be rewritten. After restore app will be automatically restarted.</string>
-  <string name="all_appCrashed">App restarted after crash. Try to clean app data if you will get crash again.</string>
-  <string name="all_uncaughtException">Uncaught Exception</string>
-  <string name="contentDescription_Logo" translatable="false">Logo</string>
-  <string name="cant_remove_web_bookmark">Can\'t remove web bookmark</string>
-  <string name="auth_error">Error authorization</string>
-  <string name="load_web_bookmarks">Load web bookmarks</string>
-  <string name="load_web_bookmarks_message">Do you want to update bookmarks from web if you logged in any sites?</string>
-  <string name="vk">vk</string>
-  <string name="all_vkUrl">https://vk.com/ranobereader</string>
-  <string name="all_Expand">expand</string>
-  <string name="byTitle">By title</string>
-  <string name="byDate">By date</string>
-  <string name="byUpdates">By updates</string>
-  <string name="byRanobeSite">By site</string>
-  <string name="pref_general_sort_order" translatable="false">pref_general_sort_order</string>
-  <string name="action_bookmark" translatable="false">bookmark</string>
-  <string name="bookmark_added">Bookmark added</string>
-  <string name="pref_general_auto_bookmark" translatable="false">pref_general_auto_bookmark</string>
-  <string name="auto_bookmark">Automatic bookmarks</string>
-  <string name="summary_auto_bookmark_on">Automatic add bookmarks</string>
-  <string name="summary_auto_bookmark_off">Add bookmarks manually</string>
-  <string name="show_all_chapter">Show all chapters</string>
-  <string name="show_only_readable">Show only readable chapters</string>
-  <string name="hide_unavailable_chapters">Hide unavailable (paid) chapters</string>
-  <string name="pref_general_hide_chapter" translatable="false">pref_general_hide_chapter</string>
-  <string name="ClearProgressButton" translatable="false">ClearProgressButton</string>
-  <string name="clear_progress_summary">Remove chapter\'s progress (text position)</string>
-  <string name="clear_progress">Remove chapter\'s progress</string>
-  <string name="site">Site</string>
-  <string name="genre">Genre</string>
+    <string name="activity_backup_drive_desc">Backing up your data to storage allows you to restore all your readings in case you lose or change devices.</string>
+    <string name="activity_backup_success">Data successfully backed up to storage. See RanobeReaderBackup.zip</string>
+    <string name="activity_backup_error">An error occurred  while data backed</string>
+    <string name="backup_restore_success">Successfully restored data from storage</string>
+    <string name="backup_restore_nothing">No data found for backup/restore</string>
+    <string name="activity_backup_button_backup" translatable="false">Backup to sdcard</string>
+    <string name="activity_backup_button_restore" translatable="false">Restore from sdcard</string>
+    <string name="activity_backup_button_backup_gdrive" translatable="false">Backup to GDrive</string>
+    <string name="activity_backup_button_restore_gdrive" translatable="false">Restore from GDrive</string>
+    <string name="allow_external_storage">Please allow access to your storage</string>
+    <string name="allow" translatable="false">Allow</string>
+    <string name="error">Error</string>
+    <string name="saved_info">We automatically save all downloaded chapters to reduce the load on the sites</string>
+    <string name="ClearReadChapterButton" translatable="false">ClearReadedChapterButton</string>
+    <string name="clear_last_chapter_summary">Remove information about last read chapter in ranobe</string>
+    <string name="clear_last_chapter">Remove the label read</string>
+    <string name="volume_scroll">Scroll text using volume buttons</string>
+    <string name="summary_volume_scroll_off">Use volume buttons</string>
+    <string name="summary_volume_scroll_on">Don\'t use volume buttons</string>
+    <string name="pref_general_volume_scroll" translatable="false">pref_general_volume_scroll</string>
+    <string name="no_access">No access</string>
+    <string name="backup_restore" translatable="false">Backup/Restore</string>
+    <string name="readyToBackup">Are you sure to do backup? Your old one will be rewritten.</string>
+    <string name="readyToRestore">Are you sure to restore your backup? Your app data will be rewritten. After restore app will be automatically restarted.</string>
+    <string name="all_appCrashed">App restarted after crash. Try to clean app data if you will get crash again.</string>
+    <string name="all_uncaughtException">Uncaught Exception</string>
+    <string name="contentDescription_Logo" translatable="false">Logo</string>
+    <string name="cant_remove_web_bookmark">Can\'t remove web bookmark</string>
+    <string name="auth_error">Error authorization</string>
+    <string name="load_web_bookmarks">Load web bookmarks</string>
+    <string name="load_web_bookmarks_message">Do you want to update bookmarks from web if you logged in any sites?</string>
+    <string name="vk">vk</string>
+    <string name="all_vkUrl">https://vk.com/ranobereader</string>
+    <string name="all_Expand">expand</string>
+    <string name="byTitle">By title</string>
+    <string name="byDate">By date</string>
+    <string name="byUpdates">By updates</string>
+    <string name="byRanobeSite">By site</string>
+    <string name="pref_general_sort_order" translatable="false">pref_general_sort_order</string>
+    <string name="action_bookmark" translatable="false">bookmark</string>
+    <string name="bookmark_added">Bookmark added</string>
+    <string name="pref_general_auto_bookmark" translatable="false">pref_general_auto_bookmark</string>
+    <string name="auto_bookmark">Automatic bookmarks</string>
+    <string name="summary_auto_bookmark_on">Automatic add bookmarks</string>
+    <string name="summary_auto_bookmark_off">Add bookmarks manually</string>
+    <string name="show_all_chapter">Show all chapters</string>
+    <string name="show_only_readable">Show only readable chapters</string>
+    <string name="hide_unavailable_chapters">Hide unavailable (paid) chapters</string>
+    <string name="pref_general_hide_chapter" translatable="false">pref_general_hide_chapter</string>
+    <string name="ClearProgressButton" translatable="false">ClearProgressButton</string>
+    <string name="clear_progress_summary">Remove chapter\'s progress (text position)</string>
+    <string name="clear_progress">Remove chapter\'s progress</string>
+    <string name="site">Site</string>
+    <string name="genre">Genre</string>
 
-  <!-- TODO: Remove or change this placeholder text -->
-  <string name="app_intro">Introduction</string>
+
+    <string name="app_intro">Introduction</string>
 
 
-  <string name="rate_dialog_title">Rate this app</string>
-  <string name="rate_dialog_message">If you enjoy using this app, would you mind taking a moment to rate it? It won\'t take more than a minute. Thanks for your support!</string>
-  <string name="rate_dialog_ok">Rate It Now</string>
-  <string name="rate_dialog_cancel">Remind Me Later</string>
-  <string name="rate_dialog_no">No, Thanks</string>
-  <string name="chapter_not_available">Chapter not available</string>
-  <string name="swipe_navigate">Use swipes for navigation</string>
-  <string name="summary_swipe_navigate_on">Left/right swipes will navigate to prev/next chapters</string>
-  <string name="summary_swipe_navigate_off">Use buttons for navigate to next/prev chapters</string>
-  <string name="pref_general_swipe_navigate" translatable="false">pref_general_swipe_navigate</string>
-  <string name="authorization">Authorization</string>
-  <string name="file_choose_ranobereader">Please choose your RanobeReaderBackup.zip file</string>
-  <string name="reading_settings">Reading settings</string>
-  <string name="font">Font</string>
-  <string name="fffffff" translatable="false">fffffff</string>
-  <string name="pref_general_font" translatable="false">pref_general_font</string>
-  <string name="pref_general_background_color" translatable="false">pref_general_background_color</string>
-  <string name="pref_general_text_color" translatable="false">pref_general_text_color</string>
+    <string name="rate_dialog_title">Rate this app</string>
+    <string name="rate_dialog_message">If you enjoy using this app, would you mind taking a moment to rate it? It won\'t take more than a minute. Thanks for your support!</string>
+    <string name="rate_dialog_ok">Rate It Now</string>
+    <string name="rate_dialog_cancel">Remind Me Later</string>
+    <string name="rate_dialog_no">No, Thanks</string>
+    <string name="chapter_not_available">Chapter not available</string>
+    <string name="swipe_navigate">Use swipes for navigation</string>
+    <string name="summary_swipe_navigate_on">Left/right swipes will navigate to prev/next chapters</string>
+    <string name="summary_swipe_navigate_off">Use buttons for navigate to next/prev chapters</string>
+    <string name="pref_general_swipe_navigate" translatable="false">pref_general_swipe_navigate</string>
+    <string name="authorization">Authorization</string>
+    <string name="file_choose_ranobereader">Please choose your RanobeReaderBackup.zip file</string>
+    <string name="reading_settings">Reading settings</string>
+    <string name="font">Font</string>
+    <string name="fffffff" translatable="false">fffffff</string>
+    <string name="pref_general_font" translatable="false">pref_general_font</string>
+    <string name="pref_general_background_color" translatable="false">pref_general_background_color</string>
+    <string name="pref_general_text_color" translatable="false">pref_general_text_color</string>
     <string name="text_color">Text Color</string>
-  <string name="background_color">Background Color</string>
-  <string name="incorrect_color">Incorrect color</string>
-  <string name="paid_chapters_skipped">%1$d paid chapters were skipped</string>
-    <string name="pref_general_lineheight_web">pref_general_lineheight_web</string>
-  <string name="line_height">Line Height</string>
+    <string name="background_color">Background Color</string>
+    <string name="incorrect_color">Incorrect color</string>
+    <string name="paid_chapters_skipped">%1$d paid chapters were skipped</string>
+    <string name="pref_general_lineheight_web" translatable="false">pref_general_lineheight_web</string>
+    <string name="line_height">Line Height</string>
+    <string name="readyToRestoreGdrive">Are you sure to restore your backup from Google Drive? Your app data will be rewritten. After restore app will be automatically restarted.</string>
+    <string name="readyToBackupGdrive">Are you sure to do backup to Google Drive? Your old one will be rewritten.</string>
+    <string name="activity_backup_gdrive_success">Backup successfully loaded!</string>
+    <string name="activity_backup_gdrive_fail">Unable to load backup!</string>
+    <string name="activity_backup_gdrive_fail_create_zip">Cannot create zip fail</string>
+    <string name="activity_backup_gdrive_fail_not_found">Backup file not found</string>
+    <string name="download_warning">A great count of downloaded chapters can cause problems in app. Please clean already readed downloaded chapters periodically.</string>
+    <string name="activity_backup_auth_failed">Cannot log in to Google Account</string>
+    <string name="activity_backup_gdrive_fail_download">Cannot download backup file from Google Drive</string>
+    <string name="activity_backup_gdrive_fail_upload">Cannot upload backup file to Google Drive</string>
+    <string name="write_and_read_rationale">You have to grant the storage permissions to save and restore your backup</string>
+    <string name="alert_perms_denied">Permissions denied</string>
+    <string name="alert_perms_denied_message">Do you want to open app settings to change your permissions?</string>
 
-  <!--<string name="tl_rulate_web" translatable="false">Rulate Web</string>-->
-  <!--<string name="ranoberf_web" translatable="false">Ранобэ.рф Web</string>-->
-  <!--<string name="pref_general_hide_chapter" translatable="false">        preference_hide_unavailable_chapters    </string>-->
-  <!--<string name="load_all">Load all</string>-->
-  <!--<string name="login_failed">Login failed..</string>-->
-  <!--<string name="pref_general_auto_save" translatable="false">pref_general_auto_save</string>-->
-  <!--<string name="auto_save_text">Automatically save text</string>-->
-  <!--<string name="summary_save_text_on">Save text when opening chapter</string>-->
-  <!--<string name="summary_save_text_off">Save text only manually</string>-->
-  <!--<string name="action_bookmark">Bookmark</string>-->
-
-  <!--<string name="email" translatable="false">e-mail</string>-->
-  <!---->
-  <!--<string name="auth_succes">Authorization success</string>-->
-  <!--<string name="update_to_remove">Please update favorites to remove this bookmark</string>-->
-  <!--<string name="add_to_favorite">Add to favorite</string>-->
-  <!--<string name="sort">Sort</string>-->
-  <!--<string name="Load_local_bookmarks">Load local bookmarks</string>-->
-  <!--<string name="Load_from_RanobeRf">Load bookmarks from Ранобэ.рф site</string>-->
-  <!--<string name="Update_ranobe_info">Update ranobes information</string>-->
-  <!--<string name="date_format">MM/dd/yyyy HH:mm</string>-->
-  <!--<string name="Load_from_Local">Load local bookmarks</string>-->
 
 </resources>

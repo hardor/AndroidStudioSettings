@@ -8,10 +8,11 @@ import com.google.android.gms.ads.AdView
 /**
  * Lifecycle manager for [AdView]
  */
-class AdViewManager constructor( private val lifeCycle : Lifecycle, private val adView : AdView ) : LifecycleObserver {
+class AdViewManager constructor(private val lifeCycle: Lifecycle, private val adView: AdView) :
+    LifecycleObserver {
 
     init {
-        lifeCycle.addObserver( this )
+        lifeCycle.addObserver(this)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
@@ -27,6 +28,6 @@ class AdViewManager constructor( private val lifeCycle : Lifecycle, private val 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun destroy() {
         adView.destroy()
-        lifeCycle.removeObserver( this )
+        lifeCycle.removeObserver(this)
     }
 }

@@ -20,13 +20,16 @@ import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.R
 import ru.profapp.ranobe.adapters.ExpandableDownloadRecyclerViewAdapter
 import ru.profapp.ranobe.common.MyExceptionHandler
-import ru.profapp.ranobe.helpers.LogType
 import ru.profapp.ranobe.helpers.launchActivity
 import ru.profapp.ranobe.helpers.logError
 import ru.profapp.ranobe.models.Chapter
 import ru.profapp.ranobe.models.Ranobe
 
 class DownloadActivity : AppCompatActivity() {
+
+    companion object {
+        private val TAG = "Download Activity"
+    }
 
     private lateinit var progressBar: ProgressBar
     private var chapterList: List<Chapter> = listOf()
@@ -52,13 +55,12 @@ class DownloadActivity : AppCompatActivity() {
             R.id.download -> {
                 val builder = AlertDialog.Builder(this@DownloadActivity)
                 builder.setMessage(getString(R.string.readyToDownload))
-                        .setIcon(R.drawable.ic_info_black_24dp)
-                        .setCancelable(true)
-                        .setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
-                        .setPositiveButton("OK") { dialog, _ ->
-                            dialog.cancel()
-                            download()
-                        }
+                    .setIcon(R.drawable.ic_info_black_24dp).setCancelable(true)
+                    .setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
+                    .setPositiveButton("OK") { dialog, _ ->
+                        dialog.cancel()
+                        download()
+                    }
 
                 val alert = builder.create()
                 alert.show()
@@ -98,36 +100,30 @@ class DownloadActivity : AppCompatActivity() {
 
         progressDialog.progress = 0
 
-        val running = Observable.fromIterable(chapterList.asReversed())
-                .map { chapter ->
-                    if (!chapter.isChecked) {
+        val running = Observable.fromIterable(chapterList.asReversed()).map { chapter ->
+            if (!chapter.isChecked) {
 
-                        MyApp.database.textDao().delete(chapter.url)
-                        chapter.text = ""
-                        chapter.downloaded = false
+                MyApp.database.textDao().delete(chapter.url)
+                chapter.text = ""
+                chapter.downloaded = false
 
-                    } else {
-                        chapter.downloaded = chapterText.GetChapterText(chapter, context).onErrorReturn { error ->
-                            logError(LogType.ERROR, "download", "", error, false)
-                            return@onErrorReturn false
-                        }.subscribeOn(Schedulers.io()).blockingGet()
-                    }
-                    return@map true
-                }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map {
-                    progressDialog.incrementProgressBy(1)
-                    return@map it
-                }
-                .doOnComplete { progressDialog.setMessage(getString(R.string.task_finished)) }
-                .doOnError { progressDialog.setMessage(getString(R.string.error)) }
-                .doFinally {
-                    progressDialog.getButton(BUTTON_NEGATIVE).setText(R.string.finish)
-                }
-                .subscribe({}, { error ->
-                    logError(LogType.ERROR, "download", "", error)
-                })
+            } else {
+                chapter.downloaded = chapterText.GetChapterText(chapter, context)
+                    .onErrorReturn { error ->
+                        logError(TAG, "", error, false)
+                        return@onErrorReturn false
+                    }.subscribeOn(Schedulers.io()).blockingGet()
+            }
+            return@map true
+        }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).map {
+            progressDialog.incrementProgressBy(1)
+            return@map it
+        }.doOnComplete { progressDialog.setMessage(getString(R.string.task_finished)) }
+            .doOnError { progressDialog.setMessage(getString(R.string.error)) }.doFinally {
+                progressDialog.getButton(BUTTON_NEGATIVE).setText(R.string.finish)
+            }.subscribe({}, { error ->
+                logError(TAG, "", error)
+            })
         compositeDisposable.add(running)
 
     }
@@ -173,39 +169,34 @@ class DownloadActivity : AppCompatActivity() {
 
         progressBar.visibility = View.VISIBLE
 
-        val request = MyApp.database.textDao().getTextByRanobeUrl(currentRanobe.url)
-                .map { result ->
-                    for (chapter in chapterList) {
-                        if (!chapter.downloaded) {
+        val request = MyApp.database.textDao().getTextByRanobeUrl(currentRanobe.url).map { result ->
+            for (chapter in chapterList) {
+                if (!chapter.downloaded) {
 
-                            if (!result.firstOrNull { it -> it.chapterUrl == chapter.url }?.text.isNullOrBlank()) {
-                                chapter.downloaded = true
-                                chapter.isChecked = true
-                            } else {
-                                chapter.downloaded = false
-                                chapter.isChecked = false
-                            }
-
-                        } else {
-                            chapter.isChecked = true
-                        }
+                    if (!result.firstOrNull { it.chapterUrl == chapter.url }?.text.isNullOrBlank()) {
+                        chapter.downloaded = true
+                        chapter.isChecked = true
+                    } else {
+                        chapter.downloaded = false
+                        chapter.isChecked = false
                     }
 
-                    adapter = ExpandableDownloadRecyclerViewAdapter(chapterList)
-                    return@map true
-                }.onErrorReturn { false }
-
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doFinally {
-                    progressBar.visibility = View.GONE
+                } else {
+                    chapter.isChecked = true
                 }
-                .subscribe({
-                    if (it)
-                        recyclerView.adapter = adapter
-                }, {
+            }
 
-                })
+            adapter = ExpandableDownloadRecyclerViewAdapter(chapterList)
+            return@map true
+        }.onErrorReturn { false }
+
+            .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).doFinally {
+                progressBar.visibility = View.GONE
+            }.subscribe({
+                if (it) recyclerView.adapter = adapter
+            }, {
+
+            })
         compositeDisposable.add(request)
     }
 

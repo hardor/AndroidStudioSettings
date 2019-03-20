@@ -12,10 +12,7 @@ interface IRanobeHubApiService {
 
     @Headers("X-Requested-With: XMLHttpRequest")
     @GET("/api/feed")
-    fun GetReadyBooks(
-            @Query("page") page: Int?=null,
-            @Header("X-CSRF-TOKEN") token: String
-    ): Single<RanobeHubReadyGson>
+    fun GetReadyBooks(@Query("page") page: Int? = null, @Header("X-CSRF-TOKEN") token: String): Single<RanobeHubReadyGson>
 
     @GET("/ranobe")
     fun GetReady(): Single<Response<ResponseBody>>
@@ -29,9 +26,7 @@ interface IRanobeHubApiService {
 
     @Headers("Accept:text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
     @GET("/ranobe/{ranobe_id}/{volume_num}/{chapter_num}")
-    fun GetChapterText(@Path("ranobe_id") ranobe_id: String,
-                       @Path("volume_num") volume_num: String,
-                       @Path("chapter_num") chapter_num: String
-    ): Single<Response<ResponseBody>>
+    fun GetChapterText(@Path("ranobe_id") ranobe_id: String, @Path("volume_num") volume_num: String, @Path(
+        "chapter_num") chapter_num: String): Single<Response<ResponseBody>>
 
 }

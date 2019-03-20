@@ -14,13 +14,15 @@ fun String.removeTags(): String {
     return Html.fromHtml(this).toString().replace("\n\n", "\n")
 }
 
-fun String.CleanString(): String {
+fun String.cleanString(): String {
     return this.replace("[^a-zA-Z0-9]".toRegex(), "")
 }
 
+fun String.cleanFileName(): String {
+    return this.replace("[\\\\~#%&*{}\\/:<>?|\\\"-\\. ]".toRegex(), "")
+}
+
 fun Double.pretty(): String {
-    return if (this == this.toLong().toDouble())
-        String.format("%d", this.toLong())
-    else
-        String.format("%s", this)
+    return if (this == this.toLong().toDouble()) String.format("%d", this.toLong())
+    else String.format("%s", this)
 }

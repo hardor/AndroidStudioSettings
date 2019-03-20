@@ -1,4 +1,4 @@
-package ru.profapp.ranobe.DAO
+package ru.profapp.ranobe.dao
 
 import androidx.room.*
 import io.reactivex.Single

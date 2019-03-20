@@ -6,7 +6,10 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.view.*
+import android.view.KeyEvent
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
@@ -42,6 +45,10 @@ import kotlin.math.abs
 
 class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.DialogListener {
 
+    companion object {
+        private val TAG = "ChapterText Activity"
+    }
+
     override fun onDialogPositiveClick(dialog: DialogFragment) {
 
 
@@ -53,7 +60,7 @@ class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.D
             this.recreate()
         }
 
-        initWebView();
+        initWebView()
     }
 
     lateinit var mCurrentChapter: Chapter
@@ -78,12 +85,9 @@ class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.D
             (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                     // Set the content to appear under the system bars so that the
                     // content doesn't resize when the system bars hide and show.
-                    or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    or View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                     // Hide the nav bar and status bar
-                    or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                    or View.SYSTEM_UI_FLAG_FULLSCREEN)
+                    or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN)
 
     }
 
@@ -120,17 +124,11 @@ class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.D
 
         setContentView(R.layout.activity_chapter_text)
 
-        val apprate = AppRate.with(this)
-            .setStoreType(StoreType.GOOGLEPLAY)
-            .setTimeToWait(
-                Time.DAY,
-                10
-            ) // default is 10 days, 0 means install millisecond, 10 means app is launched 10 or more time units later than installation
+        val apprate = AppRate.with(this).setStoreType(StoreType.GOOGLEPLAY).setTimeToWait(Time.DAY,
+            10) // default is 10 days, 0 means install millisecond, 10 means app is launched 10 or more time units later than installation
             .setLaunchTimes(10)           // default is 10, 3 means app is launched 3 or more times
-            .setRemindTimeToWait(
-                Time.DAY,
-                2
-            ) // default is 1 day, 1 means app is launched 1 or more time units after neutral button clicked
+            .setRemindTimeToWait(Time.DAY,
+                2) // default is 1 day, 1 means app is launched 1 or more time units after neutral button clicked
             .setRemindLaunchesNumber(1)  // default is 0, 1 means app is launched 1 or more times after neutral button clicked
             .setSelectedAppLaunches(1)   // default is 1, 1 means each launch, 2 means every 2nd launch, 3 means every 3rd launch, etc
             .setShowLaterButton(true)           // default is true, true means to show the Neutral button ("Remind me later").
@@ -138,7 +136,7 @@ class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.D
             .setVersionCodeCheck(false)          // default is false, true means to re-enable the Rate Dialog if a new version of app with different version code is installed
             .setVersionNameCheck(false)          // default is false, true means to re-enable the Rate Dialog if a new version of app with different version name is installed
 
-            .setOnClickButtonListener { it ->
+            .setOnClickButtonListener {
                 when (it.toInt()) {
                     DialogInterface.BUTTON_NEGATIVE -> logMessage(LogType.INFO, "Rate", "NEGATIVE")
                     DialogInterface.BUTTON_NEUTRAL -> logMessage(LogType.INFO, "Rate", "NEUTRAL")
@@ -177,7 +175,7 @@ class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.D
 
         currentRanobe = MyApp.ranobe!!
 
-        val tempList = currentRanobe.chapterList.filter { it -> it.canRead }
+        val tempList = currentRanobe.chapterList.filter { it.canRead }
 
         mChapterList = if (tempList.any()) {
             tempList
@@ -250,9 +248,6 @@ class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.D
         textWebview.setBackgroundColor(resources.getColor(R.color.webViewBackground))
 
         textWebview.setOnTouchListener(object : OnSwipeTouchListener(applicationContext) {
-            override fun onTouch(v: View, event: MotionEvent): Boolean {
-                return super.onTouch(v, event)
-            }
 
             override fun onSwipeLeft() {
                 if (MyApp.preferencesManager.useSwipeForNavigate) {
@@ -283,11 +278,11 @@ class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.D
 
         if (!currentRanobe.url.isBlank() && !currentRanobe.title.isBlank()) {
             val request = Completable.fromAction {
-                MyApp.database.ranobeHistoryDao().insertNewRanobe(
-                    RanobeHistory(currentRanobe.url, currentRanobe.title, currentRanobe.description)
-                )
+                MyApp.database.ranobeHistoryDao().insertNewRanobe(RanobeHistory(currentRanobe.url,
+                    currentRanobe.title,
+                    currentRanobe.description))
             }.subscribeOn(Schedulers.io()).subscribe({}, { error ->
-                logError(LogType.ERROR, "", "", error, false)
+                logError(TAG, "", error, false)
             })
             compositeDisposable.add(request)
         }
@@ -321,8 +316,8 @@ class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.D
             }
         }
 
-        bottomNavigationView.menu.findItem(R.id.navigation_prev).isEnabled =
-            (chapterIndex < mChapterCount - 1)
+        bottomNavigationView.menu.findItem(R.id.navigation_prev)
+            .isEnabled = (chapterIndex < mChapterCount - 1)
         bottomNavigationView.menu.findItem(R.id.navigation_next).isEnabled = (chapterIndex > 0)
 
     }
@@ -331,70 +326,47 @@ class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.D
 
         webViewProgressBar.visibility = View.VISIBLE
 
-        val style = ("style = \"text-align: justify; text-indent: 20px;font-size: "
-                + MyApp.preferencesManager.fontSize + "px;"
-                + "line-height: ${MyApp.preferencesManager.lineHeightCss/10};"
-                + "font-family: MyFont;"
-                + "color: " + String.format(
+        val style = ("style = \"text-align: justify; text-indent: 20px;font-size: " + MyApp.preferencesManager.fontSize + "px;" + "line-height: ${MyApp.preferencesManager.lineHeightCss / 10f};" + "font-family: MyFont;" + "color: " + String.format(
             "#%06X",
             0xFFFFFF and (MyApp.preferencesManager.textColor
-                ?: resources.getColor(R.color.webViewText))
-        )
-                + "; background-color: " + String.format(
+                ?: resources.getColor(R.color.webViewText))) + "; background-color: " + String.format(
             "#%06X",
             0xFFFFFF and (MyApp.preferencesManager.backgroundColor
-                ?: resources.getColor(R.color.webViewBackground))
-        )
-                + "\"")
+                ?: resources.getColor(R.color.webViewBackground))) + "\"")
 
-        val request = GetChapterText()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeOn(Schedulers.io())
-            .subscribe({ result ->
+        val request = GetChapterText().observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io()).subscribe({ result ->
                 if (result) {
                     putToReaded()
                 }
 
-                val summary =
-                    ("<html><style>img{display: inline;height: auto;max-width: 90%;} @font-face { font-family: MyFont;src: url('file:///android_asset/fonts/" + MyApp.preferencesManager.font + "');}</style><body "
-                            + style + ">"
-                            + "<b>" + mCurrentChapter.title + "</b>" + "</br>"
-                            + (mCurrentChapter.text
-                        ?: getString(R.string.no_access)) + "</body></html>")
+                val summary = ("<html><style>img{display: inline;height: auto;max-width: 90%;} @font-face { font-family: MyFont;src: url('file:///android_asset/fonts/" + MyApp.preferencesManager.font + "');}</style><body " + style + ">" + "<b>" + mCurrentChapter.title + "</b>" + "</br>" + (mCurrentChapter.text
+                    ?: getString(R.string.no_access)) + "</body></html>")
 
-                textWebview.loadDataWithBaseURL(
-                    "https:\\\\" + mCurrentChapter.url + "/",
+                textWebview.loadDataWithBaseURL("https:\\\\" + mCurrentChapter.url + "/",
                     summary,
                     "text/html",
                     "UTF-8",
-                    null
-                )
+                    null)
 
             }, { error ->
 
-                if (error is IOException)
-                    Toast.makeText(mContext, R.string.error_connection, Toast.LENGTH_SHORT).show()
-                else
-                    logError(
-                        LogType.ERROR,
-                        "GetChapterText",
-                        mCurrentChapter.url,
-                        error.fillInStackTrace()
-                    )
+                if (error is IOException) Toast.makeText(mContext,
+                    R.string.error_connection,
+                    Toast.LENGTH_SHORT).show()
+                else logCrashlystics(LogType.ERROR,
+                    "GetChapterText",
+                    mCurrentChapter.url,
+                    error.fillInStackTrace())
 
-                val summary =
-                    ("<html><style>img{display: inline;height: auto;max-width: 90%;}</style><body "
-                            + style + ">"
-                            + "<b>" + mCurrentChapter.title + "</b>" + "</br>"
-                            + (mCurrentChapter.text ?: "Нет доступа") + "</body></html>")
+                val summary = ("<html><style>img{display: inline;height: auto;max-width: 90%;}</style><body " + style + ">" + "<b>" + mCurrentChapter.title + "</b>" + "</br>" + (mCurrentChapter.text
+                    ?: "Нет доступа") + "</body></html>")
 
-                textWebview.loadDataWithBaseURL(
-                    "https:\\\\" + mCurrentChapter.url + "/",
+                textWebview.loadDataWithBaseURL("https:\\\\" + mCurrentChapter.url + "/",
                     summary,
                     "text/html",
                     "UTF-8",
-                    null
-                )
+                    null)
 
             })
 
@@ -407,7 +379,7 @@ class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.D
         when (item.itemId) {
             android.R.id.home -> onBackPressed()
             R.id.action_settings -> {
-                launchActivity<SettingsActivity> ()
+                launchActivity<SettingsActivity>()
             }
 
             R.id.navigation_open_in_browser -> {
@@ -422,10 +394,9 @@ class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.D
                 }
 
                 val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                if (browserIntent.resolveActivity(this.packageManager) != null)
-                    startActivity(browserIntent)
-                else
-                    Toast.makeText(this, R.string.browser_exist, Toast.LENGTH_SHORT).show()
+                if (browserIntent.resolveActivity(this.packageManager) != null) startActivity(
+                    browserIntent)
+                else Toast.makeText(this, R.string.browser_exist, Toast.LENGTH_SHORT).show()
 
             }
             R.id.navigation_reading_settings -> {
@@ -474,36 +445,31 @@ class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.D
                     Completable.fromAction {
                         MyApp.database.textDao().delete(mCurrentChapter.url)
                     }?.subscribeOn(Schedulers.io())?.subscribe({}, { error ->
-                        logError(LogType.ERROR, "", "", error, false)
+                        logError(TAG, "", error, false)
                     })
 
                     return@map false
                 }
 
-            }.switchIfEmpty(Single.just(false))
-                .flatMap { itf ->
+            }.switchIfEmpty(Single.just(false)).flatMap { itf ->
 
-                    if (!itf) {
-                        return@flatMap GetChapterTextFromWeb(mCurrentChapter.ranobeUrl)
-                            .map {
-                                if (!mCurrentChapter.text.isNullOrBlank() && it && !mCurrentChapter.text.equals(
-                                        "null"
-                                    )
-                                ) {
-                                    Completable.fromAction {
-                                        MyApp.database.textDao()
-                                            .insert(TextChapter(mCurrentChapter))
-                                    }?.subscribeOn(Schedulers.io())?.subscribe({}, { error ->
-                                        logError(LogType.ERROR, "", "", error, false)
-                                    })
+                if (!itf) {
+                    return@flatMap GetChapterTextFromWeb(mCurrentChapter.ranobeUrl).map {
+                        if (!mCurrentChapter.text.isNullOrBlank() && it && !mCurrentChapter.text.equals(
+                                "null")) {
+                            Completable.fromAction {
+                                MyApp.database.textDao().insert(TextChapter(mCurrentChapter))
+                            }?.subscribeOn(Schedulers.io())?.subscribe({}, { error ->
+                                logError(TAG, "", error, false)
+                            })
 
-                                }
-                                return@map it
-                            }
+                        }
+                        return@map it
                     }
-
-                    return@flatMap Single.just(itf)
                 }
+
+                return@flatMap Single.just(itf)
+            }
 
         } else {
             Single.just(true)
@@ -531,13 +497,12 @@ class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.D
         if (!mCurrentChapter.text.isNullOrBlank()) {
             val progress = pr ?: calculateProgression() ?: 0f
             val request = Completable.fromAction {
-                MyApp.database.chapterProgressDao().insert(
-                    ChapterProgress(mCurrentChapter.url, mCurrentChapter.ranobeUrl, progress)
-                )
-            }.subscribeOn(Schedulers.io())
-                .subscribe({}, { error ->
-                    logError(LogType.ERROR, "saveProgressToDb", "", error, false)
-                })
+                MyApp.database.chapterProgressDao().insert(ChapterProgress(mCurrentChapter.url,
+                    mCurrentChapter.ranobeUrl,
+                    progress))
+            }.subscribeOn(Schedulers.io()).subscribe({}, { error ->
+                logError(TAG, "", error, false)
+            })
             compositeDisposable.add(request)
         }
     }
@@ -545,19 +510,15 @@ class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.D
     private fun saveHistoryToDb() {
         if (!mCurrentChapter.text.isNullOrBlank()) {
             val request = Completable.fromAction {
-                MyApp.database.ranobeHistoryDao().insertNewChapter(
-                    ChapterHistory(
-                        mCurrentChapter.url,
+                MyApp.database.ranobeHistoryDao()
+                    .insertNewChapter(ChapterHistory(mCurrentChapter.url,
                         mCurrentChapter.title,
                         mCurrentChapter.ranobeName,
                         mCurrentChapter.ranobeUrl,
-                        mCurrentChapter.index
-                    )
-                )
-            }.subscribeOn(Schedulers.io())
-                .subscribe({}, { error ->
-                    logError(LogType.ERROR, "saveHistoryToDb", "", error, false)
-                })
+                        mCurrentChapter.index))
+            }.subscribeOn(Schedulers.io()).subscribe({}, { error ->
+                logError(TAG, "", error, false)
+            })
             compositeDisposable.add(request)
         }
     }
@@ -573,14 +534,10 @@ class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.D
                 mChapterList[prevChapterIndex].text = null
 
                 if (abs(mChapterList[prevChapterIndex].index - mChapterList[chapterIndex].index) > 1) {
-                    Toast.makeText(
-                        mContext,
-                        getString(
-                            R.string.paid_chapters_skipped,
-                           abs(mChapterList[prevChapterIndex].index - mChapterList[chapterIndex].index)
-                        ),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(mContext,
+                        getString(R.string.paid_chapters_skipped,
+                            abs(mChapterList[prevChapterIndex].index - mChapterList[chapterIndex].index)),
+                        Toast.LENGTH_SHORT).show()
                 }
 
             } catch (e: ArrayIndexOutOfBoundsException) {
@@ -592,8 +549,8 @@ class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.D
             chapterIndex = prevChapterIndex
         }
 
-        bottomNavigationView.menu.findItem(R.id.navigation_prev).isEnabled =
-            (chapterIndex < mChapterCount - 1)
+        bottomNavigationView.menu.findItem(R.id.navigation_prev)
+            .isEnabled = (chapterIndex < mChapterCount - 1)
         bottomNavigationView.menu.findItem(R.id.navigation_next).isEnabled = (chapterIndex > 0)
 
     }
@@ -654,8 +611,8 @@ class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.D
 
     override fun onStart() {
         super.onStart()
-        bottomNavigationView.menu.findItem(R.id.navigation_bookmark).isVisible =
-            !MyApp.preferencesManager.isAutoAddBookmark
+        bottomNavigationView.menu.findItem(R.id.navigation_bookmark)
+            .isVisible = !MyApp.preferencesManager.isAutoAddBookmark
     }
 
     override fun onPause() {
@@ -674,11 +631,9 @@ class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.D
     }
 
 
-    private fun updateView(
-        appBar: AppBarLayout,
-        bottomView: BottomNavigationView,
-        fullyExpanded: Boolean
-    ) {
+    private fun updateView(appBar: AppBarLayout,
+                           bottomView: BottomNavigationView,
+                           fullyExpanded: Boolean) {
         if (fullyExpanded) {
             hideSystemUI()
             appBar.visibility = View.GONE
