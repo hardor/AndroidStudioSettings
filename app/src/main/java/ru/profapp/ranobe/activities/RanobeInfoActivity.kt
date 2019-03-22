@@ -70,7 +70,12 @@ class RanobeInfoActivity : AppCompatActivity() {
 
         MyApp.component.inject(this)
 
-        setContentView(R.layout.activity_ranobe_info)
+        if( MyApp.preferencesManager.isPremium ){
+            setContentView(R.layout.activity_ranobe_info_premium)
+        }else{
+            setContentView(R.layout.activity_ranobe_info)
+        }
+
         Thread.setDefaultUncaughtExceptionHandler(MyExceptionHandler(this))
 
         mContext = this@RanobeInfoActivity
@@ -130,8 +135,10 @@ class RanobeInfoActivity : AppCompatActivity() {
         rInfoTabHost.addTab(tabSpec)
         rInfoTabHost.currentTab = 0
 
-        AdViewManager(lifecycle, rInfoAdView)
-        rInfoAdView.loadAd(adRequest)
+        if(!MyApp.preferencesManager.isPremium){
+            AdViewManager(lifecycle, rInfoAdView)
+            rInfoAdView.loadAd(adRequest)
+        }
     }
 
 
