@@ -144,4 +144,6 @@
   <string name="write_and_read_rationale">Вы должны предоставить разрешения для сохранения и загрузки вашего бекапа</string>
   <string name="alert_perms_denied">Разрешения не предоставлены</string>
   <string name="alert_perms_denied_message">Хотите открыть настройки приложения для изменения ваших разрешений?</string>
+    <string name="premium">Premium</string>
+    <string name="payment_ads_remove">Премиум</string>
 </resources>

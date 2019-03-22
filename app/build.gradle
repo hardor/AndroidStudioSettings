@@ -1,7 +1,7 @@
 ext {
 
     majVersion = 1
-    minVersion = 28
+    minVersion = 30
 
     calculateVersionName = {
         return "${majVersion}.${minVersion}"
@@ -89,6 +89,7 @@ android {
     sourceSets {
         androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
     }
+
 }
 
 dependencies {
@@ -155,19 +156,29 @@ dependencies {
 
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1"
+
     // Google Auth and Drive Rest v3 API
-    implementation "com.google.api-client:google-api-client-android:1.23.0"
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
+    implementation ("com.google.api-client:google-api-client-android:1.23.0")
+    {
+        exclude group: 'org.apache.httpcomponents'
+    }
     implementation ("com.google.api-client:google-api-client:1.23.0") {
-       // exclude group: 'org.apache.httpcomponents'
+        exclude group: 'org.apache.httpcomponents'
     }
     implementation ("com.google.apis:google-api-services-drive:v3-rev110-1.23.0") {
-       // exclude group: 'org.apache.httpcomponents'
+        exclude group: 'org.apache.httpcomponents'
     }
-    implementation 'com.google.oauth-client:google-oauth-client-jetty:1.23.0'
+    implementation ('com.google.oauth-client:google-oauth-client-jetty:1.23.0')
+    {
+        exclude group: 'org.apache.httpcomponents'
+    }
 
     // EasyPermissions
     implementation 'pub.devrel:easypermissions:3.0.0'
+
+    // Billing
+    implementation 'com.android.billingclient:billing:1.2.2'
 
 }
 

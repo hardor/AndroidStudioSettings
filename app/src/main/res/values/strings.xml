@@ -186,6 +186,9 @@
     <string name="write_and_read_rationale">You have to grant the storage permissions to save and restore your backup</string>
     <string name="alert_perms_denied">Permissions denied</string>
     <string name="alert_perms_denied_message">Do you want to open app settings to change your permissions?</string>
+    <string name="payment_ads_remove">Buy premium</string>
+    <string name="pref_general_is_premium" translatable="false">pref_general_is_premium</string>
+    <string name="premium">Premium</string>
 
 
 </resources>

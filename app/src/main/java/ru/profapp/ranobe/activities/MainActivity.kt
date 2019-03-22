@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageButton
@@ -16,6 +17,10 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import com.android.billingclient.api.BillingClient
+import com.android.billingclient.api.Purchase
+import com.android.billingclient.api.SkuDetails
+import com.android.billingclient.api.SkuDetailsResponseListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
@@ -27,6 +32,8 @@ import kotlinx.android.synthetic.main.content_main.*
 import ru.profapp.ranobe.BuildConfig
 import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.R
+import ru.profapp.ranobe.billing.BillingConstants
+import ru.profapp.ranobe.billing.BillingManager
 import ru.profapp.ranobe.common.Constants
 import ru.profapp.ranobe.common.MyExceptionHandler
 import ru.profapp.ranobe.fragments.HistoryFragment
@@ -41,6 +48,8 @@ import ru.profapp.ranobe.network.repositories.RanobeRfRepository
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+
+    private lateinit var mBillingManager: BillingManager
 
     private var currentTheme = ThemeHelper.sTheme
 
@@ -59,7 +68,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         MyApp.isApplicationInitialized = true
         MyApp.component.inject(this)
 
-        setContentView(R.layout.activity_main)
+        if (MyApp.preferencesManager.isPremium) {
+            setContentView(R.layout.activity_main_premium)
+        } else {
+            setContentView(R.layout.activity_main)
+        }
+
         Thread.setDefaultUncaughtExceptionHandler(MyExceptionHandler(this))
 
         Thread {
@@ -84,8 +98,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
 
-        AdViewManager(lifecycle, adView)
-        adView.loadAd(adRequest)
+        if (!MyApp.preferencesManager.isPremium) {
+            AdViewManager(lifecycle, adView)
+            adView.loadAd(adRequest)
+        }
+
 
         setSupportActionBar(toolbar)
 
@@ -181,6 +198,73 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         val navText: TextView = navigationView.getHeaderView(0).findViewById(R.id.navText)
         navText.text = "${getString(R.string.app_name)} ${BuildConfig.VERSION_NAME}"
+
+
+        // Create and initialize BillingManager which talks to BillingLibrary
+        mBillingManager = BillingManager(this, object : BillingManager.BillingUpdatesListener {
+            override fun onBillingClientSetupFinished() {
+
+                @BillingClient.SkuType val billingType = BillingClient.SkuType.INAPP
+                mBillingManager.querySkuDetailsAsync(billingType,
+                    BillingConstants.getSkuList(billingType),
+                    object : SkuDetailsResponseListener {
+                        override fun onSkuDetailsResponse(responseCode: Int,
+                                                          skuDetailsList: MutableList<SkuDetails>?) {
+                            if (responseCode != BillingClient.BillingResponse.OK) {
+                                Log.w(TAG,
+                                    "Unsuccessful query for type: $billingType. Error code: $responseCode");
+                            } else if (skuDetailsList != null && skuDetailsList.size > 0) {
+
+                            }
+                        }
+
+
+                    });
+            }
+
+            override fun onConsumeFinished(token: String, result: Int) {
+                Log.d(TAG,
+                    "Consumption finished. Purchase token: " + token + ", result: " + result);
+
+                // Note: We know this is the SKU_GAS, because it's the only one we consume, so we don't
+                // check if token corresponding to the expected sku was consumed.
+                // If you have more than one sku, you probably need to validate that the token matches
+                // the SKU you expect.
+                // It could be done by maintaining a map (updating it every time you call consumeAsync)
+                // of all tokens into SKUs which were scheduled to be consumed and then looking through
+                // it here to check which SKU corresponds to a consumed token.
+                if (result == BillingClient.BillingResponse.OK) {
+                    // Successfully consumed, so we apply the effects of the item in our
+                    // game world's logic, which in our case means filling the gas tank a bit
+                    Log.d(TAG, "Consumption successful. Provisioning.");
+
+                } else {
+                    Log.w(TAG, "Consumption error. result: " + result);
+
+                }
+
+                Log.d(TAG, "End consumption flow.");
+            }
+
+            override fun onPurchasesUpdated(purchases: List<Purchase>) {
+
+                val prevPremiumStatus = MyApp.preferencesManager.isPremium
+                for (purchase in purchases) {
+                    when (purchase.sku) {
+
+                        BillingConstants.SKU_PREMIUM -> {
+                            mBillingManager.consumeAsync(purchase.purchaseToken);
+                            MyApp.preferencesManager.isPremium = true
+                        }
+
+                    }
+                }
+                if (prevPremiumStatus != MyApp.preferencesManager.isPremium) this@MainActivity.recreate()
+
+            }
+
+        })
+
     }
 
     private fun initSettingPreference() {
@@ -286,6 +370,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 EasyFeedback.Builder(this).withEmail("admin@profapp.ru").withSystemInfo().build()
                     .start()
             }
+            R.id.nav_ads_remove -> {
+                mBillingManager.initiatePurchaseFlow(BillingConstants.SKU_PREMIUM,
+                    BillingClient.SkuType.INAPP)
+            }
         }
 
         if (fragment != null) {
@@ -301,6 +389,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer.closeDrawer(GravityCompat.START)
         return true
     }
+
 
     override fun onSaveInstanceState(outState: Bundle) {
         // Make sure to call the super method so that the states of our views are saved
@@ -323,6 +412,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             recreate()
         }
 
+
     }
 
     override fun onPause() {
@@ -333,11 +423,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     companion object {
         const val MY_FRAGMENT = "MY_FRAGMENT"
-
-
         private val TAG = "Main Activity"
-
-
     }
 
 }

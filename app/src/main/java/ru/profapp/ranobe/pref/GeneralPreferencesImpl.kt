@@ -110,6 +110,11 @@ class GeneralPreferencesImpl(private val context: Context) : GeneralPreferences 
         R.string.pref_general_lineheight_web,
         12)
 
+    override var isPremium: Boolean by PreferenceDelegates<Boolean>(context,
+        "",
+        R.string.pref_general_is_premium,
+        false)
+
 }
 
 interface GeneralPreferences {
@@ -128,6 +133,7 @@ interface GeneralPreferences {
     var textColor: Int?
     var backgroundColor: Int?
     var lineHeightCss: Int
+    var isPremium: Boolean
 
 
     fun setLastChapterUrl(ranobeUrl: String, chapterUrl: String)
