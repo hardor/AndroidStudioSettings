@@ -189,6 +189,8 @@
     <string name="payment_ads_remove">Buy premium</string>
     <string name="pref_general_is_premium" translatable="false">pref_general_is_premium</string>
     <string name="premium">Premium</string>
+    <string name="alert_premium_pay">Pay for premium</string>
+    <string name="alert_premium_pay_message" >Payment is made once and for all. Removes all ads in the application.</string>
 
 
 </resources>

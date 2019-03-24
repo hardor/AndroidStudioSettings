@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.provider.Settings
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -86,12 +87,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (intent.getBooleanExtra("crash", false)) {
             intent.removeExtra("crash")
             val builder = AlertDialog.Builder(this)
-            builder.setTitle(getString(R.string.all_uncaughtException))
-                .setMessage(getString(R.string.all_appCrashed))
-                .setIcon(R.drawable.ic_info_black_24dp).setCancelable(true)
-                .setPositiveButton("OK") { dialog, _ ->
-                    dialog.cancel()
-                }
+            builder.setTitle(getString(R.string.all_uncaughtException)).setMessage(getString(R.string.all_appCrashed)).setIcon(R.drawable.ic_info_black_24dp).setCancelable(true).setPositiveButton("OK") { dialog, _ ->
+                        dialog.cancel()
+                    }
 
             alertErrorDialog = builder.create()
             alertErrorDialog?.show()
@@ -119,22 +117,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (savedInstanceState == null) {
             currentFragment = Constants.FragmentType.Favorite.name
             currentTitle = resources.getText(R.string.favorite).toString()
-            ft.replace(R.id.mainFrame, RanobeListFragment.newInstance(currentFragment), MY_FRAGMENT)
-                .commit()
+            ft.replace(R.id.mainFrame, RanobeListFragment.newInstance(currentFragment), MY_FRAGMENT).commit()
         } else {
-            currentFragment = savedInstanceState.getString("Fragment",
-                Constants.FragmentType.Favorite.name)
-            currentTitle = savedInstanceState.getString("Title",
-                resources.getText(R.string.favorite).toString())
+            currentFragment = savedInstanceState.getString("Fragment", Constants.FragmentType.Favorite.name)
+            currentTitle = savedInstanceState.getString("Title", resources.getText(R.string.favorite).toString())
 
             val myFragment = supportFragmentManager.findFragmentByTag("MY_FRAGMENT")
             if (myFragment == null) {
                 if (currentFragment == Constants.FragmentType.Search.name) {
                     ft.replace(R.id.mainFrame, SearchFragment.newInstance(), MY_FRAGMENT)
                 } else {
-                    ft.replace(R.id.mainFrame,
-                        RanobeListFragment.newInstance(currentFragment),
-                        MY_FRAGMENT)
+                    ft.replace(R.id.mainFrame, RanobeListFragment.newInstance(currentFragment), MY_FRAGMENT)
                 }
                 ft.commit()
             }
@@ -144,8 +137,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         val floatingActionButton = findViewById<FloatingActionButton>(R.id.fab)
         floatingActionButton.setOnClickListener {
-            val chapterProgress = MyApp.database.chapterProgressDao().getLastChapter()
-                .subscribeOn(Schedulers.io())?.blockingGet()
+            val chapterProgress = MyApp.database.chapterProgressDao().getLastChapter().subscribeOn(Schedulers.io())?.blockingGet()
             if (chapterProgress != null) {
                 if (MyApp.ranobe == null || !MyApp.ranobe!!.url.contains(chapterProgress.ranobeUrl) || !MyApp.ranobe!!.wasUpdated) {
 
@@ -167,17 +159,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
 
             } else {
-                Toast.makeText(this, resources.getText(R.string.not_history), Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(this, resources.getText(R.string.not_history), Toast.LENGTH_SHORT).show()
             }
 
         }
 
-        val toggle = ActionBarDrawerToggle(this,
-            drawer,
-            toolbar,
-            R.string.navigation_drawer_open,
-            R.string.navigation_drawer_close)
+        val toggle = ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer.addDrawerListener(toggle)
         toggle.syncState()
 
@@ -191,8 +178,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val url = getString(R.string.all_vkUrl)
 
             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-            if (browserIntent.resolveActivity(this.packageManager) != null) startActivity(
-                browserIntent)
+            if (browserIntent.resolveActivity(this.packageManager) != null) startActivity(browserIntent)
             else Toast.makeText(this, R.string.browser_exist, Toast.LENGTH_SHORT).show()
         }
 
@@ -205,26 +191,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             override fun onBillingClientSetupFinished() {
 
                 @BillingClient.SkuType val billingType = BillingClient.SkuType.INAPP
-                mBillingManager.querySkuDetailsAsync(billingType,
-                    BillingConstants.getSkuList(billingType),
-                    object : SkuDetailsResponseListener {
-                        override fun onSkuDetailsResponse(responseCode: Int,
-                                                          skuDetailsList: MutableList<SkuDetails>?) {
-                            if (responseCode != BillingClient.BillingResponse.OK) {
-                                Log.w(TAG,
-                                    "Unsuccessful query for type: $billingType. Error code: $responseCode");
-                            } else if (skuDetailsList != null && skuDetailsList.size > 0) {
+                mBillingManager.querySkuDetailsAsync(billingType, BillingConstants.getSkuList(billingType), object : SkuDetailsResponseListener {
+                    override fun onSkuDetailsResponse(responseCode: Int, skuDetailsList: MutableList<SkuDetails>?) {
+                        if (responseCode != BillingClient.BillingResponse.OK) {
+                            Log.w(TAG, "Unsuccessful query for type: $billingType. Error code: $responseCode");
+                        } else if (skuDetailsList != null && skuDetailsList.size > 0) {
 
-                            }
                         }
+                    }
 
 
-                    });
+                });
             }
 
             override fun onConsumeFinished(token: String, result: Int) {
-                Log.d(TAG,
-                    "Consumption finished. Purchase token: " + token + ", result: " + result);
+                Log.d(TAG, "Consumption finished. Purchase token: " + token + ", result: " + result);
 
                 // Note: We know this is the SKU_GAS, because it's the only one we consume, so we don't
                 // check if token corresponding to the expected sku was consumed.
@@ -367,18 +348,29 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 currentTitle = resources.getText(R.string.history).toString()
             }
             R.id.nav_send -> {
-                EasyFeedback.Builder(this).withEmail("admin@profapp.ru").withSystemInfo().build()
-                    .start()
+                EasyFeedback.Builder(this).withEmail("admin@profapp.ru").withSystemInfo().build().start()
             }
             R.id.nav_ads_remove -> {
-                mBillingManager.initiatePurchaseFlow(BillingConstants.SKU_PREMIUM,
-                    BillingClient.SkuType.INAPP)
+
+                AlertDialog.Builder(this@MainActivity)
+                        .setTitle(getString(R.string.alert_premium_pay))
+                        .setIcon(R.drawable.ic_info_black_24dp).setMessage(getString(R.string.alert_premium_pay_message))
+                        .setCancelable(true)
+                        .setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
+                        .setPositiveButton("OK") { _, _ ->
+                            mBillingManager.initiatePurchaseFlow(BillingConstants.SKU_PREMIUM, BillingClient.SkuType.INAPP)
+                        }.create().show()
+
             }
         }
 
         if (fragment != null) {
 
-            adView.loadAd(AdRequest.Builder().build())
+
+            if (!MyApp.preferencesManager.isPremium) {
+                AdViewManager(lifecycle, adView)
+                adView.loadAd(adRequest)
+            }
 
             val ft = supportFragmentManager.beginTransaction()
             ft.replace(R.id.mainFrame, fragment, MY_FRAGMENT)

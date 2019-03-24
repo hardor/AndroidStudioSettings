@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
     <release
+        version="1.31"
+        versioncode="101031">
+        <change>Исправлены вылеты после отключения рекламы.</change>
+    </release>
+
+    <release
         version="1.30"
         versioncode="101030">
         <change>Добавлена возможность купить премиум подписку которая отключает &lt;b&gt;рекламу&lt;/b&gt;. Возможно в будущем добавятся еще премиум функции, но не обещаю.</change>

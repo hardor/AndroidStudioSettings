@@ -146,4 +146,6 @@
   <string name="alert_perms_denied_message">Хотите открыть настройки приложения для изменения ваших разрешений?</string>
     <string name="premium">Premium</string>
     <string name="payment_ads_remove">Премиум</string>
+    <string name="alert_premium_pay">Купить премиум</string>
+  <string name="alert_premium_pay_message">"Оплата производится один раз навсегда. Убирает всю рекламу в приложении. "</string>
 </resources>
