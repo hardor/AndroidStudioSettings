@@ -10,9 +10,10 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.button.MaterialButton
-import io.reactivex.Completable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.R
 import ru.profapp.ranobe.adapters.HistoryFragmentPagerAdapter
@@ -49,19 +50,22 @@ class HistoryFragment : Fragment() {
                 .setMessage(getString(R.string.clear_history_summary))
                 .setIcon(R.drawable.ic_info_black_24dp).setCancelable(true)
                 .setPositiveButton("OK") { _, _ ->
-                    Completable.fromAction { MyApp.database.ranobeHistoryDao().cleanHistory() }
-                        ?.observeOn(AndroidSchedulers.mainThread())?.subscribeOn(Schedulers.io())
-                        ?.subscribe({
+                    GlobalScope.launch(Dispatchers.IO) {
+
+                      val result = try{
+                            MyApp.database.ranobeHistoryDao().cleanHistory()
+                            resources.getString(R.string.history_removed)
+                        } catch (ex:Exception){
+                            resources.getString(R.string.error)
+                        }
+
+                        withContext(Dispatchers.Main){
                             Toast.makeText(context,
-                                resources.getText(R.string.history_removed),
+                                result,
                                 Toast.LENGTH_SHORT).show()
-                            pagerAdapter.notifyDataSetChanged()
-                        }, {
-                            Toast.makeText(context,
-                                resources.getText(R.string.error),
-                                Toast.LENGTH_SHORT).show()
-                        })
-                    // dialog.cancel()
+                        }
+                    }
+
                 }.setNegativeButton("Cancel") { dialog, _ ->
                     dialog.cancel()
                 }

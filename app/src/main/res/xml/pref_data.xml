@@ -4,6 +4,11 @@
 
 
   <Preference
+      android:key="@string/ClearImageCacheButton"
+      android:summary="@string/delete_image_cache_summary"
+      android:title="@string/delete_image_cache_title"/>
+
+  <Preference
     android:key="@string/ClearCacheButton"
     android:summary="@string/delete_cache_summary"
     android:title="@string/delete_cache_chapters"/>

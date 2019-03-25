@@ -81,7 +81,8 @@ class SearchFragment : Fragment() {
 
         ranobeRecyclerViewAdapter = RanobeRecyclerViewAdapter(GlideApp.with(mContext!!),
             recyclerView,
-            adapterRanobeList)
+            adapterRanobeList,
+            true)
         recyclerView.adapter = ranobeRecyclerViewAdapter
         return view
     }

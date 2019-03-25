@@ -23,7 +23,8 @@ import java.util.*
  */
 class RanobeRecyclerViewAdapter(private val glide: RequestManager,
                                 recyclerView: RecyclerView,
-                                private var mValues: List<Ranobe>) :
+                                private var mValues: List<Ranobe>,
+                                private val showDescription:Boolean = false) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -133,46 +134,29 @@ class RanobeRecyclerViewAdapter(private val glide: RequestManager,
                     else -> holder.ranobeSiteLogo.visibility = View.GONE
 
                 }
+
                 val chapterList = holder.mItem.chapterList
-                if (chapterList.isNotEmpty()) {
+
+                if((showDescription || chapterList.isEmpty()) && !holder.mItem.description.isNullOrBlank()){
+
+                    holder.chaptersListView.visibility = View.GONE
+                    holder.description.text = holder.mItem.description
+                    holder.description.visibility = View.VISIBLE
+                }else  if (chapterList.isNotEmpty()) {
 
                     var templist = chapterList.filter { it.canRead }
                     if (!templist.any()) {
                         templist = chapterList.take(Constants.chaptersNum)
                     }
                     val chapterlist2 = templist.take(Constants.chaptersNum)
-//                    val lastChapterUrl = MyApp.preferencesManager.getLastChapterUrl(chapterlist2.first().ranobeUrl)
-//
-//                    if (lastChapterUrl.isNotEmpty()) {
-//                        val chapterIndex = chapterlist2.firstOrNull { c -> c.url == lastChapterUrl }?.index
-//                        if (chapterIndex != null) {
-//                            for (chapter in chapterlist2) {
-//                                chapter.isRead = chapter.index <= chapterIndex
-//
-//                            }
-//                        }
-//                    } else {
-//                        val lastId = MyApp.preferencesManager.getLastChapterId(chapterlist2.first().ranobeUrl)
-//                        if (lastId > 0) {
-//
-//                            for (chapter in chapterlist2) {
-//                                if (chapter.id != null)
-//                                    chapter.isRead = chapter.id!! <= lastId
-//                            }
-//                        }
-//                    }
+
                     val adapter = ChapterRecyclerViewAdapter(chapterlist2, holder.mItem)
                     holder.chaptersListView.adapter = adapter
                     holder.chaptersListView.visibility = View.VISIBLE
                     holder.description.visibility = View.GONE
                 } else {
                     holder.chaptersListView.visibility = View.GONE
-                    if (!holder.mItem.description.isNullOrBlank()) {
-                        holder.description.text = holder.mItem.description
-                        holder.description.visibility = View.VISIBLE
-                    } else {
-                        holder.description.visibility = View.GONE
-                    }
+                    holder.description.visibility = View.GONE
                 }
 
             }

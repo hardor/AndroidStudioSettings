@@ -12,9 +12,11 @@ import android.preference.PreferenceFragment
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.ActionBar
-import io.reactivex.Completable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import com.bumptech.glide.Glide
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.R
 import ru.profapp.ranobe.common.Constants
@@ -136,9 +138,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
                 prefLogin.summary = resources.getString(R.string.summary_login)
             }
 
-
             val prefLogin2 = findPreference(getString(R.string.ranoberf_authorization_pref))
-
 
             val token2 = MyApp.preferencesManager.ranoberfToken
 
@@ -172,28 +172,32 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 
             cacheButton.setOnPreferenceClickListener { preference ->
 
-                Completable.fromAction {
+                GlobalScope.launch(Dispatchers.IO  ) {
                     MyApp.database.textDao().cleanTable()
-                }?.andThen(Completable.fromAction { MyApp.database.ranobeImageDao().cleanTable() })
-                    ?.observeOn(AndroidSchedulers.mainThread())?.subscribeOn(Schedulers.io())
-                    ?.subscribe({
+
+                    withContext(Dispatchers.Main) {
                         Toast.makeText(activity,
                             resources.getText(R.string.cache_cremoved),
                             Toast.LENGTH_SHORT).show()
-                    }, {})
+                    }
+                }
 
                 true
             }
 
             val favButton = findPreference(getString(R.string.ClearLocalFavButton))
             favButton.setOnPreferenceClickListener {
-                Completable.fromAction { MyApp.database.ranobeDao().cleanTable() }
-                    ?.observeOn(AndroidSchedulers.mainThread())?.subscribeOn(Schedulers.io())
-                    ?.subscribe({
+
+                GlobalScope.launch(Dispatchers.IO  ) {
+                    MyApp.database.ranobeDao().cleanTable()
+
+                    withContext(Dispatchers.Main) {
                         Toast.makeText(activity,
                             resources.getText(R.string.bookmarks_removed),
                             Toast.LENGTH_SHORT).show()
-                    }, { })
+                    }
+                }
+
 
 
                 true
@@ -203,19 +207,44 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             clearReadChapterButton.setOnPreferenceClickListener { preference ->
                 activity.applicationContext.getSharedPreferences(Constants.last_chapter_id_Pref, 0)
                     .edit().clear().apply()
+                Toast.makeText(activity,
+                    resources.getText(R.string.last_read_chapter_removed),
+                    Toast.LENGTH_SHORT).show()
+                true
+            }
+
+
+            val clearImageCacheButton = findPreference(getString(R.string.ClearImageCacheButton))
+            clearImageCacheButton.setOnPreferenceClickListener { preference ->
+                GlobalScope.launch(Dispatchers.IO  ) {
+                    MyApp.database.ranobeImageDao().cleanTable()
+
+
+
+                    withContext(Dispatchers.Main) {
+                        Glide.get(activity.applicationContext).clearDiskCache()
+                        Glide.get(activity.applicationContext).clearMemory()
+
+                        Toast.makeText(activity,
+                            resources.getText(R.string.images_cache_removed),
+                            Toast.LENGTH_SHORT).show()
+                    }
+                }
                 true
             }
 
             val prefButton = findPreference(getString(R.string.ClearHistoryButton))
             prefButton.setOnPreferenceClickListener {
 
-                Completable.fromAction { MyApp.database.ranobeHistoryDao().cleanHistory() }
-                    ?.observeOn(AndroidSchedulers.mainThread())?.subscribeOn(Schedulers.io())
-                    ?.subscribe({
+                GlobalScope.launch(Dispatchers.IO  ) {
+                    MyApp.database.ranobeHistoryDao().cleanHistory()
+
+                    withContext(Dispatchers.Main) {
                         Toast.makeText(activity,
                             resources.getText(R.string.history_removed),
                             Toast.LENGTH_SHORT).show()
-                    }, { })
+                    }
+                }
 
 
                 true
@@ -224,13 +253,15 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             val clearProgressButton = findPreference(getString(R.string.ClearProgressButton))
             clearProgressButton.setOnPreferenceClickListener {
 
-                Completable.fromAction { MyApp.database.chapterProgressDao().cleanTable() }
-                    ?.observeOn(AndroidSchedulers.mainThread())?.subscribeOn(Schedulers.io())
-                    ?.subscribe({
+                GlobalScope.launch(Dispatchers.IO  ) {
+                    MyApp.database.chapterProgressDao().cleanTable()
+
+                    withContext(Dispatchers.Main) {
                         Toast.makeText(activity,
                             resources.getText(R.string.history_removed),
                             Toast.LENGTH_SHORT).show()
-                    }, { })
+                    }
+                }
 
 
                 true

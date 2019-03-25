@@ -56,13 +56,14 @@ object Constants {
 
     enum class CustomFonts(val title: String, val file: String) {
 
-        Default("Default", ""), Lobster("Lobster",
-            "Lobster-Regular.ttf"),
-        Merriweather("Merriweather", "Merriweather-Regular.ttf"), OpenSans("OpenSans",
-            "OpenSans-Regular.ttf"),
-        Pacifico("Pacifico", "Pacifico-Regular.ttf"), PT_Sans("PT Sans",
-            "PT_Sans-Web-Regular.ttf"),
-        RobotoMono("RobotoMono", "RobotoMono-Regular.ttf"), Roboto("Roboto", "Roboto-Regular.ttf");
+        Default("Default", ""),
+        Lobster("Lobster", "Lobster-Regular.ttf"),
+        Merriweather("Merriweather", "Merriweather-Regular.ttf"),
+        OpenSans("OpenSans", "OpenSans-Regular.ttf"),
+        Pacifico("Pacifico", "Pacifico-Regular.ttf"),
+        PT_Sans("PT Sans", "PT_Sans-Web-Regular.ttf"),
+        RobotoMono("RobotoMono", "RobotoMono-Regular.ttf"),
+        Roboto("Roboto", "Roboto-Regular.ttf");
 
         companion object {
             fun getFileByTitle(title: String?): String {

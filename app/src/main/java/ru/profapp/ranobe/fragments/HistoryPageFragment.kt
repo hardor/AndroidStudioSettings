@@ -112,7 +112,7 @@ class HistoryPageFragment : Fragment() {
 
     fun update() {
         ranobeRecyclerView?.let {
-            it.adapter = RanobeRecyclerViewAdapter(GlideApp.with(context!!),
+            it.adapter = RanobeRecyclerViewAdapter(GlideApp.with(mContext!!),
                 ranobeRecyclerView!!,
                 listOf())
             it.adapter?.notifyDataSetChanged()

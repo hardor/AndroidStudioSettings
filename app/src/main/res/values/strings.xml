@@ -191,6 +191,15 @@
     <string name="premium">Premium</string>
     <string name="alert_premium_pay">Pay for premium</string>
     <string name="alert_premium_pay_message" >Payment is made once and for all. Removes all ads in the application.</string>
+    <string name="ClearImageCacheButton" translatable="false">ClearImageCacheButton</string>
+    <string name="delete_image_cache_summary">Use it if you have a problem with loading ranobe\'s logos</string>
+    <string name="delete_image_cache_title">Clean images cache</string>
+    <string name="images_cache_removed">Images cache was removed</string>
+    <string name="last_read_chapter_removed">Information about last read chapter in ranobe was removed</string>
+    <string name="popular">Popular</string>
+    <string name="last">Last</string>
+    <string name="contin">Continue</string>
+    <string name="china">China</string>
 
 
 </resources>

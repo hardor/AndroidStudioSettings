@@ -30,12 +30,6 @@
     android:summaryOn="@string/summary_swipe_navigate_on"
     android:title="@string/swipe_navigate"/>
 
-  <!--<SwitchPreference-->
-    <!--android:defaultValue="false"-->
-    <!--android:key="@string/pref_general_hide_chapter"-->
-    <!--android:summaryOff="@string/show_all_chapter"-->
-    <!--android:summaryOn="@string/show_only_readable"-->
-    <!--android:title="@string/hide_unavailable_chapters" />-->
 
   <ru.profapp.ranobe.customElements.NumberPickerPreference
       android:defaultValue="16"
