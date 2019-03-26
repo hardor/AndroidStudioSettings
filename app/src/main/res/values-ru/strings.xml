@@ -13,7 +13,7 @@
   <string name="next">Следующая</string>
   <string name="previous">Предыдущая</string>
   <string name="delete_cache_summary">Удалить скачанные главы</string>
-  <string name="delete_cache_chapters">Очистить кэш изображений и скачанные главы</string>
+  <string name="delete_cache_chapters">Удалить главы, которые вы скачали.</string>
   <string name="select_text_size">Выберите размер текста</string>
   <string name="history_removed">История очищена</string>
   <string name="cache_cremoved">Кеш очищен</string>
@@ -151,4 +151,9 @@
   <string name="contin">Законченные</string>
   <string name="last">Последние</string>
   <string name="popular">Популярные</string>
+  <string name="delete_image_cache_summary">Очистите кеш если у вас есть проблемы с загрузкой логотипов ранобэ</string>
+  <string name="delete_image_cache_title">Очистить кеш изображений</string>
+  <string name="images_cache_removed">Кеш изображений очищен</string>
+  <string name="china">Китай</string>
+  <string name="last_read_chapter_removed">Информация об последней прочитанной главе в ранобэ была очищена</string>
 </resources>

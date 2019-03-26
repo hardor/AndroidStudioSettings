@@ -218,11 +218,11 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             clearImageCacheButton.setOnPreferenceClickListener { preference ->
                 GlobalScope.launch(Dispatchers.IO  ) {
                     MyApp.database.ranobeImageDao().cleanTable()
-
+                    Glide.get(activity.applicationContext).clearDiskCache()
 
 
                     withContext(Dispatchers.Main) {
-                        Glide.get(activity.applicationContext).clearDiskCache()
+
                         Glide.get(activity.applicationContext).clearMemory()
 
                         Toast.makeText(activity,

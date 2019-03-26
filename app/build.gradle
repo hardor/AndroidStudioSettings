@@ -149,8 +149,8 @@ dependencies {
     kapt 'com.google.dagger:dagger-compiler:2.13'
     //ChangeLog
     implementation 'de.cketti.library.changelog:ckchangelog:1.2.2'
-    //Android-FilePicker
-    implementation 'com.droidninja:filepicker:2.2.0'
+    //Storage-chooser
+    implementation 'com.github.codekidX:storage-chooser:2.0.4.4'
     //colorpicker
     implementation project(':libs:colorpicker')
 

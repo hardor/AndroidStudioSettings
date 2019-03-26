@@ -28,7 +28,7 @@
     <string name="next">Next</string>
     <string name="logo" translatable="false">Logo</string>
     <string name="delete_cache_summary">Delete the downloaded chapters</string>
-    <string name="delete_cache_chapters">Remove image cache and downloaded chapters</string>
+    <string name="delete_cache_chapters">Remove ranobe\'s chapters which you downloaded</string>
     <string name="history_removed">History was removed</string>
     <string name="ClearCacheButton" translatable="false">ClearCacheButton</string>
     <string name="clear_history">Remove history</string>

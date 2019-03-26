@@ -1,6 +1,5 @@
 package ru.profapp.ranobe.backup
 
-import android.os.Environment
 import com.google.android.material.snackbar.Snackbar
 import pub.devrel.easypermissions.EasyPermissions
 import ru.profapp.ranobe.MyApp
@@ -13,7 +12,7 @@ import java.io.File
 class LocalBackup(private val activity: BackupActivity) {
 
     //ask to the user a name for the backup and perform it. The backup will be saved to a custom folder.
-    fun performBackup(appFiles: MutableList<String>) {
+    fun performBackup(appFiles: MutableList<String>, destPath:String) {
         val perms = Permissions.PERMISSIONS_STORAGE
 
         val permission = EasyPermissions.hasPermissions(activity, *perms)
@@ -26,7 +25,7 @@ class LocalBackup(private val activity: BackupActivity) {
         } else {
 
             ZipHelper.zip(appFiles.toTypedArray(),
-                Environment.getExternalStorageDirectory().path,
+                destPath,
                 "RanobeReaderBackup.zip")
             Snackbar.make(activity.findViewById(android.R.id.content),
                 activity.resources.getString(R.string.activity_backup_success),
@@ -37,7 +36,7 @@ class LocalBackup(private val activity: BackupActivity) {
     }
 
     //ask to the user what backup to restore
-    fun performRestore(): Boolean {
+    fun performRestore(destPath: String): Boolean {
 
         val perms = Permissions.PERMISSIONS_STORAGE
 
@@ -51,27 +50,7 @@ class LocalBackup(private val activity: BackupActivity) {
         } else {
 
 
-            //   FilePickerUtils.notifyMediaStore(this,Environment.getExternalStorageDirectory().path )
-
-//                            FilePickerBuilder.Companion.instance
-//                                .sortDocumentsBy(SortingTypes.name)
-//                                .setMaxCount(1)
-//                                .setActivityTitle(getString(R.string.file_choose_ranobereader))
-//                                .setActivityTheme(R.style.LibAppTheme)
-//                                .addFileSupport(
-//                                    "ZIP",
-//                                    arrayOf(".zip"),
-//                                    R.drawable.ic_insert_drive_file_black_24dp
-//                                )
-//                                .enableDocSupport(true)
-//                                .enableImagePicker(true)
-//                                .enableSelectAll(false)
-//                                .enableVideoPicker(true)
-//                                .enableCameraSupport(true)
-//                                .pickFile(this)
-//
-
-            val zipFile = File("${Environment.getExternalStorageDirectory().path}/RanobeReaderBackup.zip")
+            val zipFile = File(destPath)
 
             if (zipFile.isFile && zipFile.canRead()) {
                 MyApp.database.close()

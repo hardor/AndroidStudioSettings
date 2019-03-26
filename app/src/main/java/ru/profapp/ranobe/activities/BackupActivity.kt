@@ -13,13 +13,13 @@ import android.view.View
 import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.codekidlabs.storagechooser.StorageChooser
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.Scope
 import com.google.android.material.snackbar.Snackbar
 import com.google.api.services.drive.DriveScopes
-import droidninja.filepicker.FilePickerConst
 import kotlinx.android.synthetic.main.activity_backup.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -95,16 +95,48 @@ class BackupActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks 
         backup_button_backup.setOnClickListener {
 
             builder.setMessage(getString(R.string.readyToBackup)).setPositiveButton("OK") { _, _ ->
-                progressBar.visibility = View.VISIBLE
-                try {
-                    LocalBackup(this).performBackup(appFiles)
-                } catch (e: Exception) {
-                    Snackbar.make(findViewById(android.R.id.content), "Error", Snackbar.LENGTH_LONG)
-                        .show()
-                    logError(TAG, "Error", e)
-                } finally {
-                    progressBar.visibility = View.GONE
+
+
+                val permission = EasyPermissions.hasPermissions(this@BackupActivity,
+                    *Permissions.PERMISSIONS_STORAGE)
+
+                if (!permission) {
+                    EasyPermissions.requestPermissions(this@BackupActivity,
+                        resources.getString(R.string.write_and_read_rationale),
+                        Permissions.RC_STORAGE,
+                        *Permissions.PERMISSIONS_STORAGE)
+                } else {
+
+                    val chooser = StorageChooser.Builder()
+                        .withActivity(this)
+                        .withFragmentManager(this.fragmentManager)
+                        .withMemoryBar(true)
+                        .allowCustomPath(true)
+                        .setType(StorageChooser.DIRECTORY_CHOOSER)
+                        .build();
+
+
+                    chooser.show();
+
+                    chooser.setOnSelectListener { destPath ->
+                        progressBar.visibility = View.VISIBLE
+
+                        try {
+                            LocalBackup(this@BackupActivity).performBackup(appFiles, destPath)
+                        } catch (e: Exception) {
+                            Snackbar.make(findViewById(android.R.id.content),
+                                "Error",
+                                Snackbar.LENGTH_LONG)
+                                .show()
+                            logError(TAG, "Error", e)
+                        } finally {
+                            progressBar.visibility = View.GONE
+                        }
+                    };
+
+
                 }
+
 
             }.create().show()
         }
@@ -112,31 +144,65 @@ class BackupActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks 
 
         backup_button_restore.setOnClickListener {
             builder.setMessage(getString(R.string.readyToRestore)).setPositiveButton("OK") { _, _ ->
-                progressBar.visibility = View.VISIBLE
-                try {
 
-                    val result: Boolean = LocalBackup(this).performRestore()
 
-                    if (result) {
+                val permission = EasyPermissions.hasPermissions(this@BackupActivity,
+                    *Permissions.PERMISSIONS_STORAGE)
 
-                        rebootApp()
+                if (!permission) {
+                    EasyPermissions.requestPermissions(this@BackupActivity,
+                        resources.getString(R.string.write_and_read_rationale),
+                        Permissions.RC_STORAGE,
+                        *Permissions.PERMISSIONS_STORAGE)
+                } else {
 
-                    } else {
-                        Snackbar.make(findViewById(android.R.id.content),
-                            getString(R.string.backup_restore_nothing),
-                            Snackbar.LENGTH_LONG).show()
-                    }
+                    val chooser = StorageChooser.Builder()
+                        .withActivity(this)
+                        .withFragmentManager(this.fragmentManager)
+                        .withMemoryBar(true)
+                        .allowCustomPath(true)
+                        .setType(StorageChooser.FILE_PICKER)
+                        .filter(StorageChooser.FileType.ARCHIVE)
+                        .build();
 
-                } catch (e: Exception) {
-                    Snackbar.make(findViewById(android.R.id.content), "Error", Snackbar.LENGTH_LONG)
-                        .show()
-                    logError(TAG, "Error", e)
-                } finally {
-                    MyApp.database = MyApp.initDatabase(this)
-                    progressBar.visibility = View.GONE
+
+                    chooser.show();
+
+                    chooser.setOnSelectListener { destPath ->
+
+                        progressBar.visibility = View.VISIBLE
+                        try {
+
+                            val result: Boolean = LocalBackup(this).performRestore(destPath)
+
+                            if (result) {
+
+                                rebootApp()
+
+                            } else {
+                                Snackbar.make(findViewById(android.R.id.content),
+                                    getString(R.string.backup_restore_nothing),
+                                    Snackbar.LENGTH_LONG).show()
+                            }
+
+                        } catch (e: Exception) {
+                            Snackbar.make(findViewById(android.R.id.content),
+                                "Error",
+                                Snackbar.LENGTH_LONG)
+                                .show()
+                            logError(TAG, "Error", e)
+                        } finally {
+                            MyApp.database = MyApp.initDatabase(this)
+                            progressBar.visibility = View.GONE
+                        }
+                    };
+
+
                 }
 
+
             }.create().show()
+
 
         }
 
@@ -352,10 +418,6 @@ class BackupActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks 
         }
 
         when (requestCode) {
-            FilePickerConst.REQUEST_CODE_DOC -> if (resultCode == Activity.RESULT_OK) {
-                // docPaths = ArrayList()
-                // docPaths.addAll(data.getStringArrayListExtra(FilePickerConst.KEY_SELECTED_DOCS))
-            }
 
             Permissions.REQUEST_CODE_SIGN_IN -> {
                 if (resultCode == Activity.RESULT_OK) {
@@ -372,9 +434,11 @@ class BackupActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks 
 
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int,
-                                            permissions: Array<String>,
-                                            grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         // Forward results to EasyPermissions
