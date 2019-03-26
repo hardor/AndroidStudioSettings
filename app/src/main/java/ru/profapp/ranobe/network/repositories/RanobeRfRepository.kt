@@ -200,7 +200,7 @@ object RanobeRfRepository : BaseRepository() {
         title = if (title.isBlank()) book.title ?: title else title
         url = if (url.isBlank()) Constants.RanobeSite.RanobeRf.url + book.url else url
         readyDate = readyDate ?: book.lastUpdatedBook?.times(1000)?.let { Date(it) }
-        image = image ?: book.image?.desktop?.image ?: book.image?.mobile?.image
+        image = book.image?.desktop?.image ?: book.image?.mobile?.image ?:image
 
         if (!image.isNullOrBlank()) {
             Completable.fromAction {

@@ -206,7 +206,7 @@ object RulateRepository : BaseRepository() {
 
         engTitle = engTitle ?: book.sTitle
         title = if (title.isBlank()) book.tTitle ?: title else title
-        image = image ?: book.img
+        image = book.img ?: image
 
         if (!image.isNullOrBlank()) {
             Completable.fromAction {
