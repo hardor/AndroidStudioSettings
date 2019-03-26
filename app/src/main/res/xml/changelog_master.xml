@@ -1,24 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
     <release
-        version="1.31"
-        versioncode="101031">
-        <change>Исправлены вылеты после отключения рекламы.</change>
-    </release>
-
-    <release
-        version="1.30"
-        versioncode="101030">
-        <change>Добавлена возможность купить премиум подписку которая отключает &lt;b&gt;рекламу&lt;/b&gt;. Возможно в будущем добавятся еще премиум функции, но не обещаю.</change>
-    </release>
-
-    <release
-        version="1.28"
-        versioncode="101028">
+        version="1.32"
+        versioncode="101032">
         <change>Добавлена настройка интервала</change>
+        <change>Добавлена возможность купить премиум подписку которая отключает &lt;b&gt;рекламу&lt;/b&gt;. Возможно в будущем добавятся еще премиум функции, но не обещаю.</change>
         <change>Изменен формат бекап файлов на архивы. &lt;b&gt;Обновите свой бекап!!!&lt;/b&gt;</change>
+        <change>Добавлена возможность выбора расположения для бекапа.</change>
         <change>&lt;b&gt;[НЕ Стабильно]&lt;/b&gt; Добавлена возможность бекапа в Google Drive</change>
     </release>
+
     <release
         version="1.27"
         versioncode="101027">
