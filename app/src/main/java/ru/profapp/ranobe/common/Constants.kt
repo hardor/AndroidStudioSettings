@@ -25,10 +25,12 @@ object Constants {
     }
 
     enum class RanobeSite(val url: String, val title: String) {
-        Error("Error", "Error"), None("", ""), Title("Title", "Title"), Rulate("tl.rulate.ru",
-            "Rulate"),
-        RanobeRf("https://xn--80ac9aeh6f.xn--p1ai", "Ранобэ.рф"), RanobeHub("https://ranobehub.org",
-            "RanobeHub");
+        Error("Error", "Error"),
+        None("", ""),
+        Title("Title", "Title"),
+        Rulate("tl.rulate.ru",            "Rulate"),
+        RanobeRf("https://xn--80ac9aeh6f.xn--p1ai", "Ранобэ.рф"),
+        RanobeHub("https://ranobehub.org",            "RanobeHub");
 
         companion object {
             fun fromUrl(findValue: String): RanobeSite? =
@@ -37,8 +39,10 @@ object Constants {
     }
 
     enum class SortOrder(val resId: Int) {
-        ByTitle(R.string.byTitle), ByDate(R.string.byDate), ByUpdates(R.string.byUpdates), ByRanobeSite(
-            R.string.byRanobeSite);
+        ByTitle(R.string.byTitle),
+        ByDate(R.string.byDate),
+        ByUpdates(R.string.byUpdates),
+        ByRanobeSite(R.string.byRanobeSite);
 
         companion object {
             val default: SortOrder = ByTitle
