@@ -180,6 +180,8 @@ dependencies {
     // Billing
     implementation 'com.android.billingclient:billing:1.2.2'
 
+    //materialdrawer
+    implementation 'co.zsmb:materialdrawer-kt:2.0.1'
 }
 
 apply plugin: 'com.google.gms.google-services'
