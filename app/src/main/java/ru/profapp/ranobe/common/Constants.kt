@@ -67,6 +67,7 @@ object Constants {
         Pacifico("Pacifico", "Pacifico-Regular.ttf"),
         PT_Sans("PT Sans", "PT_Sans-Web-Regular.ttf"),
         RobotoMono("RobotoMono", "RobotoMono-Regular.ttf"),
+        MobyCool("Moby Cool", "Moby-Cool.ttf"),
         Roboto("Roboto", "Roboto-Regular.ttf");
 
         companion object {

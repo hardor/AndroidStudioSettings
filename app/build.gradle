@@ -25,7 +25,6 @@ apply plugin: 'io.fabric'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
-
 repositories {
     mavenCentral()
 }
@@ -37,7 +36,7 @@ android {
             keyAlias 'ranobe'
             keyPassword 'gf6ds7fsfs7 '
             storePassword 'gf6ds7fsfs7 '
-            storeFile file('C:/Users/rvildanov/Desktop/Android/ranobe.keystore')
+            storeFile file('D:/Projects/Keystore/RanobeReader/ranobe.keystore')
         }
     }
     lintOptions {
@@ -77,6 +76,7 @@ android {
             signingConfig signingConfigs.config
         }
         debug {
+            applicationIdSuffix '.debug'
             minifyEnabled false
             buildConfigField "boolean", "USE_LOG", "true"
             signingConfig signingConfigs.config

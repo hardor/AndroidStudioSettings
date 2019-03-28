@@ -226,7 +226,6 @@ object RulateRepository : BaseRepository() {
 
         chapterCount = chapterCount ?: book.chaptersTotal
 
-        status = status ?: book.status
         rating = rating ?: book.rating
 
         chapterList.clear()
@@ -246,9 +245,7 @@ object RulateRepository : BaseRepository() {
 
         comments = book.comments.asReversed()
         description = null
-        if (status != null) {
-            description = (description ?: "") + ("Статус: $status")
-        }
+
         if (lang != null) {
             description = (description ?: "") + ("\nПеревод: $lang")
         }
@@ -272,13 +269,11 @@ object RulateRepository : BaseRepository() {
 
         chapterCount = chapterCount ?: book.nChapters ?: chapterCount
 
-        status = status ?: book.status ?: status
+
         rating = rating ?: book.rating ?: rating
 
         description = null
-        if (status != null) {
-            description = (description ?: "") + ("Статус: $status")
-        }
+
         if (lang != null) {
             description = (description ?: "") + ("\nПеревод: $lang")
         }

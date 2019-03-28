@@ -10,13 +10,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
-import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
+import co.zsmb.materialdrawerkt.draweritems.expandable.expandableItem
 import co.zsmb.materialdrawerkt.draweritems.sectionHeader
-import co.zsmb.materialdrawerkt.draweritems.switchable.secondarySwitchItem
+import co.zsmb.materialdrawerkt.draweritems.switchable.switchItem
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.SkuDetails
@@ -24,7 +23,6 @@ import com.android.billingclient.api.SkuDetailsResponseListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.navigation.NavigationView
 import com.mikepenz.materialdrawer.Drawer
 import com.webianks.easy_feedback.EasyFeedback
 import de.cketti.library.changelog.ChangeLog
@@ -46,10 +44,10 @@ import ru.profapp.ranobe.models.Ranobe
 import ru.profapp.ranobe.network.repositories.RanobeRfRepository
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var mBillingManager: BillingManager
-    private lateinit var adView: AdView
+    private var adView: AdView? = null
 
     private var currentTheme = ThemeHelper.sTheme
 
@@ -88,12 +86,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (intent.getBooleanExtra("crash", false)) {
             intent.removeExtra("crash")
             val builder = AlertDialog.Builder(this)
-            builder.setTitle(getString(R.string.all_uncaughtException))
-                .setMessage(getString(R.string.all_appCrashed))
-                .setIcon(R.drawable.ic_info_black_24dp).setCancelable(true)
-                .setPositiveButton("OK") { dialog, _ ->
-                    dialog.cancel()
-                }
+            builder.setTitle(getString(R.string.all_uncaughtException)).setMessage(getString(R.string.all_appCrashed)).setIcon(R.drawable.ic_info_black_24dp).setCancelable(true).setPositiveButton("OK") { dialog, _ ->
+                dialog.cancel()
+            }
 
             alertErrorDialog = builder.create()
             alertErrorDialog?.show()
@@ -102,8 +97,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         if (!MyApp.preferencesManager.isPremium) {
             adView = findViewById<AdView>(R.id.adView)
-            AdViewManager(lifecycle, adView)
-            adView.loadAd(adRequest)
+            adView?.let {
+                AdViewManager(lifecycle, it)
+                it.loadAd(adRequest)
+            }
+
         }
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
@@ -117,43 +115,61 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         materialDrawer = drawer {
             this.toolbar = toolbar
+
+            stickyHeaderRes = R.layout.nav_header_main
+
             primaryItem {
                 icon = R.drawable.ic_favorite_black_24dp_nav
                 nameRes = R.string.favorite
-                identifier=100
+                identifier = 100
             }
-            primaryItem {
-                icon = R.mipmap.ic_rulate
-                nameRes = R.string.tl_rulate_name
-                identifier=101
 
-            }
-            primaryItem {
-                icon = R.mipmap.ic_ranoberf
-                nameRes = R.string.ranobe_rf
-                identifier=102
+            expandableItem {
+                nameRes = R.string.sites
 
-            }
-            primaryItem {
-                icon = R.mipmap.ic_ranobehub
-                nameRes = R.string.ranobe_hub
-                identifier=103
+                icon = R.drawable.ic_whatshot_black_24dp
+                identifier = 201
 
+                selectable = false
+
+                primaryItem {
+                    icon = R.mipmap.ic_rulate
+                    nameRes = R.string.tl_rulate_name
+                    identifier = 101
+                    level = 2
+
+                }
+                primaryItem {
+                    icon = R.mipmap.ic_ranoberf
+                    nameRes = R.string.ranobe_rf
+                    identifier = 102
+                    level = 2
+
+                }
+                primaryItem {
+                    icon = R.mipmap.ic_ranobehub
+                    nameRes = R.string.ranobe_hub
+                    identifier = 103
+                    level = 2
+
+                }
             }
+
+
             primaryItem {
                 icon = R.drawable.ic_search_black_24dp
                 nameRes = R.string.search
-                identifier=104
+                identifier = 104
             }
             primaryItem {
                 icon = R.drawable.ic_file_download_black_24dp_nav
                 nameRes = R.string.saved_chapters
-                identifier=105
+                identifier = 105
             }
             primaryItem {
                 icon = R.drawable.ic_history_black_24dp
                 nameRes = R.string.history
-                identifier=106
+                identifier = 106
             }
             sectionHeader(R.string.general)
 
@@ -161,22 +177,25 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             primaryItem {
                 icon = R.drawable.ic_settings_black_24dp
                 nameRes = R.string.settings
-                identifier=107
+                identifier = 107
             }
             primaryItem {
                 icon = R.drawable.ic_send_black_24dp
                 nameRes = R.string.feedback
-                identifier=108
+                identifier = 108
             }
             primaryItem {
                 icon = R.drawable.ic_attach_money_black_24dp
                 nameRes = R.string.payment_ads_remove
-                identifier=109
+                identifier = 109
+                enabled = !MyApp.preferencesManager.isPremium
             }
 
-            secondarySwitchItem(R.string.app_theme) {
+
+            switchItem(R.string.app_theme) {
                 icon = R.drawable.ic_settings_brightness_black_24dp
                 checked = MyApp.preferencesManager.isDarkTheme
+                selectable = false
                 onSwitchChanged { drawerItem, button, isEnabled ->
 
                 }
@@ -185,7 +204,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             onItemClick { view, position, drawerItem ->
                 var fragment: Fragment? = null
                 when (drawerItem.identifier) {
-                   100L -> {
+                    100L -> {
                         currentFragment = Constants.FragmentType.Favorite.name
                         fragment = RanobeListFragment.newInstance(Constants.FragmentType.Favorite.name)
                         title = resources.getText(R.string.favorite)
@@ -203,7 +222,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         title = resources.getText(R.string.ranobe_rf)
                         currentTitle = resources.getText(R.string.ranobe_rf).toString()
                     }
-                    103L-> {
+                    103L -> {
                         currentFragment = Constants.FragmentType.RanobeHub.name
                         fragment = RanobeListFragment.newInstance(Constants.FragmentType.RanobeHub.name)
                         title = resources.getText(R.string.ranobe_hub)
@@ -231,22 +250,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         currentTitle = resources.getText(R.string.history).toString()
                     }
                     108L -> {
-                        EasyFeedback.Builder(this@MainActivity).withEmail("admin@profapp.ru").withSystemInfo().build()
-                            .start()
+                        EasyFeedback.Builder(this@MainActivity).withEmail("admin@profapp.ru").withSystemInfo().build().start()
                     }
                     109L -> {
 
-                        AlertDialog.Builder(this@MainActivity)
-                            .setTitle(getString(R.string.alert_premium_pay))
-                            .setIcon(R.drawable.ic_info_black_24dp)
-                            .setMessage(getString(R.string.alert_premium_pay_message))
-                            .setCancelable(true)
-                            .setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
-                            .setPositiveButton("OK") { _, _ ->
-                                mBillingManager.initiatePurchaseFlow(BillingConstants.SKU_PREMIUM,
-                                    BillingClient.SkuType.INAPP)
-                            }.create().show()
+                        AlertDialog.Builder(this@MainActivity).setTitle(getString(R.string.alert_premium_pay)).setIcon(R.drawable.ic_info_black_24dp).setMessage(getString(R.string.alert_premium_pay_message)).setCancelable(true).setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }.setPositiveButton("OK") { _, _ ->
+                            mBillingManager.initiatePurchaseFlow(BillingConstants.SKU_PREMIUM, BillingClient.SkuType.INAPP)
+                        }.create().show()
 
+                    }
+                    201L -> {
+                        Toast.makeText(this@MainActivity, "dsfsdf", Toast.LENGTH_SHORT).show()
+                        return@onItemClick true
                     }
                 }
 
@@ -254,8 +269,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
                     if (!MyApp.preferencesManager.isPremium) {
-                        AdViewManager(lifecycle, adView)
-                        adView.loadAd(adRequest)
+                        adView?.let {
+                            AdViewManager(lifecycle, it)
+                            it.loadAd(adRequest)
+                        }
                     }
 
                     val ft = supportFragmentManager.beginTransaction()
@@ -263,7 +280,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     ft.commit()
                 }
 
-                true
+                false
             }
 
         }
@@ -274,22 +291,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (savedInstanceState == null) {
             currentFragment = Constants.FragmentType.Favorite.name
             currentTitle = resources.getText(R.string.favorite).toString()
-            ft.replace(R.id.mainFrame, RanobeListFragment.newInstance(currentFragment), MY_FRAGMENT)
-                .commit()
+            ft.replace(R.id.mainFrame, RanobeListFragment.newInstance(currentFragment), MY_FRAGMENT).commit()
         } else {
-            currentFragment = savedInstanceState.getString("Fragment",
-                Constants.FragmentType.Favorite.name)
-            currentTitle = savedInstanceState.getString("Title",
-                resources.getText(R.string.favorite).toString())
+            currentFragment = savedInstanceState.getString("Fragment", Constants.FragmentType.Favorite.name)
+            currentTitle = savedInstanceState.getString("Title", resources.getText(R.string.favorite).toString())
 
             val myFragment = supportFragmentManager.findFragmentByTag("MY_FRAGMENT")
             if (myFragment == null) {
                 if (currentFragment == Constants.FragmentType.Search.name) {
                     ft.replace(R.id.mainFrame, SearchFragment.newInstance(), MY_FRAGMENT)
                 } else {
-                    ft.replace(R.id.mainFrame,
-                        RanobeListFragment.newInstance(currentFragment),
-                        MY_FRAGMENT)
+                    ft.replace(R.id.mainFrame, RanobeListFragment.newInstance(currentFragment), MY_FRAGMENT)
                 }
                 ft.commit()
             }
@@ -299,8 +311,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         val floatingActionButton = findViewById<FloatingActionButton>(R.id.fab)
         floatingActionButton.setOnClickListener {
-            val chapterProgress = MyApp.database.chapterProgressDao().getLastChapter()
-                .subscribeOn(Schedulers.io())?.blockingGet()
+            val chapterProgress = MyApp.database.chapterProgressDao().getLastChapter().subscribeOn(Schedulers.io())?.blockingGet()
             if (chapterProgress != null) {
                 if (MyApp.ranobe == null || !MyApp.ranobe!!.url.contains(chapterProgress.ranobeUrl) || !MyApp.ranobe!!.wasUpdated) {
 
@@ -322,8 +333,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
 
             } else {
-                Toast.makeText(this, resources.getText(R.string.not_history), Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(this, resources.getText(R.string.not_history), Toast.LENGTH_SHORT).show()
             }
 
         }
@@ -355,28 +365,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             override fun onBillingClientSetupFinished() {
 
                 @BillingClient.SkuType val billingType = BillingClient.SkuType.INAPP
-                mBillingManager.querySkuDetailsAsync(billingType,
-                    BillingConstants.getSkuList(billingType),
-                    object : SkuDetailsResponseListener {
-                        override fun onSkuDetailsResponse(
-                            responseCode: Int,
-                            skuDetailsList: MutableList<SkuDetails>?
-                        ) {
-                            if (responseCode != BillingClient.BillingResponse.OK) {
-                                Log.w(TAG,
-                                    "Unsuccessful query for type: $billingType. Error code: $responseCode");
-                            } else if (skuDetailsList != null && skuDetailsList.size > 0) {
+                mBillingManager.querySkuDetailsAsync(billingType, BillingConstants.getSkuList(billingType), object : SkuDetailsResponseListener {
+                    override fun onSkuDetailsResponse(responseCode: Int, skuDetailsList: MutableList<SkuDetails>?) {
+                        if (responseCode != BillingClient.BillingResponse.OK) {
+                            Log.w(TAG, "Unsuccessful query for type: $billingType. Error code: $responseCode");
+                        } else if (skuDetailsList != null && skuDetailsList.size > 0) {
 
-                            }
                         }
+                    }
 
 
-                    });
+                });
             }
 
             override fun onConsumeFinished(token: String, result: Int) {
-                Log.d(TAG,
-                    "Consumption finished. Purchase token: " + token + ", result: " + result);
+                Log.d(TAG, "Consumption finished. Purchase token: " + token + ", result: " + result);
 
                 // Note: We know this is the SKU_GAS, because it's the only one we consume, so we don't
                 // check if token corresponding to the expected sku was consumed.
@@ -435,12 +438,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onBackPressed() {
-//        val drawer = findViewById<DrawerLayout>(R.id.drawer_layout)
-//        if (drawer.isDrawerOpen(GravityCompat.START)) {
-//            drawer.closeDrawer(GravityCompat.START)
-//        } else {
-//            super.onBackPressed()
-//        }
 
         if (materialDrawer.isDrawerOpen) {
             materialDrawer.closeDrawer();
@@ -472,7 +469,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         return super.onOptionsItemSelected(item)
     }
-
 
 
     override fun onSaveInstanceState(outState: Bundle) {
