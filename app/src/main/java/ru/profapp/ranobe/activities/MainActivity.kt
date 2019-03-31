@@ -1,16 +1,21 @@
 package ru.profapp.ranobe.activities
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import co.zsmb.materialdrawerkt.builders.accountHeader
 import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import co.zsmb.materialdrawerkt.draweritems.expandable.expandableItem
@@ -27,6 +32,7 @@ import com.mikepenz.materialdrawer.Drawer
 import com.webianks.easy_feedback.EasyFeedback
 import de.cketti.library.changelog.ChangeLog
 import io.reactivex.schedulers.Schedulers
+import ru.profapp.ranobe.BuildConfig
 import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.R
 import ru.profapp.ranobe.billing.BillingConstants
@@ -116,7 +122,14 @@ class MainActivity : AppCompatActivity() {
         materialDrawer = drawer {
             this.toolbar = toolbar
 
-            stickyHeaderRes = R.layout.nav_header_main
+            headerDivider = false
+
+            headerViewRes = if (MyApp.preferencesManager.isPremium) {
+                R.layout.nav_header_main_premium
+            }else{
+                R.layout.nav_header_main
+            }
+
 
             primaryItem {
                 icon = R.drawable.ic_favorite_black_24dp_nav
@@ -131,6 +144,7 @@ class MainActivity : AppCompatActivity() {
                 identifier = 201
 
                 selectable = false
+
 
                 primaryItem {
                     icon = R.mipmap.ic_rulate
@@ -184,6 +198,7 @@ class MainActivity : AppCompatActivity() {
                 nameRes = R.string.feedback
                 identifier = 108
             }
+
             primaryItem {
                 icon = R.drawable.ic_attach_money_black_24dp
                 nameRes = R.string.payment_ads_remove
@@ -192,12 +207,15 @@ class MainActivity : AppCompatActivity() {
             }
 
 
+
             switchItem(R.string.app_theme) {
-                icon = R.drawable.ic_settings_brightness_black_24dp
+                icon = R.drawable.ic_settings_brightness_black_24dp_nav
                 checked = MyApp.preferencesManager.isDarkTheme
                 selectable = false
                 onSwitchChanged { drawerItem, button, isEnabled ->
 
+                    MyApp.preferencesManager.isDarkTheme = isEnabled
+                    recreate()
                 }
             }
 
@@ -228,26 +246,27 @@ class MainActivity : AppCompatActivity() {
                         title = resources.getText(R.string.ranobe_hub)
                         currentTitle = resources.getText(R.string.ranobe_hub).toString()
                     }
+
                     104L -> {
-                        launchActivity<SettingsActivity>()
-                    }
-                    105L -> {
                         currentFragment = Constants.FragmentType.Search.name
                         fragment = SearchFragment.newInstance()
                         title = resources.getText(R.string.search)
                         currentTitle = resources.getText(R.string.search).toString()
                     }
-                    106L -> {
+                    105L -> {
                         currentFragment = Constants.FragmentType.Saved.name
                         fragment = RanobeListFragment.newInstance(Constants.FragmentType.Saved.name)
                         title = resources.getText(R.string.saved_chapters)
                         currentTitle = resources.getText(R.string.saved_chapters).toString()
                     }
-                    107L -> {
+                    106L -> {
                         currentFragment = Constants.FragmentType.History.name
                         fragment = HistoryFragment.newInstance()
                         title = resources.getText(R.string.history)
                         currentTitle = resources.getText(R.string.history).toString()
+                    }
+                    107L -> {
+                        launchActivity<SettingsActivity>()
                     }
                     108L -> {
                         EasyFeedback.Builder(this@MainActivity).withEmail("admin@profapp.ru").withSystemInfo().build().start()
@@ -259,10 +278,7 @@ class MainActivity : AppCompatActivity() {
                         }.create().show()
 
                     }
-                    201L -> {
-                        Toast.makeText(this@MainActivity, "dsfsdf", Toast.LENGTH_SHORT).show()
-                        return@onItemClick true
-                    }
+
                 }
 
                 if (fragment != null) {
@@ -338,26 +354,19 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-        // val toggle = ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-        //  drawer.addDrawerListener(toggle)
-        //  toggle.syncState()
 
-        //  val navigationView = findViewById<NavigationView>(R.id.nav_view)
-        //  navigationView.itemIconTintList = null
-        //  navigationView.setNavigationItemSelectedListener(this)
+        val vkButton: ImageButton = materialDrawer.header.findViewById(R.id.vkButton)
 
-//        val vkButton: ImageButton = navigationView.getHeaderView(0).findViewById(R.id.vkButton)
-//
-//        vkButton.setOnClickListener {
-//            val url = getString(R.string.all_vkUrl)
-//
-//            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-//            if (browserIntent.resolveActivity(this.packageManager) != null) startActivity(browserIntent)
-//            else Toast.makeText(this, R.string.browser_exist, Toast.LENGTH_SHORT).show()
-//        }
-//
-//        val navText: TextView = navigationView.getHeaderView(0).findViewById(R.id.navText)
-//        navText.text = "${getString(R.string.app_name)} ${BuildConfig.VERSION_NAME}"
+        vkButton.setOnClickListener {
+            val url = getString(R.string.all_vkUrl)
+
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            if (browserIntent.resolveActivity(this.packageManager) != null) startActivity(browserIntent)
+            else Toast.makeText(this, R.string.browser_exist, Toast.LENGTH_SHORT).show()
+        }
+
+        val navText: TextView = materialDrawer.header.findViewById(R.id.navText)
+        navText.text = "${getString(R.string.app_name)} ${BuildConfig.VERSION_NAME}"
 
 
         // Create and initialize BillingManager which talks to BillingLibrary
