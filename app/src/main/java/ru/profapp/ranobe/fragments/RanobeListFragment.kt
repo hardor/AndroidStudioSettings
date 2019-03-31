@@ -94,7 +94,8 @@ class RanobeListFragment : Fragment() {
             Constants.SortOrder.ByTitle.name -> ranobeList.sortedBy { r -> r.title }
             Constants.SortOrder.ByDate.name -> ranobeList.sortedByDescending { r -> r.readyDate }
             Constants.SortOrder.ByUpdates.name -> ranobeList.sortedByDescending { r -> r.newChapters }
-            else -> ranobeList.sortedBy { r -> r.ranobeSite }.sortedBy { h -> h.title }
+            Constants.SortOrder.ByRanobeSite.name -> ranobeList.sortedWith(compareBy({ it.ranobeSite }, { it.title }))
+            else -> ranobeList.sortedByDescending { r -> r.newChapters }
         }
         ranobeList.clear()
         ranobeList.addAll(tempList)

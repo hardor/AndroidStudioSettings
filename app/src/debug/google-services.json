@@ -1,0 +1,64 @@
+{
+  "project_info": {
+    "project_number": "510986481056",
+    "firebase_url": "https://ranobe-c0bd5.firebaseio.com",
+    "project_id": "ranobe-c0bd5",
+    "storage_bucket": "ranobe-c0bd5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:510986481056:android:a49277cdd4df14e6",
+        "android_client_info": {
+          "package_name": "ru.profapp.ranobe.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "510986481056-f0nj10slsr8s30pim6oekila5f9qrt6h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ru.profapp.ranobe.debug",
+            "certificate_hash": "6eee188ce34a7c3309cbf9f09876e477fcefbbf9"
+          }
+        },
+        {
+          "client_id": "510986481056-f3vkte7q6mul44a0rsirint3f6v2ssq4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ru.profapp.ranobe.debug",
+            "certificate_hash": "c3f91713690d790498f02626b9c5f386baf3b368"
+          }
+        },
+        {
+          "client_id": "510986481056-d66ckbuvn93ktc7n8shqj8qqhdtij421.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCkOUGsGUpUA7RBzCYBikv85VMOFtB2SHg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "510986481056-r8sl6tdr39qbce6bpiob0s3cc9fgb3cj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      },
+      "admob_app_id": "ca-app-pub-1483315001492731~6790511196"
+    }
+  ],
+  "configuration_version": "1"
+}

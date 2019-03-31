@@ -4,32 +4,34 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.provider.Settings
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import co.zsmb.materialdrawerkt.builders.accountHeader
+import co.zsmb.materialdrawerkt.builders.drawer
+import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
+import co.zsmb.materialdrawerkt.draweritems.expandable.expandableItem
+import co.zsmb.materialdrawerkt.draweritems.sectionHeader
+import co.zsmb.materialdrawerkt.draweritems.switchable.switchItem
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.SkuDetails
 import com.android.billingclient.api.SkuDetailsResponseListener
 import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.navigation.NavigationView
+import com.mikepenz.materialdrawer.Drawer
 import com.webianks.easy_feedback.EasyFeedback
 import de.cketti.library.changelog.ChangeLog
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.app_bar_main.*
-import kotlinx.android.synthetic.main.content_main.*
 import ru.profapp.ranobe.BuildConfig
 import ru.profapp.ranobe.MyApp
 import ru.profapp.ranobe.R
@@ -48,9 +50,10 @@ import ru.profapp.ranobe.models.Ranobe
 import ru.profapp.ranobe.network.repositories.RanobeRfRepository
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var mBillingManager: BillingManager
+    private var adView: AdView? = null
 
     private var currentTheme = ThemeHelper.sTheme
 
@@ -58,6 +61,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private var currentTitle: String? = null
 
     private var alertErrorDialog: AlertDialog? = null
+
+    private lateinit var materialDrawer: Drawer
 
     @Inject
     lateinit var adRequest: AdRequest
@@ -88,8 +93,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             intent.removeExtra("crash")
             val builder = AlertDialog.Builder(this)
             builder.setTitle(getString(R.string.all_uncaughtException)).setMessage(getString(R.string.all_appCrashed)).setIcon(R.drawable.ic_info_black_24dp).setCancelable(true).setPositiveButton("OK") { dialog, _ ->
-                        dialog.cancel()
-                    }
+                dialog.cancel()
+            }
 
             alertErrorDialog = builder.create()
             alertErrorDialog?.show()
@@ -97,11 +102,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
         if (!MyApp.preferencesManager.isPremium) {
-            AdViewManager(lifecycle, adView)
-            adView.loadAd(adRequest)
+            adView = findViewById<AdView>(R.id.adView)
+            adView?.let {
+                AdViewManager(lifecycle, it)
+                it.loadAd(adRequest)
+            }
+
         }
 
-
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
 
@@ -110,7 +119,188 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             cl.logDialog.show()
         }
 
-        val drawer = findViewById<DrawerLayout>(R.id.drawer_layout)
+        materialDrawer = drawer {
+            this.toolbar = toolbar
+
+            headerDivider = false
+
+            headerViewRes = if (MyApp.preferencesManager.isPremium) {
+                R.layout.nav_header_main_premium
+            }else{
+                R.layout.nav_header_main
+            }
+
+
+            primaryItem {
+                icon = R.drawable.ic_favorite_black_24dp_nav
+                nameRes = R.string.favorite
+                identifier = 100
+            }
+
+            expandableItem {
+                nameRes = R.string.sites
+
+                icon = R.drawable.ic_whatshot_black_24dp
+                identifier = 201
+
+                selectable = false
+
+
+                primaryItem {
+                    icon = R.mipmap.ic_rulate
+                    nameRes = R.string.tl_rulate_name
+                    identifier = 101
+                    level = 2
+
+                }
+                primaryItem {
+                    icon = R.mipmap.ic_ranoberf
+                    nameRes = R.string.ranobe_rf
+                    identifier = 102
+                    level = 2
+
+                }
+                primaryItem {
+                    icon = R.mipmap.ic_ranobehub
+                    nameRes = R.string.ranobe_hub
+                    identifier = 103
+                    level = 2
+
+                }
+            }
+
+
+            primaryItem {
+                icon = R.drawable.ic_search_black_24dp
+                nameRes = R.string.search
+                identifier = 104
+            }
+            primaryItem {
+                icon = R.drawable.ic_file_download_black_24dp_nav
+                nameRes = R.string.saved_chapters
+                identifier = 105
+            }
+            primaryItem {
+                icon = R.drawable.ic_history_black_24dp
+                nameRes = R.string.history
+                identifier = 106
+            }
+            sectionHeader(R.string.general)
+
+
+            primaryItem {
+                icon = R.drawable.ic_settings_black_24dp
+                nameRes = R.string.settings
+                identifier = 107
+            }
+            primaryItem {
+                icon = R.drawable.ic_send_black_24dp
+                nameRes = R.string.feedback
+                identifier = 108
+            }
+
+            primaryItem {
+                icon = R.drawable.ic_attach_money_black_24dp
+                nameRes = R.string.payment_ads_remove
+                identifier = 109
+                enabled = !MyApp.preferencesManager.isPremium
+            }
+
+
+
+            switchItem(R.string.app_theme) {
+                icon = R.drawable.ic_settings_brightness_black_24dp_nav
+                checked = MyApp.preferencesManager.isDarkTheme
+                selectable = false
+                onSwitchChanged { drawerItem, button, isEnabled ->
+
+                    MyApp.preferencesManager.isDarkTheme = isEnabled
+                    recreate()
+                }
+            }
+
+            onItemClick { view, position, drawerItem ->
+                var fragment: Fragment? = null
+                when (drawerItem.identifier) {
+                    100L -> {
+                        currentFragment = Constants.FragmentType.Favorite.name
+                        fragment = RanobeListFragment.newInstance(Constants.FragmentType.Favorite.name)
+                        title = resources.getText(R.string.favorite)
+                        currentTitle = resources.getText(R.string.favorite).toString()
+                    }
+                    101L -> {
+                        currentFragment = Constants.FragmentType.Rulate.name
+                        fragment = RanobeListFragment.newInstance(Constants.FragmentType.Rulate.name)
+                        title = resources.getText(R.string.tl_rulate_name)
+                        currentTitle = resources.getText(R.string.tl_rulate_name).toString()
+                    }
+                    102L -> {
+                        currentFragment = Constants.FragmentType.Ranoberf.name
+                        fragment = RanobeListFragment.newInstance(Constants.FragmentType.Ranoberf.name)
+                        title = resources.getText(R.string.ranobe_rf)
+                        currentTitle = resources.getText(R.string.ranobe_rf).toString()
+                    }
+                    103L -> {
+                        currentFragment = Constants.FragmentType.RanobeHub.name
+                        fragment = RanobeListFragment.newInstance(Constants.FragmentType.RanobeHub.name)
+                        title = resources.getText(R.string.ranobe_hub)
+                        currentTitle = resources.getText(R.string.ranobe_hub).toString()
+                    }
+
+                    104L -> {
+                        currentFragment = Constants.FragmentType.Search.name
+                        fragment = SearchFragment.newInstance()
+                        title = resources.getText(R.string.search)
+                        currentTitle = resources.getText(R.string.search).toString()
+                    }
+                    105L -> {
+                        currentFragment = Constants.FragmentType.Saved.name
+                        fragment = RanobeListFragment.newInstance(Constants.FragmentType.Saved.name)
+                        title = resources.getText(R.string.saved_chapters)
+                        currentTitle = resources.getText(R.string.saved_chapters).toString()
+                    }
+                    106L -> {
+                        currentFragment = Constants.FragmentType.History.name
+                        fragment = HistoryFragment.newInstance()
+                        title = resources.getText(R.string.history)
+                        currentTitle = resources.getText(R.string.history).toString()
+                    }
+                    107L -> {
+                        launchActivity<SettingsActivity>()
+                    }
+                    108L -> {
+                        EasyFeedback.Builder(this@MainActivity).withEmail("admin@profapp.ru").withSystemInfo().build().start()
+                    }
+                    109L -> {
+
+                        AlertDialog.Builder(this@MainActivity).setTitle(getString(R.string.alert_premium_pay)).setIcon(R.drawable.ic_info_black_24dp).setMessage(getString(R.string.alert_premium_pay_message)).setCancelable(true).setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }.setPositiveButton("OK") { _, _ ->
+                            mBillingManager.initiatePurchaseFlow(BillingConstants.SKU_PREMIUM, BillingClient.SkuType.INAPP)
+                        }.create().show()
+
+                    }
+
+                }
+
+                if (fragment != null) {
+
+
+                    if (!MyApp.preferencesManager.isPremium) {
+                        adView?.let {
+                            AdViewManager(lifecycle, it)
+                            it.loadAd(adRequest)
+                        }
+                    }
+
+                    val ft = supportFragmentManager.beginTransaction()
+                    ft.replace(R.id.mainFrame, fragment, MY_FRAGMENT)
+                    ft.commit()
+                }
+
+                false
+            }
+
+        }
+
 
         val ft = supportFragmentManager.beginTransaction()
 
@@ -164,15 +354,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         }
 
-        val toggle = ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-        drawer.addDrawerListener(toggle)
-        toggle.syncState()
 
-        val navigationView = findViewById<NavigationView>(R.id.nav_view)
-        navigationView.itemIconTintList = null
-        navigationView.setNavigationItemSelectedListener(this)
-
-        val vkButton: ImageButton = navigationView.getHeaderView(0).findViewById(R.id.vkButton)
+        val vkButton: ImageButton = materialDrawer.header.findViewById(R.id.vkButton)
 
         vkButton.setOnClickListener {
             val url = getString(R.string.all_vkUrl)
@@ -182,7 +365,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             else Toast.makeText(this, R.string.browser_exist, Toast.LENGTH_SHORT).show()
         }
 
-        val navText: TextView = navigationView.getHeaderView(0).findViewById(R.id.navText)
+        val navText: TextView = materialDrawer.header.findViewById(R.id.navText)
         navText.text = "${getString(R.string.app_name)} ${BuildConfig.VERSION_NAME}"
 
 
@@ -264,12 +447,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onBackPressed() {
-        val drawer = findViewById<DrawerLayout>(R.id.drawer_layout)
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START)
+
+        if (materialDrawer.isDrawerOpen) {
+            materialDrawer.closeDrawer();
         } else {
-            super.onBackPressed()
+            super.onBackPressed();
         }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -293,93 +477,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        // Handle navigation view item clicks here.
-        val id = item.itemId
-
-        var fragment: Fragment? = null
-
-        when (id) {
-            R.id.nav_favorite -> {
-                currentFragment = Constants.FragmentType.Favorite.name
-                fragment = RanobeListFragment.newInstance(Constants.FragmentType.Favorite.name)
-                title = resources.getText(R.string.favorite)
-                currentTitle = resources.getText(R.string.favorite).toString()
-            }
-            R.id.nav_rulate -> {
-                currentFragment = Constants.FragmentType.Rulate.name
-                fragment = RanobeListFragment.newInstance(Constants.FragmentType.Rulate.name)
-                title = resources.getText(R.string.tl_rulate_name)
-                currentTitle = resources.getText(R.string.tl_rulate_name).toString()
-            }
-            R.id.nav_ranoberf -> {
-                currentFragment = Constants.FragmentType.Ranoberf.name
-                fragment = RanobeListFragment.newInstance(Constants.FragmentType.Ranoberf.name)
-                title = resources.getText(R.string.ranobe_rf)
-                currentTitle = resources.getText(R.string.ranobe_rf).toString()
-            }
-            R.id.nav_ranobehub -> {
-                currentFragment = Constants.FragmentType.RanobeHub.name
-                fragment = RanobeListFragment.newInstance(Constants.FragmentType.RanobeHub.name)
-                title = resources.getText(R.string.ranobe_hub)
-                currentTitle = resources.getText(R.string.ranobe_hub).toString()
-            }
-            R.id.nav_manage -> {
-                launchActivity<SettingsActivity>()
-            }
-            R.id.nav_search -> {
-                currentFragment = Constants.FragmentType.Search.name
-                fragment = SearchFragment.newInstance()
-                title = resources.getText(R.string.search)
-                currentTitle = resources.getText(R.string.search).toString()
-            }
-            R.id.nav_chapters -> {
-                currentFragment = Constants.FragmentType.Saved.name
-                fragment = RanobeListFragment.newInstance(Constants.FragmentType.Saved.name)
-                title = resources.getText(R.string.saved_chapters)
-                currentTitle = resources.getText(R.string.saved_chapters).toString()
-            }
-            R.id.nav_history -> {
-                currentFragment = Constants.FragmentType.History.name
-                fragment = HistoryFragment.newInstance()
-                title = resources.getText(R.string.history)
-                currentTitle = resources.getText(R.string.history).toString()
-            }
-            R.id.nav_send -> {
-                EasyFeedback.Builder(this).withEmail("admin@profapp.ru").withSystemInfo().build().start()
-            }
-            R.id.nav_ads_remove -> {
-
-                AlertDialog.Builder(this@MainActivity)
-                        .setTitle(getString(R.string.alert_premium_pay))
-                        .setIcon(R.drawable.ic_info_black_24dp).setMessage(getString(R.string.alert_premium_pay_message))
-                        .setCancelable(true)
-                        .setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
-                        .setPositiveButton("OK") { _, _ ->
-                            mBillingManager.initiatePurchaseFlow(BillingConstants.SKU_PREMIUM, BillingClient.SkuType.INAPP)
-                        }.create().show()
-
-            }
-        }
-
-        if (fragment != null) {
-
-
-            if (!MyApp.preferencesManager.isPremium) {
-                AdViewManager(lifecycle, adView)
-                adView.loadAd(adRequest)
-            }
-
-            val ft = supportFragmentManager.beginTransaction()
-            ft.replace(R.id.mainFrame, fragment, MY_FRAGMENT)
-            ft.commit()
-        }
-
-        val drawer = findViewById<DrawerLayout>(R.id.drawer_layout)
-        drawer.closeDrawer(GravityCompat.START)
-        return true
     }
 
 
