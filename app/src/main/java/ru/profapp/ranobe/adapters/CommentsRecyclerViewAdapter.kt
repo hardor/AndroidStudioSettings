@@ -1,6 +1,7 @@
 package ru.profapp.ranobe.adapters
 
 import android.graphics.drawable.Drawable
+import android.text.Html
 import android.text.format.DateFormat
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -14,11 +15,12 @@ import ru.profapp.ranobe.R
 import ru.profapp.ranobe.common.Constants
 import ru.profapp.ranobe.helpers.GlideRequests
 import ru.profapp.ranobe.helpers.setVectorForPreLollipop
+import ru.profapp.ranobe.models.Comment
 import ru.profapp.ranobe.network.dto.rulateDTO.RulateComment
 import java.util.*
 
 class CommentsRecyclerViewAdapter(private val glide: GlideRequests,
-                                  private val mValues: List<RulateComment>) :
+                                  private val mValues: List<Comment>) :
     RecyclerView.Adapter<CommentsRecyclerViewAdapter.MyViewHolder>() {
 
     companion object {
@@ -35,15 +37,15 @@ class CommentsRecyclerViewAdapter(private val glide: GlideRequests,
 
         val mContext = holder.itemView.context
         holder.item = mValues[position]
-        holder.bodyTextView.text = holder.item.body
-        if (holder.item.time != null) holder.dateView.text = String.format("%s %s",
-            holder.item.author,
-            DateFormat.getDateFormat(mContext).format(Date(holder.item.time!!.times(1000))))
+        holder.bodyTextView.text = Html.fromHtml(holder.item.comment)
+        if (holder.item.createdAt != null) holder.dateView.text = String.format("%s %s",
+            holder.item.name,
+            DateFormat.getDateFormat(mContext).format(Date(holder.item.createdAt!!.times(1000))))
 
         val dp50 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
             50f,
             mContext.resources.displayMetrics).toInt()
-        glide.load(mValues[position].avatar).into(object : SimpleTarget<Drawable>(dp50, dp50) {
+        glide.load(mValues[position].image).into(object : SimpleTarget<Drawable>(dp50, dp50) {
             override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
                 setVectorForPreLollipop(holder.bodyTextView,
                     resource,
@@ -59,7 +61,7 @@ class CommentsRecyclerViewAdapter(private val glide: GlideRequests,
     inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val bodyTextView: TextView = itemView.findViewById(R.id.tV_comment)
         val dateView: TextView = itemView.findViewById(R.id.date)
-        lateinit var item: RulateComment
+        lateinit var item: Comment
 
     }
 }

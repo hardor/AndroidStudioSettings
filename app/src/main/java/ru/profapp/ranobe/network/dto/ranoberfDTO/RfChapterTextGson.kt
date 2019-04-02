@@ -2,30 +2,57 @@ package ru.profapp.ranobe.network.dto.ranoberfDTO
 
 import com.google.gson.annotations.SerializedName
 
-data class RfChapterTextGson(@SerializedName("status") val status: Int? = null, @SerializedName("result") val result: RfText? = null, @SerializedName(
-    "message") val message: String? = null)
-
-data class RfText(@SerializedName("status") val status: Int? = null,
-    //    @SerializedName("") val checkers: List<Checker> = listOf(),
-                  @SerializedName("part") val part: TextPart? = null, @SerializedName("book") val book: Book? = null
-    //   @SerializedName("") val nextPart: ChapterPart?=null,
-    //  @SerializedName("") val previewPart: ChapterPart?
+data class RfChapterTextGson(
+        @SerializedName("status")
+        val status: Int? = null,
+        @SerializedName("result")
+        val result: RfText? = null,
+        @SerializedName("message")
+        val message: String? = null
 )
 
-data class Book(@SerializedName("id") val id: Int? = null,
-    //  @SerializedName("") val image: ChapterImage?=null,
-    // @SerializedName("") val priceDonatePart: Int?=null,
-                @SerializedName("title") val title: String? = null, @SerializedName("url") val url: String? = null)
+data class RfText(
+        @SerializedName("status")
+        val status: Int? = null,
+        //    @SerializedName("") val checkers: List<Checker> = listOf(),
+        @SerializedName("part")
+        val part: TextPart? = null,
+        @SerializedName("book")
+        val book: Book? = null
+        //   @SerializedName("") val nextPart: ChapterPart?=null,
+        //  @SerializedName("") val previewPart: ChapterPart?
+)
 
-data class TextPart(@SerializedName("id") val id: Int? = null, @SerializedName("url") val url: String? = null, @SerializedName(
-    "title") val title: String? = null, @SerializedName("content") val content: String? = null, @SerializedName(
-    "payment") val payment: Boolean? = null, @SerializedName("image") val image: String? = null
+data class Book(
+        @SerializedName("id")
+        val id: Int? = null,
+        //  @SerializedName("") val image: ChapterImage?=null,
+        // @SerializedName("") val priceDonatePart: Int?=null,
+        @SerializedName("title")
+        val title: String? = null,
+        @SerializedName("url")
+        val url: String? = null
+)
 
-    // @SerializedName("") val indexPart: Int?=null,
+data class TextPart(
+        @SerializedName("id")
+        val id: Int? = null,
+        @SerializedName("url")
+        val url: String? = null,
+        @SerializedName("title")
+        val title: String? = null,
+        @SerializedName("content")
+        val content: String? = null,
+        @SerializedName("payment")
+        val payment: Boolean? = null,
+        @SerializedName("image")
+        val image: String? = null
 
-    // @SerializedName("") val publishedAt: Int?=null,
-    //  @SerializedName("") val updatedAt: Int?=null,
-    //  @SerializedName("") val donateNeed: Boolean?
+        // @SerializedName("") val indexPart: Int?=null,
+
+        // @SerializedName("") val publishedAt: Int?=null,
+        //  @SerializedName("") val updatedAt: Int?=null,
+        //  @SerializedName("") val donateNeed: Boolean?
 )
 
 // data class ChapterImage(

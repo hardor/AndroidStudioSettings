@@ -20,24 +20,39 @@ import com.google.gson.annotations.SerializedName
 //        ac_gen	"a"
 //        ac_tr	"g"
 
-data class SearchGson(@SerializedName("status") val status: String, @SerializedName("response") val books: List<RulateSearchBook> = listOf())
+data class SearchGson(
+        @SerializedName("status")
+        val status: String,
+        @SerializedName("response")
+        val books: List<RulateSearchBook> = listOf()
+)
 
 data class RulateSearchBook(
 
-    @SerializedName("id") val id: Int? = null,
+        @SerializedName("id")
+        val id: Int? = null,
 
-    @SerializedName("s_title") val sTitle: String? = null,
+        @SerializedName("s_title")
+        val sTitle: String? = null,
 
-    @SerializedName("t_title") val tTitle: String? = null,
+        @SerializedName("t_title")
+        val tTitle: String? = null,
 
-    @SerializedName("n_chapters") val nChapters: Int? = null,
+        @SerializedName("n_chapters")
+        val nChapters: Int? = null,
 
-    @SerializedName("lang") val lang: String? = null,
+        @SerializedName("lang")
+        val lang: String? = null,
 
-    @SerializedName("last_activity") val lastActivity: Long? = null,
+        @SerializedName("last_activity")
+        val lastActivity: Long? = null,
 
-    @SerializedName("status") val status: String? = null,
+        @SerializedName("status")
+        val status: String? = null,
 
-    @SerializedName("rating") val rating: String? = null,
+        @SerializedName("rating")
+        val rating: String? = null,
 
-    @SerializedName("ready") val ready: String? = null)
+        @SerializedName("ready")
+        val ready: String? = null
+)

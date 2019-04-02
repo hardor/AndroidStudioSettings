@@ -76,10 +76,16 @@ android {
             signingConfig signingConfigs.config
         }
         debug {
+            minifyEnabled false
+            buildConfigField "boolean", "USE_LOG", "true"
+            signingConfig signingConfigs.config
+        }
+        mobile {
             applicationIdSuffix '.debug'
             minifyEnabled false
             buildConfigField "boolean", "USE_LOG", "true"
             signingConfig signingConfigs.config
+            debuggable true
         }
     }
     compileOptions {
@@ -109,68 +115,52 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
-
     //Room
     implementation 'androidx.room:room-runtime:2.0.0'
     implementation 'androidx.room:room-rxjava2:2.0.0'
     androidTestImplementation 'androidx.room:room-testing:2.0.0'
     kapt "androidx.room:room-compiler:2.0.0"
-
     //Glide
     implementation 'com.github.bumptech.glide:glide:4.6.1'
     implementation 'com.github.bumptech.glide:okhttp3-integration:4.5.0'
     kapt 'com.github.bumptech.glide:compiler:4.8.0'
-
     // retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
-
     // rxandroid
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
-
     //firebase
     implementation 'com.google.firebase:firebase-ads:17.2.0'
     implementation 'com.google.firebase:firebase-core:16.0.8'
-
     // Leakcanary
+    mobileImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.1'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.1'
     debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.1'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.1'
-
     // common
-
     //implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'org.jsoup:jsoup:1.11.3'
-
     //stetho
     implementation 'com.facebook.stetho:stetho:1.5.0'
     implementation 'com.facebook.stetho:stetho-okhttp3:1.5.0'
-
     // intro
     implementation 'com.github.paolorotolo:appintro:v5.1.0'
-
     //rate
     implementation 'com.vorlonsoft:androidrate:1.2.1'
-
     //EasyFeedback
     implementation 'com.webianks.library:easy-feedback:1.0.5'
-
     //dagger 2
     implementation 'com.google.dagger:dagger:2.13'
     kapt 'com.google.dagger:dagger-compiler:2.13'
-
     //ChangeLog
     implementation 'de.cketti.library.changelog:ckchangelog:1.2.2'
-
     //Storage-chooser
     implementation 'com.github.codekidX:storage-chooser:2.0.4.4'
-
     //colorpicker
     implementation project(':libs:colorpicker')
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1'
-
     // Google Auth and Drive Rest v3 API
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
     implementation('com.google.api-client:google-api-client-android:1.23.0') {
@@ -185,16 +175,12 @@ dependencies {
     implementation('com.google.oauth-client:google-oauth-client-jetty:1.23.0') {
         exclude group: 'org.apache.httpcomponents'
     }
-
     // EasyPermissions
     implementation 'pub.devrel:easypermissions:3.0.0'
-
     // Billing
     implementation 'com.android.billingclient:billing:1.2.2'
-
     //materialdrawer
     implementation 'co.zsmb:materialdrawer-kt:2.0.1'
-
 }
 
 apply plugin: 'com.google.gms.google-services'

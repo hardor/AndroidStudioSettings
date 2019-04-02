@@ -176,7 +176,7 @@ class RanobeInfoActivity : AppCompatActivity() {
         recycleChapterList.clear()
 
 
-        val request = mCurrentRanobe.updateRanobe(mContext).map {
+        val request = mCurrentRanobe.updateRanobe(mContext,true).map {
 
             if (mCurrentRanobe.chapterList.any()) {
 

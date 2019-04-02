@@ -99,7 +99,7 @@ class Ranobe() {
     var chapterList: MutableList<Chapter> = ArrayList()
 
     @Ignore
-    var comments: List<RulateComment> = ArrayList()
+    var comments: List<Comment> = ArrayList()
 
     @Ignore
     var bookmarkIdRf: Int = 0
@@ -110,7 +110,7 @@ class Ranobe() {
     //    @Ignore
     //    var hidePaymentChapters: Boolean = MyApp.hidePaymentChapter
 
-    fun updateRanobe(mContext: Context): Single<Boolean> {
+    fun updateRanobe(mContext: Context, loadComments:Boolean = false): Single<Boolean> {
 
         val bookInfo: Single<Boolean>
 
@@ -121,7 +121,7 @@ class Ranobe() {
             } else if (ranobeSite == RanobeRf.url || url.contains(RanobeRf.url)) {
                 RanobeRfRepository.getBookInfo(this)
             } else if (ranobeSite == RanobeHub.url || url.contains(RanobeHub.url)) {
-                RanobeHubRepository.getBookInfo(this)
+                RanobeHubRepository.getBookInfo(this,loadComments)
             } else Single.just(false)
 
         } else {

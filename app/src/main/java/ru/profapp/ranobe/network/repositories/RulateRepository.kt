@@ -12,6 +12,7 @@ import ru.profapp.ranobe.common.Constants
 import ru.profapp.ranobe.helpers.logError
 import ru.profapp.ranobe.helpers.logWarn
 import ru.profapp.ranobe.models.Chapter
+import ru.profapp.ranobe.models.Comment
 import ru.profapp.ranobe.models.Ranobe
 import ru.profapp.ranobe.models.RanobeImage
 import ru.profapp.ranobe.network.customDeserializer.RulateBookDeserializer
@@ -243,7 +244,9 @@ object RulateRepository : BaseRepository() {
         chapterList.reverse()
 
 
-        comments = book.comments.asReversed()
+        comments = book.comments.asReversed().map {rulateComment ->
+            Comment(rulateComment)
+        }
         description = null
 
         if (lang != null) {
