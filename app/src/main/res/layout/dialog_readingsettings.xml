@@ -153,5 +153,11 @@
         android:layout_height="wrap_content"
         android:text="@string/swipe_navigate" />
 
+    <Switch
+        android:id="@+id/switch_keep_screen_on"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/keep_screen_on" />
+
 
 </LinearLayout>

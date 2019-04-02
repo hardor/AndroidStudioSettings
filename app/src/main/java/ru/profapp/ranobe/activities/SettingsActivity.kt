@@ -103,6 +103,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             findPreference(getString(R.string.pref_general_volume_scroll)).onPreferenceChangeListener = sChangePreferenceListener
             findPreference(getString(R.string.pref_general_auto_bookmark)).onPreferenceChangeListener = sChangePreferenceListener
             findPreference(getString(R.string.pref_general_swipe_navigate)).onPreferenceChangeListener = sChangePreferenceListener
+            findPreference(getString(R.string.pref_general_keep_screen_on)).onPreferenceChangeListener = sChangePreferenceListener
 
         }
 
@@ -292,6 +293,9 @@ class SettingsActivity : AppCompatPreferenceActivity() {
                 }
                 preference.context.getString(R.string.pref_general_swipe_navigate) -> {
                     MyApp.preferencesManager.useSwipeForNavigate = value.toString().toBoolean()
+                }
+                preference.context.getString(R.string.pref_general_keep_screen_on) -> {
+                    MyApp.preferencesManager.keepScreenOn = value.toString().toBoolean()
                 }
 
             }

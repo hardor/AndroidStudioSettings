@@ -164,6 +164,10 @@ class ReadingSettingsDialogFragment : DialogFragment() {
         val useSwipesSwitch: Switch = view.findViewById(R.id.switch_reading_use_swipes)
         useSwipesSwitch.isChecked = MyApp.preferencesManager.useSwipeForNavigate
 
+
+        val keepScreenSwitch: Switch = view.findViewById(R.id.switch_keep_screen_on)
+        keepScreenSwitch.isChecked = MyApp.preferencesManager.keepScreenOn
+
         val fontSeekBar: SeekBar = view.findViewById(R.id.seekBar_reading_fontsize)
         fontSeekBar.progress = MyApp.preferencesManager.fontSize - 6
 
@@ -214,6 +218,8 @@ class ReadingSettingsDialogFragment : DialogFragment() {
                 MyApp.preferencesManager.isDarkTheme = dayNightSwitch.isChecked
 
                 MyApp.preferencesManager.useSwipeForNavigate = useSwipesSwitch.isChecked
+
+                MyApp.preferencesManager.keepScreenOn = keepScreenSwitch.isChecked
 
                 try {
                     val editColor = Color.parseColor("#${chooseColorWebviewTextEditText.text}")

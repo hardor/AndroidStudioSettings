@@ -115,6 +115,11 @@ class GeneralPreferencesImpl(private val context: Context) : GeneralPreferences 
         R.string.pref_general_is_premium,
         false)
 
+    override var keepScreenOn: Boolean by PreferenceDelegates<Boolean>(context,
+        "",
+        R.string.pref_general_keep_screen_on,
+        false)
+
 }
 
 interface GeneralPreferences {
@@ -134,6 +139,7 @@ interface GeneralPreferences {
     var backgroundColor: Int?
     var lineHeightCss: Int
     var isPremium: Boolean
+    var keepScreenOn: Boolean
 
 
     fun setLastChapterUrl(ranobeUrl: String, chapterUrl: String)

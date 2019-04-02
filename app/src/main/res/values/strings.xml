@@ -201,6 +201,10 @@
     <string name="last">Last</string>
     <string name="contin">Continue</string>
     <string name="china">China</string>
+    <string name="pref_general_keep_screen_on">pref_general_keep_screen_on</string>
+    <string name="keep_screen_on">Keep screen on</string>
+    <string name="summary_keep_screen_on">Don\'t turn off screen while reading</string>
+    <string name="summary_keep_screen_off">Use system settings</string>
 
 
 </resources>

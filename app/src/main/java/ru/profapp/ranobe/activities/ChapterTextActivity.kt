@@ -6,10 +6,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.view.KeyEvent
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
@@ -51,6 +48,8 @@ class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.D
 
     override fun onDialogPositiveClick(dialog: DialogFragment) {
 
+
+        updateKeepScreen()
 
         ThemeHelper.setTheme(MyApp.preferencesManager.isDarkTheme)
 
@@ -123,6 +122,8 @@ class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.D
 
 
         setContentView(R.layout.activity_chapter_text)
+
+        updateKeepScreen()
 
         val apprate = AppRate.with(this).setStoreType(StoreType.GOOGLEPLAY).setTimeToWait(Time.DAY,
             10) // default is 10 days, 0 means install millisecond, 10 means app is launched 10 or more time units later than installation
@@ -322,6 +323,14 @@ class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.D
 
     }
 
+    private fun updateKeepScreen() {
+        if (MyApp.preferencesManager.keepScreenOn) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        } else {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
+    }
+
     private fun initWebView() {
 
         webViewProgressBar.visibility = View.VISIBLE
@@ -454,7 +463,14 @@ class ChapterTextActivity : AppCompatActivity(), ReadingSettingsDialogFragment.D
             }.switchIfEmpty(Single.just(false)).flatMap { itf ->
 
                 if (!itf) {
-                    return@flatMap GetChapterTextFromWeb(mCurrentChapter.ranobeUrl).map {
+                    return@flatMap GetChapterTextFromWeb(mCurrentChapter.ranobeUrl)
+                        .flatMap repeat@ {
+
+                            if(!it)
+                                return@repeat GetChapterTextFromWeb(mCurrentChapter.ranobeUrl)
+
+                            return@repeat Single.just(true)
+                        }.map {
                         if (!mCurrentChapter.text.isNullOrBlank() && it && !mCurrentChapter.text.equals(
                                 "null")) {
                             Completable.fromAction {
