@@ -8,7 +8,7 @@
   android:orientation="vertical">
 
   <TextView
-    android:id="@+id/id"
+    android:id="@+id/tv_item_chapter"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="2dp"

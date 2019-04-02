@@ -134,7 +134,9 @@ class MyApp : MultiDexApplication() {
 
         component.inject(this)
         preferencesManager = PreferencesModule(this).provideGeneralPreferencesManager()
-        MobileAds.initialize(applicationContext, getString(R.string.app_admob_id))
+        if(!preferencesManager.isPremium)
+            MobileAds.initialize(applicationContext, getString(R.string.app_admob_id))
+
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         if (BuildConfig.DEBUG) {
             if (LeakCanary.isInAnalyzerProcess(this)) {

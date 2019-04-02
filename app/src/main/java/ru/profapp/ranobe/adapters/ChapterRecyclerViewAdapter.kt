@@ -91,7 +91,7 @@ class ChapterRecyclerViewAdapter(private val mValues: List<Chapter>, private val
     }
 
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
-        val mTextView: TextView = mView.findViewById(R.id.id)
+        val mTextView: TextView = mView.findViewById(R.id.tv_item_chapter)
         lateinit var mChapterItem: Chapter
 
         init {
