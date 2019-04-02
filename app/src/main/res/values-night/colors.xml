@@ -16,7 +16,7 @@
   <color name="material_drawer_hint_text">@color/colorAccent</color>
   <color name="material_drawer_divider">@color/colorAccent</color>
   <!-- Material DEFAULT drawer colors -->
-  <color name="material_drawer_selected">@color/colorPrimaryDark</color>
+  <color name="material_drawer_selected">@color/webViewBackground</color>
   <color name="material_drawer_selected_legacy">#536DFE</color>
   <color name="material_drawer_selected_text">@color/webViewText</color>
   <color name="material_drawer_header_selection_text">#FF6E40</color>

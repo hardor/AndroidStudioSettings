@@ -90,6 +90,7 @@ class MainActivity : AppCompatActivity() {
         }.start()
 
         if (intent.getBooleanExtra("crash", false)) {
+            Thread.setDefaultUncaughtExceptionHandler(MyExceptionHandler(this,false))
             intent.removeExtra("crash")
             val builder = AlertDialog.Builder(this)
             builder.setTitle(getString(R.string.all_uncaughtException)).setMessage(getString(R.string.all_appCrashed)).setIcon(R.drawable.ic_info_black_24dp).setCancelable(true).setPositiveButton("OK") { dialog, _ ->

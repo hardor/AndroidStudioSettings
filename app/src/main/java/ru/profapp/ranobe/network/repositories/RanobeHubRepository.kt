@@ -14,6 +14,7 @@ import ru.profapp.ranobe.helpers.logError
 import ru.profapp.ranobe.helpers.logWarn
 import ru.profapp.ranobe.helpers.removeTags
 import ru.profapp.ranobe.models.Chapter
+import ru.profapp.ranobe.models.Comment
 import ru.profapp.ranobe.models.Ranobe
 import ru.profapp.ranobe.models.RanobeImage
 import ru.profapp.ranobe.network.dto.ranobeHubDTO.RanobeHubBook
@@ -39,7 +40,7 @@ object RanobeHubRepository : BaseRepository() {
 
     private var token: String = ""
 
-    fun getBookInfo(ranobe: Ranobe): Single<Boolean> {
+    fun getBookInfo(ranobe: Ranobe, loadComments:Boolean): Single<Boolean> {
         return instance.GetChapters(ranobe.id).map {
             ranobe.chapterList.clear()
             var index = 0
@@ -68,6 +69,32 @@ object RanobeHubRepository : BaseRepository() {
 
             ranobe.chapterList.reverse()
             return@map true
+        }.flatMap {resultF->
+
+            if(resultF && loadComments) {
+                return@flatMap   instance.GetComments(ranobeId = ranobe.id!!).map { commentsJson ->
+
+                    val comments = mutableListOf<Comment>()
+                    val rhComments = commentsJson.comments
+                    rhComments.forEach{ rhC->
+                        comments.add(Comment(rhC))
+
+                        if(rhC.children.any()){
+                            rhC.children.forEach{
+                                comments.add(Comment(it))
+                            }
+                        }
+                    }
+                    ranobe.comments = comments
+                    resultF
+                }.onErrorReturn {
+                    logError("getComments", ranobe.url, it)
+                    resultF
+                }
+            }
+
+            return@flatMap Single.just(resultF)
+
         }.onErrorReturn {
             logError("getBookInfo", ranobe.url, it)
             false
