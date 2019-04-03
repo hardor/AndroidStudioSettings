@@ -181,6 +181,10 @@ dependencies {
     implementation 'com.android.billingclient:billing:1.2.2'
     //materialdrawer
     implementation 'co.zsmb:materialdrawer-kt:2.0.1'
+
+    //Flexible
+    implementation 'eu.davidea:flexible-adapter:5.1.0'
+    implementation 'eu.davidea:flexible-adapter-ui:1.0.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

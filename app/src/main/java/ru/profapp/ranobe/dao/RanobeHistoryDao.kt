@@ -14,8 +14,15 @@ interface RanobeHistoryDao {
     @Query("SELECT * FROM ranobeHistory order by ReadDate desc")
     fun allRanobes(): Single<List<RanobeHistory>>
 
+    @Query("SELECT * FROM ranobeHistory order by ReadDate desc LIMIT :pageSize OFFSET :pageIndex")
+    fun getRanobes(pageSize:Int, pageIndex:Int): Single<List<RanobeHistory>>
+
     @Query("SELECT * FROM chapterHistory order by ReadDate desc")
     fun allChapters(): Single<List<ChapterHistory>>
+
+    @Query("SELECT * FROM chapterHistory order by ReadDate desc LIMIT :pageSize OFFSET :pageIndex")
+    fun getChapters(pageSize:Int, pageIndex:Int): Single<List<ChapterHistory>>
+
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(ranobe: RanobeHistory)

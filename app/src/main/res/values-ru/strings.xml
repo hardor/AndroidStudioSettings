@@ -157,4 +157,7 @@
   <string name="images_cache_removed">Кеш изображений очищен</string>
   <string name="china">Китай</string>
   <string name="last_read_chapter_removed">Информация об последней прочитанной главе в ранобэ была очищена</string>
+  <string name="keep_screen_on">Не гасить экран</string>
+  <string name="summary_keep_screen_on">Держать экран включенным пока читаешь</string>
+  <string name="summary_keep_screen_off">Использовать системные настройки</string>
 </resources>

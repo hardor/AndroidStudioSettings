@@ -31,9 +31,6 @@ class HistoryFragmentPagerAdapter(fm: FragmentManager, val context: Context) :
     }
 
     override fun getItemPosition(`object`: Any): Int {
-        val f = `object` as HistoryPageFragment
-        f.update()
-
-        return super.getItemPosition(`object`)
+            return super.getItemPosition(`object`)
     }
 }
