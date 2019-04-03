@@ -2,7 +2,6 @@ package ru.profapp.ranobe.adapters
 
 import android.graphics.drawable.Drawable
 import android.text.Html
-import android.text.format.DateFormat
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +15,7 @@ import ru.profapp.ranobe.common.Constants
 import ru.profapp.ranobe.helpers.GlideRequests
 import ru.profapp.ranobe.helpers.setVectorForPreLollipop
 import ru.profapp.ranobe.models.Comment
-import ru.profapp.ranobe.network.dto.rulateDTO.RulateComment
+import java.text.DateFormat
 import java.util.*
 
 class CommentsRecyclerViewAdapter(private val glide: GlideRequests,
@@ -38,10 +37,13 @@ class CommentsRecyclerViewAdapter(private val glide: GlideRequests,
         val mContext = holder.itemView.context
         holder.item = mValues[position]
         holder.bodyTextView.text = Html.fromHtml(holder.item.comment)
-        if (holder.item.createdAt != null) holder.dateView.text = String.format("%s %s",
-            holder.item.name,
-            DateFormat.getDateFormat(mContext).format(Date(holder.item.createdAt!!.times(1000))))
-
+        holder.item.createdAt?.let {date->
+            holder.dateView.text = String.format("%s %s",
+                holder.item.name,
+                DateFormat.getDateTimeInstance(DateFormat.DEFAULT,
+                    DateFormat.SHORT,
+                    Locale.getDefault()).format(Date(date.times(1000))))
+        }
         val dp50 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
             50f,
             mContext.resources.displayMetrics).toInt()
