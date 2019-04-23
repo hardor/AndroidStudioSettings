@@ -1,0 +1,178 @@
+<application>
+  <component name="AppInspectionProfilesVisibleTreeState">
+    <entry key="RanobeReaderInspection">
+      <profile-state>
+        <expanded-state>
+          <State />
+        </expanded-state>
+        <selected-state>
+          <State>
+            <id>Android</id>
+          </State>
+        </selected-state>
+      </profile-state>
+    </entry>
+  </component>
+  <component name="CodeStyleSchemesUIConfiguration">
+    <option name="RECENT_IMPORT_FILE_LOCATION" value="file:$USER_HOME$/Downloads/intellij-java-google-style.xml" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ANDROID_FIND_STYLE_APPLICATION_SCOPE" value="PROJECT" />
+    <property name="ANDROID_THEME_HISTORY" value="mate&#10;dayn" />
+    <property name="ATTACHED_TOOL_WINDOW.DEFAULT.Layout Inspector.LI_PROPERTIES.AUTO_HIDE" value="false" />
+    <property name="ATTACHED_TOOL_WINDOW.DEFAULT.Layout Inspector.LI_PROPERTIES.LEFT" value="false" />
+    <property name="ATTACHED_TOOL_WINDOW.DEFAULT.Layout Inspector.LI_PROPERTIES.SPLIT" value="false" />
+    <property name="ATTACHED_TOOL_WINDOW.DEFAULT.Layout Inspector.LI_VIEW_TREE.AUTO_HIDE" value="false" />
+    <property name="ATTACHED_TOOL_WINDOW.DEFAULT.Layout Inspector.LI_VIEW_TREE.LEFT" value="true" />
+    <property name="ATTACHED_TOOL_WINDOW.DEFAULT.Layout Inspector.LI_VIEW_TREE.SPLIT" value="false" />
+    <property name="ATTACHED_TOOL_WINDOW.DEFAULT.Layout Inspector.TOOL_ORDER" value="LI_VIEW_TREE,LI_PROPERTIES" />
+    <property name="ATTACHED_TOOL_WINDOW.DEFAULT.NELE_EDITOR.COMPONENT_TREE.AUTO_HIDE" value="false" />
+    <property name="ATTACHED_TOOL_WINDOW.DEFAULT.NELE_EDITOR.COMPONENT_TREE.LEFT" value="true" />
+    <property name="ATTACHED_TOOL_WINDOW.DEFAULT.NELE_EDITOR.COMPONENT_TREE.SPLIT" value="true" />
+    <property name="ATTACHED_TOOL_WINDOW.DEFAULT.NELE_EDITOR.PALETTE.AUTO_HIDE" value="false" />
+    <property name="ATTACHED_TOOL_WINDOW.DEFAULT.NELE_EDITOR.PALETTE.LEFT" value="true" />
+    <property name="ATTACHED_TOOL_WINDOW.DEFAULT.NELE_EDITOR.PALETTE.SPLIT" value="false" />
+    <property name="ATTACHED_TOOL_WINDOW.DEFAULT.NELE_EDITOR.PROPERTIES.AUTO_HIDE" value="false" />
+    <property name="ATTACHED_TOOL_WINDOW.DEFAULT.NELE_EDITOR.PROPERTIES.LEFT" value="false" />
+    <property name="ATTACHED_TOOL_WINDOW.DEFAULT.NELE_EDITOR.PROPERTIES.SPLIT" value="false" />
+    <property name="ATTACHED_TOOL_WINDOW.DEFAULT.NELE_EDITOR.TOOL_ORDER" value="PALETTE,PROPERTIES,COMPONENT_TREE" />
+    <property name="ATTACHED_TOOL_WINDOW.DEFAULT.NELE_EDITOR.structure.AUTO_HIDE" value="false" />
+    <property name="ATTACHED_TOOL_WINDOW.DEFAULT.NELE_EDITOR.structure.LEFT" value="true" />
+    <property name="ATTACHED_TOOL_WINDOW.DEFAULT.NELE_EDITOR.structure.SPLIT" value="false" />
+    <property name="ATTACHED_TOOL_WINDOW.DEFAULT.Preview.PALETTE.AUTO_HIDE" value="true" />
+    <property name="ATTACHED_TOOL_WINDOW.DEFAULT.Preview.PALETTE.LEFT" value="true" />
+    <property name="ATTACHED_TOOL_WINDOW.DEFAULT.Preview.PALETTE.SPLIT" value="false" />
+    <property name="ATTACHED_TOOL_WINDOW.DEFAULT.Preview.TOOL_ORDER" value="PALETTE" />
+    <property name="ATTACHED_TOOL_WINDOW.Layout Inspector.LEFT.UNSCALED.WIDTH" value="580" />
+    <property name="ATTACHED_TOOL_WINDOW.Layout Inspector.LI_VIEW_TREE.LEFT" value="true" />
+    <property name="ATTACHED_TOOL_WINDOW.Layout Inspector.RIGHT.UNSCALED.WIDTH" value="578" />
+    <property name="ATTACHED_TOOL_WINDOW.Layout Inspector.TEXT_SEARCH_HISTORY" value="col" />
+    <property name="ATTACHED_TOOL_WINDOW.Layout Inspector.TOOL_ORDER" value="LI_VIEW_TREE,LI_PROPERTIES" />
+    <property name="ATTACHED_TOOL_WINDOW.NELE_EDITOR.COMPONENT_TREE.LEFT" value="true" />
+    <property name="ATTACHED_TOOL_WINDOW.NELE_EDITOR.COMPONENT_TREE.SPLIT" value="true" />
+    <property name="ATTACHED_TOOL_WINDOW.NELE_EDITOR.LEFT.UNSCALED.WIDTH" value="227" />
+    <property name="ATTACHED_TOOL_WINDOW.NELE_EDITOR.PALETTE.LEFT" value="true" />
+    <property name="ATTACHED_TOOL_WINDOW.NELE_EDITOR.RIGHT.UNSCALED.WIDTH" value="251" />
+    <property name="ATTACHED_TOOL_WINDOW.NELE_EDITOR.TEXT_SEARCH_HISTORY" value="colorButtonNormal&#10;edi&#10;bu&#10;textb" />
+    <property name="ATTACHED_TOOL_WINDOW.NELE_EDITOR.TOOL_ORDER" value="PALETTE,PROPERTIES,COMPONENT_TREE" />
+    <property name="ATTACHED_TOOL_WINDOW.NELE_EDITOR.structure.FLOATING" value="true" />
+    <property name="ATTACHED_TOOL_WINDOW.NELE_EDITOR.structure.LEFT" value="true" />
+    <property name="ATTACHED_TOOL_WINDOW.Preview.LEFT.UNSCALED.WIDTH" value="225" />
+    <property name="ATTACHED_TOOL_WINDOW.Preview.PALETTE.AUTO_HIDE" value="true" />
+    <property name="ATTACHED_TOOL_WINDOW.Preview.PALETTE.LEFT" value="true" />
+    <property name="ATTACHED_TOOL_WINDOW.Preview.RIGHT.UNSCALED.WIDTH" value="225" />
+    <property name="ATTACHED_TOOL_WINDOW.Preview.TOOL_ORDER" value="PALETTE" />
+    <property name="Android.Splitter.Proportion" value="0.20806243" />
+    <property name="AndroidExtractStyleSearchStyleApplications" value="true" />
+    <property name="AndroidInitConfigurator.V1" value="true" />
+    <property name="AndroidInitConfigurator.V3" value="true" />
+    <property name="AndroidInitConfigurator.V5" value="true" />
+    <property name="AndroidSupport.hidePassedTests" value="false" />
+    <property name="ColorChooser.RecentColors" value="255-0-29-255,,,255-255-255-255" />
+    <property name="CommitChangeListDialog.DETAILS_SPLITTER_PROPORTION_2" value="0.57462686" />
+    <property name="CommitChangeListDialog.SPLITTER_PROPORTION_2" value="0.6577438" />
+    <property name="Copy.OpenInEditor" value="true" />
+    <property name="Darcula.savedEditorTheme" value="_@user_Darcula" />
+    <property name="Default.savedEditorTheme" value="_@user_Default" />
+    <property name="ExpandBeforeRunStepsPanel" value="true" />
+    <property name="ExpandRunDashboardTypesPanel" value="false" />
+    <property name="FileTemplates.SelectedTemplate" value="HTML File" />
+    <property name="INSPECTION_FILTER_HISTORY" value="android.r&#10;impo&#10;clea" />
+    <property name="InstalledPluginsSearchHistory" value="spell" />
+    <property name="LOG_FILTER_HISTORY" value="History Page Fragmen&#10;gli&#10;Main Activity&#10;Remote Backup&#10;Backup Activity" />
+    <property name="LOG_FILTER_MESSAGE_HISTORY" value="^((?!glUtilsParamSize).)*$&#10;[^glUtilsParamSize]&#10;^glUtilsParamSize&#10;glUtilsParamSize" />
+    <property name="LOG_FILTER_PACKAGE_NAME_HISTORY" value="ru.profapp.ranobe&#10;ru.profapp.RanobeReader" />
+    <property name="LayoutCode.optimizeImports" value="true" />
+    <property name="LayoutCode.processChangedText" value="false" />
+    <property name="LayoutCode.rearrangeEntries" value="true" />
+    <property name="LayoutCode.rearrangeEntriesKotlin" value="false" />
+    <property name="LayoutCode.rearrangeEntriesXML" value="true" />
+    <property name="MTBorderPopup" value="true" />
+    <property name="MTTabsHeight" value="42" />
+    <property name="MemberChooser.copyJavadoc" value="false" />
+    <property name="MemberChooser.showClasses" value="true" />
+    <property name="NlScreenMode" value="BOTH" />
+    <property name="PLUGIN_FILTER" value="jsontokotlin&#10;draw&#10;bitbucket&#10;googl&#10;fire" />
+    <property name="PluginConfigurable.selectionTab" value="1" />
+    <property name="SAVED_RENDER_LANGUAGE" value="Kotlin" />
+    <property name="SearchEveryWhereHistory" value="loger&#10;Сщтые&#10;Constants&#10;parent&#10;ыуеештпы ку" />
+    <property name="SettingsSearchHistory" value="spel&#10;theme&#10;alpha&#10;repos&#10;import android.R" />
+    <property name="TrendingPluginsSearchHistory" value="spell" />
+    <property name="Vcs.Push.Splitter.Proportion" value="0.6144109" />
+    <property name="android-component-compatibility-check" value="1556020599378" />
+    <property name="android.apk.viewer" value="0.47346938" />
+    <property name="build.toolwindow.Build Output.selection.state" value="com.intellij.build.BuildTreeConsoleView" />
+    <property name="build.toolwindow.Build.selection.state" value="com.intellij.build.BuildTreeConsoleView" />
+    <property name="build.toolwindow.Sync.selection.state" value="com.intellij.build.BuildTreeConsoleView" />
+    <property name="build.toolwindow.run.selection.state" value="consoleView" />
+    <property name="colorPickerCategoryProperty" value="MATERIAL_500" />
+    <property name="com.chrisrm.idea.MaterialThemeUI.theme" value="ONE_LIGHT" />
+    <property name="com.intellij.diagnostic.IdeErrorsDialogactiveTab" value="0" />
+    <property name="com.intellij.history.integration.ui.views.DirectoryHistoryDialog.0" value="300" />
+    <property name="com.intellij.history.integration.ui.views.FileHistoryDialog.0" value="300" />
+    <property name="com.intellij.history.integration.ui.views.FileHistoryDialog.1" value="800" />
+    <property name="crashlytics.cmApiUrl" value="https://cm.crashlytics.com" />
+    <property name="crashlytics.distributionUploadsApiUrl" value="https://distribution-uploads.crashlytics.com" />
+    <property name="crashlytics.kitApiUrl" value="https://kits.crashlytics.com" />
+    <property name="crashlytics.startPluginUpdater" value="true" />
+    <property name="crashlytics.startSdkUpdater" value="true" />
+    <property name="crashlytics.webApiUrl" value="https://api.crashlytics.com" />
+    <property name="decompiler.legal.notice.accepted" value="true" />
+    <property name="exception.accepted.notices" value="182193a2" />
+    <property name="fabric.installationId" value="41ef84d3-ac05-4f87-9c77-f67c0b7ee343" />
+    <property name="fabric.override_email" value="false" />
+    <property name="file.chooser.recent.files" value="$USER_HOME$/Desktop/Android/RanobeReader/.idea/dictionaries/ru_phys4.dic&#10;C:/Users/rvildanov/Desktop/Android/RanobeReader/ru_gen4.dic&#10;C:/Users/rvildanov/Desktop/Android/ru_phys4.dic&#10;C:/Users/rvildanov/Desktop/Android/RanobeReader&#10;C:/Users/rvildanov/Desktop/dresscode-master/app&#10;C:/Users/rvildanov/Desktop/dresscode-master&#10;C:/Users/rvildanov/Desktop/Android/ranobe.keystore&#10;C:/Users/rvildanov/Desktop/favicon2.ico&#10;C:/Users/rvildanov/Desktop/favicon.ico&#10;C:/Users/rvildanov/Desktop/favicon.png&#10;C:/Users&#10;C:/&#10;C:/Users/rvildanov/Desktop&#10;C:/Users/rvildanov/Desktop/Android/RanobeReader/app/src/main/java/ru/profapp/ranobe&#10;C:/Users/rvildanov/Desktop/Android/RanobeReader/app/src/main/res/layout&#10;C:/Users/rvildanov/Desktop/Android/RanobeReader/app/src&#10;C:/Users/rvildanov/Desktop/Android/Database-Backup-Restore-master&#10;C:/Users/rvildanov/Downloads/Nov-Dec.docx&#10;C:/Users/rvildanov/Downloads/ST-2824.pdf&#10;C:/Users/rvildanov/Desktop/RanobeReaderBackup.zip&#10;C:/Users/rvildanov/Desktop/ru.profapp.ranobe_preferences.xml&#10;C:/Users/rvildanov/Desktop/Android/FolioReader-Android&#10;C:/Users/rvildanov/Desktop/Android/RanobeReader/app/release/app.aab&#10;C:/Users/rvildanov/Desktop/DatabaseDao.db&#10;C:/Users/rvildanov/Desktop/base.apk&#10;C:/Users/rvildanov/Desktop/Android/RanobeReader/app/build/outputs/mapping/release&#10;C:/Users/rvildanov/Desktop/Android/RanobeReader/app/build/outputs/apk/release/ru.profapp.ranobe_1.12-release.apk&#10;C:/Users/rvildanov/Desktop/RanobeReaderBackup/preference_rulate_login.xml&#10;C:/Users/rvildanov/Desktop/RanobeReaderBackup/DatabaseDao.db&#10;C:/Users/rvildanov/Desktop/Android/RanobeReader.keystore" />
+    <property name="file.gist.reindex.count" value="14476" />
+    <property name="fileTypeChangedCounter" value="4" />
+    <property name="inspector.open.Arguments" value="true" />
+    <property name="inspector.open.CoordinatorLayout_layout" value="true" />
+    <property name="inspector.open.Deep Links" value="true" />
+    <property name="inspector.open.Favorite Attributes" value="true" />
+    <property name="inspector.open.Global Actions" value="true" />
+    <property name="inspector.open.MaterialButton" value="true" />
+    <property name="installed.kotlin.plugin.version" value="1.3.30-release-Studio3.4-1" />
+    <property name="jsonToKotlin_user_uuid_value_key" value="d4c7babb-bb6b-4176-83c7-4233c9254faf" />
+    <property name="kotlin.lastUpdateCheck" value="1555944913479" />
+    <property name="kotlin.plugin.releaseDate" value="1.3.30-release-Studio3.4-1:2019-04-11" />
+    <property name="lastTip" value="2" />
+    <property name="properties.mode" value="INSPECTOR" />
+    <property name="selected.color.option.type" value="KOTLIN_PARENTHESIS" />
+    <property name="settings.code.style.selected.tab.JAVA" value="Arrangement" />
+    <property name="settings.code.style.selected.tab.XML" value="Tabs and Indents" />
+    <property name="settings.code.style.selected.tab.kotlin" value="Wrapping and Braces" />
+    <property name="studio.profilerSESSION_EXPANDED_WIDTH" value="200" />
+    <property name="vcs.log.changes.splitter.proportion" value="0.4567189" />
+    <property name="vcs.log.details.splitter.proportion" value="0.64361703" />
+  </component>
+  <component name="RefactoringSettings">
+    <option name="MOVE_PREVIEW_USAGES" value="false" />
+    <option name="EXTRACT_SUPERCLASS_JAVADOC" value="1" />
+  </component>
+  <component name="SpellCheckPlugin.SpellCheckConfiguration">
+    <dictionary selected="true">
+      <option name="name" value="English" />
+      <option name="dictionaryFile" value="C:\Users\rvildanov\.AndroidStudio3.4\config\plugins\SpellCheckPlugin\dictionaries\en" />
+      <option name="phoneticFile" value="C:\Users\rvildanov\.AndroidStudio3.4\config\plugins\SpellCheckPlugin\dictionaries\en\phonet.en" />
+      <option name="memoryDictionary" value="false" />
+    </dictionary>
+    <dictionary>
+      <option name="name" value="English (in-memory)" />
+      <option name="dictionaryFile" value="C:\Users\rvildanov\.AndroidStudio3.4\config\plugins\SpellCheckPlugin\dictionaries\en_memory\english.0" />
+      <option name="phoneticFile" value="C:\Users\rvildanov\.AndroidStudio3.4\config\plugins\SpellCheckPlugin\dictionaries\en_memory\phonet.en" />
+      <option name="memoryDictionary" value="true" />
+    </dictionary>
+    <config name="SPELL_IGNORESENTENCECAPTILIZATION" value="true" />
+    <config name="SPELL_IGNOREUPPERCASE" value="true" />
+    <config name="SPELL_CACHE_DICTIONARY" value="true" />
+    <config name="EDIT_DEL2" value="95" />
+    <config name="EDIT_DEL1" value="95" />
+    <config name="EDIT_SUB" value="100" />
+    <config name="EDIT_CASE" value="10" />
+    <config name="SPELL_IGNOREMULTIPLEWORDS" value="false" />
+    <config name="SPELL_IGNOREMIXEDCASE" value="false" />
+    <config name="SPELL_IGNOREINTERNETADDRESS" value="true" />
+    <config name="EDIT_SWAP" value="90" />
+    <config name="SPELL_IGNOREDIGITWORDS" value="true" />
+    <config name="SPELL_THRESHOLD" value="140" />
+  </component>
+</application>

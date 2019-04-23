@@ -1,0 +1,9 @@
+<templateSet group="Kotlin">
+  <template name="LogHelper" value=" LogHelper.logError(LogHelper.LogType.ERROR, &quot;&quot;, &quot;&quot;, error,false)" description="Write error to log" toReformat="false" toShortenFQNames="true">
+    <context>
+      <option name="KOTLIN_CLASS" value="true" />
+      <option name="KOTLIN_STATEMENT" value="true" />
+      <option name="KOTLIN_TOPLEVEL" value="true" />
+    </context>
+  </template>
+</templateSet>
