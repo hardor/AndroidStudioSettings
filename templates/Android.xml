@@ -1,0 +1,8 @@
+<templateSet group="Android">
+  <template name="request" value="      val result = safeApiResult {$endpoint$.await() }&#10;        when(result) {&#10;            is Result.Success -&gt; {&#10;                &#10;            }&#10;            is Result.Error -&gt; {&#10;                &#10;            }&#10;        }" toReformat="false" toShortenFQNames="true">
+    <variable name="endpoint" expression="" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="KOTLIN_STATEMENT" value="true" />
+    </context>
+  </template>
+</templateSet>
