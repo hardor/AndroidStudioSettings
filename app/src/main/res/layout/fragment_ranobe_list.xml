@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/cL_ranobeFragment"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:orientation="vertical"
+  >
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    >
+    <TextView
+      android:id="@+id/tV_SortOrder"
+      android:layout_width="0dp"
+      android:layout_weight="1"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:clickable="true"
+      android:focusable="true"
+      android:background="?attr/selectableItemBackground"
+     />
+    <ImageButton
+      android:id="@+id/iB_rL_fragment_sync"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:padding="5dp"
+      android:background="?attr/selectableItemBackground"
+      android:contentDescription="@string/load_web_bookmarks"
+      android:visibility="gone"
+      app:srcCompat="@drawable/ic_sync_black_24dp"
+      tools:visibility="visible"/>
+
+  </LinearLayout>
+
+  <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    android:id="@+id/swipeRefreshLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/rV_ranobeList_ranobe"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="8dp"
+      android:layout_marginEnd="8dp"
+      android:name="ru.profapp.ranobe.FavoriteFragment"
+      android:scrollbars="vertical"
+      tools:context="ru.profapp.ranobe.fragments.RanobeListFragment"
+      tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+      tools:listitem="@layout/item_ranobe">
+    </androidx.recyclerview.widget.RecyclerView>
+
+
+  </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+</LinearLayout>

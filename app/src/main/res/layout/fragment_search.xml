@@ -1,0 +1,43 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="vertical"
+  tools:context="ru.profapp.ranobe.fragments.SearchFragment">
+
+  <androidx.appcompat.widget.SearchView
+    android:id="@+id/sV_search"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    app:iconifiedByDefault="false"
+    app:queryHint="@string/search_hereHint">
+  </androidx.appcompat.widget.SearchView>
+  <ProgressBar
+    android:id="@+id/progressBar_search"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:visibility="gone"/>
+
+  <TextView
+    android:id="@+id/tV_search_resultLabel"
+    style="@style/TitleCardViewStyle"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/all_notFound"
+    android:visibility="gone"/>
+  <androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/rV_search_ranobe"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    android:scrollbars="vertical"
+    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+    tools:listitem="@layout/item_ranobe"/>
+
+</LinearLayout>
+
+

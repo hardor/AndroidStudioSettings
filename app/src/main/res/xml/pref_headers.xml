@@ -1,0 +1,23 @@
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <!-- These settings headers are only used on tablets. -->
+
+  <header
+    android:fragment="ru.profapp.ranobe.activities.SettingsActivity$GeneralPreferenceFragment"
+    android:title="@string/pref_header_general"/>
+
+  <header
+    android:fragment="ru.profapp.ranobe.activities.SettingsActivity$AuthPreferenceFragment"
+    android:title="@string/authorization"/>
+  <header
+    android:fragment="ru.profapp.ranobe.activities.SettingsActivity$DataPreferenceFragment"
+    android:title="@string/data"/>
+
+  <header
+    android:title="@string/export_import">
+    <intent
+      android:action="ru.profapp.ranobe.Activities.BackupActivity"/>
+  </header>
+
+
+</preference-headers>

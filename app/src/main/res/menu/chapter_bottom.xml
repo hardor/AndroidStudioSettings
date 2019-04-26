@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <item
+    android:id="@+id/navigation_prev"
+    android:orderInCategory="1"
+    android:title="@string/previous"
+    android:icon="@drawable/ic_skip_previous_black_24dp"
+    app:showAsAction="never"/>
+
+  <item
+    android:id="@+id/navigation_bookmark"
+    android:icon="@drawable/ic_bookmark_border_black_24dp"
+    android:title="@string/action_bookmark"
+    app:showAsAction="never"
+    android:orderInCategory="2"
+    />
+
+
+  <item
+    android:id="@+id/navigation_next"
+    android:icon="@drawable/ic_skip_next_black_24dp"
+    android:title="@string/next"
+    app:showAsAction="never"
+    android:orderInCategory="3"
+    />
+
+
+
+</menu>

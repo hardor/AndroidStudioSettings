@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<changelog>
+    <release
+        version="1.32"
+        versioncode="101032">
+        <change>Добавлена настройка интервала</change>
+        <change>Добавлена возможность купить премиум подписку которая отключает &lt;b&gt;рекламу&lt;/b&gt;. Возможно в будущем добавятся еще премиум функции, но не обещаю.</change>
+        <change>Изменен формат бекап файлов на архивы. &lt;b&gt;Обновите свой бекап!!!&lt;/b&gt;</change>
+        <change>Добавлена возможность выбора расположения для бекапа.</change>
+        <change>&lt;b&gt;[НЕ Стабильно]&lt;/b&gt; Добавлена возможность бекапа в Google Drive</change>
+    </release>
+
+    <release
+        version="1.27"
+        versioncode="101027">
+        <change>Добавлен показ лога изменений</change>
+        <change>Добавлены настройки чтения: шрифт, цвет текста и подложки</change>
+    </release>
+    <release
+        version="1.26"
+        versioncode="101026">
+        <change>Исправлен поиск для ranobehub
+        </change>
+    </release>
+    <release
+        version="1.25"
+        versioncode="101025">
+        <change>Исправлена загрузка платных глав для ранобэ.рф когда число донатов на счету было не
+            целое
+        </change>
+    </release>
+    <release
+        version="1.24"
+        versioncode="101024">
+        <change>Испрвалены вылеты при запуске</change>
+    </release>
+    <release
+        version="1.23"
+        versioncode="101023">
+        <change>Исправлена загрузка платных глав с рулейта</change>
+    </release>
+    <release
+        version="1.22"
+        versioncode="101022">
+        <change>Изменен метод сортировки глав. Должно исправить проблему с порядком скачанных глав
+            (потребуется перезакачка)
+        </change>
+    </release>
+    <release
+        version="1.20"
+        versioncode="101020">
+        <change>Исправлена загрузка ранобэ из поиска для rulate</change>
+        <change>Исправлена загрузка глав для некоторых ранобэ из ranobehub</change>
+    </release>
+    <release
+        version="1.18"
+        versioncode="101018">
+        <change>Показ и скрытие тулбаров только по двойному тапу</change>
+        <change>Исправлены последние обновления для ranobehub</change>
+        <change>android 9: исправлена загрузка изображений для рулейт</change>
+    </release>
+</changelog>

@@ -1,0 +1,17 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+  <PreferenceCategory android:title="@string/authorization"/>
+  <ru.profapp.ranobe.customElements.RulateLoginPreference
+    android:icon="@mipmap/ic_rulate"
+    android:key="@string/rulate_authorization_pref"
+    android:persistent="true"
+    android:summary="@string/summary_login"
+    android:title="@string/rulate_authorization"
+    />
+  <ru.profapp.ranobe.customElements.RanoberfLoginPreference
+    android:icon="@mipmap/ic_ranoberf"
+    android:key="@string/ranoberf_authorization_pref"
+    android:persistent="true"
+    android:summary="@string/summary_login"
+    android:title="@string/ranoberf_authorization"
+    />
+</PreferenceScreen>

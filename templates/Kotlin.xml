@@ -6,18 +6,18 @@
       <option name="KOTLIN_TOPLEVEL" value="true" />
     </context>
   </template>
-  <template name="apicall" value=" val result = safeApiResult { $endpoint$.await() }&#10;        when (result) {&#10;            is Result.Success -&gt; {                &#10;                return &#10;            }&#10;            &#10;            is Result.Error -&gt; {&#10;                return &#10;            }&#10;        }" toReformat="false" toShortenFQNames="true">
+  <template name="apicall" value=" val result = safeApiResult { $endpoint$.await() }&#10;        when (result) {&#10;            is Result.Success -&gt; {                &#10;                return &#10;            }&#10;            &#10;            is Result.Error -&gt; {&#10;                return &#10;            }&#10;        }" description="" toReformat="false" toShortenFQNames="true">
     <variable name="endpoint" expression="" defaultValue="" alwaysStopAt="true" />
     <context>
       <option name="KOTLIN_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="withContextMain" value=" withContext(Dispatchers.Main){&#10; &#10; }" toReformat="false" toShortenFQNames="true">
+  <template name="withContextMain" value=" withContext(Dispatchers.Main){&#10; &#10; }" description="" toReformat="false" toShortenFQNames="true">
     <context>
       <option name="KOTLIN_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="withContextIO" value=" withContext(Dispatchers.IO){&#10; &#10; }" toReformat="false" toShortenFQNames="true">
+  <template name="withContextIO" value=" withContext(Dispatchers.IO){&#10; &#10; }" description="" toReformat="false" toShortenFQNames="true">
     <context>
       <option name="KOTLIN_STATEMENT" value="true" />
     </context>

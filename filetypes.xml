@@ -1,9 +1,0 @@
-<application>
-  <component name="FileTypeManager" version="17">
-    <extensionMap>
-      <mapping pattern="network-response-body-3" type="PLAIN_TEXT" />
-      <mapping pattern="network-response-body-1" type="PLAIN_TEXT" />
-      <mapping ext="db-shm" type="PLAIN_TEXT" />
-    </extensionMap>
-  </component>
-</application>
