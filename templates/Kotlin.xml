@@ -12,4 +12,14 @@
       <option name="KOTLIN_STATEMENT" value="true" />
     </context>
   </template>
+  <template name="withContextMain" value=" withContext(Dispatchers.Main){&#10; &#10; }" toReformat="false" toShortenFQNames="true">
+    <context>
+      <option name="KOTLIN_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="withContextIO" value=" withContext(Dispatchers.IO){&#10; &#10; }" toReformat="false" toShortenFQNames="true">
+    <context>
+      <option name="KOTLIN_STATEMENT" value="true" />
+    </context>
+  </template>
 </templateSet>
