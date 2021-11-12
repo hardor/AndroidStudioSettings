@@ -1,0 +1,21 @@
+<application>
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Projects/Android/RanobeReader/app/src/main/res/xml/pref_auth.xml" value="0.1984375" />
+        <entry key="..\:/Projects/Android/easapart66/easapart66/app/src/main/res/drawable/border_bg.xml" value="0.1" />
+        <entry key="..\:/Projects/Android/easapart66/easapart66/app/src/main/res/drawable/rigt_rounded_button.xml" value="0.296875" />
+        <entry key="..\:/Projects/Android/easapart66/easapart66/app/src/main/res/drawable/rounded_button_blue.xml" value="0.296875" />
+        <entry key="..\:/Projects/Android/easapart66/easapart66/app/src/main/res/drawable/rounded_module_list.xml" value="0.296875" />
+        <entry key="..\:/Projects/Android/easapart66/easapart66/app/src/main/res/drawable/test_text_blue.xml" value="0.296875" />
+        <entry key="..\:/Projects/Android/easapart66/easapart66/app/src/main/res/layout/activity_main.xml" value="0.20208333333333334" />
+        <entry key="..\:/Projects/Android/easapart66/easapart66/app/src/main/res/layout/content_main.xml" value="0.20208333333333334" />
+        <entry key="..\:/Projects/Android/easapart66/easapart66/app/src/main/res/layout/fragment_module.xml" value="0.259963768115942" />
+        <entry key="..\:/Projects/Android/easapart66/easapart66/app/src/main/res/layout/fragment_module_start.xml" value="0.2046875" />
+        <entry key="..\:/Projects/Android/easapart66/easapart66/app/src/main/res/layout/fragment_quiz_main.xml" value="0.1" />
+        <entry key="..\:/Projects/Android/easapart66/easapart66/app/src/main/res/layout/module_item.xml" value="0.259963768115942" />
+        <entry key="..\:/Projects/Android/easapart66/easapart66/app/src/main/res/layout/splash_screen_background.xml" value="0.2046875" />
+      </map>
+    </option>
+  </component>
+</application>
