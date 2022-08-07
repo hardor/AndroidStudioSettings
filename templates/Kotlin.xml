@@ -27,7 +27,7 @@
       <option name="KOTLIN_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="prv" value="private val $NAME$ {&#10;}" toReformat="false" toShortenFQNames="true">
+  <template name="prv" value="private val $NAME$ {&#10;}" description="" toReformat="false" toShortenFQNames="true">
     <variable name="NAME" expression="kotlinAnyVariable()" defaultValue="v" alwaysStopAt="true" />
     <context>
       <option name="KOTLIN" value="true" />
